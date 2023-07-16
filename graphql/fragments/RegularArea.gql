@@ -1,0 +1,5 @@
+fragment RegularArea on Area {
+  id_area
+  name
+  status
+}

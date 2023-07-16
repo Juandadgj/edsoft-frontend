@@ -1,0 +1,5 @@
+fragment RegularAchievement on Achievement {
+  id_course
+  period
+  description
+}

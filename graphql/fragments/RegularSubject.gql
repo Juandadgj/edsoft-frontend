@@ -1,0 +1,6 @@
+fragment RegularSubject on Course {
+  id_course
+  name
+  id_teacher
+  hour
+}

@@ -1,0 +1,5 @@
+mutation deleteSchoolarYear($id_year: Int!) {
+  deleteScholarYear(id_year: $id_year) {
+    id_year
+  }
+}
