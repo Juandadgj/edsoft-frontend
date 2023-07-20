@@ -1,22 +1,23 @@
-import BigLogo from '../public/assets/logo@2x.png';
-import * as React from 'react';
-import ClearIcon from '@mui/icons-material/Clear';
-import MenuIcon from '@mui/icons-material/Menu';
-import { useState } from 'react';
-import Button from '@mui/material/Button';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Image from 'next/image';
-import Link from 'next/link';
+import BigLogo from "../public/assets/logo@2x.png";
+import * as React from "react";
+import ClearIcon from "@mui/icons-material/Clear";
+import MenuIcon from "@mui/icons-material/Menu";
+import { useState } from "react";
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect } from "react";
 
 interface NavProps {
-  actualPage: 'Inicio' | 'Instituciones' | 'Contact';
+  actualPage: "Inicio" | "Instituciones" | "Contact";
   withNavigation?: boolean;
 }
 
 function Nav(
   { actualPage, withNavigation }: NavProps = {
-    actualPage: 'Inicio',
+    actualPage: "Inicio",
     withNavigation: true,
   }
 ) {
@@ -29,38 +30,45 @@ function Nav(
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const [active, setActive] = useState('');
+  const [active, setActive] = useState("");
   const [toggle, setToggle] = useState(false);
-
+  useEffect(() => {
+    console.log("navigation", withNavigation);
+  }, []);
   return (
-    <nav className="navbar navbar-expand-xl bg-body-tertiary px-20 pt-0 w-100 max-h-96">
-      <div className="container-fluid">
-        <Link className="navbar-brand ms-5 d-flex align-items-center" href="/">
+    <nav className="flex bg-white px-8 pt-0 w-full h-auto">
+      <div className="h-full w-full flex justify-between items-center">
+        <Link
+          className="w-auto ms-5 flex items-center text-black"
+          href="/"
+        >
           <Image
             src={BigLogo}
             alt="Logo EdSoft"
-            className="d-inline-block w-16 h-16 align-text-top"
+            className="inline-block w-16 h-16"
             width={100}
             height={100}
           />
           <h3
-            className={`align-middle mx-2 display-4 fw-bold ${
-              actualPage == 'Contact' ? 'text-white' : false
-            }`}>
+            className={`align-middle mx-2 font-bold text-5xl ${
+              actualPage == "Contact" ? "text-white" : false
+            }`}
+          >
             EdSoft
           </h3>
         </Link>
 
-        <div className="navbar-toggler border-0">
+        <div className="navbar-toggler border-0 md:hidden sm:flex">
           <Button
             // className="btn dropdown-toggle border-0"
             // type="button"
             data-toggle="dropdown"
             aria-expanded="false"
             id="basic-button"
-            aria-controls={open ? 'basic-menu' : undefined}
+            aria-controls={open ? "basic-menu" : undefined}
             aria-haspopup="true"
-            onClick={handleClick}>
+            onClick={handleClick}
+          >
             {open ? (
               <ClearIcon className="h-15 w-11" sx={{ fontSize: 40 }} />
             ) : (
@@ -74,14 +82,16 @@ function Nav(
             open={open}
             onClose={handleClose}
             MenuListProps={{
-              'aria-labelledby': 'basic-button',
-            }}>
+              "aria-labelledby": "basic-button",
+            }}
+          >
             <div className="p-3">
               <MenuItem sx={{ fontSize: 20 }}>
                 <Link
                   className="pt-2 pb-2 list-group-item list-group-item-action ff"
                   href="/"
-                  onClick={handleClose}>
+                  onClick={handleClose}
+                >
                   Inicio
                 </Link>
               </MenuItem>
@@ -90,16 +100,17 @@ function Nav(
                 <Link
                   className="pt-2 pb-2 list-group-item list-group-item-action ff m-0"
                   href="/instituciones"
-                  onClick={handleClose}>
+                  onClick={handleClose}
+                >
                   Lista de Inst. Educativas
                 </Link>
               </MenuItem>
-
               <MenuItem sx={{ fontSize: 20 }}>
                 <Link
                   className="pt-2 pb-2 list-group-item list-group-item-action ff"
                   href="/contact"
-                  onClick={handleClose}>
+                  onClick={handleClose}
+                >
                   Contacto
                 </Link>
               </MenuItem>
@@ -108,35 +119,56 @@ function Nav(
         </div>
 
         {withNavigation && (
-          <div className="collapse navbar-collapse">
-            <ul className="navbar-nav ms-auto mb-2 fs-3 ">
-              <li className="nav-item">
+          <div className="text-black w-[60%] sm:hidden md:flex">
+            <ul className="flex text-3xl pb-4">
+              <li className={`
+                mx-6 px-2 py-2
+                hover:text-gray7
+                transition-colors	
+                duration-500
+                  ${
+                    actualPage === "Inicio" ? " bg-main-blue !text-white rounded-b-[30px] h-[80px]" : "text-gray6"
+                  }  ${actualPage == "Contact" ? "text-white" : false}`}>
                 <Link
-                  className={`nav-link ${actualPage === 'Inicio' && 'active'} mx-5 ${
-                    actualPage == 'Contact' ? 'text-white' : false
-                  }`}
+                  
                   aria-current="page"
-                  href="/">
-                  <h3 style={{fontWeight: '400'}}>Inicio</h3>
+                  href="/"
+                >
+                  <h3 style={{ fontWeight: "400" }}>Inicio</h3>
                 </Link>
               </li>
-              <li className="nav-item">
+              <li className={`
+                  mx-6 px-2 py-2 hover:text-gray7
+                  transition-colors	
+                  duration-500
+                  ${
+                    actualPage === "Instituciones" ? " bg-main-blue !text-white rounded-b-[30px] h-[80px]" : "text-gray6"
+                  }  ${actualPage == "Contact" ? "text-white" : false}`}>
                 <Link
-                  className={`max-h-96 nav-link ${
-                    actualPage === 'Instituciones' && 'active'
-                  } mx-5 ${actualPage == 'Contact' ? 'text-white' : false}`}
+                  className={`${
+                    actualPage === "Instituciones" && "active"
+                  } ${actualPage == "Contact" ? "text-white" : false}`}
                   aria-current="page"
                   href="/instituciones"
-                  style={{minWidth: '310px'}}>
-                  <h3 style={{fontWeight: '400'}}>Lista de Inst. Educativas</h3>
+                  style={{ minWidth: "310px" }}
+                >
+                  <h3 style={{ fontWeight: "400" }}>
+                    Lista de Inst. Educativas
+                  </h3>
                 </Link>
               </li>
-              <li className="nav-item">
+              <li className={`
+                  mx-6 px-2 py-2 hover:text-gray7
+                  transition-colors	
+                  duration-500
+                  ${
+                    actualPage === "Contact" ? " bg-main-blue !text-white rounded-b-[30px] h-[80px]" : "text-gray6"
+                  }  ${actualPage == "Contact" ? "text-white" : false}`}>
                 <Link
-                  className={`nav-link ${actualPage === 'Contact' && 'active'} mx-5`}
                   aria-current="page"
-                  href="/contact">
-                  <h3 style={{fontWeight: '500'}}>Contacto</h3>
+                  href="/contact"
+                >
+                  <h3 style={{ fontWeight: "500" }}>Contacto</h3>
                 </Link>
               </li>
             </ul>

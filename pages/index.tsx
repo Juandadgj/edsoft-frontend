@@ -38,7 +38,7 @@ function Home() {
     width: '100%',
     height: 'auto',
     [theme.breakpoints.up('md')]: {
-      paddingTop: '11rem',
+      paddingTop: '4rem',
       paddingRight: '4rem',
     },
   }));
@@ -83,9 +83,9 @@ function Home() {
     <>
       <HomeStyled>
         <Nav actualPage="Inicio" withNavigation />
-        <Grid container className="h-full d-block position-relative">
+        <Grid container className="h-full block relative">
           <Welcome className="my-2 animate__animated animate__slideInLeft ">
-            <h5 className="text-gray3 fs-3 ms-8">
+            <h5 className="text-gray3 text-xl ml-8 flex">
               <Ellipse className="mr-5" width={40} height={40} />
               ¡Bienvenido!
             </h5>
@@ -94,7 +94,7 @@ function Home() {
             <Grid item xs={12} sm={12} md={7} lg={7} xl={6} className="">
               <TextContainer className="animate__animated animate__slideInLeft">
                 <h2
-                  className={`display-2 fw-bold mb-6 opacity${
+                  className={`font-bold text-5xl mb-6 opacity${
                     active ? 'active' : ''
                   } transitionUp ${active ? 'active' : ''}`}>
                   <Title>
@@ -107,7 +107,7 @@ function Home() {
                 </h2>
 
                 <p
-                  className={`text-gray3 fs-3 ms-2 opacity${
+                  className={`text-gray3 text-3xl ms-2 opacity${
                     active ? 'active' : ''
                   } transitionRight ${active ? 'active' : ''}`}>
                   Acceder a <span className="text-black">toda</span> la información institucional,
