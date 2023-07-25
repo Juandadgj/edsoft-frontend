@@ -22,12 +22,12 @@ const SideBar = ({ manage, logo }: any) => {
   }, []);
 
   return (
-    <Box height={`calc(100vh - ${logo ? `0px` : `96px`})`}>
-      <ul className="nav bg-blue3 col-auto col-md-0 w-20 h-100 min-height-200 ps-1 flex-column justify-content-evenly flex-nowrap">
+    <div className='h-full'>
+      <ul className="bg-blue3 w-20 h-full ps-1 flex flex-col justify-evenly flex-nowrap">
         
-          {logo ? <div className="logo-side shadow-none ms-2 text-white fs-4 dropdown dropend d-grid"> <SchoolLogo sideBar={true}/> </div> : null}
+          {logo ? <div className="bg-[#1A3187] rounded-custom ms-2 text-white fs-4 dropdown dropend"> <SchoolLogo sideBar={true}/> </div> : null}
 
-        <li className="nav-item mt-3 text-white fs-4 dropdown dropend d-grid">
+        <li className="mt-3 text-white fs-4 dropdown dropdown-right flex justify-center">
           <button
             className="button bg-blue3"
             type="button"
@@ -37,13 +37,13 @@ const SideBar = ({ manage, logo }: any) => {
             title="Funcionarios"
             aria-expanded="true">
             <div
-              className={`opacity${active ? 'active' : ''} transitionRight ${
+              className={`opacity${active ? 'bg-white rounded-custom' : ''} transitionRight ${
                 active ? 'active' : ''
               }`}>
               <Groups2Icon className="h-12 w-11" sx={{ fontSize: 30 }} />
             </div>
           </button>
-          <ul className="dropdown-menu ms-1">
+          <ul className="menu dropdown-content ms-1 text-black bg-white rounded-[5px]">
             <li>
               <button className="dropdown-item" id="Teachers" onClick={manage}>
                 Docentes
@@ -57,7 +57,7 @@ const SideBar = ({ manage, logo }: any) => {
           </ul>
         </li>
 
-        <li className="nav-item mt-3 text-white fs-4 dropdown dropend d-grid">
+        <li className="mt-3 text-white fs-4 dropdown dropdown-right flex justify-center">
           <button
             className="button bg-blue3"
             type="button"
@@ -73,7 +73,7 @@ const SideBar = ({ manage, logo }: any) => {
               <ContentPasteIcon className="h-12 w-11" sx={{ fontSize: 30 }} />
             </div>
           </button>
-          <ul className="dropdown-menu ms-1">
+          <ul className="menu dropdown-content ms-1 text-black bg-white rounded-[5px]">
             <li>
               <button className="dropdown-item" id="QualificationType" onClick={manage}>
                 Tipo De Calificación
@@ -112,7 +112,7 @@ const SideBar = ({ manage, logo }: any) => {
           </ul>
         </li>
 
-        <li className="nav-item mt-3 text-white fs-4 dropdown dropend d-grid">
+        <li className="nav-item mt-3 text-white fs-4 dropdown dropdown-right flex justify-center">
           <button
             className="button bg-blue3"
             type="button"
@@ -128,7 +128,7 @@ const SideBar = ({ manage, logo }: any) => {
               <RouteIcon className="h-12 w-11" sx={{ fontSize: 30 }} />
             </div>
           </button>
-          <ul className="dropdown-menu ms-1">
+          <ul className="menu dropdown-content ms-1 text-black bg-white rounded-[5px]">
             <li>
               <button className="dropdown-item" id="Teachers" onClick={manage}>
                 Calificación
@@ -137,7 +137,7 @@ const SideBar = ({ manage, logo }: any) => {
           </ul>
         </li>
 
-        <li className="nav-item mt-3 mb-10 text-white fs-4 dropdown dropend d-grid">
+        <li className="nav-item mt-3 mb-10 text-white fs-4 dropdown dropdown-right flex justify-center">
           <button
             className="button bg-blue3"
             type="button"
@@ -153,7 +153,7 @@ const SideBar = ({ manage, logo }: any) => {
               <AssessmentIcon className="h-12 w-11" sx={{ fontSize: 30 }} />
             </div>
           </button>
-          <ul className="dropdown-menu ms-1">
+          <ul className="menu dropdown-content ms-1 text-black bg-white rounded-[5px] !top-[-110px]">
             <li>
               <button className="dropdown-item" id="Teachers" onClick={manage}>
                 Indicadores
@@ -177,7 +177,7 @@ const SideBar = ({ manage, logo }: any) => {
           </ul>
         </li>
       </ul>
-    </Box>
+    </div>
   );
 };
 

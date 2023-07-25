@@ -21,7 +21,11 @@ module.exports = {
       "main-blue": "#0055a6",
       "gray2": "#f5f5f5",
       "gray1": "#efefef",
-      "gray7":"#323232"
+      "gray7":"#323232",
+      "btn":"rgba(255, 255, 255, 0.2)"
+    },
+    borderRadius:{
+      "custom": "19px 81px 93px 17px / 60px 0px 0px 50px;"
     },
     extend: {
       backgroundImage: {
@@ -31,5 +35,5 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [require("daisyui"), require('tailwindcss-animated')],
 };

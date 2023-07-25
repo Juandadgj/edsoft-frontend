@@ -98,7 +98,7 @@ export const SchoolNav = ({textComponent, manage}: any) => {
             EdSoft
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', sm: 'flex' } }}>
-            <p className="pt-4 ps-10">
+            <p className=" ps-10">
               Institución Educativa San Marcos {textComponent && `> ${textComponent}`}
             </p>
           </Box>

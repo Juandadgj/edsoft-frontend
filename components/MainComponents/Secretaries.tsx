@@ -7,8 +7,8 @@ import {
   useUpdateTeacherMutation,
 } from '../../generated/graphql';
 import { useEffect, useState } from 'react';
-import edit from '../assets/01editar.png';
-import delet from '../assets/01eliminar.png';
+import edit from '../../public/assets/01editar.png';
+import delet from '../../public/assets/01eliminar.png';
 import { Grid, TextField } from '@mui/material';
 import { styled } from '@material-ui/styles';
 import SearchIcon from '@mui/icons-material/Search';
@@ -318,15 +318,15 @@ function Secretaries() {
   }, [data, DeleteDocente]);
 
   return (
-    <div className="btl w-100 vh-100 overflow-hidden bg-gray1 p-15">
+    <div className="rounded-tl-[40px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
       <Grid container>
         <Grid item xs={6}>
-          <strong className="fs-4 ms-20">Lista de Secretarios</strong>
+          <strong className="text-2xl text-black ms-20">Lista de Secretarios</strong>
         </Grid>
-        <Grid item xs={6} className="text-ali-end pr-6">
+        <Grid item xs={6} className="text-end pr-6">
           <button
             type="button"
-            className="btn bg-blue3 btn-primary w-64 mb-0 pb-0 h-10 btl btr "
+            className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-2 rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
             onClick={() => {
               setTypeAdd(true);
               setOpen(true);
@@ -337,18 +337,18 @@ function Secretaries() {
       </Grid>
       <Grid
         container
-        className="col-lg-11 col-md-10 mx-auto bg-white rounded border border-2 shadow rounded-5 p-5">
+        className="col-lg-11 col-md-10 mx-auto bg-white border-2 shadow-2xl rounded-[2rem] p-5">
         <Grid item xs={12}>
           <form role="search">
             <Grid container>
               <Grid item xs={6}>
                 <Grid container>
-                  <Grid item xs={1} className="text-ali-end pt-4">
-                    <SearchIcon />
+                  <Grid item xs={1} className="text-end pt-4">
+                    <SearchIcon  htmlColor='black'/>
                   </Grid>
                   <Grid item xs={11}>
                     <input
-                      className=" w-100 bg-gray2 rounded-5 border-0 p-3 fs-5"
+                      className="w-full bg-gray2 text-black rounded-[2rem] border-0 p-3 fs-5"
                       type="search"
                       placeholder="Buscar Secretario"
                       aria-label="Search"
@@ -356,9 +356,9 @@ function Secretaries() {
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={6} className="text-ali-end">
+              <Grid item xs={6} className="text-end">
                 <select
-                  className={`bg-gray2 text-gray3 rounded-5 border-0 p-3 fs-5 w-70p opacity${
+                  className={`bg-gray2 text-gray3 rounded-[2rem] border-0 p-3 fs-5 w-[70%] opacity${
                     active ? 'active' : ''
                   } transitionDown ${active ? 'active' : ''}`}>
                   <option>Filtrar por</option>
@@ -369,7 +369,7 @@ function Secretaries() {
             </Grid>
           </form>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} className='text-black'>
           {loading ? (
             <h3>Loading</h3>
           ) : data?.teachers ? (

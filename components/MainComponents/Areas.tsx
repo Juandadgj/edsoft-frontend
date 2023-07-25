@@ -9,8 +9,8 @@ import {
 import { useEffect, useState } from 'react';
 import { Grid, TextField } from '@mui/material';
 import { styled } from '@material-ui/styles';
-import edit from '../assets/01editar.png';
-import delet from '../assets/01eliminar.png';
+import edit from '../../public/assets/01editar.png';
+import delet from '../../public/assets/01eliminar.png';
 import SearchIcon from '@mui/icons-material/Search';
 import DynamicModal from '../DynamicModal';
 import Swal from 'sweetalert2';

@@ -50,20 +50,20 @@ function Institutions() {
   }));
 
   return (
-    <div className="w-100 bg-gray1 h-90" style={{minHeight: '100vh', padding: '10px', paddingTop: '0px'}}>
+    <div className="w-full bg-gray1 h-90" style={{minHeight: '100vh', padding: '10px', paddingTop: '0px'}}>
       <Nav actualPage="Instituciones" withNavigation />
-      <div className={`${(windowSize.width ?? 0) >= 1200 ? 'mt-16' : ''}`}>
-        <WrapperList className=" col-md-10 mx-auto bg-white border border-2 shadow rounded-5">
-          <div className="d-flex  fw-bold">
+      <div className={`${(windowSize.width ?? 0) >= 1200 ? 'mt-16' : 'mt-4'}`}>
+        <WrapperList className="lg:mx-24 sm:mx-10 bg-white shadow-2xl rounded-[2rem]">
+          <div className="flex font-bold text-black text-xl	">
             <h4>
-              <strong>Lista de instituciones Educativas</strong>
+              Lista de instituciones Educativas
             </h4>
           </div>
-          <form className="d-flex justify-content-between my-4" role="search">
+          <form className="flex justify-between my-4" role="search">
             <div
-              className={`col-12 opacity${active ? 'active' : ''} transitionRight ${
+              className={`w-full opacity ${active ? 'active text-black' : ''} transitionRight ${
                 active ? 'active' : ''
-              } d-flex flex-row position-relative `}
+              } flex flex-row relative items-center `}
               style={{ alignItems: 'center' }}>
               <Image
                 src={lupa}
@@ -75,7 +75,7 @@ function Institutions() {
               />
               {/* <SearchIcon className="h-20 w-10 position absolute" /> */}
               <input
-                className="bg-gray2 rounded-5 border-0 fs-5 my-2 w-100"
+                className="bg-gray2 rounded-[2rem] border-0 fs-5 my-2 w-full"
                 type="search"
                 placeholder="Buscar institución"
                 aria-label="Search"

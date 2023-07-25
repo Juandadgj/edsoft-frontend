@@ -30,7 +30,7 @@ const avatarOption = makeStyles(theme => ({
   },
 }));
 
-export const Dashboard = () => {
+function Dashboard (){
  
   const [active, setActive] = useState(false);
   const [textComponent, setTextComponent] = useState('Inicio');
@@ -71,11 +71,11 @@ export const Dashboard = () => {
         activeComponent === 'SchoolHome' ? <SchoolAvatar textComponent={textComponent} homeAvatar={true} manage={manageComponentStatus} /> : null
       }
 
-      <div className="d-flex overflow-hidde">
+      <div className="flex h-[100vh] w-full overflow-auto">
         {
           activeComponent === 'SchoolHome' ? <SideBar manage={manageComponentStatus} logo={true}/> : <SideBar manage={manageComponentStatus} logo={false}/>
         }
-        <div className="bg-blue3 col">
+        <div className="bg-blue3 flex flex-col h-full w-full">
           {activeComponent === 'SchoolHome' && <SchoolHome/>}
           {activeComponent === 'Settings' && <Settings />}
           {activeComponent === 'Teachers' && <Teachers />}
@@ -92,3 +92,5 @@ export const Dashboard = () => {
     </div>
   );
 };
+
+export default Dashboard

@@ -84,7 +84,7 @@ function Home() {
       <HomeStyled>
         <Nav actualPage="Inicio" withNavigation />
         <Grid container className="h-full block relative">
-          <Welcome className="my-2 animate__animated animate__slideInLeft ">
+          <Welcome className="my-2 animate__animated animate__slideInLeft animate-fade-right">
             <h5 className="text-gray3 text-xl ml-8 flex">
               <Ellipse className="mr-5" width={40} height={40} />
               ¡Bienvenido!
@@ -92,7 +92,7 @@ function Home() {
           </Welcome>
           <HomeWrapper>
             <Grid item xs={12} sm={12} md={7} lg={7} xl={6} className="">
-              <TextContainer className="animate__animated animate__slideInLeft">
+              <TextContainer className="animate__animated animate__slideInLeft animate-fade-right">
                 <h2
                   className={`font-bold text-5xl mb-6 opacity${
                     active ? 'active' : ''
@@ -124,14 +124,12 @@ function Home() {
               md={5}
               lg={5}
               xl={6}
-              className="animate__animated animate__slideInRight p-15"
+              className="animate__animated animate-fade-right p-14 "
               style={{ maxHeight: 'calc(100vh - 93px)' }}>
               <Image
                 src={InicioImagen}
                 alt="Interactive Tablet"
                 style={{ height: '100%', width: '100%' }}
-                width={100}
-                height={100}
               />
             </Grid>{' '}
           </HomeWrapper>

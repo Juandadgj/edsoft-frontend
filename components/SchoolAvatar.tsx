@@ -8,18 +8,11 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import Avatar from '@mui/material/Avatar';
 import { makeStyles } from '@material-ui/core/styles';
+import Image from 'next/image';
 
-const useStyles = makeStyles(theme => ({
-  container: {
-    position: 'absolute',
-    top: 30,
-    right: 13,
-  },
-}));
 
-export const SchoolAvatar = ({textComponent, manage, homeAvatar}: any) => {
-  const classes = useStyles();
-  
+
+export const SchoolAvatar = ({textComponent, manage, homeAvatar}: any) => {  
   // const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -41,9 +34,9 @@ export const SchoolAvatar = ({textComponent, manage, homeAvatar}: any) => {
 
 
   return (
-    <Box sx={{ flexGrow: 0 }} className={ homeAvatar ? classes.container : ''}>
+    <Box sx={{ flexGrow: 0 }} className={ homeAvatar ? 'absolute mr-5 right-0 top-10' : ''}>
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar alt="Remy Sharp" src={LogoInst} sx={{ width: 80, height: 80 }} />
+              <Avatar alt="Remy Sharp" src={"../public/assets/institucionLogo@2x.png"} sx={{ width: 80, height: 80 }} />
             </IconButton>
             <Menu
               sx={{ mt: '10px' }}
@@ -62,23 +55,23 @@ export const SchoolAvatar = ({textComponent, manage, homeAvatar}: any) => {
               onClose={handleCloseUserMenu}
               onClick={handleCloseUserMenu}>
 
-              <div className='d-flex p-2 text-left'>
-                <img className='icon w-6' id="SchoolHome" onClick={manage} src={house} alt="Inicio" />
+              <div className='flex p-2 text-left gap-2'>
+                <Image className='icon w-4' id="SchoolHome" onClick={manage} src={house} alt="Inicio" />
                 <button onClick={manage} id="SchoolHome" className="dropdown-item" type="button">
                   Inicio
                 </button>
               </div>
 
-              <div className='d-flex p-2 text-left'>
-                <img className='icon' onClick={manage} id="Settings" src={settings} alt="Configuración" />
+              <div className='flex p-2 text-left gap-2'>
+                <Image className='icon w-4' onClick={manage} id="Settings" src={settings} alt="Configuración" />
                 <button onClick={manage} id="Settings" className="dropdown-item" type="button">
                   Cambiar Contraseña
                 </button>
               </div>
 
               <a className="text-decoration-none text-body" href="/instituciones">
-              <div className='d-flex p-2 text-left'>
-                <img className='icon w-6 gray3' src={logout} alt="settings-icon"/>
+              <div className='flex p-2 text-left gap-2'>
+                <Image className='icon w-4 gray3' src={logout} alt="settings-icon"/>
                 <button onClick={manage} className="dropdown-item" type="button">
                   Cerrar Sesión
                 </button>

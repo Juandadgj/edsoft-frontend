@@ -1,7 +1,7 @@
 import DynamicTable from '../DynamicTable';
 import { useMemo } from 'react';
 import { useEffect, useState } from 'react';
-import edit from '../assets/01editar.png';
+import edit from '../../public/assets/01editar.png';
 import { Grid, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import {

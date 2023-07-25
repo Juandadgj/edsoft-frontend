@@ -36,7 +36,7 @@ function Nav(
     console.log("navigation", withNavigation);
   }, []);
   return (
-    <nav className="flex bg-white px-8 pt-0 w-full h-auto">
+    <nav className="flex bg-white px-8 pt-0 w-full h-auto p-5">
       <div className="h-full w-full flex justify-between items-center">
         <Link
           className="w-auto ms-5 flex items-center text-black"
@@ -45,20 +45,17 @@ function Nav(
           <Image
             src={BigLogo}
             alt="Logo EdSoft"
-            className="inline-block w-16 h-16"
-            width={100}
-            height={100}
+            className="inline-block w-12 h-12"
+
           />
           <h3
-            className={`align-middle mx-2 font-bold text-5xl ${
-              actualPage == "Contact" ? "text-white" : false
-            }`}
+            className={`align-middle mx-2 font-bold text-5xl`}
           >
             EdSoft
           </h3>
         </Link>
 
-        <div className="navbar-toggler border-0 md:hidden sm:flex">
+        <div className="navbar-toggler border-0 flex  lg:hidden ">
           <Button
             // className="btn dropdown-toggle border-0"
             // type="button"
@@ -119,8 +116,8 @@ function Nav(
         </div>
 
         {withNavigation && (
-          <div className="text-black w-[60%] sm:hidden md:flex">
-            <ul className="flex text-3xl pb-4">
+          <div className="text-black w-[60%] hidden lg:flex">
+            <ul className="flex text-2xl">
               <li className={`
                 mx-6 px-2 py-2
                 hover:text-gray7
@@ -128,7 +125,7 @@ function Nav(
                 duration-500
                   ${
                     actualPage === "Inicio" ? " bg-main-blue !text-white rounded-b-[30px] h-[80px]" : "text-gray6"
-                  }  ${actualPage == "Contact" ? "text-white" : false}`}>
+                  } `}>
                 <Link
                   
                   aria-current="page"
@@ -143,11 +140,11 @@ function Nav(
                   duration-500
                   ${
                     actualPage === "Instituciones" ? " bg-main-blue !text-white rounded-b-[30px] h-[80px]" : "text-gray6"
-                  }  ${actualPage == "Contact" ? "text-white" : false}`}>
+                  }  `}>
                 <Link
                   className={`${
                     actualPage === "Instituciones" && "active"
-                  } ${actualPage == "Contact" ? "text-white" : false}`}
+                  } `}
                   aria-current="page"
                   href="/instituciones"
                   style={{ minWidth: "310px" }}

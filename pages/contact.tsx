@@ -1,156 +1,158 @@
-import Nav from '../components/Nav';
-import ClientService from '../public/assets/clientService.jpg';
-import ContactDown from '../public/assets/ContactDown.png';
-import Ellipse from '../components/Ellipse';
-import React, { useEffect, useState } from 'react';
-import { Grid, styled } from '@mui/material';
-import facebookIcon from '../public/assets/social-media/facebook.png';
-import wathsappIcon from '../public/assets/social-media/whatsapp.png';
-import gmailIcon from '../public/assets/social-media/gmail.png';
-import twitterIcon from '../public/assets/social-media/twiter.png';
-import Image from 'next/image';
+import Nav from "../components/Nav";
+import ClientService from "../public/assets/clientService.jpg";
+import ContactDown from "../public/assets/ContactDown.png";
+import Ellipse from "../components/Ellipse";
+import React, { useEffect, useState } from "react";
+import { Grid, styled } from "@mui/material";
+import facebookIcon from "../public/assets/social-media/facebook.png";
+import wathsappIcon from "../public/assets/social-media/whatsapp.png";
+import gmailIcon from "../public/assets/social-media/gmail.png";
+import twitterIcon from "../public/assets/social-media/twiter.png";
+import Image from "next/image";
 
 function Contact() {
   const [active, setActive] = useState(false);
 
-  const ContactContainer = styled('div')(({ theme }) => ({
+  const ContactContainer = styled("div")(({ theme }) => ({
     // backgroundImage: `url(${ClientService})`,
-    position: 'relative',
-    height: '100vh',
+    position: "relative",
+    height: "100%",
     [theme.breakpoints.down(1270)]: {
       // textAlign: 'center'
     },
   }));
 
-  const WrapperContent = styled('div')(({ theme }) => ({
-    width: '100%',
-    display: 'flex',
-    alignItems: 'flex-start',
-    justifyContent: 'center',
+  const WrapperContent = styled("div")(({ theme }) => ({
+    width: "100%",
+    display: "flex",
+    alignItems: "flex-start",
+    justifyContent: "center",
     [theme.breakpoints.down(1270)]: {
-      flexDirection: 'column',
-      alignItems: 'center',
+      flexDirection: "column",
+      alignItems: "center",
     },
   }));
-  const FirstInformation = styled('div')(({ theme }) => ({
-    display: 'flex',
-    borderRight: '2px solid #8D8D8D',
-    width: '100%',
-    padding: '30px',
-    paddingLeft: '70px',
+  const FirstInformation = styled("div")(({ theme }) => ({
+    display: "flex",
+    borderRight: "2px solid #8D8D8D",
+    width: "100%",
+    padding: "30px",
+    paddingLeft: "70px",
+    paddingTop: "12px",
+    paddingBottom:"12px",
     [theme.breakpoints.down(1270)]: {
-      width: 'auto',
-      flexDirection: 'column',
-      alignItems: 'center',
+      width: "auto",
+      flexDirection: "column",
+      alignItems: "center",
       padding: 0,
-      borderRight: 'none',
-      borderBottom: '2px solid #8D8D8D',
-      paddingBottom: '3rem',
-      textAlign: 'center',
+      borderRight: "none",
+      borderBottom: "2px solid #8D8D8D",
+      paddingBottom: "3rem",
+      textAlign: "center",
     },
   }));
-  const SecondInformation = styled('div')(({ theme }) => ({
-    display: 'flex',
-    justifyContent: 'center',
-    width: '100%',
-    className: 'animate__fadeInLeft',
-    paddingRight: '70px',
+  const SecondInformation = styled("div")(({ theme }) => ({
+    display: "flex",
+    justifyContent: "center",
+    width: "100%",
+    className: "animate__fadeInLeft",
+    paddingRight: "70px",
     [theme.breakpoints.down(1270)]: {
-      width: 'auto',
-      flexDirection: 'column',
-      alignItems: 'center',
+      width: "auto",
+      flexDirection: "column",
+      alignItems: "center",
       padding: 0,
-      borderRight: 'none',
-      paddingTop: '3rem',
+      borderRight: "none",
+      paddingTop: "3rem",
     },
   }));
-  const WrapperInfo = styled('div')(({ theme }) => ({
-    alignItems: 'center',
-    height: '50%',
-    width: 'auto',
-    overflow: 'hidden',
-    padding: '40px 140px',
+  const WrapperInfo = styled("div")(({ theme }) => ({
+    alignItems: "center",
+    height: "50%",
+    width: "auto",
+    overflow: "hidden",
+    padding: "40px 140px",
 
     [theme.breakpoints.down(1270)]: {
-      padding: '60px',
-      height: 'auto',
+      padding: "60px",
+      height: "auto",
     },
   }));
-  const Emails = styled('div')(({ theme }) => ({
-    paddingLeft: '70px',
+  const Emails = styled("div")(({ theme }) => ({
+    paddingLeft: "70px",
 
     [theme.breakpoints.down(1270)]: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
       padding: 0,
-      paddingTop: '50px',
-      textAlign: 'center',
+      paddingTop: "50px",
+      textAlign: "center",
     },
   }));
-  const ContentInformation = styled('div')(({ theme }) => ({
+  const ContentInformation = styled("div")(({ theme }) => ({
     [theme.breakpoints.down(1270)]: {
-      textAlign: 'center',
+      textAlign: "center",
     },
   }));
-  const ContactBackground = styled('div')(({ theme }) => ({
-    backgroundImage: `url(${ContactDown})`,
-    position: 'absolute',
+  const ContactBackground = styled("div")(({ theme }) => ({
+    backgroundImage: `url("/assets/ContactDown.png")`,
+    position: "absolute",
     bottom: 0,
     right: 0,
-    height: '180px',
-    width: '800px',
-    backgroundSize: 'cover',
+    height: "180px",
+    width: "800px",
+    backgroundSize: "cover",
     [theme.breakpoints.down(1270)]: {
-      display: 'none',
-      textAlign: 'center',
+      display: "none",
+      textAlign: "center",
     },
   }));
-  const WrapperSocial = styled('div')(({ theme }) => ({
-    display: 'flex',
-    position: 'absolute',
+  const WrapperSocial = styled("div")(({ theme }) => ({
+    display: "flex",
+    position: "absolute",
     bottom: 0,
     right: 0,
-    gap: '40px',
-    padding: '10px',
-    paddingRight: '30px',
-    zIndex: '4',
+    gap: "40px",
+    padding: "10px",
+    paddingRight: "30px",
+    zIndex: "4",
     [theme.breakpoints.down(1270)]: {
-      textAlign: 'center',
-      position: 'relative',
-      width: '100%',
-      justifyContent: 'center',
-      alignItems: 'center',
-      flexWrap: 'wrap',
+      textAlign: "center",
+      position: "relative",
+      width: "100%",
+      justifyContent: "center",
+      alignItems: "center",
+      flexWrap: "wrap",
     },
   }));
-  const Elipse1 = styled('div')(({ theme }) => ({
-    position: 'absolute',
-    top: '55vh',
-    right: '3rem',
+  const Elipse1 = styled("div")(({ theme }) => ({
+    position: "absolute",
+    top: "55vh",
+    right: "3rem",
     [theme.breakpoints.down(1270)]: {
-      right: '1.5rem',
+      right: "1.5rem",
     },
-    [theme.breakpoints.down('sm')]: {
-      right: '0px',
-      top: '51vh',
+    [theme.breakpoints.down("sm")]: {
+      right: "0px",
+      top: "51vh",
     },
-    [theme.breakpoints.down('sm')]: {
-      display: 'none'
+    [theme.breakpoints.down("sm")]: {
+      display: "none",
     },
   }));
-  const Elipse2 = styled('div')(({ theme }) => ({
-    position: 'absolute',
-    bottom: '4rem',
-    left: '3rem',
-    [theme.breakpoints.down('sm')]: {
-      display: 'none'
+  const Elipse2 = styled("div")(({ theme }) => ({
+    position: "absolute",
+    bottom: "4rem",
+    left: "3rem",
+    [theme.breakpoints.down("sm")]: {
+      display: "none",
     },
   }));
 
   useEffect(() => {
     setActive(true);
-    sessionStorage.removeItem('userToken');
+    sessionStorage.removeItem("userToken");
   }, []);
 
   return (
@@ -158,24 +160,32 @@ function Contact() {
       <ContactContainer>
         <Grid
           style={{
-            height: '50%',
-            width: '100%',
-            display: 'flex',
-            overflow: 'hidden',
-            justifyContent: 'end',
-            alignItems: 'center',
-            position: 'relative',
-          }}>
-          <Image src={ClientService} alt="" style={{ minHeight: '100%', filter: 'brightness(70%)' }} width={100} height={100}/>
-          <Grid style={{ width: '100%', position: 'absolute', top: 0 }}>
-            <Grid >
+            height: "50%",
+            width: "100%",
+            display: "flex",
+            overflow: "hidden",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "relative",
+            flexDirection: "column",
+          }}
+        >
+          <Image
+            src={ClientService}
+            alt=""
+            style={{ minHeight: "100%", filter: "brightness(70%)" }}
+            className="w-full h-full"
+          />
+          <Grid style={{ width: "100%", position: "absolute", top: 0 }}>
+            <Grid>
               <Nav actualPage="Contact" withNavigation />
             </Grid>
-            <Grid  className="p-15">
+            <Grid className="p-14 h-auto">
               <h1
-                className={`text-white display-1 text-center fw-bold  opacity${
-                  active ? 'active' : ''
-                } transitionDown ${active ? 'active' : ''}`}>
+                className={`text-white text-6xl	text-center font-bold  opacity${
+                  active ? "active" : ""
+                } transitionDown ${active ? "active" : ""}`}
+              >
                 <div>Contáctate con Nosotros</div>
               </h1>
             </Grid>
@@ -183,13 +193,14 @@ function Contact() {
         </Grid>
 
         <WrapperInfo>
-          <div className="w-100">
+          <div className="w-full pb-8">
             <WrapperContent>
               <FirstInformation>
                 <h4
-                  className={`opacity${active ? 'active' : ''} transitionRight ${
-                    active ? 'active' : ''
-                  }`}>
+                  className={`opacity${
+                    active ? "active" : ""
+                  } transitionRight ${active ? "active" : ""} text-black text-2xl font-semibold	`}
+                >
                   SystemPlus (San Marcos - Sucre).
                   <br />
                   Gilberto Guerrero.
@@ -203,9 +214,10 @@ function Contact() {
               </FirstInformation>
               <SecondInformation>
                 <ContentInformation
-                  className={` fw-bold opacity${active ? 'active' : ''} transitionLeft ${
-                    active ? 'active' : ''
-                  }`}>
+                  className={`font-semibold text-black text-2xl opacity${
+                    active ? "active" : ""
+                  } transitionLeft ${active ? "active" : ""}`}
+                >
                   <h4>
                     Larry José Morales J.
                     <br />
@@ -224,17 +236,33 @@ function Contact() {
         </WrapperInfo>
         <ContactBackground></ContactBackground>
         <WrapperSocial>
-          <a href="mailto:informacion@edsoft.com" className="h-18 w-18">
-            <Image src={facebookIcon} alt="" style={{ width: '100%', height: '100%' }} width={100} height={100} />
+          <a href="mailto:informacion@edsoft.com" className="h-16 w-16">
+            <Image
+              src={facebookIcon}
+              alt=""
+              style={{ width: "100%", height: "100%" }}
+            />
           </a>
-          <a href="http://localhost:3000/" className="h-18 w-18">
-            <Image src={twitterIcon} alt="" style={{ width: '100%', height: '100%' }} width={100} height={100}/>
+          <a href="http://localhost:3000/" className="h-16 w-16">
+            <Image
+              src={twitterIcon}
+              alt=""
+              style={{ width: "100%", height: "100%" }}
+            />
           </a>
-          <a href="http://localhost:3000/" className="h-18 w-18">
-            <Image src={gmailIcon} alt="" style={{ width: '100%', height: '100%' }} width={100} height={100}/>
+          <a href="http://localhost:3000/" className="h-16 w-16">
+            <Image
+              src={gmailIcon}
+              alt=""
+              style={{ width: "100%", height: "100%" }}
+            />
           </a>
-          <a href="http://localhost:3000/" className="h-18 w-18">
-            <Image src={wathsappIcon} alt="" style={{ width: '100%', height: '100%' }} width={100} height={100}/>
+          <a href="http://localhost:3000/" className="h-16 w-16">
+            <Image
+              src={wathsappIcon}
+              alt=""
+              style={{ width: "100%", height: "100%" }}
+            />
           </a>
         </WrapperSocial>
         <Elipse1>

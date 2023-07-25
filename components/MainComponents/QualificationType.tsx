@@ -1,19 +1,19 @@
-import DynamicTable from '../components/DynamicTable';
+import DynamicTable from '../DynamicTable';
 import { useMemo } from 'react';
 import {
   useCreateQualificationTypeMutation,
   useDeleteQualificationTypeMutation,
   useGetQualificationQuery,
   useUpdateQualificationTypeMutation,
-} from '../generated/graphql';
+} from '../../generated/graphql';
 import { useEffect, useState } from 'react';
-import edit from '../assets/01editar.png';
+import edit from '../../public/assets/01editar.png';
 import { Grid, TextField } from '@mui/material';
 import { styled } from '@material-ui/styles';
 import Swal from 'sweetalert2';
 import SearchIcon from '@mui/icons-material/Search';
-import DynamicModal from '../components/DynamicModal';
-import delet from '../assets/01eliminar.png';
+import DynamicModal from '../DynamicModal';
+import delet from '../../public/assets/01eliminar.png';
 
 const columns = [
   {
