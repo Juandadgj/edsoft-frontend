@@ -84,7 +84,7 @@ function Home() {
       <HomeStyled>
         <Nav actualPage="Inicio" withNavigation />
         <Grid container className="h-full block relative">
-          <Welcome className="my-2 animate__animated animate__slideInLeft animate-fade-right">
+          <Welcome className="my-2 animate-fade-right animate-duration-1000">
             <h5 className="text-gray3 text-xl ml-8 flex">
               <Ellipse className="mr-5" width={40} height={40} />
               ¡Bienvenido!
@@ -92,7 +92,7 @@ function Home() {
           </Welcome>
           <HomeWrapper>
             <Grid item xs={12} sm={12} md={7} lg={7} xl={6} className="">
-              <TextContainer className="animate__animated animate__slideInLeft animate-fade-right">
+              <TextContainer className="animate-fade-right animate-duration-700">
                 <h2
                   className={`font-bold text-5xl mb-6 opacity${
                     active ? 'active' : ''
@@ -124,7 +124,7 @@ function Home() {
               md={5}
               lg={5}
               xl={6}
-              className="animate__animated animate-fade-right p-14 "
+              className="animate-fade-left animate-duration-700 p-14 "
               style={{ maxHeight: 'calc(100vh - 93px)' }}>
               <Image
                 src={InicioImagen}

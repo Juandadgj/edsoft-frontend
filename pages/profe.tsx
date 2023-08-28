@@ -322,7 +322,7 @@ function Teachers() {
   }, [data, DeleteDocente]);
 
   return (
-    <div className="btl w-100 vh-100 overflow-hidden bg-gray1 p-15">
+    <div className="rounded-tl-[40px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
       <Grid container>
         <Grid item xs={6}>
           <strong className="fs-4 ms-20">Lista de Docentes</strong>
@@ -330,7 +330,7 @@ function Teachers() {
         <Grid item xs={6} className="text-ali-end pr-6">
           <button
             type="button"
-            className="btn bg-blue3 btn-primary w-64 mb-0 pb-0 h-10 btl btr "
+            className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-2 rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
             onClick={() => {
               setTypeAdd(true);
               setOpen(true);

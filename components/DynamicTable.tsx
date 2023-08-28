@@ -85,7 +85,7 @@ function DynamicTable({ columns, data }: DynamicTableProps) {
         />
         <TableBody
           {...getTableBodyProps()}
-          className={` opacity${active ? 'active' : ''} transitionLeft ${active ? 'active' : ''}`}
+          className={` opacity${active ? 'active' : ''} animate-fade-left animate-duration-700 ${active ? 'active' : ''}`}
           style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           {rows.map(row => {
             prepareRow(row);

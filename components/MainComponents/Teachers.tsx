@@ -335,13 +335,13 @@ function Teachers() {
               setTypeAdd(true);
               setOpen(true);
             }}>
-            <h4 className="text-white fs-5">+ Nuevo Docente</h4>
+            <h4 className="text-white">+ Nuevo Docente</h4>
           </button>
         </Grid>
       </Grid>
       <Grid
         container
-        className="col-lg-11 col-md-10 mx-auto bg-white border-2 shadow-2xl rounded-[2rem] p-5">
+        className="mx-auto bg-white border-2 shadow-2xl rounded-[2rem] p-5">
         <Grid item xs={12}>
           <form role="search">
             <Grid container>
@@ -352,7 +352,7 @@ function Teachers() {
                   </Grid>
                   <Grid item xs={11}>
                     <input
-                      className=" w-full bg-gray2 text-black rounded-[2rem] border-0 p-3 fs-5"
+                      className=" w-full bg-gray2 text-black rounded-[2rem] border-0 p-3"
                       type="search"
                       placeholder="Buscar Docente"
                       aria-label="Search"

@@ -186,6 +186,7 @@ export default function DynamicModal({
               {typeAdd ? (
                 <Grid item xs={6}>
                   <Button
+                    className='bg-[#1976d2]'
                     variant="contained"
                     sx={addButton}
                     endIcon={<AddIcon />}
@@ -206,6 +207,7 @@ export default function DynamicModal({
               )}
               <Grid item xs={6}>
                 <Button
+                  className='bg-[#D81717]'
                   variant="contained"
                   onClick={() => handleClose()}
                   sx={cancelButton}
