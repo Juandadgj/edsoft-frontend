@@ -1,0 +1,5 @@
+mutation DeleteArea($idArea: Int!) {
+  deleteArea(id_area: $idArea) {
+    id_area
+  }
+}

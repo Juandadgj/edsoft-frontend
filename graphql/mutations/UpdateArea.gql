@@ -1,0 +1,13 @@
+mutation UpdateArea(
+  $name: String!
+  $status: String!
+  $id_area: Int!
+) {
+  updateArea(
+    name: $name
+    status: $status
+    id_area: $id_area
+  ){
+    id_area
+  }
+}

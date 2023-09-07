@@ -1,0 +1,11 @@
+mutation CreateArea(
+  $name: String!
+  $status: String!
+) {
+  createArea(
+    name: $name
+    status: $status
+  ){
+    id_area
+  }
+}

@@ -1,0 +1,7 @@
+fragment RegularQualificationType on TypeQualification {
+  id_type_qual
+  name
+  floor_score
+  ceiling_score
+  year
+}

@@ -1,0 +1,10 @@
+fragment RegularTeacher on Teacher {
+  id_teacher
+  name
+  last_name
+  identification
+  direction
+  phone
+  email
+  degree
+}

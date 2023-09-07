@@ -1,0 +1,5 @@
+fragment RegularCourses on Group {
+  id_group
+  working_time
+  representative
+}

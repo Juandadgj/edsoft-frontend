@@ -1,0 +1,5 @@
+query GetTeachers ($id: Int!) {
+  teachers(idInstitution: $id) {
+    ...RegularTeacher
+  }
+}

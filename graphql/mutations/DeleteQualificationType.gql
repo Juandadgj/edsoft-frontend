@@ -1,0 +1,6 @@
+
+mutation deleteQualificationType( $idQualificationType: Int! ) {
+  deleteTypeQualification( id_type_qual: $idQualificationType ){
+    id_type_qual
+  }
+}

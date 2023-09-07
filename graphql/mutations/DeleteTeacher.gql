@@ -1,0 +1,5 @@
+mutation DeleteTeacher($idDocente: Int!) {
+  deleteTeacher(id_teacher: $idDocente) {
+    id_teacher
+  }
+}

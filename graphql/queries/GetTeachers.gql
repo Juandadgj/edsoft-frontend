@@ -1,0 +1,5 @@
+query GetTeachers($type_id: Int!) {
+  teachers(type_id: $type_id) {
+    ...RegularTeacher
+  }
+}
