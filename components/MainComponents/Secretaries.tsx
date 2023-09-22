@@ -1,48 +1,49 @@
-import DynamicTable from '../DynamicTable';
-import { useMemo } from 'react';
+import DynamicTable from "../DynamicTable";
+import { useMemo } from "react";
 import {
   useCreateTeacherMutation,
   useDeleteTeacherMutation,
   useGetTeachersQuery,
   useUpdateTeacherMutation,
-} from '../../generated/graphql';
-import { useEffect, useState } from 'react';
-import edit from '../../public/assets/01editar.png';
-import delet from '../../public/assets/01eliminar.png';
-import { Grid, TextField } from '@mui/material';
-import { styled } from '@material-ui/styles';
-import SearchIcon from '@mui/icons-material/Search';
-import DynamicModal from '../DynamicModal';
-import Swal from 'sweetalert2';
-import Image from 'next/image';
+} from "../../generated/graphql";
+import { useEffect, useState } from "react";
+import edit from "../../public/assets/01editar.png";
+import delet from "../../public/assets/01eliminar.png";
+import { Grid, TextField } from "@mui/material";
+import { styled } from "@material-ui/styles";
+import SearchIcon from "@mui/icons-material/Search";
+import DynamicModal from "../DynamicModal";
+import Swal from "sweetalert2";
+import Image from "next/image";
+import Table from "../Table";
 
 const columns = [
   {
-    Header: 'Apellido',
-    accessor: 'lastName',
+    Header: "Apellido",
+    accessor: "lastName",
   },
   {
-    Header: 'Nombre',
-    accessor: 'name',
+    Header: "Nombre",
+    accessor: "name",
   },
   {
-    Header: 'Editar',
-    accessor: 'editar',
+    Header: "Editar",
+    accessor: "editar",
   },
   {
-    Header: 'Borrar',
-    accessor: 'borrar',
+    Header: "Borrar",
+    accessor: "borrar",
   },
 ];
 
 const CssTextField = styled(TextField)({
-  fontFamily: ['Scada', 'sans-serif'].join(','),
-  '& .MuiOutlinedInput-root': {
-    '&:hover fieldset': {
-      borderColor: 'blue',
+  fontFamily: ["Scada", "sans-serif"].join(","),
+  "& .MuiOutlinedInput-root": {
+    "&:hover fieldset": {
+      borderColor: "blue",
     },
-    '&.Mui-focused fieldset': {
-      borderColor: 'green',
+    "&.Mui-focused fieldset": {
+      borderColor: "green",
     },
   },
 });
@@ -56,31 +57,31 @@ function Secretaries() {
   const [typeAdd, setTypeAdd] = useState(false);
 
   const { data, loading, refetch } = useGetTeachersQuery({
-    fetchPolicy: 'network-only',
+    fetchPolicy: "network-only",
     variables: { type_id: 2 },
   });
 
   // Form to manage inputs values
   const [formValues, setFormValues] = useState<any>({
-    name: '',
-    last_name: '',
+    name: "",
+    last_name: "",
     type_id: 2,
-    identification: '',
-    direction: '',
-    phone: '',
-    email: '',
-    degree: '',
+    identification: "",
+    direction: "",
+    phone: "",
+    email: "",
+    degree: "",
   });
 
   // Obj to manage every input error
   const [errors, setErrors] = useState<any>({
-    name: '',
-    last_name: '',
-    identification: '',
-    direction: '',
-    phone: '',
-    email: '',
-    degree: '',
+    name: "",
+    last_name: "",
+    identification: "",
+    direction: "",
+    phone: "",
+    email: "",
+    degree: "",
   });
 
   // Here we validate if every item is filled and if it is we return true
@@ -98,9 +99,9 @@ function Secretaries() {
     } else {
       for (const item in formValues) {
         if (!formValues[item]) {
-          setErrors((err: any) => ({ ...err, [item]: 'Campo Requerido!' }));
+          setErrors((err: any) => ({ ...err, [item]: "Campo Requerido!" }));
         } else {
-          setErrors((err: any) => ({ ...err, [item]: '' }));
+          setErrors((err: any) => ({ ...err, [item]: "" }));
         }
       }
       return false;
@@ -110,16 +111,16 @@ function Secretaries() {
   // Me are using formvalues for add and update, so once the user finishes a proccess it is necessary to clean this state
   const cleaningStates = () => {
     for (const item in errors) {
-      setErrors((err: any) => ({ ...err, [item]: '' }));
+      setErrors((err: any) => ({ ...err, [item]: "" }));
     }
 
     for (const i in formValues) {
-      if (i === 'id_teacher') {
+      if (i === "id_teacher") {
         setFormValues((val: any) => ({ ...val, [i]: undefined }));
-      } else if (i === 'type_id') {
+      } else if (i === "type_id") {
         setFormValues((val: any) => ({ ...val, [i]: 2 }));
       } else {
-        setFormValues((val: any) => ({ ...val, [i]: '' }));
+        setFormValues((val: any) => ({ ...val, [i]: "" }));
       }
     }
   };
@@ -242,14 +243,13 @@ function Secretaries() {
       ),
     },
   ];
-
   const processedTeachers = useMemo(() => {
     if (!data?.teachers) return [];
 
     return data.teachers.map((teacher, index) => ({
-      name: teacher?.name ?? '',
-      lastName: teacher?.last_name ?? '',
-      degree: teacher?.degree ?? '',
+      name: teacher?.name ?? "",
+      lastName: teacher?.last_name ?? "",
+      degree: teacher?.degree ?? "",
       editar: (
         <button
           className="border-0"
@@ -268,8 +268,15 @@ function Secretaries() {
               degree: teacher?.degree,
             }));
             setOpen(true);
-          }}>
-          <Image className={`h-13 w-15`} src={edit} alt="" width={20} height={20}/>
+          }}
+        >
+          <Image
+            className={`h-13 w-15`}
+            src={edit}
+            alt=""
+            width={50}
+            height={50}
+          />
         </button>
       ),
       borrar: (
@@ -277,32 +284,32 @@ function Secretaries() {
           className="border-0"
           onClick={() =>
             Swal.fire({
-              title: '¿Estás seguro?',
-              text: 'No podrás revertir esta acción!',
-              icon: 'warning',
+              title: "¿Estás seguro?",
+              text: "No podrás revertir esta acción!",
+              icon: "warning",
               showCancelButton: true,
-              confirmButtonColor: '#0055a6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: 'Eliminar',
-            }).then(result => {
+              confirmButtonColor: "#0055a6",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Eliminar",
+            }).then((result) => {
               // If there is an id selected we delete that teacher
               if (result.isConfirmed && teacher?.id_teacher) {
                 DeleteDocente({
                   variables: { idDocente: teacher.id_teacher },
-                }).then(res => {
+                }).then((res) => {
                   if (res.data?.deleteTeacher) {
                     Swal.fire({
-                      title: 'Eliminado',
-                      text: 'Docente Eliminado!',
-                      icon: 'success',
+                      title: "Eliminado",
+                      text: "Docente Eliminado!",
+                      icon: "success",
                       showConfirmButton: false,
                       timer: 1500,
                     });
                     refetch();
                   } else {
                     Swal.fire({
-                      icon: 'error',
-                      title: 'Ha habido un error...',
+                      icon: "error",
+                      title: "Ha habido un error...",
                       showConfirmButton: false,
                       timer: 1500,
                     });
@@ -310,18 +317,27 @@ function Secretaries() {
                 });
               }
             })
-          }>
-          <Image className={`h-8 w-10`} src={delet} alt="" width={20} height={20} />
+          }
+        >
+          <Image
+            className={`h-8 w-10`}
+            src={delet}
+            alt=""
+            width={50}
+            height={50}
+          />
         </button>
       ),
     }));
   }, [data, DeleteDocente]);
 
   return (
-    <div className="rounded-tl-[40px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
+    <div className="rounded-tl-[40px] w-full overflow-hidden bg-gray1 p-14 h-full">
       <Grid container>
         <Grid item xs={6}>
-          <strong className="text-2xl text-black ms-20">Lista de Secretarios</strong>
+          <strong className="text-2xl text-black ms-20">
+            Lista de Secretarios
+          </strong>
         </Grid>
         <Grid item xs={6} className="text-end pr-6">
           <button
@@ -330,21 +346,23 @@ function Secretaries() {
             onClick={() => {
               setTypeAdd(true);
               setOpen(true);
-            }}>
+            }}
+          >
             <h4 className="text-white fs-5">+ Nuevo Secretario</h4>
           </button>
         </Grid>
       </Grid>
       <Grid
         container
-        className="col-lg-11 col-md-10 mx-auto bg-white border-2 shadow-2xl rounded-[2rem] p-5">
+        className="mx-auto bg-white border-2 shadow-2xl rounded-[2rem] p-5 h-full overflow-x-auto"
+      >
         <Grid item xs={12}>
           <form role="search">
             <Grid container>
               <Grid item xs={6}>
                 <Grid container>
                   <Grid item xs={1} className="text-end pt-4">
-                    <SearchIcon  htmlColor='black'/>
+                    <SearchIcon htmlColor="black" />
                   </Grid>
                   <Grid item xs={11}>
                     <input
@@ -359,8 +377,9 @@ function Secretaries() {
               <Grid item xs={6} className="text-end">
                 <select
                   className={`bg-gray2 text-gray3 rounded-[2rem] border-0 p-3 fs-5 w-[70%] opacity${
-                    active ? 'active' : ''
-                  } transitionDown ${active ? 'active' : ''}`}>
+                    active ? "active" : ""
+                  } transitionDown ${active ? "active" : ""}`}
+                >
                   <option>Filtrar por</option>
                   <option>Nombre</option>
                   <option>Apellido</option>
@@ -369,12 +388,18 @@ function Secretaries() {
             </Grid>
           </form>
         </Grid>
-        <Grid item xs={12} className='text-black'>
+        <Grid item xs={12} className="text-black">
           {loading ? (
-            <h3>Loading</h3>
+            <div className="w-full flex justify-center items-center">
+              <span className="loading loading-dots loading-lg bg-blue3"></span>
+            </div>
           ) : data?.teachers ? (
-            <div className="d-flex border-white py-4" style={{ height: '32rem' }}>
-              <DynamicTable columns={columns} data={processedTeachers} />
+            <div className="d-flex border-white py-4">
+              <Table
+                column={columns}
+                data={processedTeachers}
+                type={"secretarie"}
+              />
             </div>
           ) : (
             <h3>¡Ocurrio un error!</h3>
@@ -388,8 +413,8 @@ function Secretaries() {
         typeAdd={typeAdd}
         open={open}
         setOpen={setOpen}
-        addSuccessMsg={'Secretario Creado!'}
-        updateSuccessMsg={'Secretario Actualizado!'}
+        addSuccessMsg={"Secretario Creado!"}
+        updateSuccessMsg={"Secretario Actualizado!"}
         formValues={formValues}
         addMutation={AddTeacher}
         updateMutation={UpdateTeacher}

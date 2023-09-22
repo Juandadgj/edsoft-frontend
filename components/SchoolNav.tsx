@@ -53,21 +53,10 @@ export const SchoolNav = ({textComponent, manage}: any) => {
 
           <SchoolLogo/>
           
-          <Typography
-            variant="h4"
-            noWrap
-            component="a"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', sm: 'flex' },
-              fontFamily: 'Scada',
-              fontWeight: 780,
-              letterSpacing: '.1rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}>
+          <h1
+           className='font-bold text-4xl'>
             EdSoft
-          </Typography>
+          </h1>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', sm: 'none' } }}>
             <IconButton

@@ -1,50 +1,51 @@
-import DynamicTable from '../DynamicTable';
-import { useMemo } from 'react';
-import { useEffect, useState } from 'react';
-import edit from '../../public/assets/01editar.png';
-import { Grid, TextField } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
+import DynamicTable from "../DynamicTable";
+import { useMemo } from "react";
+import { useEffect, useState } from "react";
+import edit from "../../public/assets/01editar.png";
+import { Grid, TextField } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 import {
   useCreateSetYearMutation,
   useGetSchoolarYearsQuery,
   useUpdateSchoolarYearMutation,
-} from '../../generated/graphql';
-import { styled } from '@material-ui/styles';
-import DynamicModal from '../DynamicModal';
-import Swal from 'sweetalert2';
-import Image from 'next/image';
+} from "../../generated/graphql";
+import { styled } from "@material-ui/styles";
+import DynamicModal from "../DynamicModal";
+import Swal from "sweetalert2";
+import Image from "next/image";
+import Table from "../Table";
 
 const columns = [
   {
-    Header: 'Año',
-    accessor: 'year',
+    Header: "Año",
+    accessor: "year",
   },
   {
-    Header: 'Rector',
-    accessor: 'rector',
+    Header: "Rector",
+    accessor: "rector",
   },
   {
-    Header: 'Secretario',
-    accessor: 'secretary',
+    Header: "Secretario",
+    accessor: "secretary",
   },
   {
-    Header: 'Detalle',
-    accessor: 'details',
+    Header: "Detalle",
+    accessor: "details",
   },
   {
-    Header: 'Editar',
-    accessor: 'edit',
+    Header: "Editar",
+    accessor: "edit",
   },
 ];
 
 const CssTextField = styled(TextField)({
-  fontFamily: ['Scada', 'sans-serif'].join(','),
-  '& .MuiOutlinedInput-root': {
-    '&:hover fieldset': {
-      borderColor: 'blue',
+  fontFamily: ["Scada", "sans-serif"].join(","),
+  "& .MuiOutlinedInput-root": {
+    "&:hover fieldset": {
+      borderColor: "blue",
     },
-    '&.Mui-focused fieldset': {
-      borderColor: 'green',
+    "&.Mui-focused fieldset": {
+      borderColor: "green",
     },
   },
 });
@@ -58,18 +59,18 @@ function SetYear() {
 
   // Form to manage inputs values
   const [formValues, setFormValues] = useState<any>({
-    id_year: '',
-    rector: '',
-    secretary: '',
-    comment: '',
+    id_year: "",
+    rector: "",
+    secretary: "",
+    comment: "",
   });
 
   // Obj to manage every input error
   const [errors, setErrors] = useState<any>({
-    id_year: '',
-    rector: '',
-    secretary: '',
-    comment: '',
+    id_year: "",
+    rector: "",
+    secretary: "",
+    comment: "",
   });
 
   const { data, loading, error, refetch } = useGetSchoolarYearsQuery();
@@ -82,13 +83,13 @@ function SetYear() {
     if (formValues.id_year && formValues.rector && formValues.secretary) {
       if (typeAdd) {
         const year_repeated = data?.scholarYears.filter(
-          schoYear => schoYear?.id_year === formValues.id_year
+          (schoYear) => schoYear?.id_year === formValues.id_year
         );
         if (year_repeated!.length > 0) {
           setOpen(false);
           Swal.fire({
-            icon: 'error',
-            title: 'Año establecido ya existe...',
+            icon: "error",
+            title: "Año establecido ya existe...",
             showConfirmButton: false,
             timer: 1700,
           });
@@ -100,9 +101,9 @@ function SetYear() {
     } else {
       for (const item in formValues) {
         if (!formValues[item]) {
-          setErrors((err: any) => ({ ...err, [item]: 'Campo Requerido!' }));
+          setErrors((err: any) => ({ ...err, [item]: "Campo Requerido!" }));
         } else {
-          setErrors((err: any) => ({ ...err, [item]: '' }));
+          setErrors((err: any) => ({ ...err, [item]: "" }));
         }
       }
       return false;
@@ -111,11 +112,11 @@ function SetYear() {
 
   const cleaningStates = () => {
     for (const item in errors) {
-      setErrors((err: any) => ({ ...err, [item]: '' }));
+      setErrors((err: any) => ({ ...err, [item]: "" }));
     }
 
     for (const i in formValues) {
-      setFormValues((val: any) => ({ ...val, [i]: '' }));
+      setFormValues((val: any) => ({ ...val, [i]: "" }));
     }
   };
 
@@ -194,10 +195,10 @@ function SetYear() {
   const processedScholarYears = useMemo(() => {
     if (!data?.scholarYears) return [];
     return data.scholarYears.map((schoYear, index) => ({
-      year: schoYear?.id_year ?? '',
-      rector: schoYear?.rector ?? '',
-      secretary: schoYear?.secretary ?? '',
-      details: schoYear?.comment ?? '',
+      year: schoYear?.id_year ?? "",
+      rector: schoYear?.rector ?? "",
+      secretary: schoYear?.secretary ?? "",
+      details: schoYear?.comment ?? "",
       edit: (
         <button
           className="border-0"
@@ -211,8 +212,15 @@ function SetYear() {
               comment: schoYear?.comment,
             }));
             setOpen(true);
-          }}>
-          <Image className={`h-13 w-15`} src={edit} alt="" width={20} height={20}/>
+          }}
+        >
+          <Image
+            className={`h-13 w-15`}
+            src={edit}
+            alt=""
+            width={50}
+            height={50}
+          />
         </button>
       ),
     }));
@@ -222,7 +230,9 @@ function SetYear() {
     <div className="rounded-tl-[40px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
       <Grid container>
         <Grid item xs={6}>
-          <strong className="text-2xl text-black ms-20">Elegir Año Académico</strong>
+          <strong className="text-2xl text-black ms-20">
+            Elegir Año Académico
+          </strong>
         </Grid>
         <Grid item xs={6} className="text-end pr-6">
           <button
@@ -231,14 +241,16 @@ function SetYear() {
             onClick={() => {
               setTypeAdd(true);
               setOpen(true);
-            }}>
+            }}
+          >
             <h4 className="text-white">+ Nuevo Año</h4>
           </button>
         </Grid>
       </Grid>
       <Grid
         container
-        className="mx-auto bg-white border-2 shadow-2xl rounded-[2rem] p-5">
+        className="mx-auto bg-white border-2 shadow-2xl rounded-[2rem] p-5 h-full overflow-x-auto"
+      >
         <Grid item xs={12}>
           <form role="search">
             <Grid container>
@@ -260,8 +272,9 @@ function SetYear() {
               <Grid item xs={6} className="text-end">
                 <select
                   className={`bg-gray2 text-gray3 rounded-[2rem] border-0 p-3 fs-5 w-[70%] opacity${
-                    active ? 'active' : ''
-                  } transitionDown ${active ? 'active' : ''}`}>
+                    active ? "active" : ""
+                  } transitionDown ${active ? "active" : ""}`}
+                >
                   <option>Filtrar por</option>
                   <option>Nombre</option>
                   <option>Apellido</option>
@@ -270,11 +283,23 @@ function SetYear() {
             </Grid>
           </form>
         </Grid>
-        <Grid item xs={12} className='text-black'>
+        <Grid item xs={12} className="text-black">
+          {loading && (
+            <div className="w-full flex justify-center items-center">
+              <span className="loading loading-dots loading-lg bg-blue3"></span>
+            </div>
+          )}
           {error && <div>¡Ocurrio un error!</div>}
           {data?.scholarYears && !loading && (
-            <div className="d-flex border-white py-4" style={{ height: '32rem' }}>
-              <DynamicTable columns={columns} data={processedScholarYears} />
+            <div
+              className="d-flex border-white py-4"
+              style={{ height: "32rem" }}
+            >
+              <Table
+                column={columns}
+                data={processedScholarYears}
+                type={"setYear"}
+              />
             </div>
           )}
         </Grid>
@@ -285,8 +310,8 @@ function SetYear() {
         typeAdd={typeAdd}
         open={open}
         setOpen={setOpen}
-        addSuccessMsg={'Calificacion Creada!'}
-        updateSuccessMsg={'Calificacion Actualizada!'}
+        addSuccessMsg={"Calificacion Creada!"}
+        updateSuccessMsg={"Calificacion Actualizada!"}
         formValues={formValues}
         addMutation={AddSetYear}
         updateMutation={UpdateSchoolarYear}

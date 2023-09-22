@@ -17,6 +17,7 @@ import CreateCourses from '@/components/MainComponents/CreateCourses';
 import Areas from '@/components/MainComponents/Areas';
 import Subjects from '@/components/MainComponents/Subjects';
 import Achievements from '@/components/MainComponents/Achievements';
+import { useRouter } from 'next/router';
 
 const avatarOption = makeStyles(theme => ({
   avatar: {
@@ -35,10 +36,15 @@ function Dashboard (){
   const [active, setActive] = useState(false);
   const [textComponent, setTextComponent] = useState('Inicio');
   const [activeComponent, setActiveComponent] = useState('SchoolHome');
-
+  const router = useRouter()
   useEffect(() => {
     setActive(true);
+    const token = sessionStorage.getItem("userToken")
+    if (!token) {
+      router.push("/login")
+    }
   }, []);
+  
 
   const manageComponentStatus = ({ target }: any) => {
     console.log(target.id, target.innerText, target.alt);

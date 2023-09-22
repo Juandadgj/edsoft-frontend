@@ -1,31 +1,35 @@
 // import { FC } from 'react';
 // import Logo2 from '../public/assets/logo@2x.png';
-import SettingsIcon from '@mui/icons-material/Settings';
-import Groups2Icon from '@mui/icons-material/Groups2';
-import ContentPasteIcon from '@mui/icons-material/ContentPaste';
-import RouteIcon from '@mui/icons-material/Route';
-import AssessmentIcon from '@mui/icons-material/Assessment';
+import SettingsIcon from "@mui/icons-material/Settings";
+import Groups2Icon from "@mui/icons-material/Groups2";
+import ContentPasteIcon from "@mui/icons-material/ContentPaste";
+import RouteIcon from "@mui/icons-material/Route";
+import AssessmentIcon from "@mui/icons-material/Assessment";
 
 // import Logo from '../public/assets/logo@2x.png';
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 // import styled from '@emotion/styled';
-import { Box } from '@mui/material';
-import { SchoolLogo } from './SchoolLogo';
+import { Box } from "@mui/material";
+import { SchoolLogo } from "./SchoolLogo";
 
 const SideBar = ({ manage, logo }: any) => {
   const [active, setActive] = useState(false);
-  const [activeComponent, setActiveComponent] = useState('Settings');
-  const [textComponent, setTextComponent] = useState('Configuración');
+  const [activeComponent, setActiveComponent] = useState("Settings");
+  const [textComponent, setTextComponent] = useState("Configuración");
 
   useEffect(() => {
     setActive(true);
   }, []);
 
   return (
-    <div className='h-full'>
+    <div className="h-full">
       <ul className="bg-blue3 w-20 h-full ps-1 flex flex-col justify-evenly flex-nowrap">
-        
-          {logo ? <div className="bg-[#1A3187] rounded-custom ms-2 text-white fs-4 dropdown dropend"> <SchoolLogo sideBar={true}/> </div> : null}
+        {logo ? (
+          <div className="bg-[#1A3187] rounded-custom ms-2 text-white fs-4 dropdown dropend">
+            {" "}
+            <SchoolLogo sideBar={true} />{" "}
+          </div>
+        ) : null}
 
         <li className="mt-3 text-white fs-4 dropdown dropdown-right flex justify-center">
           <button
@@ -35,11 +39,13 @@ const SideBar = ({ manage, logo }: any) => {
             data-toggle="tooltip"
             data-placement="left"
             title="Funcionarios"
-            aria-expanded="true">
+            aria-expanded="true"
+          >
             <div
-              className={`opacity${active ? 'bg-white rounded-custom' : ''} transitionRight ${
-                active ? 'active' : ''
-              }`}>
+              className={`opacity${
+                active ? "bg-white rounded-custom" : ""
+              } transitionRight ${active ? "active" : ""}`}
+            >
               <Groups2Icon className="h-12 w-11" sx={{ fontSize: 30 }} />
             </div>
           </button>
@@ -50,7 +56,11 @@ const SideBar = ({ manage, logo }: any) => {
               </button>
             </li>
             <li>
-              <button className="dropdown-item" id="Secretaries" onClick={manage}>
+              <button
+                className="dropdown-item"
+                id="Secretaries"
+                onClick={manage}
+              >
                 Secretarios
               </button>
             </li>
@@ -65,17 +75,23 @@ const SideBar = ({ manage, logo }: any) => {
             data-toggle="tooltip"
             data-placement="left"
             title="Progreso Anual"
-            aria-expanded="true">
+            aria-expanded="true"
+          >
             <div
-              className={`opacity${active ? 'active' : ''} transitionRight ${
-                active ? 'active' : ''
-              }`}>
+              className={`opacity${active ? "active" : ""} transitionRight ${
+                active ? "active" : ""
+              }`}
+            >
               <ContentPasteIcon className="h-12 w-11" sx={{ fontSize: 30 }} />
             </div>
           </button>
-          <ul className="menu dropdown-content ms-1 text-black bg-white rounded-[5px]">
+          <ul className="menu dropdown-content ms-1 text-black bg-white rounded-[5px] z-30">
             <li>
-              <button className="dropdown-item" id="QualificationType" onClick={manage}>
+              <button
+                className="dropdown-item"
+                id="QualificationType"
+                onClick={manage}
+              >
                 Tipo De Calificación
               </button>
             </li>
@@ -90,7 +106,11 @@ const SideBar = ({ manage, logo }: any) => {
               </button>
             </li>
             <li>
-              <button className="dropdown-item" id="CreateCourses" onClick={manage}>
+              <button
+                className="dropdown-item"
+                id="CreateCourses"
+                onClick={manage}
+              >
                 Crear Cursos
               </button>
             </li>
@@ -105,7 +125,11 @@ const SideBar = ({ manage, logo }: any) => {
               </button>
             </li>
             <li>
-              <button className="dropdown-item" id="Achievements" onClick={manage}>
+              <button
+                className="dropdown-item"
+                id="Achievements"
+                onClick={manage}
+              >
                 Logros
               </button>
             </li>
@@ -120,15 +144,17 @@ const SideBar = ({ manage, logo }: any) => {
             data-toggle="tooltip"
             data-placement="left"
             title="P. Académico"
-            aria-expanded="true">
+            aria-expanded="true"
+          >
             <div
-              className={`opacity${active ? 'active' : ''} transitionRight ${
-                active ? 'active' : ''
-              }`}>
+              className={`opacity${active ? "active" : ""} transitionRight ${
+                active ? "active" : ""
+              }`}
+            >
               <RouteIcon className="h-12 w-11" sx={{ fontSize: 30 }} />
             </div>
           </button>
-          <ul className="menu dropdown-content ms-1 text-black bg-white rounded-[5px]">
+          <ul className="menu dropdown-content ms-1 text-black bg-white rounded-[5px] z-30">
             <li>
               <button className="dropdown-item" id="Teachers" onClick={manage}>
                 Calificación
@@ -145,15 +171,17 @@ const SideBar = ({ manage, logo }: any) => {
             data-placement="left"
             title="Reportes"
             data-bs-toggle="dropdown"
-            aria-expanded="true">
+            aria-expanded="true"
+          >
             <div
-              className={`opacity${active ? 'active' : ''} transitionRight ${
-                active ? 'active' : ''
-              }`}>
+              className={`opacity${active ? "active" : ""} transitionRight ${
+                active ? "active" : ""
+              }`}
+            >
               <AssessmentIcon className="h-12 w-11" sx={{ fontSize: 30 }} />
             </div>
           </button>
-          <ul className="menu dropdown-content ms-1 text-black bg-white rounded-[5px] !top-[-110px]">
+          <ul className="menu dropdown-content ms-1 text-black bg-white rounded-[5px] !top-[-110px] z-30">
             <li>
               <button className="dropdown-item" id="Teachers" onClick={manage}>
                 Indicadores
