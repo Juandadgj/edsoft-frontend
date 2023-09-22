@@ -34,10 +34,14 @@ function Nav(
   const [active, setActive] = useState("");
   const [toggle, setToggle] = useState(false);
   useEffect(() => {
-    console.log("navigation", withNavigation);
+    console.log("navigation", actualPage);
   }, []);
   return (
-    <nav className="flex bg-white px-8 pt-0 w-full h-auto p-5">
+    <nav
+      className={`flex ${
+        actualPage === "Contact" ? "bg-transparent" : "bg-#EFEFEF"
+      } px-8 pt-0 w-full h-auto p-5`}
+    >
       <div className="h-full w-full flex justify-between items-center">
         {/* <Link
           className="w-auto ms-5 flex items-center text-black"
@@ -124,35 +128,41 @@ function Nav(
         </div>
 
         {withNavigation && (
-          <div className="text-black w-[60%] hidden lg:flex">
-            <ul className="flex text-2xl">
-              <li className={`
+          <div className="w-[50%] hidden lg:flex">
+            <ul className="flex text-2xl ">
+              <li
+                className={`
                 mx-6 px-2 py-2
-                hover:text-gray7
                 transition-colors	
                 duration-500
+                ${actualPage === "Contact" ? "text-gray2" : "text-black"}
                   ${
-                    actualPage === "Inicio" ? " bg-main-blue !text-white rounded-b-[30px] h-[80px]" : "text-gray6"
-                  } `}>
+                    actualPage === "Inicio"
+                      ? " bg-main-blue !text-white rounded-b-[30px] h-[80px]"
+                      : "text-gray6"
+                  } `}
+              >
                 <Link
-                  
+                  className="hover:text-gray7 transition-colors	"
                   aria-current="page"
                   href="/"
                 >
                   <h3 style={{ fontWeight: "400" }}>Inicio</h3>
                 </Link>
               </li>
-              <li className={`
-                  mx-6 px-2 py-2 hover:text-gray7
-                  transition-colors	
+              <li
+                className={`
+                  mx-6 px-2 py-2
                   duration-500
+                ${actualPage === "Contact" ? "text-gray2" : "text-black"}
                   ${
-                    actualPage === "Instituciones" ? " bg-main-blue !text-white rounded-b-[30px] h-[80px]" : "text-gray6"
-                  }  `}>
+                    actualPage === "Instituciones"
+                      ? " bg-main-blue !text-white rounded-b-[30px] h-[80px]"
+                      : "text-gray6"
+                  }  `}
+              >
                 <Link
-                  className={`${
-                    actualPage === "Instituciones" && "active"
-                  } `}
+                  className={`hover:text-gray7 transition-colors ${actualPage === "Instituciones" && "active"} `}
                   aria-current="page"
                   href="/instituciones"
                   style={{ minWidth: "310px" }}
@@ -162,18 +172,18 @@ function Nav(
                   </h3>
                 </Link>
               </li>
-              <li className={`
-                  mx-6 px-2 py-2 hover:text-gray7
-                  transition-colors	
+              <li
+                className={`
+                  mx-6 px-2 py-2
                   duration-500
                   ${
-                    actualPage === "Contact" ? " bg-main-blue !text-white rounded-b-[30px] h-[80px]" : "text-gray6"
-                  }  ${actualPage == "Contact" ? "text-white" : false}`}>
-                <Link
-                  aria-current="page"
-                  href="/contact"
-                >
-                  <h3 style={{ fontWeight: "500" }}>Contacto</h3>
+                    actualPage === "Contact"
+                      ? " bg-main-blue !text-white rounded-b-[30px] h-[80px]"
+                      : "text-gray6"
+                  }  ${actualPage == "Contact" ? "text-white" : false}`}
+              >
+                <Link className="hover:text-gray7 transition-colors" aria-current="page" href="/contact">
+                  <h3 style={{ fontWeight: "400" }}>Contacto</h3>
                 </Link>
               </li>
             </ul>
