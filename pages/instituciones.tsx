@@ -1,23 +1,24 @@
-import DynamicTable from '../components/DynamicTable';
-import Nav from '../components/Nav';
-import useWindowSize from '../hooks/useWindowSize';
-import { useMemo } from 'react';
-import { useGetInstitutionsQuery } from '../generated/graphql';
-import SearchIcon from '@mui/icons-material/Search';
-import { idText } from 'typescript';
-import { useEffect, useState } from 'react';
-import lupa from '../public/assets/1lupa.png';
-import {  styled } from '@mui/material';
-import Image from 'next/image';
+import DynamicTable from "../components/DynamicTable";
+import Nav from "../components/Nav";
+import useWindowSize from "../hooks/useWindowSize";
+import { useMemo } from "react";
+import { useGetInstitutionsQuery } from "../generated/graphql";
+import SearchIcon from "@mui/icons-material/Search";
+import { idText } from "typescript";
+import { useEffect, useState } from "react";
+import lupa from "../public/assets/1lupa.png";
+import { styled } from "@mui/material";
+import Image from "next/image";
+import Table from "@/components/Table";
 
 const columns = [
   {
-    Header: 'Nombre',
-    accessor: 'name',
+    Header: "Nombre",
+    accessor: "name",
   },
   {
-    Header: 'Dirección',
-    accessor: 'address',
+    Header: "Dirección",
+    accessor: "address",
   },
 ];
 
@@ -27,49 +28,60 @@ function Institutions() {
 
   useEffect(() => {
     setActive(true);
-    sessionStorage.removeItem('userToken');
+    sessionStorage.removeItem("userToken");
   }, []);
 
   const processedInstitutions = useMemo(() => {
     if (!data?.institutions) return [];
+    console.log(data.institutions);
     return data.institutions.map((institution, index) => ({
-      //id: institution?.id_institution ?? index,
-      name: institution?.name ?? '',
-      address: institution?.direction ?? '',
+      id: institution?.id_institution ?? index,
+      name: institution?.name ?? "",
+      address: institution?.direction ?? "",
     }));
   }, [data]);
+
   const windowSize = useWindowSize();
 
-  const WrapperList = styled('div')(({ theme }) => ({
-    padding: '4rem',
-    [theme.breakpoints.down('sm')]: {
-      padding: '1rem',
-      paddingTop: '2rem',
-      backgroundColor: 'red'
+  const WrapperList = styled("div")(({ theme }) => ({
+    padding: "4rem",
+    [theme.breakpoints.down("sm")]: {
+      padding: "1rem",
+      paddingTop: "2rem",
+      backgroundColor: "red",
     },
   }));
 
   return (
-    <div className="w-full bg-gray1 h-90" style={{minHeight: '100vh', padding: '10px', paddingTop: '0px'}}>
+    <div
+      className="w-full bg-gray1 h-90"
+      style={{ minHeight: "100vh", padding: "10px", paddingTop: "0px" }}
+    >
       <Nav actualPage="Instituciones" withNavigation />
-      <div className={`${(windowSize.width ?? 0) >= 1200 ? 'mt-16' : 'mt-4'}`}>
+      <div className={`${(windowSize.width ?? 0) >= 1200 ? "mt-16" : "mt-4"}`}>
         <WrapperList className="lg:mx-24 sm:mx-10 bg-white shadow-2xl rounded-[2rem]">
           <div className="flex font-bold text-black text-xl	">
-            <h4>
-              Lista de instituciones Educativas
-            </h4>
+            <h4>Lista de instituciones Educativas</h4>
           </div>
           <form className="flex justify-between my-4" role="search">
             <div
-              className={`w-full opacity ${active ? 'active text-black' : ''} transitionRight ${
-                active ? 'active' : ''
+              className={`w-full opacity ${
+                active ? "active text-black" : ""
+              } transitionRight ${
+                active ? "active" : ""
               } flex flex-row relative items-center `}
-              style={{ alignItems: 'center' }}>
+              style={{ alignItems: "center" }}
+            >
               <Image
                 src={lupa}
                 alt=""
                 className=""
-                style={{ width: '38px', height: '34px', position: 'absolute', left: '20px' }}
+                style={{
+                  width: "38px",
+                  height: "34px",
+                  position: "absolute",
+                  left: "20px",
+                }}
                 width={50}
                 height={50}
               />
@@ -79,15 +91,13 @@ function Institutions() {
                 type="search"
                 placeholder="Buscar institución"
                 aria-label="Search"
-                style={{ padding: '1rem', paddingLeft: '4rem' }}
+                style={{ padding: "1rem", paddingLeft: "4rem" }}
               />
             </div>
           </form>
           {error && <div>¡Ocurrio un error!</div>}
           {data?.institutions && !loading && (
-          
-                <DynamicTable columns={columns} data={processedInstitutions} />
-            
+            <Table data={processedInstitutions} column={columns} type={'institution'}/>
           )}
         </WrapperList>
       </div>

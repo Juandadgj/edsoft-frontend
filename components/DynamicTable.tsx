@@ -7,6 +7,7 @@ import Paper from '@mui/material/Paper';
 import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/material';
 import InstitutionCard from './InstitutionCard';
+import Card from './Card';
 
 type SimpleObject = { [key: string]: string | number | React.ReactNode | null };
 
@@ -22,9 +23,6 @@ function DynamicTable({ columns, data }: DynamicTableProps) {
     columns,
     data,
   });
-  useEffect(() => {
-    setActive(true);
-  }, []);
 
   const TableRow = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -43,6 +41,9 @@ function DynamicTable({ columns, data }: DynamicTableProps) {
       display: 'none'
     },
   }));
+  useEffect(() => {
+    console.log('h',headerGroups)
+  }, []);
   return (
     <TableContainer component={Paper} className="shadow-none ">
       <Table {...getTableProps()} style={{ width: '100%' }}>

@@ -1,8 +1,9 @@
 import { styled } from '@mui/material';
 import TableCell, { TableCellProps } from '@mui/material/TableCell';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
-const SideBar = (props: any) => {
+const InstitutionCard = (props: any) => {
   const Row = styled('div')(({ theme }) => ({
     display: 'flex',
     borderRadius: '15px',
@@ -25,7 +26,7 @@ const SideBar = (props: any) => {
     },
   }));
   return (
-    <Link href="/login" style={{ textDecoration: 'none', width: '100%' }}>
+    <Link href={`/login?id=${props.row.original.id}&colegio=${encodeURIComponent(props.row.original.name)}`} style={{ textDecoration: 'none', width: '100%' }}>
       <Row key={props.row.id}>
         {props.row.cells.map((cell: any) => (
           <TableCell
@@ -51,4 +52,4 @@ const SideBar = (props: any) => {
   );
 };
 
-export default SideBar;
+export default InstitutionCard;

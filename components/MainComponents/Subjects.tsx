@@ -4,6 +4,7 @@ import { useGetSubjectsQuery } from '../../generated/graphql';
 import { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import SearchIcon from '@mui/icons-material/Search';
+import Table from '../Table';
 
 const columns = [
   {
@@ -51,7 +52,7 @@ function Subjects() {
       </Grid>
       <Grid
         container
-        className="mx-auto bg-white border-2 shadow-2xl rounded-[2rem] p-5">
+        className="mx-auto bg-white border-2 shadow-2xl rounded-[2rem] p-5 h-full overflow-x-auto">
         <Grid item xs={12}>
           <form role="search">
             <Grid container>
@@ -85,10 +86,12 @@ function Subjects() {
         </Grid>
         <Grid item xs={12}>
           {loading ? (
-            <h3>Loading</h3>
+            <div className='w-full flex justify-center items-center'>
+              <span className="loading loading-dots loading-lg bg-blue3"></span>
+            </div>
           ) : data?.courses ? (
             <div className="d-flex border-white py-4" style={{ height: '32rem' }}>
-              <DynamicTable columns={columns} data={processedSubjects} />
+              <Table column={columns} data={processedSubjects} type={'subject'}/>
             </div>
           ) : (
             <h3>¡Ocurrio un error!</h3>
