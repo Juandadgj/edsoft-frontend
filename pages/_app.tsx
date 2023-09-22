@@ -8,7 +8,6 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import type { AppProps } from "next/app";
 const SERVER_URI = process.env.NEXT_PUBLIC_REACT_APP_URL || "localhost/graphql";
-console.log();
 
 const httpLink = createHttpLink({
   uri: SERVER_URI,

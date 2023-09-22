@@ -4,10 +4,13 @@ import { useEffect } from "react";
 import CInstitutions from "../Card/CInstitutions";
 import Card from "../Card";
 import { TableContainer } from "@material-ui/core";
+import { useRouter } from "next/router";
 
 const Table = ({ data, column, type }: any) => {
+  const {asPath} = useRouter()
+  console.log(asPath)
   return (
-    <div className="w-full h-auto">
+    <div className={`w-full  overflow-x-auto animate-fade-left ${asPath == '/instituciones' ? 'h-full' : 'h-96'}`}>
       <table className="table text-black ">
         <thead className="flex items-center justify-center">
           <tr className="flex w-full justify-center border-blue3 border-b-4 text-xl font-semibold">
@@ -18,7 +21,7 @@ const Table = ({ data, column, type }: any) => {
             ))}
           </tr>
         </thead>
-        <tbody className="w-full py-4 animate-fade-left ">
+        <tbody className="w-full py-4 ">
           {data.map((item: any) => (
             <Card type={type} item={item} />
           ))}

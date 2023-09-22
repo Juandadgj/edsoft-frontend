@@ -7,6 +7,7 @@ import icon3 from '../public/assets/3icon.jpg';
 import icon4 from '../public/assets/4icon.jpg';
 import icon5 from '../public/assets/5icon.jpg';
 import { useLocation, useNavigate } from 'react-router-dom';
+import Image from 'next/image';
 
 interface SideBarWithTextProps {
   location: String;
@@ -33,7 +34,7 @@ const SideBarWithText: FC<SideBarWithTextProps> = ({ children, location, subloca
       <div className={`d-flex flex-row w-100 h-24 bg-blue3 p-2 `}>
         <div className="w-20p">
           <a className="navbar-brand d-flex align-items-center mx-3 col-xlg-5 w" href="/bienvenido">
-            <img
+            <Image
               src={Logo}
               alt="Logo EdSoft"
               className="d-inline-block w-18 h-18 align-text-middle m-3"
@@ -42,10 +43,8 @@ const SideBarWithText: FC<SideBarWithTextProps> = ({ children, location, subloca
           </a>
         </div>
         <div
-          className={`d-flex justify-content-center flex-column ms-20 opacity${
-            active ? 'active' : ''
-          } transitionLeft ${active ? 'active' : ''}`}>
-          <p className="pt-4">
+          className={`flex flex-col justify-center ms-20 animate-fade-left`}>
+          <p className="pt-4 font-semibold">
             Institución Educativa San Marcos &nbsp; {'>'} &nbsp; {location} &nbsp; {'>'} &nbsp;{' '}
             {sublocation}
           </p>

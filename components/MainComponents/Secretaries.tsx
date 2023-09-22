@@ -354,7 +354,7 @@ function Secretaries() {
       </Grid>
       <Grid
         container
-        className="mx-auto bg-white border-2 shadow-2xl rounded-[2rem] p-5 h-full overflow-x-auto"
+        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full"
       >
         <Grid item xs={12}>
           <form role="search">
