@@ -62,7 +62,7 @@ function Nav(
 
         <Link href="/" className="flex items-center">
           <Image src={BigLogo} className="w-16 h-16 mr-3" alt="Edsoft Logo" />
-          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-black">
+          <span className={`self-center text-2xl font-semibold whitespace-nowrap transition-colors ${actualPage === "Contact" ? "text-[white]" : "text-black"}`}>
             Edsoft
           </span>
         </Link>
@@ -128,14 +128,14 @@ function Nav(
         </div>
 
         {withNavigation && (
-          <div className="w-[50%] hidden lg:flex">
+          <div className=" hidden lg:flex">
             <ul className="flex text-2xl ">
               <li
                 className={`
                 mx-6 px-2 py-2
                 transition-colors	
                 duration-500
-                ${actualPage === "Contact" ? "text-gray2" : "text-black"}
+                ${actualPage === "Contact" ? "text-[white]" : "text-black"}
                   ${
                     actualPage === "Inicio"
                       ? " bg-main-blue !text-white rounded-b-[30px] h-[80px]"
@@ -154,7 +154,7 @@ function Nav(
                 className={`
                   mx-6 px-2 py-2
                   duration-500
-                ${actualPage === "Contact" ? "text-gray2" : "text-black"}
+                ${actualPage === "Contact" ? "text-[white]" : "text-black"}
                   ${
                     actualPage === "Instituciones"
                       ? " bg-main-blue !text-white rounded-b-[30px] h-[80px]"

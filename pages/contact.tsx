@@ -53,6 +53,13 @@ function Contact() {
     <React.Fragment>
       <ContactContainer>
         <div className="relative">
+          <h1
+            className={`absolute z-10 inset-0 bottom-[50%] top-[40%] text-7xl max-[1100px]:text-6xl max-[900px]:text-5xl max-[700px]:text-4xl text-center font-bold opacity ${
+              active && "active"
+            } transitionDown ${active && "active"}`}
+          >
+            Contáctate con Nosotros
+          </h1>
           <Image
             src={ClientService}
             alt=""
@@ -65,13 +72,6 @@ function Contact() {
           <Grid>
             <Nav actualPage="Contact" withNavigation />
           </Grid>
-          <h1
-            className={`text-white text-6xl text-center items-end font-bold opacity${
-              active && "active"
-            } transitionDown ${active && "active"}`}
-          >
-            Contáctate con Nosotros
-          </h1>
         </Grid>
 
         <div className="flex mt-6 gap-3 justify-around items-center flex-row">
@@ -126,34 +126,34 @@ function Contact() {
             className="w-[600px] relative h-[174px]"
           />
           <div className="absolute flex flex-row gap-10 right-6 bottom-5">
-          <a href="mailto:informacion@edsoft.com" className="h-16 w-16">
-            <Image
-              src={facebookIcon}
-              alt=""
-              style={{ width: "100%", height: "100%" }}
-            />
-          </a>
-          <a href="http://localhost:3000/" className="h-16 w-16">
-            <Image
-              src={twitterIcon}
-              alt=""
-              style={{ width: "100%", height: "100%" }}
-            />
-          </a>
-          <a href="http://localhost:3000/" className="h-16 w-16">
-            <Image
-              src={gmailIcon}
-              alt=""
-              style={{ width: "100%", height: "100%" }}
-            />
-          </a>
-          <a href="http://localhost:3000/" className="h-16 w-16">
-            <Image
-              src={wathsappIcon}
-              alt=""
-              style={{ width: "100%", height: "100%" }}
-            />
-          </a>
+            <a href="mailto:informacion@edsoft.com" className="h-16 w-16">
+              <Image
+                src={facebookIcon}
+                alt=""
+                style={{ width: "100%", height: "100%" }}
+              />
+            </a>
+            <a href="http://localhost:3000/" className="h-16 w-16">
+              <Image
+                src={twitterIcon}
+                alt=""
+                style={{ width: "100%", height: "100%" }}
+              />
+            </a>
+            <a href="http://localhost:3000/" className="h-16 w-16">
+              <Image
+                src={gmailIcon}
+                alt=""
+                style={{ width: "100%", height: "100%" }}
+              />
+            </a>
+            <a href="http://localhost:3000/" className="h-16 w-16">
+              <Image
+                src={wathsappIcon}
+                alt=""
+                style={{ width: "100%", height: "100%" }}
+              />
+            </a>
           </div>
         </div>
 
