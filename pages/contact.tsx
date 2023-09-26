@@ -1,7 +1,7 @@
 import Nav from "../components/Nav";
 import ClientService from "../public/assets/clientService@2x.png";
 import ContactDown from "../public/assets/ContactDown.png";
-import contacDown from '../public/assets/sasa.svg'
+import contacDown from "../public/assets/sasa.svg";
 import Ellipse from "../components/Ellipse";
 import React, { useEffect, useState } from "react";
 import { Grid, styled } from "@mui/material";
@@ -74,86 +74,86 @@ function Contact() {
           </Grid>
         </Grid>
 
-        <div className="flex mt-6 gap-3 justify-around items-center flex-row">
-          <div className="">
-            <h4
-              className={`opacity${active ? "active" : ""} transitionRight ${
+        <div className="h-full w-full flex flex-col bg-white">
+          <div className="flex mt-6 gap-3 justify-around items-center flex-row max-[800px]:flex-col">
+            <div className="">
+              <h4
+                className={`opacity${active ? "active" : ""} animate-fade-right ${
+                  active ? "active" : ""
+                } text-black text-2xl font-semibold max-[800px]:text-lg max-[800px]:text-center`}
+              >
+                SystemPlus (San Marcos - Sucre)
+                <br />
+                Gilberto Guerrero
+                <br />
+                Movil: 3114174048 - 3116935117
+                <br />
+                Teléfono : 2954410
+                <br />
+                systempluscolombia@hotmail.com
+              </h4>
+            </div>
+            <div className="w-[3px] h-[200px] bg-gray5 max-[800px]:hidden "></div>
+            <div
+              className={`font-semibold text-black text-2xl opacity${
                 active ? "active" : ""
-              } text-black text-2xl font-semibold	`}
+              } animate-fade-left ${active ? "active" : ""} max-[800px]:text-lg max-[800px]:text-center`}
             >
-              SystemPlus (San Marcos - Sucre)
-              <br />
-              Gilberto Guerrero
-              <br />
-              Movil: 3114174048 - 3116935117
-              <br />
-              Teléfono : 2954410
-              <br />
-              systempluscolombia@hotmail.com
-            </h4>
+              <h4>
+                Larry José Morales J.
+                <br />
+                Barranquilla - Atlántico <br /> Movil: 3013975504
+              </h4>
+            </div>
           </div>
-          <div className="w-[3px] h-[200px] bg-gray5"></div>
-          <div
-            className={`font-semibold text-black text-2xl opacity${
-              active ? "active" : ""
-            } transitionLeft ${active ? "active" : ""}`}
-          >
-            <h4>
-              Larry José Morales J.
+          <div>
+            <p className="flex justify-start ml-[8%] text-gray4 max-[800px]:justify-center max-[800px]:ml-[0] max-[800px]:text-center">
               <br />
-              Barranquilla - Atlántico <br /> Movil: 3013975504
-            </h4>
+              informacion@edsoft.com
+              <br />
+              informacion@eaduatlantico.com
+              <br />
+              soporte@edsoft.com
+              <br />
+              soporte@eaduatlantico.com
+            </p>
           </div>
-        </div>
-
-        <div>
-          <p className="flex justify-start ml-[8%] text-gray4">
-            <br />
-            informacion@edsoft.com
-            <br />
-            informacion@eaduatlantico.com
-            <br />
-            soporte@edsoft.com
-            <br />
-            soporte@eaduatlantico.com
-          </p>
-        </div>
-
-        <div className="flex justify-end ">
-          <Image
-            src={contacDown}
-            alt=""
-            className="w-[600px] relative h-[174px]"
-          />
-          <div className="absolute flex flex-row gap-10 right-6 bottom-5">
-            <a href="mailto:informacion@edsoft.com" className="h-16 w-16">
-              <Image
-                src={facebookIcon}
-                alt=""
-                style={{ width: "100%", height: "100%" }}
-              />
-            </a>
-            <a href="http://localhost:3000/" className="h-16 w-16">
-              <Image
-                src={twitterIcon}
-                alt=""
-                style={{ width: "100%", height: "100%" }}
-              />
-            </a>
-            <a href="http://localhost:3000/" className="h-16 w-16">
-              <Image
-                src={gmailIcon}
-                alt=""
-                style={{ width: "100%", height: "100%" }}
-              />
-            </a>
-            <a href="http://localhost:3000/" className="h-16 w-16">
-              <Image
-                src={wathsappIcon}
-                alt=""
-                style={{ width: "100%", height: "100%" }}
-              />
-            </a>
+          <div className="flex justify-end  h-full">
+            <Image
+              src={contacDown}
+              alt=""
+              className="w-[600px] relative h-full"
+            />
+            <div className="absolute flex flex-row gap-10 right-6 bottom-5">
+              <a href="mailto:informacion@edsoft.com" className="h-16 w-16">
+                <Image
+                  src={facebookIcon}
+                  alt=""
+                  style={{ width: "100%", height: "100%" }}
+                />
+              </a>
+              <a href="http://localhost:3000/" className="h-16 w-16">
+                <Image
+                  src={twitterIcon}
+                  alt=""
+                  style={{ width: "100%", height: "100%" }}
+                />
+              </a>
+              <a href="http://localhost:3000/" className="h-16 w-16">
+                <Image
+                  src={gmailIcon}
+                  alt=""
+                  style={{ width: "100%", height: "100%" }}
+                />
+              </a>
+              <a href="http://localhost:3000/" className="h-16 w-16">
+                <Image
+                  src={wathsappIcon}
+                  alt=""
+                  style={{ width: "100%", height: "100%" }}
+                />
+              </a>
+            </div>
           </div>
         </div>
 

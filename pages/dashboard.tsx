@@ -67,7 +67,7 @@ function Dashboard (){
     console.log(activeComponent);
   }, [activeComponent]);
   return (
-    <div>
+    <div className='h-screen'>
       
       {
         activeComponent === 'SchoolHome' ? null : <SchoolNav textComponent={textComponent} manage={manageComponentStatus}/>
@@ -77,7 +77,7 @@ function Dashboard (){
         activeComponent === 'SchoolHome' ? <SchoolAvatar textComponent={textComponent} homeAvatar={true} manage={manageComponentStatus} /> : null
       }
 
-      <div className="flex h-[100vh] w-full overflow-auto">
+      <div className={`flex ${activeComponent === 'SchoolHome' ? 'h-full' : 'h-[90%]'} w-full`}>
         {
           activeComponent === 'SchoolHome' ? <SideBar manage={manageComponentStatus} logo={true}/> : <SideBar manage={manageComponentStatus} logo={false}/>
         }

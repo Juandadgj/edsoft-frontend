@@ -34,9 +34,9 @@ export const SchoolAvatar = ({textComponent, manage, homeAvatar}: any) => {
 
 
   return (
-    <Box sx={{ flexGrow: 0 }} className={ homeAvatar ? 'absolute mr-5 right-0 top-10' : ''}>
+    <Box sx={{ flexGrow: 0 }} className={ homeAvatar ? 'absolute mr-5 right-0 top-10' : 'absolute right-2 top-2'}>
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar alt="Remy Sharp" src={"../public/assets/institucionLogo@2x.png"} sx={{ width: 80, height: 80 }} />
+              <Avatar alt="Remy Sharp" src={"/assets/institucionLogo@2x.png"} sx={{ width: 80, height: 80 }} />
             </IconButton>
             <Menu
               sx={{ mt: '10px' }}

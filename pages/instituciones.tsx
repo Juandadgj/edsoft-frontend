@@ -99,6 +99,7 @@ function Institutions() {
           {data?.institutions && !loading && (
             <Table data={processedInstitutions} column={columns} type={'institution'}/>
           )}
+          {loading}
         </WrapperList>
       </div>
     </div>

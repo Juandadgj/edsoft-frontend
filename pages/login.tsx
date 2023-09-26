@@ -30,6 +30,7 @@ function Test() {
       router.push("/dashboard");
     }
   }, [data, router]);
+  
   return (
     <div className="h-screen bg-[#EFEFEF]">
       <div className="flex items-center justify-start px-5 py-2">
@@ -77,8 +78,6 @@ function Test() {
             <small>Inicia sesión</small>
           </span>
         </p>
-        <h1 className="text-black">{username}</h1>
-        <h1 className="text-black">{password}</h1>
         <div className=" flex flex-col gap-2 w-full">
           <input
             className="input w-full bg-gray2 text-black"
@@ -113,7 +112,7 @@ function Test() {
               });
             }}
           >
-            Login
+            Iniciar sesion
           </button>
         </div>
       </div>
