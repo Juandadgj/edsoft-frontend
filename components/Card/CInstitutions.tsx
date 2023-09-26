@@ -9,7 +9,7 @@ const CInstitutions = (props:InstitutionCard) => {
       href={`/login?id=${id}&colegio=${encodeURIComponent(name)}`}
       className="w-full"
     >
-      <tr className="flex w-full p-4 my-4 bg-gray1 border-none rounded-[20px] text-xl font-semibold">
+      <tr className="flex w-full p-1 my-4 bg-gray1 border-none rounded-[20px] text-base font-semibold">
         <td className="flex w-full justify-center items-center text-center">
           {name}
         </td>

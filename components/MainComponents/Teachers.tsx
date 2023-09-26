@@ -331,7 +331,7 @@ function Teachers() {
   }, [data, DeleteDocente]);
 
   return (
-    <div className="rounded-tl-[40px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
+    <div className="rounded-tl-[40px] w-full overflow-hidden bg-gray1 p-14 h-full">
       <Grid container>
         <Grid item xs={6}>
           <strong className="text-2xl text-black ms-20">
@@ -394,7 +394,7 @@ function Teachers() {
             </div>
           ) : data?.teachers ? (
             <div
-              className="d-flex border-white py-4"
+              className=" border-white py-4"
             >
               <Table
                 column={columns}
