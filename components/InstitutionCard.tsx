@@ -26,24 +26,31 @@ const InstitutionCard = (props: any) => {
     },
   }));
   return (
-    <Link href={`/login?id=${props.row.original.id}&colegio=${encodeURIComponent(props.row.original.name)}`} style={{ textDecoration: 'none', width: '100%' }}>
+    <Link
+      href={`/login?id=${props.row.original.id}&colegio=${encodeURIComponent(
+        props.row.original.name
+      )}`}
+      style={{ textDecoration: "none", width: "100%" }}
+    >
       <Row key={props.row.id}>
-        {props.row.cells.map((cell: any) => (
+        {props.row.cells.map((cell: any, i: any) => (
           <TableCell
+            key={i}
             style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              textAlign: 'center',
-              border: '10px solid #EFEFEF',
-              padding: '0px',
-              margin: '0px',
-              width: '100%',
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              textAlign: "center",
+              border: "10px solid #EFEFEF",
+              padding: "0px",
+              margin: "0px",
+              width: "100%",
             }}
             {...cell.getCellProps()}
-            className={`bg-gray1`}>
+            className={`bg-gray1`}
+          >
             <strong>
-              <TextCard className="text-black"> {cell.render('Cell')}</TextCard>
+              <TextCard className="text-black"> {cell.render("Cell")}</TextCard>
             </strong>
           </TableCell>
         ))}

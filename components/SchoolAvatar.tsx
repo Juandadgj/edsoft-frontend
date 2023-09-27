@@ -9,8 +9,7 @@ import Menu from '@mui/material/Menu';
 import Avatar from '@mui/material/Avatar';
 import { makeStyles } from '@material-ui/core/styles';
 import Image from 'next/image';
-
-
+import Link from 'next/link';
 
 export const SchoolAvatar = ({textComponent, manage, homeAvatar}: any) => {  
   // const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -69,14 +68,14 @@ export const SchoolAvatar = ({textComponent, manage, homeAvatar}: any) => {
                 </button>
               </div>
 
-              <a className="text-decoration-none text-body" href="/instituciones">
+              <Link className="text-decoration-none text-body" href="/instituciones">
               <div className='flex p-2 text-left gap-2'>
                 <Image className='icon w-4 gray3' src={logout} alt="settings-icon"/>
                 <button onClick={manage} className="dropdown-item" type="button">
                   Cerrar Sesión
                 </button>
               </div>
-              </a>
+              </Link>
             </Menu>
           </Box>
   )

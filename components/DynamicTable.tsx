@@ -88,10 +88,10 @@ function DynamicTable({ columns, data }: DynamicTableProps) {
           {...getTableBodyProps()}
           className={` opacity${active ? 'active' : ''} animate-fade-left animate-duration-700 ${active ? 'active' : ''}`}
           style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          {rows.map(row => {
+          {rows.map((row:any, i:any) => {
             prepareRow(row);
             return (
-              <InstitutionCard row={row}/>
+              <InstitutionCard key={i} row={row}/>
             );
           })}
         </TableBody>

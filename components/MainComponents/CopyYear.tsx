@@ -12,19 +12,18 @@ function CopyYear() {
   }, []);
 
   return (
-    <div className="rounded-tl-[40px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
-      <Grid container className="ps-8 pb-4">
+    <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
+      <Grid container className='pb-4'>
         <Grid item xs={12}>
-          <strong className="text-2xl text-black ms-20">Copiar Año Anterior</strong>
+          <strong className="text-2xl text-black ps-8">Copiar Año Anterior</strong>
         </Grid>
       </Grid>
       <Grid
-        container
         rowSpacing={2}
         className="mx-auto bg-white border-2 shadow-2xl rounded-[2rem] p-5 flex justify-center flex-col">
         <Grid item xs={12} className='!flex !flex-col !justify-center !items-center mx-auto'>
           <h1
-            className={` flex justify-between gap-10 w-full items-center text-black opacity${
+            className={`flex justify-between gap-10 w-full items-center text-black opacity${
               active ? 'active' : ''
             } transitionLeft ${active ? 'active' : ''}`}>
             Asignaturas

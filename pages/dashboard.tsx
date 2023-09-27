@@ -18,6 +18,7 @@ import Areas from '@/components/MainComponents/Areas';
 import Subjects from '@/components/MainComponents/Subjects';
 import Achievements from '@/components/MainComponents/Achievements';
 import { useRouter } from 'next/router';
+import { Enrollment } from '@/components/MainComponents/Enrollment';
 
 const avatarOption = makeStyles(theme => ({
   avatar: {
@@ -93,6 +94,7 @@ function Dashboard (){
           {activeComponent === 'Areas' && <Areas />}
           {activeComponent === 'Subjects' && <Subjects />}
           {activeComponent === 'Achievements' && <Achievements />}
+          {activeComponent === 'Enrollment' && <Enrollment />}
         </div>
       </div>
     </div>
