@@ -7,7 +7,13 @@ export interface ICard {
     | SetYearCard
     | CourseCard
     | AreaCard
+    | EnrollmentCard
     | SubjectCard;
+}
+
+export interface EnrollmentCard {
+  icon: any;
+  title: string;
 }
 
 export interface InstitutionCard {

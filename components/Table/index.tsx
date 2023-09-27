@@ -15,15 +15,15 @@ const Table = ({ data, column, type }: any) => {
         <thead className="flex items-center justify-center">
           <tr className="flex w-full justify-center border-blue3 border-b-4 text-xl font-semibold">
             {column.map((key: any, index: any) => (
-              <th className="w-full text-center text-blue3 whitespace-normal flex items-center justify-center">
+              <th key={key} className="w-full text-center text-blue3 whitespace-normal flex items-center justify-center">
                 <p className="w-full">{key.Header}</p>
               </th>
             ))}
           </tr>
         </thead>
         <tbody className="w-full py-4 ">
-          {data.map((item: any) => (
-            <Card type={type} item={item} />
+          {data.map((item: any, key: any) => (
+            <Card key={key} type={type} item={item} />
           ))}
         </tbody>
       </table>

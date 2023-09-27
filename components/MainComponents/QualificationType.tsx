@@ -277,10 +277,10 @@ function QualificationType() {
   }, [data, DeleteQualificationType]);
 
   return (
-    <div className="rounded-tl-[40px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
+    <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
       <Grid container>
         <Grid item xs={6}>
-          <strong className="text-2xl text-black ms-20">
+          <strong className="text-2xl text-black ps-8 pb-4">
             Tipo de Calificación
           </strong>
         </Grid>

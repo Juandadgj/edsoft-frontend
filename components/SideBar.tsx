@@ -133,6 +133,15 @@ const SideBar = ({ manage, logo }: any) => {
                 Logros
               </button>
             </li>
+            <li>
+              <button
+                className="dropdown-item"
+                id="Enrollment"
+                onClick={manage}
+              >
+                Matrículas
+              </button>
+            </li>
           </ul>
         </li>
 

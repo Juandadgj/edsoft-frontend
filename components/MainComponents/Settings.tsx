@@ -9,11 +9,11 @@ function Settings() {
   }, []);
 
   return (
-    <div className="h-full w-full rounded-tl-[40px] overflow-hidden bg-gray1 p-14">
-      <Grid container className="mb-6">
+    <div className="h-full w-full rounded-tl-[20px] overflow-hidden bg-gray1 p-14">
+      <Grid container className="pb-8">
         <Grid item xs={12}>
           <h1
-            className={`text-black fs-2 text-2xl font-bold ms-20 animate-fade-down`}
+            className="text-black fs-2 text-2xl font-bold ps-4 animate-fade-down"
           >
             Cambiar Contraseña
           </h1>

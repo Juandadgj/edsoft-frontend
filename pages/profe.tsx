@@ -322,10 +322,10 @@ function Teachers() {
   }, [data, DeleteDocente]);
 
   return (
-    <div className="rounded-tl-[40px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
+    <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
       <Grid container>
         <Grid item xs={6}>
-          <strong className="fs-4 ms-20">Lista de Docentes</strong>
+          <strong className="fs-4 ms-2">Lista de Docentes</strong>
         </Grid>
         <Grid item xs={6} className="text-ali-end pr-6">
           <button

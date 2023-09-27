@@ -332,10 +332,10 @@ function Secretaries() {
   }, [data, DeleteDocente]);
 
   return (
-    <div className="rounded-tl-[40px] w-full overflow-hidden bg-gray1 p-14 h-full">
+    <div className="rounded-tl-[20px] w-full overflow-hidden bg-gray1 p-14 h-full">
       <Grid container>
         <Grid item xs={6}>
-          <strong className="text-2xl text-black ms-20">
+          <strong className="text-2xl text-black ps-8 pb-4">
             Lista de Secretarios
           </strong>
         </Grid>
