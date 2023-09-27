@@ -13,8 +13,7 @@ const CEnrollment = (props: EnrollmentCard) => {
   };
   const {icon, title} = props
   return (
-    <div
-      className='w-full cursor-pointer h-full transition-transform shadow-2xl bg-white hover:bg-[#ededed89] hover:scale-105 text-center p-4 rounded-[10%]'>
+    <div style={{borderRadius: '30px'}} className='w-[70%] h-full cursor-pointer transition-transform shadow-2xl bg-white hover:bg-[#ededed89] hover:scale-105 text-center p-4'>
       <div className="text-4xl mb-2">{icon}</div>
       <h3 className="text-md font-semibold text-black">{title}</h3>
     </div>

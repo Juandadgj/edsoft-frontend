@@ -53,8 +53,12 @@ export const Enrollment = () => {
           </strong>
         </Grid>
       </Grid>
-      <div className="flex ps-8 justify-center gap-20">
-        {cardsEnrollment.map((item, i) => <Card key={i} type={'enrollment'} item={item} />)}
+      <div className="flex flex-wrap ps-8 justify-start gap-6">
+        {cardsEnrollment.map((item, i) => (
+        <div key={i} className='w-1/4 p-4'>
+          <Card type={'enrollment'} item={item} />
+        </div>
+        ))}
       </div>
     </div>
   );
