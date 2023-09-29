@@ -12,6 +12,7 @@ export interface ICard {
 }
 
 export interface EnrollmentCard {
+  id: number
   icon: any;
   title: string;
 }
