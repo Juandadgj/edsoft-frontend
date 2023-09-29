@@ -11,6 +11,7 @@ import Diversity3Icon from "@mui/icons-material/Diversity3";
 import EscalatorWarningIcon from "@mui/icons-material/EscalatorWarning";
 import HailIcon from "@mui/icons-material/Hail";
 import { useRouter } from "next/router";
+import { NotRegistered } from "./NotRegistered";
 
 const cardsEnrollment = [
   {
@@ -22,6 +23,7 @@ const cardsEnrollment = [
     id: 2,
     icon: <PersonOffIcon color="error" fontSize="inherit" />,
     title: "Estudiantes no matriculados en el año actual",
+    component: <NotRegistered/>
   },
   {
     id: 3,
@@ -44,8 +46,12 @@ export const Enrollment = () => {
   const today = new Date();
   const year = today.getFullYear();
   const router = useRouter();
+  useEffect(() => {
+    console.log(router.query)
+  }, [router])
   const { opcion } = router.query;
   const opcionelegida = cardsEnrollment.find(card => card.id === Number(opcion))
+  
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
       <Grid container className="pb-6">
@@ -56,8 +62,10 @@ export const Enrollment = () => {
         </Grid>
       </Grid>
       {opcion ? (
-        
-        <h1 className="text-black text-xl">{opcionelegida?.title}</h1>
+        <>
+        {/* <h1 className="text-black text-xl">{opcionelegida?.title}</h1> */}
+        {opcionelegida?.component}
+        </>
       ) : (
         <div className="flex flex-wrap ps-8 justify-start gap-6">
           {cardsEnrollment.map((item, i) => (
