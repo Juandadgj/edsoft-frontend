@@ -19,7 +19,9 @@ const columns = [
   },
 ];
 
-export const NotRegistered = () => {
+
+export const StudentsPerCourse = () => {
+
   const today = new Date();
   const year = today.getFullYear();
   const [active, setActive] = useState(false);
@@ -32,7 +34,7 @@ export const NotRegistered = () => {
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-5">
       <Grid container className='pb-4'>
         <Grid item xs={12}>
-          <strong className="text-2xl text-black ps-8">Asignaturas creadas para el año {year}</strong>
+          <strong className="text-2xl text-black ps-8">Estudiantes por curso en el año {year}</strong>
         </Grid>
       </Grid>
       <Grid

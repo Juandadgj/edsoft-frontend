@@ -19,7 +19,9 @@ const columns = [
   },
 ];
 
-export const NotRegistered = () => {
+
+export const StudentsLastYear = () => {
+
   const today = new Date();
   const year = today.getFullYear();
   const [active, setActive] = useState(false);
@@ -32,7 +34,7 @@ export const NotRegistered = () => {
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-5">
       <Grid container className='pb-4'>
         <Grid item xs={12}>
-          <strong className="text-2xl text-black ps-8">Asignaturas creadas para el año {year}</strong>
+          <strong className="text-2xl text-black ps-8">Elija el curso para ingresar estudiantes para el {year}</strong>
         </Grid>
       </Grid>
       <Grid
@@ -70,7 +72,7 @@ export const NotRegistered = () => {
           </form>
         </Grid>
         <Grid item xs={12}>
-          {/* {loading ? (
+          {loading ? (
             <div className='w-full flex justify-center items-center'>
               <span className="loading loading-dots loading-lg bg-blue3"></span>
             </div>
@@ -80,7 +82,7 @@ export const NotRegistered = () => {
             </div>
           ) : (
             <h3>¡Ocurrio un error!</h3>
-          )} */}
+          )}
         </Grid>
       </Grid>
     </div>

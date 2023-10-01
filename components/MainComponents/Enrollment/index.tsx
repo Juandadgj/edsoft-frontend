@@ -12,6 +12,8 @@ import EscalatorWarningIcon from "@mui/icons-material/EscalatorWarning";
 import HailIcon from "@mui/icons-material/Hail";
 import { useRouter } from "next/router";
 import { NotRegistered } from "./NotRegistered";
+import { StudentsPerCourse } from "./StudentsPerCourse";
+import { StudentsLastYear } from "./StudentLastYear";
 
 const cardsEnrollment = [
   {
@@ -29,6 +31,7 @@ const cardsEnrollment = [
     id: 3,
     icon: <Diversity3Icon color="success" fontSize="inherit" />,
     title: "Mostrar estudiantes por curso",
+    component: <StudentsPerCourse/>
   },
   {
     id: 4,
@@ -39,6 +42,7 @@ const cardsEnrollment = [
     id: 5,
     icon: <HailIcon color="success" fontSize="inherit" />,
     title: "Matricular estudiantes por cursos del año anterior",
+    component: <StudentsLastYear/>
   },
 ];
 
@@ -54,6 +58,7 @@ export const Enrollment = () => {
   
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
+      {opcion ? '' : (
       <Grid container className="pb-6">
         <Grid item xs={12}>
           <strong className="text-2xl text-black ps-8">
@@ -61,6 +66,7 @@ export const Enrollment = () => {
           </strong>
         </Grid>
       </Grid>
+      )}
       {opcion ? (
         <>
         {/* <h1 className="text-black text-xl">{opcionelegida?.title}</h1> */}
