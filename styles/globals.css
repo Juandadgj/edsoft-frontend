@@ -26,3 +26,12 @@ body {
   background: #fff !important;
   height: 100vh;
 }
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  -webkit-appearance: none;
+ cursor: pointer;
+
+}
+input[type="date"] {
+  color-scheme: light;
+}

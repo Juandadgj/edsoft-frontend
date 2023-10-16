@@ -3,7 +3,7 @@ import React from "react";
 const NewStudent = () => {
   return (
     <div>
-      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full">
+      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full text-black">
         <div>
           <h1 className="text-lg">Estudiante nuevo en el sistema</h1>
         </div>
