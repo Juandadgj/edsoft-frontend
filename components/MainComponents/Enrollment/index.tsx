@@ -1,8 +1,4 @@
 import React from "react";
-import useWindowSize from "../../../hooks/useWindowSize";
-//import { useLoginMutation } from '../generated/graphql';
-import { useEffect, useState } from "react";
-import { FormControlLabel, FormGroup, Switch } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Card from "../../Card";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
@@ -10,6 +6,7 @@ import PersonOffIcon from "@mui/icons-material/PersonOff";
 import Diversity3Icon from "@mui/icons-material/Diversity3";
 import EscalatorWarningIcon from "@mui/icons-material/EscalatorWarning";
 import HailIcon from "@mui/icons-material/Hail";
+import NewStudent from "./NewStudent";
 import { useRouter } from "next/router";
 import { NotRegistered } from "./NotRegistered";
 import { StudentsPerCourse } from "./StudentsPerCourse";
@@ -20,6 +17,7 @@ const cardsEnrollment = [
     id: 1,
     icon: <PersonAddAltIcon color="success" fontSize="inherit" />,
     title: "Ingreso de nuevos estudiantes",
+    component: <NewStudent/>
   },
   {
     id: 2,
@@ -37,6 +35,8 @@ const cardsEnrollment = [
     id: 4,
     icon: <EscalatorWarningIcon color="error" fontSize="inherit" />,
     title: "Buscar estudiantes habilitados",
+    component: <NewStudent/>
+
   },
   {
     id: 5,
