@@ -8,6 +8,9 @@ import EscalatorWarningIcon from "@mui/icons-material/EscalatorWarning";
 import HailIcon from "@mui/icons-material/Hail";
 import NewStudent from "./NewStudent";
 import { useRouter } from "next/router";
+import { NotRegistered } from "./NotRegistered";
+import { StudentsPerCourse } from "./StudentsPerCourse";
+import { StudentsLastYear } from "./StudentLastYear";
 
 const cardsEnrollment = [
   {
@@ -20,15 +23,13 @@ const cardsEnrollment = [
     id: 2,
     icon: <PersonOffIcon color="error" fontSize="inherit" />,
     title: "Estudiantes no matriculados en el año actual",
-    component: <NewStudent/>
-
+    component: <NotRegistered/>
   },
   {
     id: 3,
     icon: <Diversity3Icon color="success" fontSize="inherit" />,
     title: "Mostrar estudiantes por curso",
-    component: <NewStudent/>
-
+    component: <StudentsPerCourse/>
   },
   {
     id: 4,
@@ -41,8 +42,7 @@ const cardsEnrollment = [
     id: 5,
     icon: <HailIcon color="success" fontSize="inherit" />,
     title: "Matricular estudiantes por cursos del año anterior",
-    component: <NewStudent/>
-
+    component: <StudentsLastYear/>
   },
 ];
 
@@ -52,8 +52,10 @@ export const Enrollment = () => {
   const router = useRouter();
   const { opcion } = router.query;
   const opcionelegida = cardsEnrollment.find(card => card.id === Number(opcion))
+  
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
+      {opcion ? '' : (
       <Grid container className="pb-6">
         <Grid item xs={12}>
           <strong className="text-2xl text-black ps-8">
@@ -61,9 +63,11 @@ export const Enrollment = () => {
           </strong>
         </Grid>
       </Grid>
+      )}
       {opcion ? (
-        
-        <h1 className="text-black text-xl">{opcionelegida?.component}</h1>
+        <>
+        {opcionelegida?.component}
+        </>
       ) : (
         <div className="flex flex-wrap ps-8 justify-start gap-6">
           {cardsEnrollment.map((item, i) => (
