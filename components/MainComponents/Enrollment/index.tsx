@@ -50,9 +50,6 @@ export const Enrollment = () => {
   const today = new Date();
   const year = today.getFullYear();
   const router = useRouter();
-  useEffect(() => {
-    console.log(router.query)
-  }, [router])
   const { opcion } = router.query;
   const opcionelegida = cardsEnrollment.find(card => card.id === Number(opcion))
   
@@ -69,7 +66,6 @@ export const Enrollment = () => {
       )}
       {opcion ? (
         <>
-        {/* <h1 className="text-black text-xl">{opcionelegida?.title}</h1> */}
         {opcionelegida?.component}
         </>
       ) : (
