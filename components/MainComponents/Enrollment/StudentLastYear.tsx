@@ -72,7 +72,7 @@ export const StudentsLastYear = () => {
           </form>
         </Grid>
         <Grid item xs={12}>
-          {loading ? (
+          {/* {loading ? (
             <div className='w-full flex justify-center items-center'>
               <span className="loading loading-dots loading-lg bg-blue3"></span>
             </div>
@@ -82,7 +82,7 @@ export const StudentsLastYear = () => {
             </div>
           ) : (
             <h3>¡Ocurrio un error!</h3>
-          )}
+          )} */}
         </Grid>
       </Grid>
     </div>
