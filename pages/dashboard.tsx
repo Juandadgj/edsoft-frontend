@@ -41,9 +41,9 @@ function Dashboard (){
   useEffect(() => {
     setActive(true);
     const token = sessionStorage.getItem("userToken")
-    if (!token) {
-      router.push("/login")
-    }
+    // if (!token) {
+    //   router.push("/login")
+    // }
   }, []);
   
 

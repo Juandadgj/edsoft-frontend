@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Grid from "@mui/material/Grid";
 import Card from "../../Card";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
@@ -52,7 +52,17 @@ export const Enrollment = () => {
   const router = useRouter();
   const { opcion } = router.query;
   const opcionelegida = cardsEnrollment.find(card => card.id === Number(opcion))
-  
+
+  useEffect(() => {
+    const { opcion, ...rest } = router.query; // Elimina 'opcion' de la URL
+    if (opcion) {
+      router.replace({
+        pathname: router.pathname,
+        query: rest,
+      });
+    }
+  }, []);
+
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
       {opcion ? '' : (

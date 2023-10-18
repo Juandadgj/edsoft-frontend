@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import {
   useCreateTeacherMutation,
   useDeleteTeacherMutation,
-  useGetTeachersQuery,
+  useTeachersQuery,
   useUpdateTeacherMutation,
 } from "../../generated/graphql";
 import { useEffect, useState } from "react";
@@ -56,9 +56,8 @@ function Secretaries() {
   const [open, setOpen] = useState(false);
   const [typeAdd, setTypeAdd] = useState(false);
 
-  const { data, loading, refetch } = useGetTeachersQuery({
+  const { data, loading, refetch } = useTeachersQuery({
     fetchPolicy: "network-only",
-    variables: { type_id: 2 },
   });
 
   // Form to manage inputs values
@@ -246,7 +245,7 @@ function Secretaries() {
   const processedTeachers = useMemo(() => {
     if (!data?.teachers) return [];
 
-    return data.teachers.map((teacher, index) => ({
+    return data.teachers.map((teacher: any, index: any) => ({
       name: teacher?.name ?? "",
       lastName: teacher?.last_name ?? "",
       degree: teacher?.degree ?? "",
@@ -331,6 +330,14 @@ function Secretaries() {
     }));
   }, [data, DeleteDocente]);
 
+  const handlerCreateTeacher = async () => {
+    return await AddTeacher({ variables: { createTeacherInput: formValues } });
+   };
+ 
+   const handlerUpdateTeacher = async (form:any) => {
+    return await UpdateTeacher({variables:{updateTeacherInput: formValues}})
+   }
+
   return (
     <div className="rounded-tl-[20px] w-full overflow-hidden bg-gray1 p-14 h-full">
       <Grid container>
@@ -356,41 +363,9 @@ function Secretaries() {
         container
         className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full"
       >
-        <Grid item xs={12}>
-          <form role="search">
-            <Grid container>
-              <Grid item xs={6}>
-                <Grid container>
-                  <Grid item xs={1} className="text-end pt-4">
-                    <SearchIcon htmlColor="black" />
-                  </Grid>
-                  <Grid item xs={11}>
-                    <input
-                      className="w-full bg-gray2 text-black rounded-[2rem] border-0 p-3 fs-5"
-                      type="search"
-                      placeholder="Buscar Secretario"
-                      aria-label="Search"
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={6} className="text-end">
-                <select
-                  className={`bg-gray2 text-gray3 rounded-[2rem] border-0 p-3 fs-5 w-[70%] opacity${
-                    active ? "active" : ""
-                  } transitionDown ${active ? "active" : ""}`}
-                >
-                  <option>Filtrar por</option>
-                  <option>Nombre</option>
-                  <option>Apellido</option>
-                </select>
-              </Grid>
-            </Grid>
-          </form>
-        </Grid>
         <Grid item xs={12} className="text-black">
           {loading ? (
-            <div className="w-full flex justify-center items-center">
+            <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-blue3"></span>
             </div>
           ) : data?.teachers ? (
@@ -416,8 +391,8 @@ function Secretaries() {
         addSuccessMsg={"Secretario Creado!"}
         updateSuccessMsg={"Secretario Actualizado!"}
         formValues={formValues}
-        addMutation={AddTeacher}
-        updateMutation={UpdateTeacher}
+        addMutation={handlerCreateTeacher}
+        updateMutation={handlerUpdateTeacher}
         cleaningStates={cleaningStates}
         validationEvent={validationEvent}
         refetch={refetch}

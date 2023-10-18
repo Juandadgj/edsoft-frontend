@@ -1,4 +1,4 @@
-import { useLoginLazyQuery } from "@/generated/graphql";
+import { useSignInLazyQuery } from "@/generated/graphql";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -12,17 +12,15 @@ function Test() {
   const { id, colegio } = router.query;
   const [username, setUsername] = useState("gilberto");
   const [password, setPassword] = useState("barco");
-  const [getUser, { data }] = useLoginLazyQuery();
+  const [getUser, { data }] = useSignInLazyQuery();
   useEffect(() => {
     if (!id || !colegio) {
       router.push("/instituciones");
       return;
     }
     if (data) {
-      console.log(data.signin);
-      const {
-        signin: { token },
-      } = data;
+      console.log(data.signIn.token);
+      const token = data.signIn.token
       console.log(token);
       if (token) {
         sessionStorage.setItem("userToken", token);
@@ -30,7 +28,7 @@ function Test() {
       router.push("/dashboard");
     }
   }, [data, router]);
-  
+
   return (
     <div className="h-screen bg-[#EFEFEF]">
       <div className="flex items-center justify-start px-5 py-2">
@@ -105,9 +103,11 @@ function Test() {
             onClick={(e) => {
               getUser({
                 variables: {
-                  password: password,
-                  user: username,
-                  id_institution: 1059,
+                  signInInput: {
+                    password: password,
+                    user: username,
+                    id_institution: 1059,
+                  },
                 },
               });
             }}

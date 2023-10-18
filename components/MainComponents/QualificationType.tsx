@@ -4,7 +4,7 @@ import {
   useCreateQualificationTypeMutation,
   useDeleteQualificationTypeMutation,
   useGetQualificationQuery,
-  useUpdateQualificationTypeMutation,
+  useUpdateQualificationMutation,
 } from "../../generated/graphql";
 import { useEffect, useState } from "react";
 import edit from "../../public/assets/01editar.png";
@@ -63,7 +63,7 @@ const CssTextField = styled(TextField)({
 function QualificationType() {
   const [DeleteQualificationType] = useDeleteQualificationTypeMutation();
   const [AddQualificationType] = useCreateQualificationTypeMutation();
-  const [useUpdateQualificationType] = useUpdateQualificationTypeMutation();
+  const [UpdateQualificationType] = useUpdateQualificationMutation();
   const [active, setActive] = useState(false);
   const [open, setOpen] = useState(false);
   const [typeAdd, setTypeAdd] = useState(false);
@@ -276,6 +276,12 @@ function QualificationType() {
     }));
   }, [data, DeleteQualificationType]);
 
+  const handlerCreateQualificationType = async () => {
+    return await AddQualificationType({variables:{createTypeQualificationInput:formValues}})
+  }
+  const handlerUpdateQualificationType = async () => {
+    return await UpdateQualificationType({variables:{updateQualificationInput:formValues}})
+  }
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
       <Grid container>
@@ -301,41 +307,10 @@ function QualificationType() {
         container
         className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full"
       >
-        <Grid item xs={12}>
-          <form role="search">
-            <Grid container>
-              <Grid item xs={6}>
-                <Grid container>
-                  <Grid item xs={1} className="text-end pt-4">
-                    <SearchIcon />
-                  </Grid>
-                  <Grid item xs={11}>
-                    <input
-                      className=" w-full bg-gray2 text-black rounded-[2rem] border-0 p-3"
-                      type="search"
-                      placeholder="Buscar Nota"
-                      aria-label="Search"
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={6} className="text-end">
-                <select
-                  className={`bg-gray2 text-gray3 rounded-[2rem] border-0 p-3 fs-5 w-[70%] opacity${
-                    active ? "active" : ""
-                  } transitionDown ${active ? "active" : ""}`}
-                >
-                  <option>Filtrar por</option>
-                  <option>Nombre</option>
-                  <option>Apellido</option>
-                </select>
-              </Grid>
-            </Grid>
-          </form>
-        </Grid>
+
         <Grid item xs={12} className="text-black">
           {loading ? (
-            <div className="w-full flex justify-center items-center">
+            <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-blue3"></span>
             </div>
           ) : data?.typeQualifications ? (
@@ -364,8 +339,8 @@ function QualificationType() {
         addSuccessMsg={"Calificacion Creada!"}
         updateSuccessMsg={"Calificacion Actualizada!"}
         formValues={formValues}
-        addMutation={AddQualificationType}
-        updateMutation={useUpdateQualificationType}
+        addMutation={handlerCreateQualificationType}
+        updateMutation={handlerUpdateQualificationType}
         cleaningStates={cleaningStates}
         validationEvent={validationEvent}
         refetch={refetch}

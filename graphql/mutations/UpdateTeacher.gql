@@ -1,25 +1,5 @@
-mutation UpdateTeacher(
-  $degree: String!
-  $direction: String!
-  $email: String!
-  $identification: String!
-  $last_name: String!
-  $name: String!
-  $phone: String!
-  $type_id: Int!
-  $id_teacher: Int!
-) {
-  updateTeacher(
-    degree: $degree
-    direction: $direction
-    email: $email
-    identification: $identification
-    last_name: $last_name
-    name: $name
-    phone: $phone
-    type_id: $type_id
-    id_teacher: $id_teacher
-  ) {
+mutation UpdateTeacher($updateTeacherInput: UpdateTeacherInput!) {
+  updateTeacher(updateTeacherInput: $updateTeacherInput) {
     id_teacher
   }
 }

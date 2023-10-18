@@ -1,17 +1,8 @@
-mutation updateQualificationType(
-  $id_type_qual: Int!
-  $name: String!
-  $floor_score: Float!
-  $ceiling_score: Float!
-  $year: Int!
-) {
-  updateTypeQualification(
-    id_type_qual: $id_type_qual
-    name: $name
-    floor_score: $floor_score
-    ceiling_score: $ceiling_score
-    year: $year
-  ) {
-    id_type_qual
+mutation UpdateQualification($updateQualificationInput: UpdateQualificationInput!) {
+  updateQualification(updateQualificationInput: $updateQualificationInput) {
+    id_achie_stu
+    id_achievement
+    id_student
+    score
   }
 }

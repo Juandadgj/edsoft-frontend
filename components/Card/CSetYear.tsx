@@ -16,9 +16,6 @@ const CSetYear = (props: SetYearCard) => {
           {secretary}
         </td>
         <td className="flex w-full justify-center items-center text-center">
-          {year}
-        </td>
-        <td className="flex w-full justify-center items-center text-center">
           {details}
         </td>
         <td className="flex w-full justify-center items-center text-center">

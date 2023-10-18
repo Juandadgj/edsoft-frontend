@@ -98,6 +98,7 @@ export default function DynamicModal({
   cleaningStates,
   validationEvent,
   refetch,
+  variables,
 }: any) {
   const handleClose = () => {
     cleaningStates();
@@ -106,9 +107,7 @@ export default function DynamicModal({
 
   const handleAdd = () => {
     if (validationEvent()) {
-      addMutation({
-        variables: formValues,
-      }).then((res: any) => {
+      addMutation().then((res: any) => {
         if (res.data) {
           Swal.fire({
             icon: "success",
@@ -133,9 +132,7 @@ export default function DynamicModal({
 
   const handleUpdate = () => {
     if (validationEvent()) {
-      updateMutation({
-        variables: formValues,
-      }).then((res: any) => {
+      updateMutation().then((res: any) => {
         if (res.data) {
           Swal.fire({
             icon: "success",

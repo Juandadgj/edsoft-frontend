@@ -1,11 +1,12 @@
-mutation CreateArea(
-  $name: String!
-  $status: String!
-) {
-  createArea(
-    name: $name
-    status: $status
-  ){
+mutation createArea($createAreaInput: CreateAreaInput!) {
+  createArea(createAreaInput: $createAreaInput) {
     id_area
+    name
+    status
   }
+}
+
+input CreateAreaInput {
+    name: String,
+    status: String,
 }

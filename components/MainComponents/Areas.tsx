@@ -206,6 +206,14 @@ function Areas() {
     }));
   }, [data, DeleteArea]);
 
+  const handlerCreateArea = async () => {
+    return await CreateArea({variables:{createAreaInput:formValue}})
+  }
+
+  const handlerUpdateArea = async () => {
+    return await UpdateArea({variables:{updateAreaInput:formValue}})
+  }
+
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
       <Grid container>
@@ -231,41 +239,10 @@ function Areas() {
         container
         className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full"
       >
-        <Grid item xs={12}>
-          <form role="search">
-            <Grid container>
-              <Grid item xs={6}>
-                <Grid container>
-                  <Grid item xs={1} className="text-end pt-4">
-                    <SearchIcon />
-                  </Grid>
-                  <Grid item xs={11}>
-                    <input
-                      className="w-full bg-gray2 text-black rounded-[2rem] border-0 p-3"
-                      type="search"
-                      placeholder="Buscar Área"
-                      aria-label="Search"
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={6} className="text-end">
-                <select
-                  className={`bg-gray2 text-gray3 rounded-[2rem] border-0 p-3 fs-5 w-[70%] opacity${
-                    active ? "active" : ""
-                  } transitionDown ${active ? "active" : ""}`}
-                >
-                  <option>Filtrar por</option>
-                  <option>Nombre</option>
-                  <option>Apellido</option>
-                </select>
-              </Grid>
-            </Grid>
-          </form>
-        </Grid>
+
         <Grid item xs={12}>
           {loading ? (
-            <div className="w-full flex justify-center items-center">
+            <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-blue3"></span>
             </div>
           ) : data?.areas ? (
@@ -290,8 +267,8 @@ function Areas() {
         addSuccessMsg={"Area Creada!"}
         updateSuccessMsg={"Area Actualizada!"}
         formValues={formValue}
-        addMutation={CreateArea}
-        updateMutation={UpdateArea}
+        addMutation={handlerCreateArea}
+        updateMutation={handlerUpdateArea}
         cleaningStates={cleaningStates}
         validationEvent={validationEvent}
         refetch={refetch}

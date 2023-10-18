@@ -7,7 +7,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import {
   useCreateSetYearMutation,
   useGetSchoolarYearsQuery,
-  useUpdateSchoolarYearMutation,
+  useUpdateScholarYearMutation,
 } from "../../generated/graphql";
 import { styled } from "@material-ui/styles";
 import DynamicModal from "../DynamicModal";
@@ -52,7 +52,7 @@ const CssTextField = styled(TextField)({
 
 function SetYear() {
   const [AddSetYear] = useCreateSetYearMutation();
-  const [UpdateSchoolarYear] = useUpdateSchoolarYearMutation();
+  const [UpdateSchoolarYear] = useUpdateScholarYearMutation();
   const [active, setActive] = useState(false);
   const [open, setOpen] = useState(false);
   const [typeAdd, setTypeAdd] = useState(false);
@@ -226,6 +226,17 @@ function SetYear() {
     }));
   }, [data]);
 
+  const handlerCreateSetYear = async () => {
+    return await AddSetYear({
+      variables: { createScholarYearInput: formValues },
+    });
+  };
+  const handlerUpdateSetYear = async () => {
+    return await UpdateSchoolarYear({
+      variables: { updateScholarYearInput: formValues },
+    });
+  };
+
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
       <Grid container>
@@ -251,41 +262,9 @@ function SetYear() {
         container
         className="mx-auto  bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full"
       >
-        <Grid item xs={12}>
-          <form role="search">
-            <Grid container>
-              <Grid item xs={6}>
-                <Grid container>
-                  <Grid item xs={1} className="text-end pt-4">
-                    <SearchIcon />
-                  </Grid>
-                  <Grid item xs={11}>
-                    <input
-                      className="w-full bg-gray2 text-black rounded-[2rem] border-0 p-3"
-                      type="search"
-                      placeholder="Buscar Año"
-                      aria-label="Search"
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={6} className="text-end">
-                <select
-                  className={`bg-gray2 text-gray3 rounded-[2rem] border-0 p-3 fs-5 w-[70%] opacity${
-                    active ? "active" : ""
-                  } transitionDown ${active ? "active" : ""}`}
-                >
-                  <option>Filtrar por</option>
-                  <option>Nombre</option>
-                  <option>Apellido</option>
-                </select>
-              </Grid>
-            </Grid>
-          </form>
-        </Grid>
         <Grid item xs={12} className="text-black">
           {loading && (
-            <div className="w-full flex justify-center items-center">
+            <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-blue3"></span>
             </div>
           )}
@@ -313,8 +292,8 @@ function SetYear() {
         addSuccessMsg={"Calificacion Creada!"}
         updateSuccessMsg={"Calificacion Actualizada!"}
         formValues={formValues}
-        addMutation={AddSetYear}
-        updateMutation={UpdateSchoolarYear}
+        addMutation={handlerCreateSetYear}
+        updateMutation={handlerUpdateSetYear}
         cleaningStates={cleaningStates}
         validationEvent={validationEvent}
         refetch={refetch}

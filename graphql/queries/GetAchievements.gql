@@ -1,5 +1,8 @@
-query GetAchievements {
+query Achievements {
   achievements {
-    ...RegularAchievement
+    id_achievement
+    id_course
+    period
+    description
   }
 }
