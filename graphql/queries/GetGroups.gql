@@ -1,0 +1,9 @@
+query Groups($filterGroupInput: FilterGroupInput) {
+  groups(filterGroupInput: $filterGroupInput) {
+    id_group
+    level
+    sublevel
+    working_time
+    representative
+  }
+}

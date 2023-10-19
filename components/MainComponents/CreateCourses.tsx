@@ -1,6 +1,6 @@
 import DynamicTable from "../DynamicTable";
 import { useMemo } from "react";
-import { useGetCoursesQuery } from "../../generated/graphql";
+import { useGroupsQuery } from "../../generated/graphql";
 import { useEffect, useState } from "react";
 import edit from "../../public/assets/01editar.png";
 import delet from "../../public/assets/01eliminar.png";
@@ -37,7 +37,9 @@ function CreateCourses() {
   const today = new Date();
   const year = today.getFullYear();
   const [active, setActive] = useState(false);
-  const { data, loading } = useGetCoursesQuery();
+  const { data, loading } = useGroupsQuery({
+    variables: { filterGroupInput: { id_year: 2017 } },
+  });
 
   useEffect(() => {
     setActive(true);
@@ -46,7 +48,7 @@ function CreateCourses() {
   const processedCourses = useMemo(() => {
     if (!data?.groups) return [];
     return data.groups.map((group, index) => ({
-      name: group?.id_group ?? "",
+      name: `${group?.level}-${group?.sublevel}` ?? "",
       jornada: group?.working_time ?? "",
       group_teacher: group?.representative ?? "",
       editar: (
@@ -97,14 +99,14 @@ function CreateCourses() {
         container
         className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full"
       >
-        <Grid item xs={12}>
+        <Grid item xs={12} className="h-full">
           {loading ? (
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-blue3"></span>
             </div>
           ) : data?.groups ? (
             <div
-              className="d-flex border-white py-4"
+              className="d-flex border-white py-4 h-full"
               style={{ height: "32rem" }}
             >
               <Table column={columns} data={processedCourses} type={"course"} />

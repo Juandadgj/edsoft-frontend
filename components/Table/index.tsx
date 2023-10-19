@@ -10,8 +10,8 @@ const Table = ({ data, column, type }: any) => {
   const {asPath} = useRouter()
   console.log(asPath)
   return (
-    <div className={`w-full  overflow-x-auto animate-fade-left ${asPath == '/instituciones' ? 'h-full' : 'h-96'}`}>
-      <table className="table text-black ">
+    <div className={`w-full px-3 overflow-x-auto animate-fade-left ${asPath == '/instituciones' ? 'h-full' : 'h-full'}`}>
+      <table className="table text-black">
         <thead className="flex items-center justify-center">
           <tr className="flex w-full justify-center border-blue3 border-b-4 text-xl font-semibold">
             {column.map((key: any, index: any) => (

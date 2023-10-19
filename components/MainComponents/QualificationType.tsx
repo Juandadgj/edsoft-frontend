@@ -308,14 +308,14 @@ function QualificationType() {
         className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full"
       >
 
-        <Grid item xs={12} className="text-black">
+        <Grid item xs={12} className="text-black h-full">
           {loading ? (
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-blue3"></span>
             </div>
           ) : data?.typeQualifications ? (
             <div
-              className="d-flex border-white py-4"
+              className="d-flex border-white py-4 h-full"
               style={{ height: "32rem" }}
             >
               <Table

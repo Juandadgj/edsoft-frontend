@@ -31,7 +31,7 @@ const SideBar = ({ manage, logo }: any) => {
           </div>
         ) : null}
 
-        <li className="mt-3 text-white fs-4 dropdown dropdown-right flex justify-center">
+        <li className="mt-3 text-white fs-4 dropdown dropdown-hover dropdown-right flex justify-center">
           <button
             className="button bg-blue3"
             type="button"
@@ -49,7 +49,7 @@ const SideBar = ({ manage, logo }: any) => {
               <Groups2Icon className="h-12 w-11" sx={{ fontSize: 30 }} />
             </div>
           </button>
-          <ul className="menu dropdown-content ms-1 text-black bg-white rounded-[5px]">
+          <ul className="menu dropdown-content ms-1 text-black bg-white rounded-[5px] z-30">
             <li>
               <button className="dropdown-item" id="Teachers" onClick={manage}>
                 Docentes
