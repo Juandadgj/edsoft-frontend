@@ -272,7 +272,7 @@ function SetYear() {
           {data?.scholarYears && !loading && (
             <div
               className="border-white py-4 h-full"
-              style={{ height: "32rem" }}
+              
             >
               <Table
                 column={columns}

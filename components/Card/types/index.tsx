@@ -5,7 +5,7 @@ export interface ICard {
     | TeachersCard
     | QualifificationTypeCard
     | SetYearCard
-    | CourseCard
+    | GroupsCars
     | AreaCard
     | EnrollmentCard
     | SubjectCard;
@@ -51,12 +51,15 @@ export interface SetYearCard {
   details: string;
   edit: any;
 }
-export interface CourseCard {
+export interface GroupsCars {
   name: string;
-  jornada: string;
+  jornada?: string;
   group_teacher: string;
-  editar: string;
-  borrar: string;
+  id_group?: number;
+  editar?: string;
+  borrar?: string;
+  asignaturas?: number; 
+  click?: ()=>void;
 }
 export interface AreaCard {
   name: string;
@@ -65,7 +68,11 @@ export interface AreaCard {
 }
 
 export interface SubjectCard {
-  subjectName: string;
-  teacherID: string;
+  name: string;
+  teacher: string;
   subjects: string;
+  area: any;
+  hour: any;
+  editar: any;
+  borrar: any
 }
