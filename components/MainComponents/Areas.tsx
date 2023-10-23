@@ -248,7 +248,6 @@ function Areas() {
           ) : data?.areas ? (
             <div
               className="d-flex border-white py-4 h-full"
-              style={{ height: "32rem" }}
             >
               <Table column={columns} data={processedAreas} type={"area"} />
             </div>

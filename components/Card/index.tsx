@@ -3,7 +3,7 @@ import CTeachers from "./CTeachers";
 import CInstitutions from "./CInstitutions";
 import {
   AreaCard,
-  CourseCard,
+  GroupsCars,
   EnrollmentCard,
   ICard,
   InstitutionCard,
@@ -15,7 +15,7 @@ import {
 } from "./types";
 import CScretaries from "./CScretaries";
 import CQualificationType from "./CQualificationType";
-import CCourses from "./CCourses";
+import CGroups from "./CGroups";
 import CAreas from "./CAreas";
 import CSetYear from "./CSetYear";
 import CSubject from "./CSubject";
@@ -33,8 +33,8 @@ const Card = ({ type, item }: ICard) => {
       return <CQualificationType {...(item as QualifificationTypeCard)} />;
     case "setYear":
       return <CSetYear {...(item as SetYearCard)} />;
-    case "course":
-      return <CCourses {...(item as CourseCard)} />;
+    case "groups":
+      return <CGroups {...(item as GroupsCars)} />;
     case "area":
       return <CAreas {...(item as AreaCard)} />;
     case "subject":

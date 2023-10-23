@@ -37,6 +37,7 @@ function CreateCourses() {
   const today = new Date();
   const year = today.getFullYear();
   const [active, setActive] = useState(false);
+  
   const { data, loading } = useGroupsQuery({
     variables: { filterGroupInput: { id_year: 2017 } },
   });
@@ -107,7 +108,6 @@ function CreateCourses() {
           ) : data?.groups ? (
             <div
               className="d-flex border-white py-4 h-full"
-              style={{ height: "32rem" }}
             >
               <Table column={columns} data={processedCourses} type={"course"} />
             </div>

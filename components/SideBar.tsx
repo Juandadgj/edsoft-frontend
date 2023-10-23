@@ -11,11 +11,12 @@ import { useEffect, useState } from "react";
 // import styled from '@emotion/styled';
 import { Box } from "@mui/material";
 import { SchoolLogo } from "./SchoolLogo";
+import { useRouter } from "next/router";
 
 const SideBar = ({ manage, logo }: any) => {
   const [active, setActive] = useState(false);
-  const [activeComponent, setActiveComponent] = useState("Settings");
-  const [textComponent, setTextComponent] = useState("Configuración");
+
+  const router = useRouter();
 
   useEffect(() => {
     setActive(true);
@@ -51,15 +52,23 @@ const SideBar = ({ manage, logo }: any) => {
           </button>
           <ul className="menu dropdown-content ms-1 text-black bg-white rounded-[5px] z-30">
             <li>
-              <button className="dropdown-item" id="Teachers" onClick={manage}>
+              <button
+                className="dropdown-item"
+                id="profesores"
+                onClick={() =>
+                  router.push("/dashboard/funcionarios?componente=profesores")
+                }
+              >
                 Docentes
               </button>
             </li>
             <li>
               <button
                 className="dropdown-item"
-                id="Secretaries"
-                onClick={manage}
+                id="secretarias"
+                onClick={() =>
+                  router.push("/dashboard/funcionarios?componente=secretarios")
+                }
               >
                 Secretarios
               </button>
@@ -90,18 +99,34 @@ const SideBar = ({ manage, logo }: any) => {
               <button
                 className="dropdown-item"
                 id="QualificationType"
-                onClick={manage}
+                onClick={() =>
+                  router.push(
+                    "/dashboard/programacion-anual?componente=calificacion"
+                  )
+                }
               >
                 Tipo De Calificación
               </button>
             </li>
             <li>
-              <button className="dropdown-item" id="SetYear" onClick={manage}>
+              <button
+                className="dropdown-item"
+                id="SetYear"
+                onClick={() =>
+                  router.push("/dashboard/programacion-anual?componente=establecer")
+                }
+              >
                 Establecer año
               </button>
             </li>
             <li>
-              <button className="dropdown-item" id="CopyYear" onClick={manage}>
+              <button
+                className="dropdown-item"
+                id="CopyYear"
+                onClick={() =>
+                  router.push("/dashboard/programacion-anual?componente=copiar")
+                }
+              >
                 Copiar Año Anterior
               </button>
             </li>
@@ -109,18 +134,32 @@ const SideBar = ({ manage, logo }: any) => {
               <button
                 className="dropdown-item"
                 id="CreateCourses"
-                onClick={manage}
+                onClick={() =>
+                  router.push("/dashboard/programacion-anual?componente=crear-curso")
+                }
               >
                 Crear Cursos
               </button>
             </li>
             <li>
-              <button className="dropdown-item" id="Areas" onClick={manage}>
+              <button
+                className="dropdown-item"
+                id="Areas"
+                onClick={() =>
+                  router.push("/dashboard/programacion-anual?componente=area")
+                }
+              >
                 Áreas
               </button>
             </li>
             <li>
-              <button className="dropdown-item" id="Subjects" onClick={manage}>
+              <button
+                className="dropdown-item"
+                id="Subjects"
+                onClick={() =>
+                  router.push("/dashboard/programacion-anual?componente=asignatura")
+                }
+              >
                 Asignaturas
               </button>
             </li>
@@ -128,7 +167,9 @@ const SideBar = ({ manage, logo }: any) => {
               <button
                 className="dropdown-item"
                 id="Achievements"
-                onClick={manage}
+                onClick={() =>
+                  router.push("/dashboard/programacion-anual?componente=logros")
+                }
               >
                 Logros
               </button>
@@ -137,7 +178,9 @@ const SideBar = ({ manage, logo }: any) => {
               <button
                 className="dropdown-item"
                 id="Enrollment"
-                onClick={manage}
+                onClick={() =>
+                  router.push("/dashboard/programacion-anual?componente=matriculas")
+                }
               >
                 Matrículas
               </button>
