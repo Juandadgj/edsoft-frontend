@@ -8,8 +8,19 @@ export interface ICard {
     | GroupsCars
     | AreaCard
     | EnrollmentCard
+    | CourseCard
     | SubjectCard;
 }
+
+export interface CourseCard {
+  name: string;
+  teacher: string;
+  periodo1: number;
+  periodo2: number;
+  periodo3: number;
+  periodo4: number;
+  click?: ()=>void;
+}  
 
 export interface EnrollmentCard {
   id: number
