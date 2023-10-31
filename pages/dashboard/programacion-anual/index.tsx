@@ -12,8 +12,8 @@ import React from "react";
 
 export default function Anual() {
   const router = useRouter();
-  const { componente } = router.query;
-  console.log(router.query)
+  const { componente, a } = router.query;
+  console.log("a", a);
   return (
     <Layaout>
       {componente == "calificacion" && <QualificationType />}

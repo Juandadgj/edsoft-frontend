@@ -15,7 +15,7 @@ const Table = ({ data, column, type }: any) => {
         <thead className="flex items-center justify-center">
           <tr className="flex w-full justify-center border-blue3 border-b-4 text-xl font-semibold">
             {column.map((key: any, index: any) => (
-              <th key={key} className="w-full text-center text-blue3 whitespace-normal flex items-center justify-center">
+              <th key={index} className="w-full text-center text-blue3 whitespace-normal flex items-center justify-center">
                 <p className="w-full">{key.Header}</p>
               </th>
             ))}

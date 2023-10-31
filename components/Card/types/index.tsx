@@ -13,13 +13,14 @@ export interface ICard {
 }
 
 export interface CourseCard {
+  id_course: number;
+  id_group: number;
   name: string;
   teacher: string;
   periodo1: number;
   periodo2: number;
   periodo3: number;
   periodo4: number;
-  click?: ()=>void;
 }  
 
 export interface EnrollmentCard {
