@@ -1,5 +1,5 @@
-query Achievements {
-  achievements {
+query Achievements($filterAchievementInput: FilterAchievementInput) {
+  achievements(filterAchievementInput: $filterAchievementInput) {
     id_achievement
     id_course
     period

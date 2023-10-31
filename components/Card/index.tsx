@@ -12,6 +12,7 @@ import {
   SetYearCard,
   SubjectCard,
   TeachersCard,
+  CourseCard
 } from "./types";
 import CScretaries from "./CScretaries";
 import CQualificationType from "./CQualificationType";
@@ -20,6 +21,7 @@ import CAreas from "./CAreas";
 import CSetYear from "./CSetYear";
 import CSubject from "./CSubject";
 import CEnrollment from "./CEnrollment";
+import CCourses from "./CCourses";
 
 const Card = ({ type, item }: ICard) => {
   switch (type) {
@@ -41,6 +43,8 @@ const Card = ({ type, item }: ICard) => {
       return <CSubject {...(item as SubjectCard)} />;
     case "enrollment":
       return <CEnrollment {...(item as EnrollmentCard)} />;
+    case "courses":
+      return <CCourses {...(item as CourseCard)} />;
     default:
       break;
   }

@@ -1,4 +1,5 @@
 import Layaout from "@/components/Layaout";
+import Achievements from "@/components/MainComponents/Achievements";
 import Areas from "@/components/MainComponents/Areas";
 import CopyYear from "@/components/MainComponents/CopyYear";
 import CreateCourses from "@/components/MainComponents/CreateCourses";
@@ -11,8 +12,8 @@ import React from "react";
 
 export default function Anual() {
   const router = useRouter();
-  const { componente } = router.query;
-  console.log(router.query)
+  const { componente, a } = router.query;
+  console.log("a", a);
   return (
     <Layaout>
       {componente == "calificacion" && <QualificationType />}
@@ -21,7 +22,7 @@ export default function Anual() {
       {componente == "crear-curso" && <CreateCourses />}
       {componente == "area" && <Areas />}
       {componente == "asignatura" && <Subjects />}
-      {componente == "logros" && <Enrollment />}
+      {componente == "logros" && <Achievements />}
       {componente == "matriculas" && <Enrollment />}
     </Layaout>
   );

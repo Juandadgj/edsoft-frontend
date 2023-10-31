@@ -941,7 +941,9 @@ export type UpdateTeacherMutationVariables = Exact<{
 
 export type UpdateTeacherMutation = { __typename?: 'Mutation', updateTeacher: { __typename?: 'Teacher', id_teacher: number } };
 
-export type AchievementsQueryVariables = Exact<{ [key: string]: never; }>;
+export type AchievementsQueryVariables = Exact<{
+  filterAchievementInput?: InputMaybe<FilterAchievementInput>;
+}>;
 
 
 export type AchievementsQuery = { __typename?: 'Query', achievements: Array<{ __typename?: 'Achievement', id_achievement: number, id_course?: number | null, period?: number | null, description?: string | null } | null> };
@@ -1542,8 +1544,8 @@ export type UpdateTeacherMutationHookResult = ReturnType<typeof useUpdateTeacher
 export type UpdateTeacherMutationResult = Apollo.MutationResult<UpdateTeacherMutation>;
 export type UpdateTeacherMutationOptions = Apollo.BaseMutationOptions<UpdateTeacherMutation, UpdateTeacherMutationVariables>;
 export const AchievementsDocument = gql`
-    query Achievements {
-  achievements {
+    query Achievements($filterAchievementInput: FilterAchievementInput) {
+  achievements(filterAchievementInput: $filterAchievementInput) {
     id_achievement
     id_course
     period
@@ -1564,6 +1566,7 @@ export const AchievementsDocument = gql`
  * @example
  * const { data, loading, error } = useAchievementsQuery({
  *   variables: {
+ *      filterAchievementInput: // value for 'filterAchievementInput'
  *   },
  * });
  */
