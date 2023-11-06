@@ -1,0 +1,5 @@
+mutation UpdateAchievement($updateAchievementInput: UpdateAchievementInput!) {
+  updateAchievement(updateAchievementInput: $updateAchievementInput) {
+    id_achievement
+  }
+}
