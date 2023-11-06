@@ -850,6 +850,13 @@ export type RegularSubjectFragment = { __typename?: 'Course', id_course: number,
 
 export type RegularTeacherFragment = { __typename?: 'Teacher', id_teacher: number, name?: string | null, last_name?: string | null, identification?: string | null, direction?: string | null, phone?: string | null, email?: string | null, degree?: string | null };
 
+export type CreateAchievementMutationVariables = Exact<{
+  createAchievementInput: CreateAchievementInput;
+}>;
+
+
+export type CreateAchievementMutation = { __typename?: 'Mutation', createAchievement: { __typename?: 'Achievement', description?: string | null } };
+
 export type CreateAreaMutationVariables = Exact<{
   createAreaInput: CreateAreaInput;
 }>;
@@ -885,6 +892,13 @@ export type CreateTeacherMutationVariables = Exact<{
 
 export type CreateTeacherMutation = { __typename?: 'Mutation', createTeacher: { __typename?: 'Teacher', degree?: string | null } };
 
+export type DeleteAchievementMutationVariables = Exact<{
+  idAchievement: Scalars['Int'];
+}>;
+
+
+export type DeleteAchievementMutation = { __typename?: 'Mutation', deleteAchievement?: { __typename?: 'Achievement', id_achievement: number } | null };
+
 export type DeleteAreaMutationVariables = Exact<{
   idArea: Scalars['Int'];
 }>;
@@ -912,6 +926,13 @@ export type DeleteTeacherMutationVariables = Exact<{
 
 
 export type DeleteTeacherMutation = { __typename?: 'Mutation', deleteTeacher?: { __typename?: 'Teacher', id_teacher: number } | null };
+
+export type UpdateAchievementMutationVariables = Exact<{
+  updateAchievementInput: UpdateAchievementInput;
+}>;
+
+
+export type UpdateAchievementMutation = { __typename?: 'Mutation', updateAchievement: { __typename?: 'Achievement', id_achievement: number } };
 
 export type UpdateAreaMutationVariables = Exact<{
   updateAreaInput: UpdateAreaInput;
@@ -1089,6 +1110,39 @@ export const RegularTeacherFragmentDoc = gql`
   degree
 }
     `;
+export const CreateAchievementDocument = gql`
+    mutation CreateAchievement($createAchievementInput: CreateAchievementInput!) {
+  createAchievement(createAchievementInput: $createAchievementInput) {
+    description
+  }
+}
+    `;
+export type CreateAchievementMutationFn = Apollo.MutationFunction<CreateAchievementMutation, CreateAchievementMutationVariables>;
+
+/**
+ * __useCreateAchievementMutation__
+ *
+ * To run a mutation, you first call `useCreateAchievementMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAchievementMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAchievementMutation, { data, loading, error }] = useCreateAchievementMutation({
+ *   variables: {
+ *      createAchievementInput: // value for 'createAchievementInput'
+ *   },
+ * });
+ */
+export function useCreateAchievementMutation(baseOptions?: Apollo.MutationHookOptions<CreateAchievementMutation, CreateAchievementMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateAchievementMutation, CreateAchievementMutationVariables>(CreateAchievementDocument, options);
+      }
+export type CreateAchievementMutationHookResult = ReturnType<typeof useCreateAchievementMutation>;
+export type CreateAchievementMutationResult = Apollo.MutationResult<CreateAchievementMutation>;
+export type CreateAchievementMutationOptions = Apollo.BaseMutationOptions<CreateAchievementMutation, CreateAchievementMutationVariables>;
 export const CreateAreaDocument = gql`
     mutation createArea($createAreaInput: CreateAreaInput!) {
   createArea(createAreaInput: $createAreaInput) {
@@ -1271,6 +1325,39 @@ export function useCreateTeacherMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateTeacherMutationHookResult = ReturnType<typeof useCreateTeacherMutation>;
 export type CreateTeacherMutationResult = Apollo.MutationResult<CreateTeacherMutation>;
 export type CreateTeacherMutationOptions = Apollo.BaseMutationOptions<CreateTeacherMutation, CreateTeacherMutationVariables>;
+export const DeleteAchievementDocument = gql`
+    mutation DeleteAchievement($idAchievement: Int!) {
+  deleteAchievement(id_achievement: $idAchievement) {
+    id_achievement
+  }
+}
+    `;
+export type DeleteAchievementMutationFn = Apollo.MutationFunction<DeleteAchievementMutation, DeleteAchievementMutationVariables>;
+
+/**
+ * __useDeleteAchievementMutation__
+ *
+ * To run a mutation, you first call `useDeleteAchievementMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteAchievementMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteAchievementMutation, { data, loading, error }] = useDeleteAchievementMutation({
+ *   variables: {
+ *      idAchievement: // value for 'idAchievement'
+ *   },
+ * });
+ */
+export function useDeleteAchievementMutation(baseOptions?: Apollo.MutationHookOptions<DeleteAchievementMutation, DeleteAchievementMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteAchievementMutation, DeleteAchievementMutationVariables>(DeleteAchievementDocument, options);
+      }
+export type DeleteAchievementMutationHookResult = ReturnType<typeof useDeleteAchievementMutation>;
+export type DeleteAchievementMutationResult = Apollo.MutationResult<DeleteAchievementMutation>;
+export type DeleteAchievementMutationOptions = Apollo.BaseMutationOptions<DeleteAchievementMutation, DeleteAchievementMutationVariables>;
 export const DeleteAreaDocument = gql`
     mutation DeleteArea($idArea: Int!) {
   deleteArea(id_area: $idArea) {
@@ -1403,6 +1490,39 @@ export function useDeleteTeacherMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteTeacherMutationHookResult = ReturnType<typeof useDeleteTeacherMutation>;
 export type DeleteTeacherMutationResult = Apollo.MutationResult<DeleteTeacherMutation>;
 export type DeleteTeacherMutationOptions = Apollo.BaseMutationOptions<DeleteTeacherMutation, DeleteTeacherMutationVariables>;
+export const UpdateAchievementDocument = gql`
+    mutation UpdateAchievement($updateAchievementInput: UpdateAchievementInput!) {
+  updateAchievement(updateAchievementInput: $updateAchievementInput) {
+    id_achievement
+  }
+}
+    `;
+export type UpdateAchievementMutationFn = Apollo.MutationFunction<UpdateAchievementMutation, UpdateAchievementMutationVariables>;
+
+/**
+ * __useUpdateAchievementMutation__
+ *
+ * To run a mutation, you first call `useUpdateAchievementMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAchievementMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAchievementMutation, { data, loading, error }] = useUpdateAchievementMutation({
+ *   variables: {
+ *      updateAchievementInput: // value for 'updateAchievementInput'
+ *   },
+ * });
+ */
+export function useUpdateAchievementMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAchievementMutation, UpdateAchievementMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateAchievementMutation, UpdateAchievementMutationVariables>(UpdateAchievementDocument, options);
+      }
+export type UpdateAchievementMutationHookResult = ReturnType<typeof useUpdateAchievementMutation>;
+export type UpdateAchievementMutationResult = Apollo.MutationResult<UpdateAchievementMutation>;
+export type UpdateAchievementMutationOptions = Apollo.BaseMutationOptions<UpdateAchievementMutation, UpdateAchievementMutationVariables>;
 export const UpdateAreaDocument = gql`
     mutation UpdateArea($updateAreaInput: UpdateAreaInput!) {
   updateArea(updateAreaInput: $updateAreaInput) {
