@@ -1,4 +1,3 @@
-import DynamicTable from "../DynamicTable";
 import { useMemo } from "react";
 import {
   useCoursesLazyQuery,

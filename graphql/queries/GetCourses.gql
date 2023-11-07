@@ -11,5 +11,8 @@ query Courses($filterCourseInput: FilterCourseInput) {
     hour
     average
     percentage
+    teacher {
+      name
+    }
   }
 }

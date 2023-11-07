@@ -109,7 +109,7 @@ function CreateCourses() {
             <div
               className="d-flex border-white py-4 h-full"
             >
-              <Table column={columns} data={processedCourses} type={"course"} />
+              <Table column={columns} data={processedCourses} type={"groups"} />
             </div>
           ) : (
             <h3>¡Ocurrio un error!</h3>

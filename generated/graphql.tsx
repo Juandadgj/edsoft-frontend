@@ -63,6 +63,7 @@ export type Course = {
   name: Scalars['String'];
   percentage?: Maybe<Scalars['Int']>;
   position?: Maybe<Scalars['Int']>;
+  teacher: Teacher;
 };
 
 export type CreateAbsenceInput = {
@@ -299,6 +300,7 @@ export type FilterTeacherInput = {
 
 export type Group = {
   __typename?: 'Group';
+  coursesCount?: Maybe<Scalars['Int']>;
   id_group: Scalars['Int'];
   id_year?: Maybe<Scalars['Int']>;
   level?: Maybe<Scalars['Int']>;
@@ -979,14 +981,14 @@ export type CoursesQueryVariables = Exact<{
 }>;
 
 
-export type CoursesQuery = { __typename?: 'Query', courses: Array<{ __typename?: 'Course', id_course: number, id_group: number, id_teacher: number, name: string, position?: number | null, dim_codigo?: number | null, asi_dimension?: string | null, id_area: number, hour: number, average?: string | null, percentage?: number | null } | null> };
+export type CoursesQuery = { __typename?: 'Query', courses: Array<{ __typename?: 'Course', id_course: number, id_group: number, id_teacher: number, name: string, position?: number | null, dim_codigo?: number | null, asi_dimension?: string | null, id_area: number, hour: number, average?: string | null, percentage?: number | null, teacher: { __typename?: 'Teacher', name?: string | null } } | null> };
 
 export type GroupsQueryVariables = Exact<{
   filterGroupInput?: InputMaybe<FilterGroupInput>;
 }>;
 
 
-export type GroupsQuery = { __typename?: 'Query', groups: Array<{ __typename?: 'Group', id_group: number, level?: number | null, sublevel?: string | null, working_time?: string | null, representative?: string | null } | null> };
+export type GroupsQuery = { __typename?: 'Query', groups: Array<{ __typename?: 'Group', id_group: number, level?: number | null, sublevel?: string | null, working_time?: string | null, representative?: string | null, coursesCount?: number | null } | null> };
 
 export type GetInstitutionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1749,6 +1751,9 @@ export const CoursesDocument = gql`
     hour
     average
     percentage
+    teacher {
+      name
+    }
   }
 }
     `;
@@ -1788,6 +1793,7 @@ export const GroupsDocument = gql`
     sublevel
     working_time
     representative
+    coursesCount
   }
 }
     `;

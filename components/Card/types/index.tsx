@@ -88,3 +88,7 @@ export interface SubjectCard {
   editar: any;
   borrar: any
 }
+
+export interface Qualification {
+  
+}
