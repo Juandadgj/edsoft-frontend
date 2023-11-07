@@ -17,14 +17,15 @@ export interface CourseCard {
   id_group: number;
   name: string;
   teacher: string;
+  route: string;
   periodo1: number;
   periodo2: number;
   periodo3: number;
   periodo4: number;
-}  
+}
 
 export interface EnrollmentCard {
-  id: number
+  id: number;
   icon: any;
   title: string;
 }
@@ -70,8 +71,8 @@ export interface GroupsCars {
   id_group?: number;
   editar?: string;
   borrar?: string;
-  asignaturas?: number; 
-  click?: ()=>void;
+  asignaturas?: number;
+  click?: () => void;
 }
 export interface AreaCard {
   name: string;
@@ -86,9 +87,7 @@ export interface SubjectCard {
   area: any;
   hour: any;
   editar: any;
-  borrar: any
+  borrar: any;
 }
 
-export interface Qualification {
-  
-}
+export interface Qualification {}

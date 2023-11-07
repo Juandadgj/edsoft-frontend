@@ -297,7 +297,7 @@ function Subjects() {
             // We set the values selected to our inputs
             setFormValues((t: any) => ({
               ...t,
-              name: courses.id,
+              name: courses.name,
               id_area: courses.id_area,
               id_teacher: courses?.id_teacher,
               id_group: courses?.id_group,
@@ -320,7 +320,7 @@ function Subjects() {
     return groups.groups.map((group, index) => ({
       name: `${group?.level}-${group?.sublevel}` ?? "",
       group_teacher: group?.representative ?? "",
-      asignaturas: 4,
+      asignaturas: group?.coursesCount,
       click: () => handlerSelectedCourse(group?.id_group),
     }));
   }, [groups]);

@@ -12,7 +12,6 @@ import {
 import { useRouter } from "next/router";
 import Table from "../Table";
 import edit from "../../public/assets/01editar.png";
-import delet from "../../public/assets/01eliminar.png";
 import { styled } from "@material-ui/styles";
 import {
   FilterAchievementInput,
@@ -88,17 +87,30 @@ function Achievements() {
   const [selectedAchievements, setSelectedAchievements] = useState<any>([]);
   const [open, setOpen] = useState(false);
   const [typeAdd, setTypeAdd] = useState(false);
+  const [
+    getAchievements,
+    { data: achievements, loading: loadingAchievements, error },
+  ] = useAchievementsLazyQuery();
+  const [
+    getCourses,
+    { data: courses, loading: loadingCourses, error: errorCourses, refetch },
+  ] = useCoursesLazyQuery();
 
+  const { data: groups, loading: loadingGroups } = useGroupsQuery({
+    variables: { filterGroupInput: { id_year: 2017 } },
+  });
+  const handlerSelectedCourse = (id: number | undefined) => {
+    router.push(`/dashboard/programacion-anual?componente=logros&g=${id}`);
+  };
   // Form to manage inputs values
   const [formValues, setFormValues] = useState<any>({
     name: "",
   });
-
   // Obj to manage every input error
   const [errors, setErrors] = useState<any>({
     name: "",
   });
-
+  
   // Here we validate if every item is filled and if it is we return true
   const validationEvent = () => {
     if (formValues.name) {
@@ -150,21 +162,9 @@ function Achievements() {
     },
   ];
 
-  const [
-    getAchievements,
-    { data: achievements, loading: loadingAchievements, error },
-  ] = useAchievementsLazyQuery();
-  const [
-    getCourses,
-    { data: courses, loading: loadingCourses, error: errorCourses, refetch },
-  ] = useCoursesLazyQuery();
+  
 
-  const { data: groups, loading: loadingGroups } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: 2017 } },
-  });
-  const handlerSelectedCourse = (id: number | undefined) => {
-    router.push(`/dashboard/programacion-anual?componente=logros&g=${id}`);
-  };
+
   const processedAchievements = (data: any) => {
     if (!data?.achievements) return [];
     return data.achievements.map((achievements: any, index: any) => ({
@@ -279,6 +279,7 @@ function Achievements() {
       periodo2: "-",
       periodo3: "-",
       periodo4: "-",
+      route: 'programacion-anual?componente=logros'
     }));
   };
 

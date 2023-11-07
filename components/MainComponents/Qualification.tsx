@@ -3,6 +3,7 @@ import {
   useCoursesLazyQuery,
   useGroupsQuery,
   useCreateCourseMutation,
+  useAchievementsLazyQuery,
 } from "../../generated/graphql";
 import { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
@@ -14,23 +15,64 @@ import edit from "../../public/assets/01editar.png";
 
 const Qualification = () => {
   const today = new Date();
-  const year = today.getFullYear();
   const router = useRouter();
-  const { c } = router.query;
-  const [selectedGroup, setSelectedGroup] = useState<any>([]);
+  const { g, a, per } = router.query;
+  const [selectedCourses, setSelectedCourses] = useState<any>([]);
+  const [selectedAchievements, setSelectedAchievements] = useState<any>([]);
   const [open, setOpen] = useState(false);
   const [typeAdd, setTypeAdd] = useState(false);
-  const [AddCourse] = useCreateCourseMutation();
+  const [
+    getAchievements,
+    { data: achievements, loading: loadingAchievements, error },
+  ] = useAchievementsLazyQuery();
+  const [
+    getCourses,
+    { data: courses, loading: loadingCourses, error: errorCourses, refetch },
+  ] = useCoursesLazyQuery();
+
+  const { data: groups, loading: loadingGroups } = useGroupsQuery({
+    variables: { filterGroupInput: { id_year: 2017 } },
+  });
+  const handlerSelectedCourse = (id: number | undefined) => {
+    router.push(`/dashboard/proceso-anual?componente=calificacion&g=${id}`);
+  };
 
   const [formValues, setFormValues] = useState<any>({
     name: "",
     id_area: 0,
     id_teacher: 0,
-    id_group: c,
+    id_group: g,
     average: "",
     percentage: 0,
     hour: 0,
   });
+
+  const columsCourses = [
+    {
+      Header: "Asignatura",
+      accessor: "name",
+    },
+    {
+      Header: "Profesor",
+      accessor: "teacher",
+    },
+    {
+      Header: "1 Per.",
+      accessor: "perido",
+    },
+    {
+      Header: "2 Per.",
+      accessor: "perido",
+    },
+    {
+      Header: "3 Per.",
+      accessor: "perido",
+    },
+    {
+      Header: "4 Per.",
+      accessor: "perido",
+    },
+  ];
 
   const columnsGroup = [
     {
@@ -51,36 +93,7 @@ const Qualification = () => {
     },
   ];
 
-  const logros: any[] = [
-    {
-      id_achievement: 462,
-      id_course: 254,
-      period: 1,
-      description:
-        "Reconoce las estructuras de los tiempos verbales simple en inglés",
-    },
-    {
-      id_achievement: 463,
-      id_course: 254,
-      period: 1,
-      description:
-        "Construye oraciones en presente continuo analizando sus diferentes formas ",
-    },
-    {
-      id_achievement: 464,
-      id_course: 254,
-      period: 1,
-      description:
-        "Presenta sus actividades  en forma organizada y en el tiempo indicado.",
-    },
-    {
-      id_achievement: 464,
-      id_course: 254,
-      period: 1,
-      description:
-        "Presenta sus actividades  en forma organizada y en el tiempo indicado.",
-    }
-  ];
+
 
   const student: any[] = [
     {
@@ -88,7 +101,7 @@ const Qualification = () => {
     },
     {
       name: "Jose Daniel Jose Daniel",
-    }
+    },
   ];
 
   const columnsQualification = [
@@ -97,7 +110,7 @@ const Qualification = () => {
       accessor: "name",
     },
   ].concat(
-    logros.map((logro, i) => {
+    selectedAchievements.map((logro: any, i: number) => {
       return { Header: i.toString(), accessor: "achivement" };
     })
   );
@@ -105,24 +118,11 @@ const Qualification = () => {
   const processedStudent = () => {
     return student.map((s: any, index: number) => ({
       name: s?.name ?? "",
-      logros: logros,
+      logros: selectedAchievements,
     }));
   };
 
   const data = processedStudent();
-
-  const [
-    getCourses,
-    { data: courses, loading: loadingCourses, error: errorCourses, refetch },
-  ] = useCoursesLazyQuery();
-
-  const { data: groups, loading: loadingGroups } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: 2017 } },
-  });
-
-  const handlerSelectedCourse = (id: number | undefined) => {
-    router.push(`/dashboard/proceso-anual?componente=calificacion&a=${id}`);
-  };
 
   const processedSubjects = (data: any) => {
     return data.map((courses: any, index: number) => ({
@@ -155,6 +155,16 @@ const Qualification = () => {
       borrar: "",
     }));
   };
+  const processedCourses = (data: any) => {
+    if (!data) return [];
+    return data.map((courses: any, index: any) => ({
+      id_course: courses?.id_course,
+      id_group: courses?.id_group,
+      name: `${courses?.name}` ?? "",
+      teacher: `${courses?.teacher.name}` ?? "-",
+      route: "proceso-anual?componente=calificacion",
+    }));
+  };
 
   const processedGroups = useMemo(() => {
     if (!groups?.groups) return [];
@@ -184,12 +194,26 @@ const Qualification = () => {
   }, [groups]);
 
   useEffect(() => {
-    if (c) {
-      getCourses({
-        variables: { filterCourseInput: { id_group: Number(c) } },
+    if (a && per) {
+      getAchievements({
+        variables: {
+          filterAchievementInput: { id_course: Number(a), period: Number(per) },
+        },
       }).then((res) => {
         const { data } = res;
-        setSelectedGroup(processedSubjects(data?.courses));
+        console.log("chi", data);
+        setSelectedAchievements(data?.achievements);
+      });
+    }
+  }, [router]);
+
+  useEffect(() => {
+    if (g) {
+      getCourses({
+        variables: { filterCourseInput: { id_group: Number(g) } },
+      }).then((res) => {
+        const { data } = res;
+        setSelectedCourses(processedCourses(data?.courses));
       });
     }
   }, [router]);
@@ -206,53 +230,96 @@ const Qualification = () => {
       </div>
       <Grid
         container
-        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full w-full"
+        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full"
       >
-        <Grid item xs={12} className="h-full w-full">
-          {loadingGroups ? (
-            <div className="w-full h-full flex justify-center items-center">
-              <span className="loading loading-dots loading-lg bg-blue3"></span>
-            </div>
-          ) : groups?.groups ? (
-            <div className=" border-white h-full w-full ">
-              <div
-                className={`w-full h-[80%] px-3 overflow-x-auto animate-fade-left `}
-              >
-                <table className="table text-black ">
-                  <thead className="w-full">
-                    <tr className="border-blue3 border-b-4 text-xl font-semibold">
-                      {columnsQualification.map((header: any, index: any) => (
-                        <td
-                          key={index}
-                          className="items-center justify-center text-center text-blue3"
-                        >
-                          {header.Header}
-                        </td>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className="w-full py-4 ">
-                    {data.map((item: any, key: any) => (
-                      <tr className="border-none p-3 bg-gray1">
-                        <td className="text-center">{item.name}</td>
-                        {item.logros &&
-                          item.logros.map((logros: any, index: number) => (
-                            <td className="text-center">{index}</td>
-                          ))}
+        {!g && (
+          <Grid item xs={12} className="h-full">
+            {loadingGroups ? (
+              <div className="w-full h-full flex justify-center items-center">
+                <span className="loading loading-dots loading-lg bg-blue3"></span>
+              </div>
+            ) : groups?.groups ? (
+              <div className="d-flex border-white py-4 h-full">
+                <Table
+                  column={columnsGroup}
+                  data={processedGroups}
+                  type={"groups"}
+                />
+              </div>
+            ) : (
+              <h3>¡Ocurrio un error!</h3>
+            )}
+          </Grid>
+        )}
+        {g && !a && !per && (
+          <Grid item xs={12} className="text-black h-full">
+            {loadingCourses ? (
+              <div className="w-full h-full flex justify-center items-center">
+                <span className="loading loading-dots loading-lg bg-blue3"></span>
+              </div>
+            ) : courses?.courses ? (
+              <div className=" border-white py-4 h-full">
+                <Table
+                  column={columsCourses}
+                  data={selectedCourses}
+                  type={"courses"}
+                />
+              </div>
+            ) : (
+              errorCourses && <h3>Ocurrio un error: {errorCourses?.message}</h3>
+            )}
+          </Grid>
+        )}
+        {a && per && (
+          <Grid item xs={12} className="h-full w-full">
+            {loadingGroups ? (
+              <div className="w-full h-full flex justify-center items-center">
+                <span className="loading loading-dots loading-lg bg-blue3"></span>
+              </div>
+            ) : groups?.groups ? (
+              <div className=" border-white h-full w-full ">
+                <div
+                  className={`w-full h-[80%] px-3 overflow-x-auto animate-fade-left `}
+                >
+                  <table className="table text-black ">
+                    <thead className="w-full">
+                      <tr className="border-blue3 border-b-4 text-xl font-semibold">
+                        {columnsQualification.map((header: any, index: any) => (
+                          <td
+                            key={index}
+                            className="items-center justify-center text-center text-blue3"
+                          >
+                            {header.Header}
+                          </td>
+                        ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="w-full py-4 ">
+                      {data.map((item: any, key: any) => (
+                        <tr className="border-none p-3 bg-gray1">
+                          <td className="text-center">{item.name}</td>
+                          {item.logros &&
+                            item.logros.map((logros: any, index: number) => (
+                              <td className="text-center">{index}</td>
+                            ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="w-full flex justify-center items-center h-[20%]">
+                  <button className="btn rounded-5 text-white bg-[#0b5ed7] hover:bg-[#0b5ed7]">
+                    Guardar notas
+                  </button>
+                </div>
               </div>
-              <div className="w-full flex justify-center items-center h-[20%]">
-                <button className="btn rounded-5 text-white bg-[#0b5ed7] hover:bg-[#0b5ed7]">Guardar notas</button>
-              </div>
-            </div>
-          ) : (
-            <h3>¡Ocurrio un error!</h3>
-          )}
-        </Grid>
+            ) : (
+              <h3>¡Ocurrio un error!</h3>
+            )}
+          </Grid>
+        )}
       </Grid>
+
       {/* Modal */}
     </div>
   );
