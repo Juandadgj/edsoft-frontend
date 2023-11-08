@@ -2,14 +2,12 @@ import { useMemo } from "react";
 import {
   useCoursesLazyQuery,
   useGroupsQuery,
-  useCreateCourseMutation,
   useAchievementsLazyQuery,
 } from "../../generated/graphql";
 import { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
 import Table from "../Table";
 import { useRouter } from "next/router";
-import DynamicModal from "../DynamicModal";
 import Image from "next/image";
 import edit from "../../public/assets/01editar.png";
 
@@ -97,9 +95,11 @@ const Qualification = () => {
 
   const student: any[] = [
     {
+      id: 1,
       name: "Michel Michel Michel",
     },
     {
+      id:2,
       name: "Jose Daniel Jose Daniel",
     },
   ];
@@ -117,6 +117,7 @@ const Qualification = () => {
 
   const processedStudent = () => {
     return student.map((s: any, index: number) => ({
+      id: s.id,
       name: s?.name ?? "",
       logros: selectedAchievements,
     }));
@@ -296,11 +297,11 @@ const Qualification = () => {
                     </thead>
                     <tbody className="w-full py-4 ">
                       {data.map((item: any, key: any) => (
-                        <tr className="border-none p-3 bg-gray1">
+                        <tr key={item.id} className="border-none p-3 bg-gray1">
                           <td className="text-center">{item.name}</td>
                           {item.logros &&
                             item.logros.map((logros: any, index: number) => (
-                              <td className="text-center">{index}</td>
+                              <td key={index} className="text-center">{index}</td>
                             ))}
                         </tr>
                       ))}

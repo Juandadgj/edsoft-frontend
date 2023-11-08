@@ -1,4 +1,3 @@
-import DynamicTable from "../components/DynamicTable";
 import Nav from "../components/Nav";
 import useWindowSize from "../hooks/useWindowSize";
 import { useMemo } from "react";

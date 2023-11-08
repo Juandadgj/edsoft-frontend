@@ -3,6 +3,7 @@ import {
   useCoursesLazyQuery,
   useGroupsQuery,
   useCreateCourseMutation,
+  useTeachersQuery,
 } from "../../generated/graphql";
 import { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
@@ -11,6 +12,10 @@ import { useRouter } from "next/router";
 import DynamicModal from "../DynamicModal";
 import Image from "next/image";
 import edit from "../../public/assets/01editar.png";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
 
 const columnsGroup = [
   {
@@ -45,6 +50,14 @@ const columnsSubjects = [
     accesor: "ihc",
   },
   {
+    Header: "Valor %",
+    accesor: "percentage",
+  },
+  {
+    Header: "Promediar",
+    accesor: "ihc",
+  },
+  {
     Header: "Editar",
     accessor: "edit",
   },
@@ -63,15 +76,26 @@ function Subjects() {
   const [open, setOpen] = useState(false);
   const [typeAdd, setTypeAdd] = useState(false);
   const [AddCourse] = useCreateCourseMutation();
+  const [
+    getCourses,
+    { data: courses, loading: loadingCourses, error: errorCourses, refetch },
+  ] = useCoursesLazyQuery();
+  const { data: groups, loading: loadingGroups } = useGroupsQuery({
+    variables: { filterGroupInput: { id_year: 2017 } },
+  });
+  const { data: teachers } = useTeachersQuery();
+  const handlerSelectedCourse = (id: number | undefined) => {
+    router.push(`/dashboard/programacion-anual?componente=asignatura&c=${id}`);
+  };
 
   const [formValues, setFormValues] = useState<any>({
+    id_group: c,
     name: "",
     id_area: 0,
-    id_teacher: 0,
-    id_group: c,
-    average: "",
-    percentage: 0,
+    teacher: "",
     hour: 0,
+    percentage: 0,
+    average: "",
   });
 
   const [errors, setErrors] = useState<any>({
@@ -86,17 +110,17 @@ function Subjects() {
   const options = [];
   for (let i = 1; i <= 24; i++) {
     options.push(
-      <option key={i} value={i}>
+      <MenuItem key={i} value={i}>
         {i}
-      </option>
+      </MenuItem>
     );
   }
   const optionsPercentage = [];
   for (let i = 1; i <= 100; i++) {
     optionsPercentage.push(
-      <option key={i} value={i}>
+      <MenuItem key={i} value={i}>
         {i}
-      </option>
+      </MenuItem>
     );
   }
 
@@ -123,21 +147,29 @@ function Subjects() {
     },
     {
       html: (
-        <div className="text-black">
-          <input
-            type="text"
-            value={formValues.id_teacher}
-            id=""
-            name="id_teacher"
-            placeholder="Profesor de la asignatura"
-            className="input  border-gray5 w-full h-12 bg-transparent text-sm"
-            onChange={({ target }: any) =>
-              setFormValues({ ...formValues, [target.name]: target.value })
-            }
-          />
+        <div className="form-control text-black">
+          <FormControl fullWidth>
+            <InputLabel id="average">Profesor</InputLabel>
+            <Select
+              labelId="average"
+              id="demo-simple-select"
+              name="teacher"
+              value={formValues.teacher}
+              label="Profesor"
+              onChange={({ target }: any) =>
+                setFormValues({ ...formValues, [target.name]: target.value })
+              }
+            >
+              {
+                teachers?.teachers.map(({name, id_teacher}:any)=>(
+                  <MenuItem key={id_teacher} value={name}>{name}</MenuItem>
+                ))
+              }
+            </Select>
+          </FormControl>
           <div>
             <label className="label-text-alt text-[red]">
-              {errors.id_teacher}
+              {errors.teacher}
             </label>
           </div>
         </div>
@@ -146,19 +178,22 @@ function Subjects() {
     {
       html: (
         <div className="form-control text-black">
-          <select
-            name="average"
-            className="select select-bordered select-md border-gray5  w-full bg-transparent font-normal"
-            onChange={({ target }: any) =>
-              setFormValues({ ...formValues, [target.name]: target.value })
-            }
-          >
-            <option disabled selected>
-              Promediar con todas las asignaturas{" "}
-            </option>
-            <option value="Si">Si</option>
-            <option value="No">No</option>
-          </select>
+          <FormControl fullWidth>
+            <InputLabel id="average">Promediar</InputLabel>
+            <Select
+              labelId="average"
+              id="demo-simple-select"
+              name="average"
+              value={formValues.average}
+              label="Promediar"
+              onChange={({ target }: any) =>
+                setFormValues({ ...formValues, [target.name]: target.value })
+              }
+            >
+              <MenuItem value={"Si"}> Si</MenuItem>
+              <MenuItem value={"No"}> No</MenuItem>
+            </Select>
+          </FormControl>
           <div>
             <label className="label-text-alt text-[red]">
               {errors.average}
@@ -170,38 +205,48 @@ function Subjects() {
     {
       html: (
         <div className="from-control text-black">
-          <select
-            className="select select-bordered select-md border-gray5  w-full bg-transparent font-normal"
-            onChange={({ target }: any) =>
-              setFormValues({ ...formValues, [target.name]: target.value })
-            }
-          >
-            <option disabled selected>
-              Peso o valor de la asignatura
-            </option>
-            {options}
-          </select>
+          <FormControl fullWidth>
+            <InputLabel id="average">Promediar</InputLabel>
+            <Select
+              labelId="average"
+              id="demo-simple-select"
+              name="average"
+              value={formValues.average}
+              label="Promediar"
+              onChange={({ target }: any) =>
+                setFormValues({ ...formValues, [target.name]: target.value })
+              }
+            >
+              <MenuItem value={"Si"}> Si</MenuItem>
+              <MenuItem value={"No"}> No</MenuItem>
+            </Select>
+          </FormControl>
           <div>
-            <label className="label-text-alt text-[red]">{errors.name}</label>
+            <label className="label-text-alt text-[red]">
+              {errors.average}
+            </label>
           </div>
         </div>
       ),
     },
     {
       html: (
-        <div className="form-control text-black">
-          <select
-            name="hour"
-            className="select select-bordered select-md border-gray5  w-full bg-transparent font-normal"
-            onChange={({ target }: any) =>
-              setFormValues({ ...formValues, [target.name]: target.value })
-            }
-          >
-            <option disabled selected>
-              Intensidad horaria
-            </option>
-            {options}
-          </select>
+        <div>
+          <FormControl fullWidth>
+            <InputLabel id="hour">IHC</InputLabel>
+            <Select
+              labelId="hour"
+              id="demo-simple-select"
+              name="hour"
+              value={formValues.hour}
+              label="ihc"
+              onChange={({ target }: any) =>
+                setFormValues({ ...formValues, [target.name]: target.value })
+              }
+            >
+              {options}
+            </Select>
+          </FormControl>
           <div>
             <label className="label-text-alt text-[red]">{errors.hour}</label>
           </div>
@@ -211,19 +256,22 @@ function Subjects() {
     ,
     {
       html: (
-        <div className="form-control text-black">
-          <select
-            name="percentage"
-            className="select select-bordered select-md border-gray5  w-full bg-transparent font-normal"
-            onChange={({ target }: any) =>
-              setFormValues({ ...formValues, [target.name]: target.value })
-            }
-          >
-            <option disabled selected>
-              Valor porcentual
-            </option>
-            {optionsPercentage}
-          </select>
+        <div>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Valor %</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              name="percentage"
+              value={formValues.percentage}
+              label="Valor %"
+              onChange={({ target }: any) =>
+                setFormValues({ ...formValues, [target.name]: target.value })
+              }
+            >
+              {optionsPercentage}
+            </Select>
+          </FormControl>
           <div>
             <label className="label-text-alt text-[red]">
               {errors.percentage}
@@ -269,26 +317,15 @@ function Subjects() {
       }
     }
   };
-  const [
-    getCourses,
-    { data: courses, loading: loadingCourses, error: errorCourses, refetch },
-  ] = useCoursesLazyQuery();
-
-  const { data: groups, loading: loadingGroups } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: 2017 } },
-  });
-
-  const handlerSelectedCourse = (id: number | undefined) => {
-    console.log("click");
-    router.push(`/dashboard/programacion-anual?componente=asignatura&c=${id}`);
-  };
 
   const processedSubjects = (data: any) => {
     return data.map((courses: any, index: number) => ({
       name: courses?.name ?? "",
       area: courses.id_area ?? "",
-      teacher: courses?.id_teacher ?? "-",
+      teacher: courses?.teacher.name ?? "-",
       hour: courses?.hour ?? "",
+      percentage: courses.percentage,
+      average: courses.average,
       editar: (
         <button
           className="border-0"
@@ -299,11 +336,11 @@ function Subjects() {
               ...t,
               name: courses.name,
               id_area: courses.id_area,
-              id_teacher: courses?.id_teacher,
-              id_group: courses?.id_group,
-              average: courses.average,
-              percentage: courses.percentage,
+              teacher: courses?.teacher.name,
               hour: courses.hour,
+              percentage: courses.percentage,
+              average: courses.average,
+              id_group: courses?.id_group,
             }));
             setOpen(true);
           }}
@@ -318,6 +355,7 @@ function Subjects() {
   const processedGroups = useMemo(() => {
     if (!groups?.groups) return [];
     return groups.groups.map((group, index) => ({
+      id:group?.id_group,
       name: `${group?.level}-${group?.sublevel}` ?? "",
       group_teacher: group?.representative ?? "",
       asignaturas: group?.coursesCount,

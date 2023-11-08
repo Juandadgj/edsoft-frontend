@@ -1,5 +1,4 @@
 import useWindowSize from '../../hooks/useWindowSize';
-//import { useLoginMutation } from '../generated/graphql';
 import { useEffect, useState } from 'react';
 import { FormControlLabel, FormGroup, Switch } from '@mui/material';
 import Grid from '@mui/material/Grid';

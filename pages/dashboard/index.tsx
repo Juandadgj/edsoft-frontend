@@ -35,17 +35,13 @@ const avatarOption = makeStyles(theme => ({
 
 function Dashboard (){
  
-  const [active, setActive] = useState(false);
-  const [textComponent, setTextComponent] = useState('Inicio');
-  const [activeComponent, setActiveComponent] = useState('SchoolHome');
   const router = useRouter()
   useEffect(() => {
-    setActive(true);
     const token = sessionStorage.getItem("userToken")
     if (!token) {
       router.push("/login")
     }
-  }, []);
+  }, [router]);
 
   return (
     <Layaout>

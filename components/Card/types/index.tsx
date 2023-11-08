@@ -82,10 +82,11 @@ export interface AreaCard {
 
 export interface SubjectCard {
   name: string;
-  teacher: string;
-  subjects: string;
   area: any;
+  teacher: string;
   hour: any;
+  percentage: number;
+  average: string
   editar: any;
   borrar: any;
 }

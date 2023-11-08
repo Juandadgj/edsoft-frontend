@@ -1,4 +1,3 @@
-import DynamicTable from "../DynamicTable";
 import { useMemo } from "react";
 import { useEffect, useState } from "react";
 import edit from "../../public/assets/01editar.png";

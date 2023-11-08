@@ -1,4 +1,3 @@
-import DynamicTable from "../DynamicTable";
 import { useMemo } from "react";
 import { useGroupsQuery } from "../../generated/graphql";
 import { useEffect, useState } from "react";
