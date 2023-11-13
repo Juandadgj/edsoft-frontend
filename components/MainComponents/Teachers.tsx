@@ -1,4 +1,3 @@
-import DynamicTable from "../DynamicTable";
 import { useMemo } from "react";
 import {
   useDeleteTeacherMutation,
@@ -10,7 +9,6 @@ import { useEffect, useState } from "react";
 import edit from "../../public/assets/01editar.png";
 import delet from "../../public/assets/01eliminar.png";
 import { Grid, TextField } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
 import DynamicModal from "../DynamicModal";
 import { styled } from "@material-ui/styles";
 import Swal from "sweetalert2";

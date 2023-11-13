@@ -6,9 +6,8 @@ import { SchoolAvatar } from "./SchoolAvatar";
 
 const Layaout = ({ children }: { children: React.ReactNode }) => {
   const [textComponent, setTextComponent] = useState("Inicio");
-  const [activeComponent, setActiveComponent] = useState("SchoolHome");
   const router = useRouter();
-  const {} = router.query
+  const {} = router.query;
 
   useEffect(() => {
     const token = sessionStorage.getItem("userToken");
@@ -19,7 +18,7 @@ const Layaout = ({ children }: { children: React.ReactNode }) => {
 
   const manageComponentStatus = ({ target }: any) => {
     console.log(target.id, target.innerText, target.alt);
-    router.push(`/dashboard/${target.id}`)
+    router.push(`/dashboard/${target.id}`);
   };
 
   return (
@@ -45,11 +44,15 @@ const Layaout = ({ children }: { children: React.ReactNode }) => {
         } w-full`}
       >
         {router.asPath === "/dashboard" ? (
-          <SideBar manage={manageComponentStatus} logo={true} />
+          <div className="w-[5%]">
+            <SideBar manage={manageComponentStatus} logo={true} />
+          </div>
         ) : (
-          <SideBar manage={manageComponentStatus} logo={false} />
+          <div className="w-[5%]">
+            <SideBar manage={manageComponentStatus} logo={false} />
+          </div>
         )}
-        <div className="bg-blue3 flex flex-col h-full w-full">{children}</div>
+        <div className="bg-blue3 flex flex-col h-full w-[95%]">{children}</div>
       </div>
     </div>
   );

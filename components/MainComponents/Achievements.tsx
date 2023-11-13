@@ -1,20 +1,25 @@
 import { useMemo } from "react";
 import { useEffect, useState } from "react";
-import {Grid, TextField} from "@mui/material";
+import { Grid, TextField } from "@mui/material";
 import {
   useCoursesLazyQuery,
   useGroupsQuery,
   useAchievementsLazyQuery,
   useDeleteAchievementMutation,
   useUpdateAchievementMutation,
-  useCreateAchievementMutation
+  useCreateAchievementMutation,
 } from "../../generated/graphql";
 import { useRouter } from "next/router";
 import Table from "../Table";
 import edit from "../../public/assets/01editar.png";
-import delet from "../../public/assets/01eliminar.png";
 import { styled } from "@material-ui/styles";
-import { FilterAchievementInput, Achievement, DeleteAchievementDocument, UpdateAbsenceInput, UpdateAchievementDocument } from '../../generated/graphql';
+import {
+  FilterAchievementInput,
+  Achievement,
+  DeleteAchievementDocument,
+  UpdateAbsenceInput,
+  UpdateAchievementDocument,
+} from "../../generated/graphql";
 import DynamicModal from "../DynamicModal";
 import Image from "next/image";
 import Swal from "sweetalert2";
@@ -58,23 +63,22 @@ const columnsGroup = [
   { Header: "Asignaturas", accessor: "subjects" },
 ];
 
-  const CssTextField = styled(TextField)({
-    fontFamily: ["Scada", "sans-serif"].join(","),
-    "& .MuiOutlinedInput-root": {
-      "&:hover fieldset": {
-        borderColor: "blue",
-      },
-      "&.Mui-focused fieldset": {
-        borderColor: "green",
-      },
+const CssTextField = styled(TextField)({
+  fontFamily: ["Scada", "sans-serif"].join(","),
+  "& .MuiOutlinedInput-root": {
+    "&:hover fieldset": {
+      borderColor: "blue",
     },
-  });
+    "&.Mui-focused fieldset": {
+      borderColor: "green",
+    },
+  },
+});
 
-  
 function Achievements() {
-  const [ CreateAchievement ] = useCreateAchievementMutation();
-  const [ DeleteAchievement ] = useDeleteAchievementMutation();
-  const [ UpdateAchievement ] = useUpdateAchievementMutation();
+  const [CreateAchievement] = useCreateAchievementMutation();
+  const [DeleteAchievement] = useDeleteAchievementMutation();
+  const [UpdateAchievement] = useUpdateAchievementMutation();
   const today = new Date();
   const year = today.getFullYear();
   const router = useRouter();
@@ -83,22 +87,33 @@ function Achievements() {
   const [selectedAchievements, setSelectedAchievements] = useState<any>([]);
   const [open, setOpen] = useState(false);
   const [typeAdd, setTypeAdd] = useState(false);
+  const [
+    getAchievements,
+    { data: achievements, loading: loadingAchievements, error },
+  ] = useAchievementsLazyQuery();
+  const [
+    getCourses,
+    { data: courses, loading: loadingCourses, error: errorCourses, refetch },
+  ] = useCoursesLazyQuery();
 
+  const { data: groups, loading: loadingGroups } = useGroupsQuery({
+    variables: { filterGroupInput: { id_year: 2017 } },
+  });
+  const handlerSelectedCourse = (id: number | undefined) => {
+    router.push(`/dashboard/programacion-anual?componente=logros&g=${id}`);
+  };
   // Form to manage inputs values
   const [formValues, setFormValues] = useState<any>({
-    name: ""
+    name: "",
   });
-
   // Obj to manage every input error
   const [errors, setErrors] = useState<any>({
-    name: ""
+    name: "",
   });
-
+  
   // Here we validate if every item is filled and if it is we return true
   const validationEvent = () => {
-    if (
-      formValues.name 
-    ) {
+    if (formValues.name) {
       return true;
     } else {
       for (const item in formValues) {
@@ -147,21 +162,8 @@ function Achievements() {
     },
   ];
 
-  const [
-    getAchievements,
-    { data: achievements, loading: loadingAchievements, error },
-  ] = useAchievementsLazyQuery();
-  const [
-    getCourses,
-    { data: courses, loading: loadingCourses, error: errorCourses, refetch },
-  ] = useCoursesLazyQuery();
+  
 
-  const { data: groups, loading: loadingGroups } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: 2017 } },
-  });
-  const handlerSelectedCourse = (id: number | undefined) => {
-    router.push(`/dashboard/programacion-anual?componente=logros&g=${id}`);
-  };
 
   const processedAchievements = (data: any) => {
     if (!data?.achievements) return [];
@@ -203,7 +205,7 @@ function Achievements() {
       ),
       borrar: (
         <button
-          className="border-0"
+          className="border-0 flex justify-center items-center"
           onClick={() =>
             Swal.fire({
               title: "¿Estás seguro?",
@@ -240,13 +242,17 @@ function Achievements() {
             })
           }
         >
-          <Image
-            className={`h-8 w-10`}
-            src={delet}
-            alt=""
-            width={50}
-            height={50}
-          />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            viewBox="0 0 256 256"
+          >
+            <path
+              fill="#e11d48"
+              d="M216 50h-42V40a22 22 0 0 0-22-22h-48a22 22 0 0 0-22 22v10H40a6 6 0 0 0 0 12h10v146a14 14 0 0 0 14 14h128a14 14 0 0 0 14-14V62h10a6 6 0 0 0 0-12ZM94 40a10 10 0 0 1 10-10h48a10 10 0 0 1 10 10v10H94Zm100 168a2 2 0 0 1-2 2H64a2 2 0 0 1-2-2V62h132Zm-84-104v64a6 6 0 0 1-12 0v-64a6 6 0 0 1 12 0Zm48 0v64a6 6 0 0 1-12 0v-64a6 6 0 0 1 12 0Z"
+            />
+          </svg>
         </button>
       ),
     }));
@@ -257,7 +263,7 @@ function Achievements() {
     return groups?.groups.map((group, index) => ({
       name: `${group?.level}-${group?.sublevel}` ?? "",
       group_teacher: group?.representative ?? "",
-      asignaturas: 4,
+      asignaturas: group?.coursesCount,
       click: () => handlerSelectedCourse(group?.id_group),
     }));
   }, [groups]);
@@ -268,11 +274,12 @@ function Achievements() {
       id_course: courses?.id_course,
       id_group: courses?.id_group,
       name: `${courses?.name}` ?? "",
-      teacher: `${courses?.id_teacher}` ?? "-",
+      teacher: `${courses?.teacher.name}` ?? "-",
       periodo1: "-",
       periodo2: "-",
       periodo3: "-",
       periodo4: "-",
+      route: 'programacion-anual?componente=logros'
     }));
   };
 
@@ -301,12 +308,16 @@ function Achievements() {
   }, [router]);
 
   const handlerCreateAchievement = async () => {
-    return await CreateAchievement({ variables: { createAchievementInput: formValues } });
-   };
- 
-   const handlerUpdateAchievement = async (form:any) => {
-    return await UpdateAchievement({variables:{updateAchievementInput: formValues}})
-   }
+    return await CreateAchievement({
+      variables: { createAchievementInput: formValues },
+    });
+  };
+
+  const handlerUpdateAchievement = async (form: any) => {
+    return await UpdateAchievement({
+      variables: { updateAchievementInput: formValues },
+    });
+  };
 
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
@@ -316,18 +327,20 @@ function Achievements() {
             Logros por curso para el año {year}
           </strong>
         </Grid>
-        <Grid item xs={6} className="text-end pr-6">
-          <button
-            type="button"
-            className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-2 rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
-            onClick={() => {
-              setTypeAdd(true);
-              setOpen(true);
-            }}
-          >
-            <h4 className="text-white">+ Nuevo Logro</h4>
-          </button>
-        </Grid>
+        {a && per && (
+          <Grid item xs={6} className="text-end pr-6">
+            <button
+              type="button"
+              className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-2 rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
+              onClick={() => {
+                setTypeAdd(true);
+                setOpen(true);
+              }}
+            >
+              <h4 className="text-white">+ Nuevo Logro</h4>
+            </button>
+          </Grid>
+        )}
       </Grid>
       <Grid
         container
@@ -378,14 +391,14 @@ function Achievements() {
                 <span className="loading loading-dots loading-lg bg-blue3"></span>
               </div>
             ) : achievements?.achievements ? (
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto h-full">
                 <table className="table">
                   <thead>
                     <tr className="border-none text-lg font-semibold text-blue3">
                       <th>Descripcion</th>
                       <th>Editar</th>
                       <th>Agregar indicador</th>
-                      <th>Eliminar</th>
+                      <th className="text-[#e11d48]">Eliminar</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -394,7 +407,7 @@ function Achievements() {
                         <th>{a?.description}</th>
                         <th>{a?.editar}</th>
                         <th>{a?.indicator}</th>
-                        <th>{a?.borrar}</th>
+                        <th className="flex justify-center">{a?.borrar}</th>
                       </tr>
                     ))}
                   </tbody>

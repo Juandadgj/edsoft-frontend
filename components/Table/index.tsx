@@ -7,8 +7,7 @@ import { TableContainer } from "@material-ui/core";
 import { useRouter } from "next/router";
 
 const Table = ({ data, column, type }: any) => {
-  const {asPath} = useRouter()
-  console.log(asPath)
+  const { asPath } = useRouter();
   return (
     <div className={`w-full px-3 overflow-x-auto animate-fade-left ${asPath == '/instituciones' ? 'h-full' : 'h-full'}`}>
       <table className="table text-black">

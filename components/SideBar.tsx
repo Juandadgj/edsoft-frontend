@@ -23,8 +23,8 @@ const SideBar = ({ manage, logo }: any) => {
   }, []);
 
   return (
-    <div className="h-full">
-      <ul className="bg-blue3 w-20 h-full ps-1 flex flex-col justify-evenly flex-nowrap">
+    <div className="h-full w-full">
+      <ul className="bg-blue3 w-full h-full ps-1 flex flex-col justify-evenly flex-nowrap">
         {logo ? (
           <div className="bg-[#1A3187] rounded-custom ms-2 text-white fs-4 dropdown dropend">
             {" "}
@@ -208,7 +208,7 @@ const SideBar = ({ manage, logo }: any) => {
           </button>
           <ul className="menu dropdown-content ms-1 text-black bg-white rounded-[5px] z-30">
             <li>
-              <button className="dropdown-item" id="Teachers" onClick={manage}>
+              <button className="dropdown-item" id="Teachers" onClick={() => router.push("/dashboard/proceso-anual?componente=calificacion")}>
                 Calificación
               </button>
             </li>
