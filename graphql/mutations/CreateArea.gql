@@ -5,8 +5,3 @@ mutation createArea($createAreaInput: CreateAreaInput!) {
     status
   }
 }
-
-input CreateAreaInput {
-    name: String,
-    status: String,
-}

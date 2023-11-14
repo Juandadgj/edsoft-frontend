@@ -7,10 +7,8 @@ import {
 } from "../../generated/graphql";
 import { useEffect, useState } from "react";
 import edit from "../../public/assets/01editar.png";
-import delet from "../../public/assets/01eliminar.png";
 import { Grid, TextField } from "@mui/material";
 import { styled } from "@material-ui/styles";
-import SearchIcon from "@mui/icons-material/Search";
 import DynamicModal from "../DynamicModal";
 import Swal from "sweetalert2";
 import Image from "next/image";
@@ -317,13 +315,17 @@ function Secretaries() {
             })
           }
         >
-          <Image
-            className={`h-8 w-10`}
-            src={delet}
-            alt=""
-            width={50}
-            height={50}
-          />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            viewBox="0 0 256 256"
+          >
+            <path
+              fill="#e11d48"
+              d="M216 50h-42V40a22 22 0 0 0-22-22h-48a22 22 0 0 0-22 22v10H40a6 6 0 0 0 0 12h10v146a14 14 0 0 0 14 14h128a14 14 0 0 0 14-14V62h10a6 6 0 0 0 0-12ZM94 40a10 10 0 0 1 10-10h48a10 10 0 0 1 10 10v10H94Zm100 168a2 2 0 0 1-2 2H64a2 2 0 0 1-2-2V62h132Zm-84-104v64a6 6 0 0 1-12 0v-64a6 6 0 0 1 12 0Zm48 0v64a6 6 0 0 1-12 0v-64a6 6 0 0 1 12 0Z"
+            />
+          </svg>
         </button>
       ),
     }));
@@ -331,11 +333,13 @@ function Secretaries() {
 
   const handlerCreateTeacher = async () => {
     return await AddTeacher({ variables: { createTeacherInput: formValues } });
-   };
- 
-   const handlerUpdateTeacher = async (form:any) => {
-    return await UpdateTeacher({variables:{updateTeacherInput: formValues}})
-   }
+  };
+
+  const handlerUpdateTeacher = async (form: any) => {
+    return await UpdateTeacher({
+      variables: { updateTeacherInput: formValues },
+    });
+  };
 
   return (
     <div className="rounded-tl-[20px] w-full overflow-hidden bg-gray1 p-14 h-full">

@@ -4,6 +4,9 @@ import {
   useGroupsQuery,
   useCreateCourseMutation,
   useTeachersQuery,
+  useGetAreasQuery,
+  useUpdateCourseMutation,
+  useDeleteCourseMutation,
 } from "../../generated/graphql";
 import { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
@@ -16,6 +19,7 @@ import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
+import Swal from "sweetalert2";
 
 const columnsGroup = [
   {
@@ -75,33 +79,47 @@ function Subjects() {
   const [selectedGroup, setSelectedGroup] = useState<any>([]);
   const [open, setOpen] = useState(false);
   const [typeAdd, setTypeAdd] = useState(false);
-  const [AddCourse] = useCreateCourseMutation();
   const [
     getCourses,
     { data: courses, loading: loadingCourses, error: errorCourses, refetch },
-  ] = useCoursesLazyQuery();
+  ] = useCoursesLazyQuery({ fetchPolicy: "network-only" });
   const { data: groups, loading: loadingGroups } = useGroupsQuery({
     variables: { filterGroupInput: { id_year: 2017 } },
   });
   const { data: teachers } = useTeachersQuery();
+  const { data: areas } = useGetAreasQuery();
+  const [AddCourse] = useCreateCourseMutation();
+  const [UpdateCourse] = useUpdateCourseMutation();
+  const [DeleteCourse] = useDeleteCourseMutation({});
+
   const handlerSelectedCourse = (id: number | undefined) => {
     router.push(`/dashboard/programacion-anual?componente=asignatura&c=${id}`);
   };
 
   const [formValues, setFormValues] = useState<any>({
-    id_group: c,
     name: "",
     id_area: 0,
+    area: "",
+    id_tehacer: 0,
     teacher: "",
     hour: 0,
     percentage: 0,
     average: "",
+    id_group: c,
   });
+  const [course, setCourse] = useState<number>(0);
+  const [name, setName] = useState("");
+  const [teacher, setTeacher] = useState(0);
+  const [area, setArea] = useState(0);
+  const [hour, setHour] = useState(0);
+  const [percentage, setPercentage] = useState(0);
+  const [average, setAverage] = useState("");
 
   const [errors, setErrors] = useState<any>({
     name: "",
     id_area: "",
     id_teacher: "",
+    teacher: "",
     average: "",
     percentage: "",
     hour: "",
@@ -123,21 +141,21 @@ function Subjects() {
       </MenuItem>
     );
   }
-
+  const handlerSelect = (event: any) => {
+    setFormValues({ ...formValues, id_area: event.target.value });
+  };
   const arrayInputs: any[] = [
     {
       html: (
         <div className="text-black">
           <input
             type="text"
-            value={formValues.name}
+            value={name}
             id=""
             name="name"
             placeholder="Nombre de la asignatura"
             className="input border-gray5 w-full h-12 bg-transparent text-sm"
-            onChange={({ target }: any) =>
-              setFormValues({ ...formValues, [target.name]: target.value })
-            }
+            onChange={({ target }: any) => setName(target.value)}
           />
           <div>
             <label className="label-text-alt text-[red]">{errors.name}</label>
@@ -149,27 +167,27 @@ function Subjects() {
       html: (
         <div className="form-control text-black">
           <FormControl fullWidth>
-            <InputLabel id="average">Profesor</InputLabel>
+            <InputLabel id="label-teacher">Profesor</InputLabel>
             <Select
-              labelId="average"
-              id="demo-simple-select"
+              labelId="label-teacher"
+              id="teacher"
               name="teacher"
-              value={formValues.teacher}
+              value={teacher}
               label="Profesor"
-              onChange={({ target }: any) =>
-                setFormValues({ ...formValues, [target.name]: target.value })
-              }
+              onChange={({ target }: any) => {
+                setTeacher(target.value);
+              }}
             >
-              {
-                teachers?.teachers.map(({name, id_teacher}:any)=>(
-                  <MenuItem key={id_teacher} value={name}>{name}</MenuItem>
-                ))
-              }
+              {teachers?.teachers.map((teacher: any) => (
+                <MenuItem key={teacher?.id_teacher} value={teacher?.id_teacher}>
+                  {teacher?.name} {teacher?.last_name}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
           <div>
             <label className="label-text-alt text-[red]">
-              {errors.teacher}
+              {errors.id_teacher}
             </label>
           </div>
         </div>
@@ -179,24 +197,27 @@ function Subjects() {
       html: (
         <div className="form-control text-black">
           <FormControl fullWidth>
-            <InputLabel id="average">Promediar</InputLabel>
+            <InputLabel id="label-area">Area</InputLabel>
             <Select
-              labelId="average"
-              id="demo-simple-select"
-              name="average"
-              value={formValues.average}
-              label="Promediar"
-              onChange={({ target }: any) =>
-                setFormValues({ ...formValues, [target.name]: target.value })
-              }
+              labelId="label-area"
+              id="area"
+              name="id_area"
+              value={area}
+              label="Area"
+              onChange={({ target }: any) => {
+                setArea(target.value);
+              }}
             >
-              <MenuItem value={"Si"}> Si</MenuItem>
-              <MenuItem value={"No"}> No</MenuItem>
+              {areas?.areas.map((area: any) => (
+                <MenuItem key={area?.id_area} value={area?.id_area}>
+                  {area?.name}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
           <div>
             <label className="label-text-alt text-[red]">
-              {errors.average}
+              {errors.id_area}
             </label>
           </div>
         </div>
@@ -211,11 +232,9 @@ function Subjects() {
               labelId="average"
               id="demo-simple-select"
               name="average"
-              value={formValues.average}
+              value={average}
               label="Promediar"
-              onChange={({ target }: any) =>
-                setFormValues({ ...formValues, [target.name]: target.value })
-              }
+              onChange={({ target }: any) => setAverage(target.value)}
             >
               <MenuItem value={"Si"}> Si</MenuItem>
               <MenuItem value={"No"}> No</MenuItem>
@@ -238,11 +257,9 @@ function Subjects() {
               labelId="hour"
               id="demo-simple-select"
               name="hour"
-              value={formValues.hour}
+              value={hour}
               label="ihc"
-              onChange={({ target }: any) =>
-                setFormValues({ ...formValues, [target.name]: target.value })
-              }
+              onChange={({ target }: any) => setHour(target.value)}
             >
               {options}
             </Select>
@@ -263,11 +280,9 @@ function Subjects() {
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               name="percentage"
-              value={formValues.percentage}
+              value={percentage}
               label="Valor %"
-              onChange={({ target }: any) =>
-                setFormValues({ ...formValues, [target.name]: target.value })
-              }
+              onChange={({ target }: any) => setPercentage(target.value)}
             >
               {optionsPercentage}
             </Select>
@@ -282,22 +297,33 @@ function Subjects() {
     },
   ];
   const validationEvent = () => {
-    if (
-      formValues.name &&
-      formValues.id_teacher &&
-      formValues.average &&
-      formValues.percentage &&
-      formValues.hour
-    ) {
+    if (name && teacher && area && average && percentage && hour) {
       return true;
     } else {
-      for (const item in formValues) {
-        if (!formValues[item]) {
-          setErrors((err: any) => ({ ...err, [item]: "Campo Requerido!" }));
-        } else {
-          setErrors((err: any) => ({ ...err, [item]: "" }));
-        }
-      }
+      !name
+        ? setErrors((err: any) => ({ ...err, name: "Nombre Requerido!" }))
+        : setErrors((err: any) => ({ ...err, name: "" }));
+      !teacher
+        ? setErrors((err: any) => ({
+            ...err,
+            id_teacher: "Profesor Requerido!",
+          }))
+        : setErrors((err: any) => ({ ...err, id_teacher: "" }));
+      !area
+        ? setErrors((err: any) => ({ ...err, id_area: "Area Requerido!" }))
+        : setErrors((err: any) => ({ ...err, id_area: "" }));
+      !average
+        ? setErrors((err: any) => ({ ...err, average: "Promedio Requerido!" }))
+        : setErrors((err: any) => ({ ...err, average: "" }));
+      !percentage
+        ? setErrors((err: any) => ({
+            ...err,
+            percentage: "Porcentaje Requerido!",
+          }))
+        : setErrors((err: any) => ({ ...err, percentage: "" }));
+      !hour
+        ? setErrors((err: any) => ({ ...err, hour: "Horario Requerido!" }))
+        : setErrors((err: any) => ({ ...err, hour: "" }));
       return false;
     }
   };
@@ -306,16 +332,13 @@ function Subjects() {
     for (const item in errors) {
       setErrors((err: any) => ({ ...err, [item]: "" }));
     }
-
-    for (const i in formValues) {
-      if (i === "id_teacher") {
-        setFormValues((val: any) => ({ ...val, [i]: undefined }));
-      } else if (i === "type_id") {
-        setFormValues((val: any) => ({ ...val, [i]: 1 }));
-      } else {
-        setFormValues((val: any) => ({ ...val, [i]: "" }));
-      }
-    }
+    setCourse(0);
+    setName("");
+    setTeacher(0);
+    setArea(0);
+    setAverage("")
+    setHour(0)
+    setPercentage(0)
   };
 
   const processedSubjects = (data: any) => {
@@ -334,28 +357,50 @@ function Subjects() {
             // We set the values selected to our inputs
             setFormValues((t: any) => ({
               ...t,
-              name: courses.name,
-              id_area: courses.id_area,
-              teacher: courses?.teacher.name,
-              hour: courses.hour,
-              percentage: courses.percentage,
-              average: courses.average,
+              id_course: courses.id_course,
+              name: courses?.name,
+              id_area: courses?.id_area,
+              id_teacher: courses.id_teacher,
+              hour: courses?.hour,
+              percentage: courses?.percentage,
+              average: courses?.average,
               id_group: courses?.id_group,
             }));
+            setCourse(courses.id_course);
+            setName(courses.name);
+            setTeacher(courses.id_teacher);
+            setArea(courses.id_area);
+            setAverage(courses.average);
+            setHour(courses.hour);
+            setPercentage(courses.percentage);
             setOpen(true);
           }}
         >
           <Image className={``} src={edit} alt="" width={50} height={50} />
         </button>
       ),
-      borrar: "",
+      borrar: (
+        <button onClick={() => handlerDeleteCourse(courses.id_course)}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            viewBox="0 0 256 256"
+          >
+            <path
+              fill="#e11d48"
+              d="M216 50h-42V40a22 22 0 0 0-22-22h-48a22 22 0 0 0-22 22v10H40a6 6 0 0 0 0 12h10v146a14 14 0 0 0 14 14h128a14 14 0 0 0 14-14V62h10a6 6 0 0 0 0-12ZM94 40a10 10 0 0 1 10-10h48a10 10 0 0 1 10 10v10H94Zm100 168a2 2 0 0 1-2 2H64a2 2 0 0 1-2-2V62h132Zm-84-104v64a6 6 0 0 1-12 0v-64a6 6 0 0 1 12 0Zm48 0v64a6 6 0 0 1-12 0v-64a6 6 0 0 1 12 0Z"
+            />
+          </svg>
+        </button>
+      ),
     }));
   };
 
   const processedGroups = useMemo(() => {
     if (!groups?.groups) return [];
     return groups.groups.map((group, index) => ({
-      id:group?.id_group,
+      id: group?.id_group,
       name: `${group?.level}-${group?.sublevel}` ?? "",
       group_teacher: group?.representative ?? "",
       asignaturas: group?.coursesCount,
@@ -367,20 +412,89 @@ function Subjects() {
     if (c) {
       getCourses({
         variables: { filterCourseInput: { id_group: Number(c) } },
-      }).then((res) => {
-        const { data } = res;
-        setSelectedGroup(processedSubjects(data?.courses));
-      });
+      })
     }
   }, [router]);
 
+
+  useEffect(() => {
+    if (courses) {
+      setSelectedGroup(processedSubjects(courses?.courses));
+    }
+  }, [courses]);
+
   const handlerCreateCourse = async () => {
-    return await AddCourse({ variables: { createCourseInput: formValues } });
+    return await AddCourse({
+      variables: {
+        createCourseInput: {
+          name: name,
+          id_area: area,
+          id_teacher: teacher,
+          average: average,
+          hour: hour,
+          percentage: percentage,
+          id_group: Number(c),
+        },
+      },
+    });
   };
 
-  const handlerUpdateCourse = async (form: any) => {
-    return await AddCourse({ variables: { createCourseInput: formValues } });
+  const handlerUpdateCourse = async () => {
+    return await UpdateCourse({
+      variables: {
+        updateCourseInput: {
+          name: name,
+          id_course: course,
+          id_area: area,
+          id_teacher: teacher,
+          average: average,
+          hour: hour,
+          percentage: percentage,
+          id_group: Number(c),
+        },
+      },
+    })
   };
+  const handlerDeleteCourse = async (id_course: number) => {
+    Swal.fire({
+      title: "¿Estás seguro?",
+      text: "No podrás revertir esta acción!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#0055a6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Eliminar",
+    }).then((result) => {
+      // If there is an id selected we delete that teacher
+      if (result.isConfirmed && id_course) {
+        DeleteCourse({
+          variables: { idCourse: id_course },
+        }).then((res) => {
+          if (res.data?.deleteCourse) {
+            Swal.fire({
+              title: "Eliminado",
+              text: "Curso Eliminado!",
+              icon: "success",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            refetch();
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Ha habido un error...",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+        });
+      }
+    });
+  };
+  const handlerRefetchCourse = () => {
+    refetch()
+  };
+
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
       <div className="flex justify-between">
@@ -452,14 +566,14 @@ function Subjects() {
         typeAdd={typeAdd}
         open={open}
         setOpen={setOpen}
-        addSuccessMsg={"Docente Creado!"}
-        updateSuccessMsg={"Docente Actualizado!"}
-        formValues={formValues}
+        addSuccessMsg={"Curso creado!"}
+        updateSuccessMsg={"Curso actualizado!"}
+        formValues={{ course, c }}
         addMutation={handlerCreateCourse}
         updateMutation={handlerUpdateCourse}
         cleaningStates={cleaningStates}
         validationEvent={validationEvent}
-        refetch={refetch}
+        refetch={handlerRefetchCourse}
       />
     </div>
   );

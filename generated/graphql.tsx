@@ -913,6 +913,13 @@ export type DeleteAreaMutationVariables = Exact<{
 
 export type DeleteAreaMutation = { __typename?: 'Mutation', deleteArea: { __typename?: 'Area', id_area: number } };
 
+export type DeleteCourseMutationVariables = Exact<{
+  idCourse: Scalars['Int'];
+}>;
+
+
+export type DeleteCourseMutation = { __typename?: 'Mutation', deleteCourse?: { __typename?: 'Course', id_course: number, id_group: number, id_teacher: number, name: string, position?: number | null, dim_codigo?: number | null, asi_dimension?: string | null, id_area: number, hour: number, average?: string | null, percentage?: number | null } | null };
+
 export type DeleteQualificationTypeMutationVariables = Exact<{
   idQualificationType: Scalars['Int'];
 }>;
@@ -947,6 +954,13 @@ export type UpdateAreaMutationVariables = Exact<{
 
 
 export type UpdateAreaMutation = { __typename?: 'Mutation', updateArea: { __typename?: 'Area', id_area: number, name?: string | null, status?: string | null } };
+
+export type UpdateCourseMutationVariables = Exact<{
+  updateCourseInput: UpdateCourseInput;
+}>;
+
+
+export type UpdateCourseMutation = { __typename?: 'Mutation', updateCourse: { __typename?: 'Course', id_course: number, id_group: number, id_teacher: number, name: string, position?: number | null, dim_codigo?: number | null, asi_dimension?: string | null, id_area: number, hour: number, average?: string | null, percentage?: number | null } };
 
 export type UpdateQualificationMutationVariables = Exact<{
   updateQualificationInput: UpdateQualificationInput;
@@ -1401,6 +1415,49 @@ export function useDeleteAreaMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeleteAreaMutationHookResult = ReturnType<typeof useDeleteAreaMutation>;
 export type DeleteAreaMutationResult = Apollo.MutationResult<DeleteAreaMutation>;
 export type DeleteAreaMutationOptions = Apollo.BaseMutationOptions<DeleteAreaMutation, DeleteAreaMutationVariables>;
+export const DeleteCourseDocument = gql`
+    mutation DeleteCourse($idCourse: Int!) {
+  deleteCourse(id_course: $idCourse) {
+    id_course
+    id_group
+    id_teacher
+    name
+    position
+    dim_codigo
+    asi_dimension
+    id_area
+    hour
+    average
+    percentage
+  }
+}
+    `;
+export type DeleteCourseMutationFn = Apollo.MutationFunction<DeleteCourseMutation, DeleteCourseMutationVariables>;
+
+/**
+ * __useDeleteCourseMutation__
+ *
+ * To run a mutation, you first call `useDeleteCourseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCourseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCourseMutation, { data, loading, error }] = useDeleteCourseMutation({
+ *   variables: {
+ *      idCourse: // value for 'idCourse'
+ *   },
+ * });
+ */
+export function useDeleteCourseMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCourseMutation, DeleteCourseMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteCourseMutation, DeleteCourseMutationVariables>(DeleteCourseDocument, options);
+      }
+export type DeleteCourseMutationHookResult = ReturnType<typeof useDeleteCourseMutation>;
+export type DeleteCourseMutationResult = Apollo.MutationResult<DeleteCourseMutation>;
+export type DeleteCourseMutationOptions = Apollo.BaseMutationOptions<DeleteCourseMutation, DeleteCourseMutationVariables>;
 export const DeleteQualificationTypeDocument = gql`
     mutation deleteQualificationType($idQualificationType: Int!) {
   deleteTypeQualification(id_type_qual: $idQualificationType) {
@@ -1571,6 +1628,49 @@ export function useUpdateAreaMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdateAreaMutationHookResult = ReturnType<typeof useUpdateAreaMutation>;
 export type UpdateAreaMutationResult = Apollo.MutationResult<UpdateAreaMutation>;
 export type UpdateAreaMutationOptions = Apollo.BaseMutationOptions<UpdateAreaMutation, UpdateAreaMutationVariables>;
+export const UpdateCourseDocument = gql`
+    mutation UpdateCourse($updateCourseInput: UpdateCourseInput!) {
+  updateCourse(updateCourseInput: $updateCourseInput) {
+    id_course
+    id_group
+    id_teacher
+    name
+    position
+    dim_codigo
+    asi_dimension
+    id_area
+    hour
+    average
+    percentage
+  }
+}
+    `;
+export type UpdateCourseMutationFn = Apollo.MutationFunction<UpdateCourseMutation, UpdateCourseMutationVariables>;
+
+/**
+ * __useUpdateCourseMutation__
+ *
+ * To run a mutation, you first call `useUpdateCourseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCourseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCourseMutation, { data, loading, error }] = useUpdateCourseMutation({
+ *   variables: {
+ *      updateCourseInput: // value for 'updateCourseInput'
+ *   },
+ * });
+ */
+export function useUpdateCourseMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCourseMutation, UpdateCourseMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateCourseMutation, UpdateCourseMutationVariables>(UpdateCourseDocument, options);
+      }
+export type UpdateCourseMutationHookResult = ReturnType<typeof useUpdateCourseMutation>;
+export type UpdateCourseMutationResult = Apollo.MutationResult<UpdateCourseMutation>;
+export type UpdateCourseMutationOptions = Apollo.BaseMutationOptions<UpdateCourseMutation, UpdateCourseMutationVariables>;
 export const UpdateQualificationDocument = gql`
     mutation UpdateQualification($updateQualificationInput: UpdateQualificationInput!) {
   updateQualification(updateQualificationInput: $updateQualificationInput) {
