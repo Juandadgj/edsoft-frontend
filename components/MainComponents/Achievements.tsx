@@ -172,6 +172,9 @@ function Achievements() {
           name="id_course"
           color="success"
           type="number"
+          InputProps={{
+            readOnly: true,
+          }}
           value={formValues.id_course}
           onChange={({ target }: any) =>
             setFormValues({ ...formValues, [target.name]: target.value })
@@ -188,6 +191,9 @@ function Achievements() {
           name="period"
           color="success"
           type="number"
+          InputProps={{
+            readOnly: true,
+          }}
           value={formValues.period}
           onChange={({ target }: any) =>
             setFormValues({ ...formValues, [target.name]: target.value })
