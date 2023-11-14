@@ -13,13 +13,6 @@ import { useRouter } from "next/router";
 import Table from "../Table";
 import edit from "../../public/assets/01editar.png";
 import { styled } from "@material-ui/styles";
-import {
-  FilterAchievementInput,
-  Achievement,
-  DeleteAchievementDocument,
-  UpdateAbsenceInput,
-  UpdateAchievementDocument,
-} from "../../generated/graphql";
 import DynamicModal from "../DynamicModal";
 import Image from "next/image";
 import Swal from "sweetalert2";
@@ -89,11 +82,11 @@ function Achievements() {
   const [typeAdd, setTypeAdd] = useState(false);
   const [
     getAchievements,
-    { data: achievements, loading: loadingAchievements, error },
+    { data: achievements, loading: loadingAchievements, error, refetch },
   ] = useAchievementsLazyQuery();
   const [
     getCourses,
-    { data: courses, loading: loadingCourses, error: errorCourses, refetch },
+    { data: courses, loading: loadingCourses, error: errorCourses },
   ] = useCoursesLazyQuery();
 
   const { data: groups, loading: loadingGroups } = useGroupsQuery({
@@ -104,16 +97,20 @@ function Achievements() {
   };
   // Form to manage inputs values
   const [formValues, setFormValues] = useState<any>({
-    name: "",
+    description: "",
+    id_course: 0,
+    period: 0
   });
   // Obj to manage every input error
   const [errors, setErrors] = useState<any>({
-    name: "",
+    description: "",
+    id_course: 0,
+    period: 0
   });
   
   // Here we validate if every item is filled and if it is we return true
   const validationEvent = () => {
-    if (formValues.name) {
+    if (formValues.description) {
       return true;
     } else {
       for (const item in formValues) {
@@ -149,21 +146,18 @@ function Achievements() {
       html: (
         <CssTextField
           required
-          label="Nombre"
-          name="name"
+          label="Descripción"
+          name="description"
           color="success"
-          value={formValues.name}
+          value={formValues.description}
           onChange={({ target }: any) =>
             setFormValues({ ...formValues, [target.name]: target.value })
           }
-          helperText={errors.name}
+          helperText={errors.description}
         />
       ),
     },
   ];
-
-  
-
 
   const processedAchievements = (data: any) => {
     if (!data?.achievements) return [];
@@ -178,8 +172,10 @@ function Achievements() {
             // We set the values selected to our inputs
             setFormValues((t: any) => ({
               ...t,
-              id_achievements: achievements?.id_achievements,
-              name: achievements?.name,
+              description: achievements?.description,
+              id_course: achievements?.id_course,
+              period: achievements?.period,
+              id_achievement: achievements?.id_achievement
             }));
             setOpen(true);
           }}
@@ -216,14 +212,14 @@ function Achievements() {
               cancelButtonColor: "#d33",
               confirmButtonText: "Eliminar",
             }).then((result) => {
-              if (result.isConfirmed && achievements?.id_achievements) {
+              if (result.isConfirmed && achievements?.id_achievement) {
                 DeleteAchievement({
-                  variables: { idAchievement: achievements?.id_achievements },
+                  variables: { idAchievement: achievements?.id_achievement },
                 }).then((res) => {
                   if (res.data?.deleteAchievement) {
                     Swal.fire({
                       title: "Eliminado",
-                      text: "Docente Eliminado!",
+                      text: "Logro Eliminado!",
                       icon: "success",
                       showConfirmButton: false,
                       timer: 1500,
@@ -284,19 +280,6 @@ function Achievements() {
   };
 
   useEffect(() => {
-    if (a && per) {
-      getAchievements({
-        variables: {
-          filterAchievementInput: { id_course: Number(a), period: Number(per) },
-        },
-      }).then((res) => {
-        const { data } = res;
-        setSelectedAchievements(processedAchievements(data));
-      });
-    }
-  }, [router]);
-
-  useEffect(() => {
     if (g) {
       getCourses({
         variables: { filterCourseInput: { id_group: Number(g) } },
@@ -305,15 +288,30 @@ function Achievements() {
         setSelectedCourses(processedCourses(data?.courses));
       });
     }
+    if (a && per) {
+      getAchievements({
+        variables: {
+          filterAchievementInput: { id_course: Number(a), period: Number(per) },
+        },
+      })
+    }
   }, [router]);
 
+  useEffect(()=>{
+    if(achievements){
+      setSelectedAchievements(processedAchievements(achievements));
+    }
+  },[achievements])
+  
+
+  
   const handlerCreateAchievement = async () => {
     return await CreateAchievement({
       variables: { createAchievementInput: formValues },
     });
   };
 
-  const handlerUpdateAchievement = async (form: any) => {
+  const handlerUpdateAchievement = async () => {
     return await UpdateAchievement({
       variables: { updateAchievementInput: formValues },
     });
@@ -334,6 +332,11 @@ function Achievements() {
               className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-2 rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
               onClick={() => {
                 setTypeAdd(true);
+                setFormValues((t: any) => ({
+                  ...t,
+                  id_course: parseInt(Array.isArray(a) ? a[0] : a, 10),
+                  period: parseInt(Array.isArray(per) ? per[0] : per, 10),
+                }))
                 setOpen(true);
               }}
             >

@@ -1,5 +1,8 @@
 mutation CreateAchievement($createAchievementInput: CreateAchievementInput!) {
   createAchievement(createAchievementInput: $createAchievementInput) {
     description
+    id_achievement
+    id_course
+    period
   }
 }
