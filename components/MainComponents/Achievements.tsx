@@ -104,20 +104,20 @@ function Achievements() {
   };
   // Form to manage inputs values
   const [formValues, setFormValues] = useState<any>({
-    name: "",
-    id_course: "",
-    term: ""
+    description: "",
+    id_course: 0,
+    period: 0
   });
   // Obj to manage every input error
   const [errors, setErrors] = useState<any>({
-    name: "",
-    id_course: a,
-    term: per
+    description: "",
+    id_course: 0,
+    period: 0
   });
   
   // Here we validate if every item is filled and if it is we return true
   const validationEvent = () => {
-    if (formValues.name) {
+    if (formValues.description) {
       return true;
     } else {
       for (const item in formValues) {
@@ -153,14 +153,14 @@ function Achievements() {
       html: (
         <CssTextField
           required
-          label="Nombre"
-          name="name"
+          label="Descripción"
+          name="description"
           color="success"
-          value={formValues.name}
+          value={formValues.description}
           onChange={({ target }: any) =>
             setFormValues({ ...formValues, [target.name]: target.value })
           }
-          helperText={errors.name}
+          helperText={errors.description}
         />
       ),
     },
@@ -171,9 +171,10 @@ function Achievements() {
           label="Curso"
           name="id_course"
           color="success"
+          type="number"
           value={formValues.id_course}
           onChange={({ target }: any) =>
-            setFormValues({ ...formValues, [target.id_course]: target.value })
+            setFormValues({ ...formValues, [target.name]: target.value })
           }
           helperText={errors.id_course}
         />
@@ -184,13 +185,14 @@ function Achievements() {
         <CssTextField
           required
           label="Periodo"
-          name="term"
+          name="period"
           color="success"
-          value={formValues.term}
+          type="number"
+          value={formValues.period}
           onChange={({ target }: any) =>
-            setFormValues({ ...formValues, [target.term]: target.value })
+            setFormValues({ ...formValues, [target.name]: target.value })
           }
-          helperText={errors.term}
+          helperText={errors.period}
         />
       ),
     },
@@ -209,9 +211,10 @@ function Achievements() {
             // We set the values selected to our inputs
             setFormValues((t: any) => ({
               ...t,
+              description: achievements?.description,
               id_course: achievements?.id_course,
-              term: achievements?.period,
-              name: achievements?.name,
+              period: achievements?.period,
+              id_achievement: achievements?.id_achievement
             }));
             setOpen(true);
           }}
@@ -248,14 +251,14 @@ function Achievements() {
               cancelButtonColor: "#d33",
               confirmButtonText: "Eliminar",
             }).then((result) => {
-              if (result.isConfirmed && achievements?.id_achievements) {
+              if (result.isConfirmed && achievements?.id_achievement) {
                 DeleteAchievement({
-                  variables: { idAchievement: achievements?.id_achievements },
+                  variables: { idAchievement: achievements?.id_achievement },
                 }).then((res) => {
                   if (res.data?.deleteAchievement) {
                     Swal.fire({
                       title: "Eliminado",
-                      text: "Docente Eliminado!",
+                      text: "Logro Eliminado!",
                       icon: "success",
                       showConfirmButton: false,
                       timer: 1500,
@@ -345,7 +348,7 @@ function Achievements() {
     });
   };
 
-  const handlerUpdateAchievement = async (form: any) => {
+  const handlerUpdateAchievement = async () => {
     return await UpdateAchievement({
       variables: { updateAchievementInput: formValues },
     });
@@ -368,8 +371,8 @@ function Achievements() {
                 setTypeAdd(true);
                 setFormValues((t: any) => ({
                   ...t,
-                  id_course: a,
-                  term: per,
+                  id_course: parseInt(Array.isArray(a) ? a[0] : a, 10),
+                  period: parseInt(Array.isArray(per) ? per[0] : per, 10),
                 }))
                 setOpen(true);
               }}

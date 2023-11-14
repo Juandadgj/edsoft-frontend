@@ -52,6 +52,7 @@ export type Auth = {
 
 export type Course = {
   __typename?: 'Course';
+  area?: Maybe<Area>;
   asi_dimension?: Maybe<Scalars['String']>;
   average?: Maybe<Scalars['String']>;
   dim_codigo?: Maybe<Scalars['Int']>;
@@ -63,7 +64,7 @@ export type Course = {
   name: Scalars['String'];
   percentage?: Maybe<Scalars['Int']>;
   position?: Maybe<Scalars['Int']>;
-  teacher: Teacher;
+  teacher?: Maybe<Teacher>;
 };
 
 export type CreateAbsenceInput = {
@@ -80,8 +81,7 @@ export type CreateAbsenceInput = {
 };
 
 export type CreateAchievementInput = {
-  description?: InputMaybe<Scalars['String']>;
-  id_achievement: Scalars['Int'];
+  description: Scalars['String'];
   id_course: Scalars['Int'];
   period: Scalars['Int'];
 };
@@ -266,9 +266,8 @@ export type FilterGroupInput = {
 };
 
 export type FilterQualificationInput = {
-  id_achievement?: InputMaybe<Scalars['Int']>;
-  id_student?: InputMaybe<Scalars['Int']>;
-  score?: InputMaybe<Scalars['Float']>;
+  id_course: Scalars['Int'];
+  period: Scalars['Int'];
 };
 
 export type FilterStudentInput = {
@@ -547,6 +546,12 @@ export type Qualification = {
   score?: Maybe<Scalars['Float']>;
 };
 
+export type QualificationList = {
+  __typename?: 'QualificationList';
+  qualifications: Array<Maybe<Qualification>>;
+  student: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
   absences: Array<Maybe<Absence>>;
@@ -564,7 +569,7 @@ export type Query = {
   signIn: Auth;
   studentByID?: Maybe<Student>;
   studentDefinitives: Array<Maybe<Definitives>>;
-  studentQualifications: Array<Maybe<Qualification>>;
+  studentQualifications: Array<Maybe<QualificationList>>;
   students: Array<Maybe<Student>>;
   teacherByID?: Maybe<Teacher>;
   teachers: Array<Maybe<Teacher>>;
@@ -857,7 +862,7 @@ export type CreateAchievementMutationVariables = Exact<{
 }>;
 
 
-export type CreateAchievementMutation = { __typename?: 'Mutation', createAchievement: { __typename?: 'Achievement', description?: string | null } };
+export type CreateAchievementMutation = { __typename?: 'Mutation', createAchievement: { __typename?: 'Achievement', description?: string | null, id_achievement: number, id_course?: number | null, period?: number | null } };
 
 export type CreateAreaMutationVariables = Exact<{
   createAreaInput: CreateAreaInput;
@@ -934,7 +939,7 @@ export type UpdateAchievementMutationVariables = Exact<{
 }>;
 
 
-export type UpdateAchievementMutation = { __typename?: 'Mutation', updateAchievement: { __typename?: 'Achievement', id_achievement: number } };
+export type UpdateAchievementMutation = { __typename?: 'Mutation', updateAchievement: { __typename?: 'Achievement', description?: string | null, id_achievement: number, id_course?: number | null, period?: number | null } };
 
 export type UpdateAreaMutationVariables = Exact<{
   updateAreaInput: UpdateAreaInput;
@@ -981,7 +986,7 @@ export type CoursesQueryVariables = Exact<{
 }>;
 
 
-export type CoursesQuery = { __typename?: 'Query', courses: Array<{ __typename?: 'Course', id_course: number, id_group: number, id_teacher: number, name: string, position?: number | null, dim_codigo?: number | null, asi_dimension?: string | null, id_area: number, hour: number, average?: string | null, percentage?: number | null, teacher: { __typename?: 'Teacher', name?: string | null } } | null> };
+export type CoursesQuery = { __typename?: 'Query', courses: Array<{ __typename?: 'Course', id_course: number, id_group: number, id_teacher: number, name: string, position?: number | null, dim_codigo?: number | null, asi_dimension?: string | null, id_area: number, hour: number, average?: string | null, percentage?: number | null, teacher?: { __typename?: 'Teacher', name?: string | null } | null } | null> };
 
 export type GroupsQueryVariables = Exact<{
   filterGroupInput?: InputMaybe<FilterGroupInput>;
@@ -1116,6 +1121,9 @@ export const CreateAchievementDocument = gql`
     mutation CreateAchievement($createAchievementInput: CreateAchievementInput!) {
   createAchievement(createAchievementInput: $createAchievementInput) {
     description
+    id_achievement
+    id_course
+    period
   }
 }
     `;
@@ -1495,7 +1503,10 @@ export type DeleteTeacherMutationOptions = Apollo.BaseMutationOptions<DeleteTeac
 export const UpdateAchievementDocument = gql`
     mutation UpdateAchievement($updateAchievementInput: UpdateAchievementInput!) {
   updateAchievement(updateAchievementInput: $updateAchievementInput) {
+    description
     id_achievement
+    id_course
+    period
   }
 }
     `;
