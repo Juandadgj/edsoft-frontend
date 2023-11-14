@@ -13,13 +13,6 @@ import { useRouter } from "next/router";
 import Table from "../Table";
 import edit from "../../public/assets/01editar.png";
 import { styled } from "@material-ui/styles";
-import {
-  FilterAchievementInput,
-  Achievement,
-  DeleteAchievementDocument,
-  UpdateAbsenceInput,
-  UpdateAchievementDocument,
-} from "../../generated/graphql";
 import DynamicModal from "../DynamicModal";
 import Image from "next/image";
 import Swal from "sweetalert2";
@@ -89,11 +82,11 @@ function Achievements() {
   const [typeAdd, setTypeAdd] = useState(false);
   const [
     getAchievements,
-    { data: achievements, loading: loadingAchievements, error },
+    { data: achievements, loading: loadingAchievements, error, refetch },
   ] = useAchievementsLazyQuery();
   const [
     getCourses,
-    { data: courses, loading: loadingCourses, error: errorCourses, refetch },
+    { data: courses, loading: loadingCourses, error: errorCourses },
   ] = useCoursesLazyQuery();
 
   const { data: groups, loading: loadingGroups } = useGroupsQuery({
@@ -287,19 +280,6 @@ function Achievements() {
   };
 
   useEffect(() => {
-    if (a && per) {
-      getAchievements({
-        variables: {
-          filterAchievementInput: { id_course: Number(a), period: Number(per) },
-        },
-      }).then((res) => {
-        const { data } = res;
-        setSelectedAchievements(processedAchievements(data));
-      });
-    }
-  }, [router]);
-
-  useEffect(() => {
     if (g) {
       getCourses({
         variables: { filterCourseInput: { id_group: Number(g) } },
@@ -308,8 +288,23 @@ function Achievements() {
         setSelectedCourses(processedCourses(data?.courses));
       });
     }
+    if (a && per) {
+      getAchievements({
+        variables: {
+          filterAchievementInput: { id_course: Number(a), period: Number(per) },
+        },
+      })
+    }
   }, [router]);
 
+  useEffect(()=>{
+    if(achievements){
+      setSelectedAchievements(processedAchievements(achievements));
+    }
+  },[achievements])
+  
+
+  
   const handlerCreateAchievement = async () => {
     return await CreateAchievement({
       variables: { createAchievementInput: formValues },
