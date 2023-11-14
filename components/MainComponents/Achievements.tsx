@@ -164,44 +164,6 @@ function Achievements() {
         />
       ),
     },
-    {
-      html: (
-        <CssTextField
-          required
-          label="Curso"
-          name="id_course"
-          color="success"
-          type="number"
-          InputProps={{
-            readOnly: true,
-          }}
-          value={formValues.id_course}
-          onChange={({ target }: any) =>
-            setFormValues({ ...formValues, [target.name]: target.value })
-          }
-          helperText={errors.id_course}
-        />
-      ),
-    },
-    {
-      html: (
-        <CssTextField
-          required
-          label="Periodo"
-          name="period"
-          color="success"
-          type="number"
-          InputProps={{
-            readOnly: true,
-          }}
-          value={formValues.period}
-          onChange={({ target }: any) =>
-            setFormValues({ ...formValues, [target.name]: target.value })
-          }
-          helperText={errors.period}
-        />
-      ),
-    },
   ];
 
   const processedAchievements = (data: any) => {
