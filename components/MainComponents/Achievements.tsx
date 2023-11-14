@@ -105,10 +105,14 @@ function Achievements() {
   // Form to manage inputs values
   const [formValues, setFormValues] = useState<any>({
     name: "",
+    id_course: "",
+    term: ""
   });
   // Obj to manage every input error
   const [errors, setErrors] = useState<any>({
     name: "",
+    id_course: a,
+    term: per
   });
   
   // Here we validate if every item is filled and if it is we return true
@@ -160,10 +164,37 @@ function Achievements() {
         />
       ),
     },
+    {
+      html: (
+        <CssTextField
+          required
+          label="Curso"
+          name="id_course"
+          color="success"
+          value={formValues.id_course}
+          onChange={({ target }: any) =>
+            setFormValues({ ...formValues, [target.id_course]: target.value })
+          }
+          helperText={errors.id_course}
+        />
+      ),
+    },
+    {
+      html: (
+        <CssTextField
+          required
+          label="Periodo"
+          name="term"
+          color="success"
+          value={formValues.term}
+          onChange={({ target }: any) =>
+            setFormValues({ ...formValues, [target.term]: target.value })
+          }
+          helperText={errors.term}
+        />
+      ),
+    },
   ];
-
-  
-
 
   const processedAchievements = (data: any) => {
     if (!data?.achievements) return [];
@@ -178,7 +209,8 @@ function Achievements() {
             // We set the values selected to our inputs
             setFormValues((t: any) => ({
               ...t,
-              id_achievements: achievements?.id_achievements,
+              id_course: achievements?.id_course,
+              term: achievements?.period,
               name: achievements?.name,
             }));
             setOpen(true);
@@ -334,6 +366,11 @@ function Achievements() {
               className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-2 rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
               onClick={() => {
                 setTypeAdd(true);
+                setFormValues((t: any) => ({
+                  ...t,
+                  id_course: a,
+                  term: per,
+                }))
                 setOpen(true);
               }}
             >
