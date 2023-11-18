@@ -125,37 +125,7 @@ const Qualification = () => {
 
   const data = processedStudent();
 
-  const processedSubjects = (data: any) => {
-    return data.map((courses: any, index: number) => ({
-      name: courses?.name ?? "",
-      area: courses.id_area ?? "",
-      teacher: courses?.id_teacher ?? "-",
-      hour: courses?.hour ?? "",
-      editar: (
-        <button
-          className="border-0"
-          onClick={() => {
-            setTypeAdd(false);
-            // We set the values selected to our inputs
-            setFormValues((t: any) => ({
-              ...t,
-              name: courses.id,
-              id_area: courses.id_area,
-              id_teacher: courses?.id_teacher,
-              id_group: courses?.id_group,
-              average: courses.average,
-              percentage: courses.percentage,
-              hour: courses.hour,
-            }));
-            setOpen(true);
-          }}
-        >
-          <Image className={``} src={edit} alt="" width={50} height={50} />
-        </button>
-      ),
-      borrar: "",
-    }));
-  };
+
   const processedCourses = (data: any) => {
     if (!data) return [];
     return data.map((courses: any, index: any) => ({
@@ -195,20 +165,6 @@ const Qualification = () => {
   }, [groups]);
 
   useEffect(() => {
-    if (a && per) {
-      getAchievements({
-        variables: {
-          filterAchievementInput: { id_course: Number(a), period: Number(per) },
-        },
-      }).then((res) => {
-        const { data } = res;
-        console.log("chi", data);
-        setSelectedAchievements(data?.achievements);
-      });
-    }
-  }, [router]);
-
-  useEffect(() => {
     if (g) {
       getCourses({
         variables: { filterCourseInput: { id_group: Number(g) } },
@@ -217,7 +173,18 @@ const Qualification = () => {
         setSelectedCourses(processedCourses(data?.courses));
       });
     }
+    if (a && per) {
+      getAchievements({
+        variables: {
+          filterAchievementInput: { id_course: Number(a), period: Number(per) },
+        },
+      }).then((res) => {
+        const { data } = res;
+        setSelectedAchievements(data?.achievements);
+      });
+    }
   }, [router]);
+
 
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
@@ -282,6 +249,15 @@ const Qualification = () => {
                 <div
                   className={`w-full h-[80%] px-3 overflow-x-auto animate-fade-left `}
                 >
+                  <div className="w-full text-black flex flex-col gap-2 my-2">
+                  {
+                    selectedAchievements.map((achievement:any, index:number)=>(
+                      <div key={achievement.id_achievement}>
+                        {index}.{achievement.description}
+                      </div>
+                    ))
+                  }
+                  </div>
                   <table className="table text-black ">
                     <thead className="w-full">
                       <tr className="border-blue3 border-b-4 text-xl font-semibold">

@@ -1,0 +1,11 @@
+mutation DeleteGroup($idGroup: Int!) {
+  deleteGroup(id_group: $idGroup) {
+    id_group
+    id_year
+    level
+    sublevel
+    working_time
+    representative
+    coursesCount
+  }
+}

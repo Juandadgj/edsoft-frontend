@@ -141,9 +141,7 @@ function Subjects() {
       </MenuItem>
     );
   }
-  const handlerSelect = (event: any) => {
-    setFormValues({ ...formValues, id_area: event.target.value });
-  };
+
   const arrayInputs: any[] = [
     {
       html: (
