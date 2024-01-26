@@ -21,7 +21,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -31,7 +31,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -54,7 +54,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -77,7 +77,7 @@ const NewStudent = () => {
             </label>
             <input
               type="date"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
               placeholder="Select date"
             />
           </div>
@@ -90,7 +90,7 @@ const NewStudent = () => {
               type="text"
               name=""
               id=""
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -102,7 +102,7 @@ const NewStudent = () => {
               type="text"
               name=""
               id=""
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -114,7 +114,7 @@ const NewStudent = () => {
               type="text"
               name=""
               id=""
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -134,7 +134,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -144,7 +144,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -154,7 +154,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -164,7 +164,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -174,7 +174,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -184,7 +184,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -194,7 +194,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -204,7 +204,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -214,7 +214,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -224,7 +224,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -234,7 +234,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -244,7 +244,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -257,7 +257,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -267,7 +267,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -277,7 +277,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -287,7 +287,7 @@ const NewStudent = () => {
             </label>
             <input
               type="date"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
               placeholder="Select date"
             />
           </div>
@@ -300,7 +300,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -310,7 +310,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -320,7 +320,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -330,7 +330,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -340,7 +340,7 @@ const NewStudent = () => {
             </label>
             <input
               type="date"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
               placeholder="Select date"
             />
           </div>
@@ -351,7 +351,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -361,7 +361,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -373,7 +373,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -383,7 +383,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -393,7 +393,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -403,7 +403,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -413,7 +413,7 @@ const NewStudent = () => {
             </label>
             <input
               type="date"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
               placeholder="Select date"
             />
           </div>
@@ -424,7 +424,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -434,7 +434,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -442,17 +442,15 @@ const NewStudent = () => {
           <br />
 
           <h1 className="col-span-3 text-center font-bold">Población Víctima del Conflicto (Debe presentar la certificación correspondiente)</h1>
-          <div className="flex flex-row items-center col-span-2">
+          <div className="flex flex-row items-center col-span-1">
             <label className="label  text-left">
               <span>Beneficiario Hijos dependientes de Madre Cabeza de Familia</span>
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
-
-          <br />
 
           <div className="flex flex-row items-center">
             <label className="label  text-left">
@@ -460,7 +458,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -470,7 +468,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -480,7 +478,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -491,7 +489,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -501,7 +499,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -529,7 +527,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -539,7 +537,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -549,7 +547,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
           
@@ -559,7 +557,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
           
@@ -569,7 +567,7 @@ const NewStudent = () => {
             </label>
             <input
               type="text"
-              className="input border-gray5 w-full max-w-xs h-8 bg-transparent text-sm"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
             />
           </div>
 
@@ -653,158 +651,256 @@ const NewStudent = () => {
           <br />
           <h1 className="col-span-3 text-center font-bold">Listado de categorías de discapacidad</h1>
 
-        </div>
+          <div className="flex flex-row items-center">
+            <label className="label  text-left">
+              <span>Discapacidad Física</span>
+            </label>
+            <td className="flex gap-2">
+              <input
+                type="radio"
+                name="radio-5"
+                className="radio border-gray5"
+              />Sí
+              <input
+                type="radio"
+                name="radio-5"
+                className="radio border-gray5 "
+              />No
+            </td>
+          </div>
 
-        {/* <div className="overflow-x-auto h-96">
-          <table className="table text-sm grid justify-center w-full ">
-            <tbody>              
-              <tr className="border-none [&>td]:py-1 [&>td]:px-1">
-                <td>
-                  <label className="label  text-right">
-                    <span>Indígena</span>
-                  </label>
-                </td>
-                <td className="flex gap-2">
-                  <input
-                    type="radio"
-                    name="radio-1"
-                    className="radio  border-gray5"
-                  />
-                  <input
-                    type="radio"
-                    name="radio-1"
-                    className="radio border-gray5"
-                  />
-                  <input
-                    type="radio"
-                    name="radio-1"
-                    className="radio border-gray5"
-                  />
-                </td>
-              </tr>
-              <tr className="border-none [&>td]:py-1 [&>td]:px-1">
-                <td>
-                  <label className="label  text-right">
-                    <span>Desplazado</span>
-                  </label>
-                </td>
-                <td className="flex gap-2">
-                  <input
-                    type="radio"
-                    name="radio-1"
-                    className="radio  border-gray5"
-                  />
-                  <input
-                    type="radio"
-                    name="radio-1"
-                    className="radio border-gray5"
-                  />
-                  <input
-                    type="radio"
-                    name="radio-1"
-                    className="radio border-gray5"
-                  />
-                </td>
-              </tr>
-              <tr className="border-none [&>td]:py-1 [&>td]:px-1">
-                <td>
-                  <label className="label  text-right">
-                    <span>Hijo(a) de madre cabeza de familia</span>
-                  </label>
-                </td>
-                <td className="flex gap-2">
-                  <input
-                    type="radio"
-                    name="radio-1"
-                    className="radio  border-gray5"
-                  />
-                  <input
-                    type="radio"
-                    name="radio-1"
-                    className="radio border-gray5"
-                  />
-                  <input
-                    type="radio"
-                    name="radio-1"
-                    className="radio border-gray5"
-                  />
-                </td>
-              </tr>
-              <tr className="border-none [&>td]:py-1 [&>td]:px-1">
-                <td>
-                  <label className="label  text-right">
-                    <span>Indígena</span>
-                  </label>
-                </td>
-                <td className="flex gap-2">
-                  <input
-                    type="radio"
-                    name="radio-1"
-                    className="radio  border-gray5"
-                  />
-                  <input
-                    type="radio"
-                    name="radio-1"
-                    className="radio border-gray5"
-                  />
-                  <input
-                    type="radio"
-                    name="radio-1"
-                    className="radio border-gray5"
-                  />
-                </td>
-              </tr>
-              <tr className="border-none [&>td]:py-1 [&>td]:px-1">
-                <td>
-                  <label className="label  text-right">
-                    <span>Hijo(a) de desmovilizados</span>
-                  </label>
-                </td>
-                <td className="flex gap-2">
-                  <input
-                    type="radio"
-                    name="radio-1"
-                    className="radio  border-gray5"
-                  />
-                  <input
-                    type="radio"
-                    name="radio-1"
-                    className="radio border-gray5"
-                  />
-                  <input
-                    type="radio"
-                    name="radio-1"
-                    className="radio border-gray5"
-                  />
-                </td>
-              </tr>
-              <tr className="border-none [&>td]:py-1 [&>td]:px-1">
-                <td>
-                  <label className="label  text-right">
-                    <span>Sisben</span>
-                  </label>
-                </td>
-                <td className="flex gap-2">
-                  <input
-                    type="radio"
-                    name="radio-1"
-                    className="radio  border-gray5"
-                  />
-                  <input
-                    type="radio"
-                    name="radio-1"
-                    className="radio border-gray5"
-                  />
-                  <input
-                    type="radio"
-                    name="radio-1"
-                    className="radio border-gray5"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table> 
-        </div>*/}
+          <div className="flex flex-row items-center">
+            <label className="label  text-left">
+              <span>Discapacidad Auditiva</span>
+            </label>
+            <td className="flex gap-2">
+              <input
+                type="radio"
+                name="radio-6"
+                className="radio border-gray5"
+              />Sí
+              <input
+                type="radio"
+                name="radio-6"
+                className="radio border-gray5 "
+              />No
+            </td>
+          </div>
+
+          <div className="flex flex-row items-center">
+            <label className="label  text-left">
+              <span>Discapacidad Visual</span>
+            </label>
+            <td className="flex gap-2">
+              <input
+                type="radio"
+                name="radio-7"
+                className="radio border-gray5"
+              />Sí
+              <input
+                type="radio"
+                name="radio-7"
+                className="radio border-gray5 "
+              />No
+            </td>
+          </div>
+
+          <div className="flex flex-row items-center">
+            <label className="label  text-left">
+              <span>Sordo ceguera</span>
+            </label>
+            <td className="flex gap-2">
+              <input
+                type="radio"
+                name="radio-8"
+                className="radio border-gray5"
+              />Sí
+              <input
+                type="radio"
+                name="radio-8"
+                className="radio border-gray5 "
+              />No
+            </td>
+          </div>
+
+          <div className="flex flex-row items-center">
+            <label className="label  text-left">
+              <span>Discapacidad Intelectual</span>
+            </label>
+            <td className="flex gap-2">
+              <input
+                type="radio"
+                name="radio-9"
+                className="radio border-gray5"
+              />Sí
+              <input
+                type="radio"
+                name="radio-9"
+                className="radio border-gray5 "
+              />No
+            </td>
+          </div>
+
+          <div className="flex flex-row items-center">
+            <label className="label  text-left">
+              <span>Discapacidad psicosocial</span>
+            </label>
+            <td className="flex gap-2">
+              <input
+                type="radio"
+                name="radio-10"
+                className="radio border-gray5"
+              />Sí
+              <input
+                type="radio"
+                name="radio-10"
+                className="radio border-gray5 "
+              />No
+            </td>
+          </div>
+
+          <div className="flex flex-row items-center">
+            <label className="label  text-left">
+              <span>Discapacidad múltiple</span>
+            </label>
+            <td className="flex gap-2">
+              <input
+                type="radio"
+                name="radio-11"
+                className="radio border-gray5"
+              />Sí
+              <input
+                type="radio"
+                name="radio-11"
+                className="radio border-gray5 "
+              />No
+            </td>
+          </div>
+
+          <div className="flex flex-row items-center">
+            <label className="label  text-left">
+              <span>Enfermedad que padece el estudiante</span>
+            </label>
+            <input
+              type="text"
+              className="input border-gray5 w-full max-w-sm h-10 bg-transparent text-sm"
+            />
+          </div>
+
+          <div className="border-t-4 rounded-[2rem] border-gray5 col-span-3"></div>
+          <br />
+          <h1 className="col-span-3 text-center font-bold">Listado de capacidades y/o talentos excepcionales</h1>
+
+          <div className="flex flex-row items-center">
+            <label className="label  text-left">
+              <span>En tecnología</span>
+            </label>
+            <td className="flex gap-2">
+              <input
+                type="radio"
+                name="radio-12"
+                className="radio border-gray5"
+              />Sí
+              <input
+                type="radio"
+                name="radio-12"
+                className="radio border-gray5 "
+              />No
+            </td>
+          </div>
+
+          <div className="flex flex-row items-center">
+            <label className="label  text-left">
+              <span>En Liderazgo y emprendimiento</span>
+            </label>
+            <td className="flex gap-2">
+              <input
+                type="radio"
+                name="radio-13"
+                className="radio border-gray5"
+              />Sí
+              <input
+                type="radio"
+                name="radio-13"
+                className="radio border-gray5 "
+              />No
+            </td>
+          </div>
+
+          <div className="flex flex-row items-center">
+            <label className="label  text-left">
+              <span>En ciencias naturales o básicas</span>
+            </label>
+            <td className="flex gap-2">
+              <input
+                type="radio"
+                name="radio-14"
+                className="radio border-gray5"
+              />Sí
+              <input
+                type="radio"
+                name="radio-14"
+                className="radio border-gray5 "
+              />No
+            </td>
+          </div>
+
+          <div className="flex flex-row items-center">
+            <label className="label  text-left">
+              <span>En artes o letras</span>
+            </label>
+            <td className="flex gap-2">
+              <input
+                type="radio"
+                name="radio-15"
+                className="radio border-gray5"
+              />Sí
+              <input
+                type="radio"
+                name="radio-15"
+                className="radio border-gray5 "
+              />No
+            </td>
+          </div>
+
+          <div className="flex flex-row items-center">
+            <label className="label  text-left">
+              <span>En Actividad física, ejercicio y deporte</span>
+            </label>
+            <td className="flex gap-2">
+              <input
+                type="radio"
+                name="radio-16"
+                className="radio border-gray5"
+              />Sí
+              <input
+                type="radio"
+                name="radio-16"
+                className="radio border-gray5 "
+              />No
+            </td>
+          </div>
+
+          <div className="flex flex-row items-center">
+            <label className="label  text-left">
+              <span>En Ciencias Sociales o humanas</span>
+            </label>
+            <td className="flex gap-2">
+              <input
+                type="radio"
+                name="radio-17"
+                className="radio border-gray5"
+              />Sí
+              <input
+                type="radio"
+                name="radio-17"
+                className="radio border-gray5 "
+              />No
+            </td>
+
+            <br />
+          </div>
+        </div>
       </div>
     </div>
   );
