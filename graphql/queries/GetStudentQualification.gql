@@ -1,0 +1,11 @@
+query GetStudentQualifications($filterQualificationInput: FilterQualificationInput) {
+  studentQualifications(filterQualificationInput: $filterQualificationInput) {
+    student
+    qualifications {
+      score
+      id_achievement
+      id_student
+      id_achie_stu
+    }
+  }
+}
