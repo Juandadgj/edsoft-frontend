@@ -271,19 +271,10 @@ export type FilterQualificationInput = {
 };
 
 export type FilterStudentInput = {
-  birthday?: InputMaybe<Scalars['String']>;
-  direction?: InputMaybe<Scalars['String']>;
-  email?: InputMaybe<Scalars['String']>;
-  father?: InputMaybe<Scalars['String']>;
-  guardian?: InputMaybe<Scalars['String']>;
+  id_group?: InputMaybe<Scalars['Int']>;
   identification?: InputMaybe<Scalars['String']>;
   last_name?: InputMaybe<Scalars['String']>;
-  mother?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
-  phone?: InputMaybe<Scalars['String']>;
-  sex?: InputMaybe<Scalars['String']>;
-  status?: InputMaybe<Scalars['String']>;
-  type_id?: InputMaybe<Scalars['Int']>;
 };
 
 export type FilterTeacherInput = {
@@ -295,6 +286,22 @@ export type FilterTeacherInput = {
   name?: InputMaybe<Scalars['String']>;
   phone?: InputMaybe<Scalars['String']>;
   type_id?: InputMaybe<Scalars['Int']>;
+};
+
+export type GenerateReportAreaInput = {
+  id_group: Scalars['Int'];
+  id_student: Scalars['Int'];
+  report_options: ReportDictionary;
+};
+
+export type GenerateStudentsListInput = {
+  id_group: Scalars['Int'];
+};
+
+export type GenerateStudentsListInput2 = {
+  id_course: Scalars['Int'];
+  id_group: Scalars['Int'];
+  period: Scalars['Int'];
 };
 
 export type Group = {
@@ -361,7 +368,7 @@ export type Mutation = {
   updateDefitinives: Definitives;
   updateEnrollment: Enrollment;
   updateGroup: Group;
-  updateQualification: Qualification;
+  updateQualifications: Array<Maybe<Qualification>>;
   updateScholarYear: ScholarYear;
   updateStudent: Student;
   updateTeacher: Teacher;
@@ -514,8 +521,8 @@ export type MutationUpdateGroupArgs = {
 };
 
 
-export type MutationUpdateQualificationArgs = {
-  updateQualificationInput: UpdateQualificationInput;
+export type MutationUpdateQualificationsArgs = {
+  updateQualificationsInput: UpdateQualificationsInput;
 };
 
 
@@ -546,6 +553,13 @@ export type Qualification = {
   score?: Maybe<Scalars['Float']>;
 };
 
+export type QualificationInput = {
+  id_achie_stu?: InputMaybe<Scalars['Int']>;
+  id_achievement?: InputMaybe<Scalars['Int']>;
+  id_student?: InputMaybe<Scalars['Int']>;
+  score?: InputMaybe<Scalars['Float']>;
+};
+
 export type QualificationList = {
   __typename?: 'QualificationList';
   qualifications: Array<Maybe<Qualification>>;
@@ -562,6 +576,9 @@ export type Query = {
   enrollmentByID?: Maybe<Enrollment>;
   enrollments: Array<Maybe<Enrollment>>;
   featured: Array<Maybe<Featured>>;
+  generateReport: Report;
+  generateReport2: Report;
+  generateReportArea: Report;
   groupByID?: Maybe<Group>;
   groups: Array<Maybe<Group>>;
   institutions: Array<Maybe<Institution>>;
@@ -617,6 +634,21 @@ export type QueryFeaturedArgs = {
 };
 
 
+export type QueryGenerateReportArgs = {
+  generateStudentsListInput?: InputMaybe<GenerateStudentsListInput>;
+};
+
+
+export type QueryGenerateReport2Args = {
+  generateStudentsListInput2?: InputMaybe<GenerateStudentsListInput2>;
+};
+
+
+export type QueryGenerateReportAreaArgs = {
+  generateReportAreaInput?: InputMaybe<GenerateReportAreaInput>;
+};
+
+
 export type QueryGroupByIdArgs = {
   id_group: Scalars['Int'];
 };
@@ -661,6 +693,28 @@ export type QueryTeachersArgs = {
   filterTeacherInput?: InputMaybe<FilterTeacherInput>;
 };
 
+export type Report = {
+  __typename?: 'Report';
+  report_content: Scalars['String'];
+};
+
+export type ReportDictionary = {
+  absences?: InputMaybe<Scalars['Boolean']>;
+  all_qualifications?: InputMaybe<Scalars['Boolean']>;
+  average_area?: InputMaybe<Scalars['Boolean']>;
+  average_general?: InputMaybe<Scalars['Boolean']>;
+  average_group?: InputMaybe<Scalars['Boolean']>;
+  average_per?: InputMaybe<Scalars['Boolean']>;
+  hour?: InputMaybe<Scalars['Boolean']>;
+  professor_course?: InputMaybe<Scalars['Boolean']>;
+  qualification_per1?: InputMaybe<Scalars['Boolean']>;
+  qualification_per2?: InputMaybe<Scalars['Boolean']>;
+  qualification_per3?: InputMaybe<Scalars['Boolean']>;
+  qualification_per4?: InputMaybe<Scalars['Boolean']>;
+  signature: SignatureInput;
+  username?: InputMaybe<Scalars['Boolean']>;
+};
+
 export type ScholarYear = {
   __typename?: 'ScholarYear';
   comment?: Maybe<Scalars['String']>;
@@ -673,6 +727,12 @@ export type SignInInput = {
   id_institution: Scalars['Int'];
   password: Scalars['String'];
   user: Scalars['String'];
+};
+
+export type SignatureInput = {
+  professor_group?: InputMaybe<Scalars['Boolean']>;
+  rector?: InputMaybe<Scalars['Boolean']>;
+  secretary?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type Student = {
@@ -777,9 +837,8 @@ export type UpdateGroupInput = {
   working_time?: InputMaybe<Scalars['String']>;
 };
 
-export type UpdateQualificationInput = {
-  id_achie_stu: Scalars['Int'];
-  score?: InputMaybe<Scalars['Float']>;
+export type UpdateQualificationsInput = {
+  qualifications: Array<InputMaybe<QualificationInput>>;
 };
 
 export type UpdateScholarYearInput = {
@@ -983,12 +1042,12 @@ export type UpdateGroupMutationVariables = Exact<{
 
 export type UpdateGroupMutation = { __typename?: 'Mutation', updateGroup: { __typename?: 'Group', id_group: number, id_year?: number | null, level?: number | null, sublevel?: string | null, working_time?: string | null, representative?: string | null, coursesCount?: number | null } };
 
-export type UpdateQualificationMutationVariables = Exact<{
-  updateQualificationInput: UpdateQualificationInput;
+export type UpdateQualificationsMutationVariables = Exact<{
+  updateQualificationsInput: UpdateQualificationsInput;
 }>;
 
 
-export type UpdateQualificationMutation = { __typename?: 'Mutation', updateQualification: { __typename?: 'Qualification', id_achie_stu: number, id_achievement?: number | null, id_student?: number | null, score?: number | null } };
+export type UpdateQualificationsMutation = { __typename?: 'Mutation', updateQualifications: Array<{ __typename?: 'Qualification', id_achie_stu: number, id_achievement?: number | null, id_student?: number | null, score?: number | null } | null> };
 
 export type UpdateScholarYearMutationVariables = Exact<{
   updateScholarYearInput: UpdateScholarYearInput;
@@ -1054,6 +1113,13 @@ export type GetStudentsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetStudentsQuery = { __typename?: 'Query', students: Array<{ __typename?: 'Student', name?: string | null, last_name?: string | null, sex?: string | null, direction?: string | null, birthday?: string | null } | null> };
+
+export type GetStudentQualificationsQueryVariables = Exact<{
+  filterQualificationInput?: InputMaybe<FilterQualificationInput>;
+}>;
+
+
+export type GetStudentQualificationsQuery = { __typename?: 'Query', studentQualifications: Array<{ __typename?: 'QualificationList', student: string, qualifications: Array<{ __typename?: 'Qualification', score?: number | null, id_achievement?: number | null, id_student?: number | null, id_achie_stu: number } | null> } | null> };
 
 export type GetSubjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1809,9 +1875,9 @@ export function useUpdateGroupMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UpdateGroupMutationHookResult = ReturnType<typeof useUpdateGroupMutation>;
 export type UpdateGroupMutationResult = Apollo.MutationResult<UpdateGroupMutation>;
 export type UpdateGroupMutationOptions = Apollo.BaseMutationOptions<UpdateGroupMutation, UpdateGroupMutationVariables>;
-export const UpdateQualificationDocument = gql`
-    mutation UpdateQualification($updateQualificationInput: UpdateQualificationInput!) {
-  updateQualification(updateQualificationInput: $updateQualificationInput) {
+export const UpdateQualificationsDocument = gql`
+    mutation UpdateQualifications($updateQualificationsInput: UpdateQualificationsInput!) {
+  updateQualifications(updateQualificationsInput: $updateQualificationsInput) {
     id_achie_stu
     id_achievement
     id_student
@@ -1819,32 +1885,32 @@ export const UpdateQualificationDocument = gql`
   }
 }
     `;
-export type UpdateQualificationMutationFn = Apollo.MutationFunction<UpdateQualificationMutation, UpdateQualificationMutationVariables>;
+export type UpdateQualificationsMutationFn = Apollo.MutationFunction<UpdateQualificationsMutation, UpdateQualificationsMutationVariables>;
 
 /**
- * __useUpdateQualificationMutation__
+ * __useUpdateQualificationsMutation__
  *
- * To run a mutation, you first call `useUpdateQualificationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateQualificationMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateQualificationsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateQualificationsMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateQualificationMutation, { data, loading, error }] = useUpdateQualificationMutation({
+ * const [updateQualificationsMutation, { data, loading, error }] = useUpdateQualificationsMutation({
  *   variables: {
- *      updateQualificationInput: // value for 'updateQualificationInput'
+ *      updateQualificationsInput: // value for 'updateQualificationsInput'
  *   },
  * });
  */
-export function useUpdateQualificationMutation(baseOptions?: Apollo.MutationHookOptions<UpdateQualificationMutation, UpdateQualificationMutationVariables>) {
+export function useUpdateQualificationsMutation(baseOptions?: Apollo.MutationHookOptions<UpdateQualificationsMutation, UpdateQualificationsMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateQualificationMutation, UpdateQualificationMutationVariables>(UpdateQualificationDocument, options);
+        return Apollo.useMutation<UpdateQualificationsMutation, UpdateQualificationsMutationVariables>(UpdateQualificationsDocument, options);
       }
-export type UpdateQualificationMutationHookResult = ReturnType<typeof useUpdateQualificationMutation>;
-export type UpdateQualificationMutationResult = Apollo.MutationResult<UpdateQualificationMutation>;
-export type UpdateQualificationMutationOptions = Apollo.BaseMutationOptions<UpdateQualificationMutation, UpdateQualificationMutationVariables>;
+export type UpdateQualificationsMutationHookResult = ReturnType<typeof useUpdateQualificationsMutation>;
+export type UpdateQualificationsMutationResult = Apollo.MutationResult<UpdateQualificationsMutation>;
+export type UpdateQualificationsMutationOptions = Apollo.BaseMutationOptions<UpdateQualificationsMutation, UpdateQualificationsMutationVariables>;
 export const UpdateScholarYearDocument = gql`
     mutation UpdateScholarYear($updateScholarYearInput: UpdateScholarYearInput!) {
   updateScholarYear(updateScholarYearInput: $updateScholarYearInput) {
@@ -2244,6 +2310,47 @@ export function useGetStudentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetStudentsQueryHookResult = ReturnType<typeof useGetStudentsQuery>;
 export type GetStudentsLazyQueryHookResult = ReturnType<typeof useGetStudentsLazyQuery>;
 export type GetStudentsQueryResult = Apollo.QueryResult<GetStudentsQuery, GetStudentsQueryVariables>;
+export const GetStudentQualificationsDocument = gql`
+    query GetStudentQualifications($filterQualificationInput: FilterQualificationInput) {
+  studentQualifications(filterQualificationInput: $filterQualificationInput) {
+    student
+    qualifications {
+      score
+      id_achievement
+      id_student
+      id_achie_stu
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetStudentQualificationsQuery__
+ *
+ * To run a query within a React component, call `useGetStudentQualificationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetStudentQualificationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetStudentQualificationsQuery({
+ *   variables: {
+ *      filterQualificationInput: // value for 'filterQualificationInput'
+ *   },
+ * });
+ */
+export function useGetStudentQualificationsQuery(baseOptions?: Apollo.QueryHookOptions<GetStudentQualificationsQuery, GetStudentQualificationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetStudentQualificationsQuery, GetStudentQualificationsQueryVariables>(GetStudentQualificationsDocument, options);
+      }
+export function useGetStudentQualificationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetStudentQualificationsQuery, GetStudentQualificationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetStudentQualificationsQuery, GetStudentQualificationsQueryVariables>(GetStudentQualificationsDocument, options);
+        }
+export type GetStudentQualificationsQueryHookResult = ReturnType<typeof useGetStudentQualificationsQuery>;
+export type GetStudentQualificationsLazyQueryHookResult = ReturnType<typeof useGetStudentQualificationsLazyQuery>;
+export type GetStudentQualificationsQueryResult = Apollo.QueryResult<GetStudentQualificationsQuery, GetStudentQualificationsQueryVariables>;
 export const GetSubjectsDocument = gql`
     query GetSubjects {
   courses {

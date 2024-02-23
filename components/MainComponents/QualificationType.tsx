@@ -3,7 +3,7 @@ import {
   useCreateQualificationTypeMutation,
   useDeleteQualificationTypeMutation,
   useGetQualificationQuery,
-  useUpdateQualificationMutation,
+  useUpdateQualificationsMutation,
 } from "../../generated/graphql";
 import { useEffect, useState } from "react";
 import edit from "../../public/assets/01editar.png";
@@ -62,7 +62,7 @@ const CssTextField = styled(TextField)({
 function QualificationType() {
   const [DeleteQualificationType] = useDeleteQualificationTypeMutation();
   const [AddQualificationType] = useCreateQualificationTypeMutation();
-  const [UpdateQualificationType] = useUpdateQualificationMutation();
+  const [UpdateQualificationType] = useUpdateQualificationsMutation();
   const [active, setActive] = useState(false);
   const [open, setOpen] = useState(false);
   const [typeAdd, setTypeAdd] = useState(false);
@@ -282,7 +282,7 @@ function QualificationType() {
   };
   const handlerUpdateQualificationType = async () => {
     return await UpdateQualificationType({
-      variables: { updateQualificationInput: formValues },
+      variables: { updateQualificationsInput: formValues },
     });
   };
   return (

@@ -80,7 +80,7 @@ function CreateCourses() {
   });
 
   const { data, loading, refetch } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: year } },
+    variables: { filterGroupInput: { id_year: 2013 } },
   });
 
   const CssTextField = styled(TextField)({
