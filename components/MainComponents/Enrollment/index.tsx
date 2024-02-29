@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import { NotRegistered } from "./NotRegistered";
 import { StudentsPerCourse } from "./StudentsPerCourse";
 import { StudentsLastYear } from "./StudentLastYear";
+import { SearchStudent } from "./SearchStudent";
 
 const cardsEnrollment = [
   {
@@ -18,12 +19,6 @@ const cardsEnrollment = [
     icon: <PersonAddAltIcon color="success" fontSize="inherit" />,
     title: "Ingreso de nuevos estudiantes",
     component: <NewStudent/>
-  },
-  {
-    id: 2,
-    icon: <PersonOffIcon color="error" fontSize="inherit" />,
-    title: "Estudiantes no matriculados en el año actual",
-    component: <NotRegistered/>
   },
   {
     id: 3,
@@ -35,7 +30,7 @@ const cardsEnrollment = [
     id: 4,
     icon: <EscalatorWarningIcon color="error" fontSize="inherit" />,
     title: "Buscar estudiantes habilitados",
-    component: <NewStudent/>
+    component: <SearchStudent/>
 
   },
   {
@@ -53,18 +48,18 @@ export const Enrollment = () => {
   const { opcion } = router.query;
   const opcionelegida = cardsEnrollment.find(card => card.id === Number(opcion))
 
-  useEffect(() => {
-    const { opcion, ...rest } = router.query; // Elimina 'opcion' de la URL
-    if (opcion) {
-      router.replace({
-        pathname: router.pathname,
-        query: rest,
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   const { opcion, ...rest } = router.query; // Elimina 'opcion' de la URL
+  //   if (opcion) {
+  //     router.replace({
+  //       pathname: router.pathname,
+  //       query: rest,
+  //     });
+  //   }
+  // }, []);
 
   return (
-    <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
+    <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-10">
       {opcion ? '' : (
       <Grid container className="pb-6">
         <Grid item xs={12}>

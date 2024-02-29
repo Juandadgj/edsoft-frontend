@@ -1,0 +1,34 @@
+query StudentByID($idStudent: Int!) {
+  studentByID(id_student: $idStudent) {
+    id_student
+    name
+    last_name
+    type_id
+    identification
+    sex
+    direction
+    phone
+    guardian
+    status
+    birthday
+    father
+    mother
+    email
+    groups {
+      sublevel
+      level
+      id_group
+      courses {
+        teacher
+        name
+        id_course
+        definitives {
+          score1
+          score2
+          score3
+          score4
+        }
+      }
+    }
+  }
+}

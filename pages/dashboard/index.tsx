@@ -36,12 +36,12 @@ const avatarOption = makeStyles(theme => ({
 function Dashboard (){
  
   const router = useRouter()
-  useEffect(() => {
-    const token = sessionStorage.getItem("userToken")
-    if (!token) {
-      router.push("/login")
-    }
-  }, [router]);
+  // useEffect(() => {
+  //   const token = sessionStorage.getItem("userToken")
+  //   if (!token) {
+  //     router.push("/login")
+  //   }
+  // }, [router]);
 
   return (
     <Layaout>

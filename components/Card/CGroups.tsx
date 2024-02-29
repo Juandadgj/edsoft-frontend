@@ -2,7 +2,17 @@ import React from "react";
 import { GroupsCars } from "./types";
 
 const CCourses = (props: GroupsCars) => {
-  const {name, jornada, group_teacher, editar, borrar, asignaturas, id_group, click} = props;
+  const {
+    name,
+    jornada,
+    group_teacher,
+    editar,
+    borrar,
+    asignaturas,
+    see,
+    students,
+    click,
+  } = props;
   return (
     <div style={{ textDecoration: "none", width: "100%" }} onClick={click}>
       <tr className="flex w-full p-1 my-4 bg-gray1 border-none rounded-[20px] text-base font-semibold">
@@ -10,26 +20,36 @@ const CCourses = (props: GroupsCars) => {
           {name}
         </td>
         {jornada && (
-          <td className="flex w-full justify-center items-center text-center">
+          <td className="flex w-full justify-center items-center text-center py-0">
             {jornada}
           </td>
         )}
-        <td className="flex w-full justify-center items-center text-center">
+        <td className="flex w-full justify-center items-center text-center py-0">
           {group_teacher}
         </td>
         {editar && (
-          <td className="flex w-full justify-center items-center text-center">
+          <td className="flex w-full justify-center items-center text-center py-0">
             {editar}
           </td>
         )}
         {borrar && (
-          <td className="flex w-full justify-center items-center text-center">
+          <td className="flex w-full justify-center items-center text-center py-0">
             {borrar}
           </td>
         )}
         {asignaturas && (
-          <td className="flex w-full justify-center items-center text-center">
+          <td className="flex w-full justify-center items-center text-center py-0">
             {asignaturas}
+          </td>
+        )}
+        {students && (
+          <td className="flex w-full justify-center items-center text-center py-0">
+            {students}
+          </td>
+        )}
+        {see && (
+          <td className="flex w-full justify-center items-center text-center py-0 ">
+            {see}
           </td>
         )}
       </tr>

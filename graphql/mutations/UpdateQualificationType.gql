@@ -1,8 +1,0 @@
-mutation UpdateQualification($updateQualificationInput: UpdateQualificationInput!) {
-  updateQualification(updateQualificationInput: $updateQualificationInput) {
-    id_achie_stu
-    id_achievement
-    id_student
-    score
-  }
-}
