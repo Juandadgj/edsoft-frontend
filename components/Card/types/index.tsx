@@ -9,7 +9,8 @@ export interface ICard {
     | AreaCard
     | EnrollmentCard
     | CourseCard
-    | SubjectCard;
+    | SubjectCard
+    | StudentsByGroupCard;
 }
 
 export interface CourseCard {
@@ -72,6 +73,8 @@ export interface GroupsCars {
   editar?: string;
   borrar?: string;
   asignaturas?: number;
+  students?: number;
+  see?: string;
   click?: () => void;
 }
 export interface AreaCard {
@@ -86,9 +89,18 @@ export interface SubjectCard {
   teacher: string;
   hour: any;
   percentage: number;
-  average: string
+  average: string;
   editar: any;
   borrar: any;
+}
+
+export interface StudentsByGroupCard {
+  id_student: number,
+  name: string,
+  certified: any,
+  info: any,
+  edit: any,
+  leave: any
 }
 
 export interface Qualification {}
