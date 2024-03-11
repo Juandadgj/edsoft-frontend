@@ -214,17 +214,17 @@ function Areas() {
   }
 
   return (
-    <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
-      <Grid container>
+    <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-10 pb-3">
+      <div className="flex justify-between h-[6%]">
         <Grid item xs={6}>
-          <strong className="text-2xl text-black ps-8 pb-4">
+          <strong className="text-xl text-black ps-8 pb-4">
             Listado de Áreas
           </strong>
         </Grid>
         <Grid item xs={6} className="text-end pr-6">
           <button
             type="button"
-            className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-2 rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
+            className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
             onClick={() => {
               setAreaAdd(true);
               setOpen(true);
@@ -233,10 +233,10 @@ function Areas() {
             <h4 className="text-white">+ Nueva Área</h4>
           </button>
         </Grid>
-      </Grid>
+      </div>
       <Grid
         container
-        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full"
+        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]"
       >
 
         <Grid item xs={12} className="h-full">

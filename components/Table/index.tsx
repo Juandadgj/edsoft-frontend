@@ -12,7 +12,7 @@ const Table = ({ data, column, type }: any) => {
     <div className={`w-full px-3 overflow-x-auto animate-fade-left ${asPath == '/instituciones' ? 'h-full' : 'h-full'}`}>
       <table className="table text-black">
         <thead className="flex items-center justify-center">
-          <tr className="flex w-full justify-center border-blue3 border-b-4 text-xl font-semibold">
+          <tr className="flex w-full justify-center border-blue3 border-b-4 text-base font-semibold">
             {column.map((key: any, index: any) => (
               <th key={index} className="w-full text-center text-blue3 whitespace-normal flex items-center justify-center">
                 <p className="w-full">{key.Header}</p>
@@ -21,8 +21,8 @@ const Table = ({ data, column, type }: any) => {
           </tr>
         </thead>
         <tbody className="w-full py-4 ">
-          {data.map((item: any, key: any) => (
-            <Card key={key} type={type} item={item} />
+          {data.map((item: any, index: number) => (
+            <Card key={index} type={type} item={item} />
           ))}
         </tbody>
       </table>

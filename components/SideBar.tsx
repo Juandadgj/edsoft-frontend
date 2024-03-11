@@ -1,40 +1,30 @@
-// import { FC } from 'react';
-// import Logo2 from '../public/assets/logo@2x.png';
-import SettingsIcon from "@mui/icons-material/Settings";
 import Groups2Icon from "@mui/icons-material/Groups2";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import RouteIcon from "@mui/icons-material/Route";
 import AssessmentIcon from "@mui/icons-material/Assessment";
-
-// import Logo from '../public/assets/logo@2x.png';
 import { useEffect, useState } from "react";
-// import styled from '@emotion/styled';
-import { Box } from "@mui/material";
 import { SchoolLogo } from "./SchoolLogo";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 const SideBar = ({ manage, logo }: any) => {
   const [active, setActive] = useState(false);
 
   const router = useRouter();
 
-  useEffect(() => {
-    setActive(true);
-  }, []);
-
   return (
     <div className="h-full w-full">
       <ul className="bg-blue3 w-full h-full ps-1 flex flex-col justify-evenly flex-nowrap">
         {logo ? (
-          <div className="bg-[#1A3187] rounded-custom ms-2 text-white fs-4 dropdown dropend">
+          <div className="bg-[#1A3187] rounded-custom ms-2 text-white  dropdown dropend">
             {" "}
             <SchoolLogo sideBar={true} />{" "}
           </div>
         ) : null}
 
-        <li className="mt-3 text-white fs-4 dropdown dropdown-hover dropdown-right flex justify-center">
+        <li className="mt-3 text-white dropdown dropdown-hover dropdown-right flex justify-center">
           <button
-            className="button bg-blue3"
+            className="w-full border-none hover:bg-transparent transition duration-500 hover:scale-110"
             type="button"
             data-bs-toggle="dropdown"
             data-toggle="tooltip"
@@ -47,10 +37,10 @@ const SideBar = ({ manage, logo }: any) => {
                 active ? "bg-white rounded-custom" : ""
               } transitionRight ${active ? "active" : ""}`}
             >
-              <Groups2Icon className="h-12 w-11" sx={{ fontSize: 30 }} />
+              <Groups2Icon className="h-7 w-7" sx={{ fontSize: 30 }} />
             </div>
           </button>
-          <ul className="menu dropdown-content ms-1 text-black bg-white rounded-[5px] z-30">
+          <ul className="menu dropdown-content ms-1 text-black bg-white rounded-[5px] z-30 text-xs">
             <li>
               <button
                 className="dropdown-item"
@@ -76,9 +66,9 @@ const SideBar = ({ manage, logo }: any) => {
           </ul>
         </li>
 
-        <li className="mt-3 text-white fs-4 dropdown dropdown-right flex justify-center">
+        <li className="mt-3 text-white dropdown dropdown-hover dropdown-right flex justify-center">
           <button
-            className="button bg-blue3"
+            className="w-full border-none hover:bg-transparent transition duration-500 hover:scale-110"
             type="button"
             data-bs-toggle="dropdown"
             data-toggle="tooltip"
@@ -91,10 +81,10 @@ const SideBar = ({ manage, logo }: any) => {
                 active ? "active" : ""
               }`}
             >
-              <ContentPasteIcon className="h-12 w-11" sx={{ fontSize: 30 }} />
+              <ContentPasteIcon className="h-7 w-7" sx={{ fontSize: 30 }} />
             </div>
           </button>
-          <ul className="menu dropdown-content ms-1 text-black bg-white rounded-[5px] z-30">
+          <ul className="menu dropdown-content ms-1 text-black bg-white rounded-[5px] z-30 text-xs">
             <li>
               <button
                 className="dropdown-item"
@@ -113,7 +103,9 @@ const SideBar = ({ manage, logo }: any) => {
                 className="dropdown-item"
                 id="SetYear"
                 onClick={() =>
-                  router.push("/dashboard/programacion-anual?componente=establecer")
+                  router.push(
+                    "/dashboard/programacion-anual?componente=establecer"
+                  )
                 }
               >
                 Establecer año
@@ -135,7 +127,9 @@ const SideBar = ({ manage, logo }: any) => {
                 className="dropdown-item"
                 id="CreateCourses"
                 onClick={() =>
-                  router.push("/dashboard/programacion-anual?componente=crear-curso")
+                  router.push(
+                    "/dashboard/programacion-anual?componente=crear-curso"
+                  )
                 }
               >
                 Crear Cursos
@@ -157,7 +151,9 @@ const SideBar = ({ manage, logo }: any) => {
                 className="dropdown-item"
                 id="Subjects"
                 onClick={() =>
-                  router.push("/dashboard/programacion-anual?componente=asignatura")
+                  router.push(
+                    "/dashboard/programacion-anual?componente=asignatura"
+                  )
                 }
               >
                 Asignaturas
@@ -179,7 +175,9 @@ const SideBar = ({ manage, logo }: any) => {
                 className="dropdown-item"
                 id="Enrollment"
                 onClick={() =>
-                  router.push("/dashboard/programacion-anual?componente=matriculas")
+                  router.push(
+                    "/dashboard/programacion-anual?componente=matriculas"
+                  )
                 }
               >
                 Matrículas
@@ -188,9 +186,9 @@ const SideBar = ({ manage, logo }: any) => {
           </ul>
         </li>
 
-        <li className="nav-item mt-3 text-white fs-4 dropdown dropdown-right flex justify-center">
+        <li className="mt-3 text-white  dropdown dropdown-hover dropdown-right flex justify-center">
           <button
-            className="button bg-blue3"
+            className="w-full border-none hover:bg-transparent transition duration-500 hover:scale-110"
             type="button"
             data-bs-toggle="dropdown"
             data-toggle="tooltip"
@@ -203,21 +201,29 @@ const SideBar = ({ manage, logo }: any) => {
                 active ? "active" : ""
               }`}
             >
-              <RouteIcon className="h-12 w-11" sx={{ fontSize: 30 }} />
+              <RouteIcon className="h-7 w-7" sx={{ fontSize: 30 }} />
             </div>
           </button>
-          <ul className="menu dropdown-content ms-1 text-black bg-white rounded-[5px] z-30">
+          <ul className="menu dropdown-content ms-1 text-black bg-white rounded-[5px] z-30 text-xs">
             <li>
-              <button className="dropdown-item" id="Teachers" onClick={() => router.push("/dashboard/proceso-anual?componente=calificacion")}>
+              <button
+                className="dropdown-item"
+                id="Teachers"
+                onClick={() =>
+                  router.push(
+                    "/dashboard/proceso-anual?componente=calificacion"
+                  )
+                }
+              >
                 Calificación
               </button>
             </li>
           </ul>
         </li>
 
-        <li className="nav-item mt-3 mb-10 text-white fs-4 dropdown dropdown-right flex justify-center">
+        <li className="mt-3 text-white dropdown dropdown-hover dropdown-right flex justify-center w-full">
           <button
-            className="button bg-blue3"
+            className="w-full border-none hover:bg-transparent transition duration-500 hover:scale-110"
             type="button"
             data-toggle="tooltip"
             data-placement="left"
@@ -225,15 +231,11 @@ const SideBar = ({ manage, logo }: any) => {
             data-bs-toggle="dropdown"
             aria-expanded="true"
           >
-            <div
-              className={`opacity${active ? "active" : ""} transitionRight ${
-                active ? "active" : ""
-              }`}
-            >
-              <AssessmentIcon className="h-12 w-11" sx={{ fontSize: 30 }} />
+            <div>
+              <AssessmentIcon className="h-7 w-7 object-cover" sx={{ fontSize: 30 }} />
             </div>
           </button>
-          <ul className="menu dropdown-content ms-1 text-black bg-white rounded-[5px] !top-[-110px] z-30">
+          <ul className="menu dropdown-content ms-1 text-black bg-white rounded-[5px] z-30 text-xs">
             <li>
               <button className="dropdown-item" id="Teachers" onClick={manage}>
                 Indicadores
@@ -252,6 +254,57 @@ const SideBar = ({ manage, logo }: any) => {
             <li>
               <button className="dropdown-item" id="Teachers" onClick={manage}>
                 Entregables
+              </button>
+            </li>
+          </ul>
+        </li>
+
+        <li className="nav-item mt-3 mb-10 text-white  dropdown dropdown-hover dropdown-right flex justify-center">
+          <button
+            className="btn bg-transparent border-none hover:bg-transparent transition duration-500 hover:scale-110"
+            type="button"
+            data-toggle="tooltip"
+            data-placement="left"
+            title=""
+            data-bs-toggle="dropdown"
+            aria-expanded="true"
+          >
+            <div className="avatar">
+              <div className="w-12 rounded-[100%]">
+                <img
+                  src={"/assets/institucionLogo@2x.png"}
+                  alt=""
+                  className=""
+                />
+              </div>
+            </div>
+          </button>
+          <ul className="menu dropdown-content ms-1 text-black bg-white rounded-[5px] z-30 text-xs">
+            <li>
+              <button
+                className="dropdown-item"
+                id="Teachers"
+                onClick={() => router.push("/dashboard")}
+              >
+                Inicio
+              </button>
+            </li>
+            <li>
+              <button
+                className="dropdown-item"
+                id="Teachers"
+                onClick={() => router.push("/dashboard/ajustes")}
+              >
+                Cambiar contraseña
+              </button>
+            </li>
+            <li>
+              <button
+                className="dropdown-item"
+                id="Teachers"
+                onClick={() => router.push("/instituciones")}
+              >
+                Cerrar sesion
               </button>
             </li>
           </ul>

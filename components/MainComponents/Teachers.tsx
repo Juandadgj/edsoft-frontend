@@ -340,29 +340,29 @@ function Teachers() {
   }
 
   return (
-    <div className="rounded-tl-[20px] w-full overflow-hidden bg-gray1 p-14 h-full">
-      <Grid container>
-        <Grid item xs={6}>
-          <strong className="text-2xl text-black ps-8 pb-4">
+    <div className="rounded-tl-[20px] w-full overflow-hidden bg-gray1 p-10 pb-3 h-screen">
+      <div className="h-[6%] flex justify-between">
+        <div>
+          <strong className="text-xl text-black ps-8">
             Lista de Docentes
           </strong>
-        </Grid>
-        <Grid item xs={6} className="text-end pr-6">
+        </div>
+        <div className="text-end pr-6 h-full [&>button]:h-20">
           <button
             type="button"
-            className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-2 rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
+            className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
             onClick={() => {
               setTypeAdd(true);
               setOpen(true);
             }}
           >
-            <h4 className="text-white">+ Nuevo Docente</h4>
+            <h4 className="text-white text-xs">+ Nuevo Docente</h4>
           </button>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
       <Grid
         container
-        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full"
+        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]"
       >
         <Grid item xs={12} className="text-black h-full">
           {loading ? (

@@ -9,7 +9,7 @@ function Settings() {
   }, []);
 
   return (
-    <div className="h-full w-full rounded-tl-[20px] overflow-hidden bg-gray1 p-14">
+    <div className="h-full w-full rounded-tl-[20px] overflow-hidden bg-gray1 p-9">
       <Grid container className="pb-8">
         <Grid item xs={12}>
           <h1

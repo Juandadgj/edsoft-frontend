@@ -276,8 +276,8 @@ const Qualification = () => {
   };
 
   return (
-    <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-14">
-      <div className="flex justify-between">
+    <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-10 pb-3">
+      <div className="flex justify-between h-[6%]">
         <Grid item xs={12}>
           <strong className="text-black text-xl ps-8">
             Cursos creados para el a�o 2023 Para la calificacion de logros e
@@ -287,7 +287,7 @@ const Qualification = () => {
       </div>
       <Grid
         container
-        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full"
+        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]"
       >
         {!g && (
           <Grid item xs={12} className="h-full">
@@ -339,7 +339,7 @@ const Qualification = () => {
                 className={`w-full h-[80%] px-3 overflow-x-auto animate-fade-left `}
               >
                 {achievements && (
-                  <div className="w-full text-black flex flex-col gap-2 my-2">
+                  <div className="w-full text-black flex flex-col gap-2 my-2 text-sm">
                     {selectedAchievements.map(
                       (achievement: any, index: number) => (
                         <div key={achievement.id_achievement}>
@@ -360,12 +360,12 @@ const Qualification = () => {
                       <div className="w-full text-black flex items-center justify-end">
                         <button
                           onClick={() => handlerToogleUpdate()}
-                          className="btn bg-transparent border-none text-main-gray hover:text-white hover:bg-[#0055A6] group"
+                          className="btn btn-sm h-[35px] bg-transparent border-none text-main-gray hover:text-white hover:bg-[#0055A6] group text-xs"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            width="20"
-                            height="20"
+                            width="15"
+                            height="15"
                             viewBox="0 0 20 20"
                           >
                             <path
@@ -380,7 +380,7 @@ const Qualification = () => {
                       <div className="w-full text-black flex items-center justify-end">
                         <button
                           onClick={() => router.back()}
-                          className="btn bg-transparent border-none text-main-gray hover:text-white hover:bg-[#0055A6] group"
+                          className="btn btn-sm h-[35px] bg-transparent border-none text-main-gray hover:text-white hover:bg-[#0055A6] group text-xs"
                         >
                           <p>Volver</p>
                         </button>
@@ -393,7 +393,7 @@ const Qualification = () => {
                             (header: any, index: any) => (
                               <td
                                 key={index}
-                                className="items-center justify-center text-center text-blue3"
+                                className="items-center justify-center text-center text-blue3 text-sm"
                               >
                                 {header.Header}
                               </td>
@@ -407,7 +407,9 @@ const Qualification = () => {
                             key={item.id}
                             className="border-none p-3 bg-gray1"
                           >
-                            <td className="text-center">{item.student}</td>
+                            <td className="text-center text-xs">
+                              {item.student}
+                            </td>
                             {item.qualifications &&
                               item.qualifications.map(
                                 (qualification: any, index: number) => (
@@ -474,7 +476,7 @@ const Qualification = () => {
                     <button
                       disabled={loadingUpdate}
                       onClick={handlerUpdateQualifications}
-                      className="btn rounded-5 text-white bg-[#0b5ed7] hover:bg-[#0b5ed7]"
+                      className="btn btn-sm border-none text-white bg-[#0b5ed7] hover:bg-[#0b5ed7] text-xs"
                     >
                       Guardar notas
                     </button>

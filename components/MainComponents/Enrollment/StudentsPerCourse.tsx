@@ -50,7 +50,7 @@ export const StudentsPerCourse = () => {
     loading: loadingGroups,
     error: errorGroups,
   } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: 2013 } },
+    variables: { filterGroupInput: { id_year: 2016 } },
   });
 
   const [
@@ -111,8 +111,8 @@ export const StudentsPerCourse = () => {
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="35"
-            height="35"
+            width="25"
+            height="25"
             viewBox="0 0 24 24"
           >
             <path
@@ -131,8 +131,8 @@ export const StudentsPerCourse = () => {
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="30"
-            height="30"
+            width="25"
+            height="25"
             viewBox="0 0 24 24"
           >
             <path
@@ -151,8 +151,8 @@ export const StudentsPerCourse = () => {
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="30"
-            height="30"
+            width="25"
+            height="25"
             viewBox="0 0 14 14"
           >
             <g
@@ -186,16 +186,16 @@ export const StudentsPerCourse = () => {
 
   return (
     <div className="h-full">
-      <Grid container className="pb-4">
-        <Grid item xs={12}>
-          <strong className="text-2xl text-black ps-8">
+      <div className="h-[6%]">
+        <div>
+          <strong className="text-xl text-black ps-8">
             Estudiantes por curso en el año {year}
           </strong>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
       <Grid
         container
-        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full"
+        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]"
       >
         {!g && (
           <Grid item xs={12} className="h-full">

@@ -7,7 +7,7 @@ const CQualificationType = (props: QualifificationTypeCard) => {
 
   return (
     <div style={{ textDecoration: "none", width: "100%" }}>
-      <tr className="flex w-full p-1 my-4 bg-gray1 border-none rounded-[20px] text-base font-semibold">
+      <tr className="flex w-full p-1 my-4 bg-gray1 border-none rounded-[20px] text-sm font-semibold">
         <td className="flex w-full justify-center items-center text-center">
           <p className="w-full">{qualificationName}</p>
         </td>

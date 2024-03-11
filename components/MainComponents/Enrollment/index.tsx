@@ -59,11 +59,11 @@ export const Enrollment = () => {
   // }, []);
 
   return (
-    <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-10">
+    <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-10 pb-3">
       {opcion ? '' : (
       <Grid container className="pb-6">
         <Grid item xs={12}>
-          <strong className="text-2xl text-black ps-8">
+          <strong className="text-xl text-black ps-8">
             Gestiones de Estudiantes {year}
           </strong>
         </Grid>

@@ -12,13 +12,12 @@ const Student = ({ data }: any) => {
     loading: loadingStudent,
     error: errorStudent,
   } = useStudentByIdQuery({ variables: { idStudent: Number(id) } });
-  console.log("slug", dataStudent);
   return (
     <Layaout>
-      <div className="rounded-tl-[20px] w-full h-full overflow-auto bg-gray1 p-10">
+      <div className="rounded-tl-[20px] w-full h-[100vh] overflow-auto bg-gray1 p-9">
         <div className="">
           <div>
-            <strong className="text-2xl text-black ps-8">General</strong>
+            <strong className="text-xl text-black ps-8">General</strong>
           </div>
         </div>
         {loadingStudent && (
@@ -28,8 +27,8 @@ const Student = ({ data }: any) => {
         )}
         {dataStudent?.studentByID && (
           <>
-            <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-8 pb-0 text-black">
-              <div className="flex justify-between gap-5">
+            <div className="bg-white border-none border-2 shadow-2xl rounded-[2rem] p-8 pb-0 text-black">
+              <div className="flex justify-between gap-5 text-sm">
                 <div className="flex items-center gap-3 w-1/3">
                   <div className="avatar">
                     <div className="w-24 rounded-[100%]">
@@ -103,7 +102,7 @@ const Student = ({ data }: any) => {
                   </div>
                 </div>
               </div>
-              <div className="pt-8">
+              <div className="pt-8 text-sm">
                 <div className="border-0 border-b-4 border-blue3 max-w-[150px] flex justify-center">
                   <p>
                     <strong>Registro por año</strong>
@@ -112,13 +111,13 @@ const Student = ({ data }: any) => {
               </div>
             </div>
 
-            <div className="pt-8 w-full grid grid-cols-1 lg:grid-cols-2 gap-10">
+            <div className="pt-8 w-full grid grid-cols-1 lg:grid-cols-2 gap-10 text-[12px]">
               {dataStudent.studentByID.groups?.map((group) => (
                 <div className="" key={group?.id_group}>
                   <strong className="text-black ps-8 text-xl">
                     {group?.level} {group?.sublevel}
                   </strong>
-                  <div className="bg-white border-none border-2 shadow-2xl rounded-[2rem] p-8 text-black w-full">
+                  <div className="bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 px-2 text-black w-full">
                     <table className=" w-full">
                       <thead className="border-b-2 border-gray6">
                         <div className="w-full flex justify-center text-center text-main-blue underline underline-offset-8 font-semibold pb-3">
@@ -134,7 +133,10 @@ const Student = ({ data }: any) => {
                       </thead>
                       <tbody className="">
                         {group?.courses?.map((course) => (
-                          <div key={course?.id_course} className="flex justify-center items-center pt-3 text-center">
+                          <div
+                            key={course?.id_course}
+                            className="flex justify-center items-center pt-3 text-center"
+                          >
                             <tr className="w-full flex justify-center items-center bg-gray1 rounded-[2rem] px-2">
                               <td className="w-[38%]   py-2">{course?.name}</td>
                               <td className="w-[38%] h-full py-2">
