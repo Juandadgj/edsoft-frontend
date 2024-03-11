@@ -1,15 +1,6 @@
-mutation createQualificationType(
-  $name: String!
-  $floor_score: Float!
-  $ceiling_score: Float!
-  $year: Int!
-) {
-  createTypeQualification(
-    name: $name
-    floor_score: $floor_score
-    ceiling_score: $ceiling_score
-    year: $year
-  ) {
+
+mutation createQualificationType($createTypeQualificationInput: CreateTypeQualificationInput!) {
+  createTypeQualification(createTypeQualificationInput: $createTypeQualificationInput) {
     id_type_qual
   }
 }

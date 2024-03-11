@@ -9,8 +9,7 @@ import Menu from '@mui/material/Menu';
 import Avatar from '@mui/material/Avatar';
 import { makeStyles } from '@material-ui/core/styles';
 import Image from 'next/image';
-
-
+import Link from 'next/link';
 
 export const SchoolAvatar = ({textComponent, manage, homeAvatar}: any) => {  
   // const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -34,9 +33,9 @@ export const SchoolAvatar = ({textComponent, manage, homeAvatar}: any) => {
 
 
   return (
-    <Box sx={{ flexGrow: 0 }} className={ homeAvatar ? 'absolute mr-5 right-0 top-10' : ''}>
+    <Box sx={{ flexGrow: 0 }} className={ homeAvatar ? 'absolute mr-5 right-0 top-10' : 'absolute right-2 top-2'}>
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar alt="Remy Sharp" src={"../public/assets/institucionLogo@2x.png"} sx={{ width: 80, height: 80 }} />
+              <Avatar alt="Remy Sharp" src={"/assets/institucionLogo@2x.png"} sx={{ width: 80, height: 80 }} />
             </IconButton>
             <Menu
               sx={{ mt: '10px' }}
@@ -69,14 +68,14 @@ export const SchoolAvatar = ({textComponent, manage, homeAvatar}: any) => {
                 </button>
               </div>
 
-              <a className="text-decoration-none text-body" href="/instituciones">
+              <Link className="text-decoration-none text-body" href="/instituciones">
               <div className='flex p-2 text-left gap-2'>
                 <Image className='icon w-4 gray3' src={logout} alt="settings-icon"/>
                 <button onClick={manage} className="dropdown-item" type="button">
                   Cerrar Sesión
                 </button>
               </div>
-              </a>
+              </Link>
             </Menu>
           </Box>
   )

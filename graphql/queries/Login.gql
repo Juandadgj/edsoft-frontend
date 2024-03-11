@@ -1,5 +1,5 @@
-query Login($password: String!, $user: String!, $id_institution: Int!) {
-  signin(password: $password, user: $user, id_institution: $id_institution) {
+query SignIn($signInInput: SignInInput) {
+  signIn(signInInput: $signInInput) {
     token
     role
   }

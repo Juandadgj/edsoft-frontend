@@ -1,0 +1,15 @@
+mutation UpdateCourse($updateCourseInput: UpdateCourseInput!) {
+  updateCourse(updateCourseInput: $updateCourseInput) {
+    id_course
+    id_group
+    id_teacher
+    name
+    position
+    dim_codigo
+    asi_dimension
+    id_area
+    hour
+    average
+    percentage
+  }
+}

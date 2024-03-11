@@ -1,10 +1,8 @@
-mutation updateSchoolarYear(
-  $id_year: Int!
-  $rector: String!
-  $secretary: String!
-  $comment: String
-) {
-  updateScholarYear(id_year: $id_year, rector: $rector, secretary: $secretary, comment: $comment) {
+mutation UpdateScholarYear($updateScholarYearInput: UpdateScholarYearInput!) {
+  updateScholarYear(updateScholarYearInput: $updateScholarYearInput) {
     id_year
+    rector
+    secretary
+    comment
   }
 }

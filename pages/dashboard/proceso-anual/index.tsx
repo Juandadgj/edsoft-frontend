@@ -1,0 +1,16 @@
+import Layaout from "@/components/Layaout";
+import Qualification from "@/components/MainComponents/Qualification";
+
+import { useRouter } from "next/router";
+import React from "react";
+
+export default function Anual() {
+  const router = useRouter();
+  const { componente } = router.query;
+  console.log(router.query)
+  return (
+    <Layaout>
+      {componente == "calificacion" && <Qualification />}
+    </Layaout>
+  );
+}

@@ -1,5 +1,13 @@
-query GetTeachers($type_id: Int!) {
-  teachers(type_id: $type_id) {
-    ...RegularTeacher
+query Teachers {
+  teachers {
+    id_teacher
+    name
+    last_name
+    type_id
+    identification
+    direction
+    phone
+    email
+    degree
   }
 }

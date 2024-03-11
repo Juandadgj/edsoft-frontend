@@ -1,5 +1,18 @@
-query GetCourses {
-  groups {
-    ...RegularCourses
+query Courses($filterCourseInput: FilterCourseInput) {
+  courses(filterCourseInput: $filterCourseInput) {
+    id_course
+    id_group
+    id_teacher
+    name
+    position
+    dim_codigo
+    asi_dimension
+    id_area
+    hour
+    average
+    percentage
+    teacher {
+      name
+    }
   }
 }

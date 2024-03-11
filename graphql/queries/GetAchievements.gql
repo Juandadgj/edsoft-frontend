@@ -1,5 +1,8 @@
-query GetAchievements {
-  achievements {
-    ...RegularAchievement
+query Achievements($filterAchievementInput: FilterAchievementInput) {
+  achievements(filterAchievementInput: $filterAchievementInput) {
+    id_achievement
+    id_course
+    period
+    description
   }
 }

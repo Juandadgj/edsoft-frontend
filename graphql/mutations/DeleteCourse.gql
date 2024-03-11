@@ -1,0 +1,16 @@
+mutation DeleteCourse($idCourse: Int!) {
+  deleteCourse(id_course: $idCourse) {
+    id_course
+    id_group
+    id_teacher
+    name
+    position
+    dim_codigo
+    asi_dimension
+    id_area
+    hour
+    average
+    percentage
+   
+  }
+}

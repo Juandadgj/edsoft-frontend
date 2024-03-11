@@ -1,13 +1,7 @@
-mutation UpdateArea(
-  $name: String!
-  $status: String!
-  $id_area: Int!
-) {
-  updateArea(
-    name: $name
-    status: $status
-    id_area: $id_area
-  ){
+mutation UpdateArea($updateAreaInput: UpdateAreaInput!) {
+  updateArea(updateAreaInput: $updateAreaInput) {
     id_area
+    name
+    status
   }
 }
