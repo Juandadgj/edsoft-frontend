@@ -4,7 +4,7 @@ import Layaout from "@/components/Layaout";
 
 function Dashboard() {
   const router = useRouter();
-  return <Layaout>{router.asPath === "/dashboard" && <SchoolHome />}</Layaout>;
+  return <Layaout textpage="Inicio">{router.asPath === "/dashboard" && <SchoolHome />}</Layaout>;
 }
 
 export default Dashboard;

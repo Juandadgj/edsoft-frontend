@@ -1087,6 +1087,20 @@ export type UpdateTeacherMutationVariables = Exact<{
 
 export type UpdateTeacherMutation = { __typename?: 'Mutation', updateTeacher: { __typename?: 'Teacher', id_teacher: number } };
 
+export type GenerateReportAreaQueryVariables = Exact<{
+  generateReportAreaInput?: InputMaybe<GenerateReportAreaInput>;
+}>;
+
+
+export type GenerateReportAreaQuery = { __typename?: 'Query', generateReportArea: { __typename?: 'Report', report_content: string } };
+
+export type GenerateReportQueryVariables = Exact<{
+  generateStudentsListInput?: InputMaybe<GenerateStudentsListInput>;
+}>;
+
+
+export type GenerateReportQuery = { __typename?: 'Query', generateReport: { __typename?: 'Report', report_content: string } };
+
 export type AchievementsQueryVariables = Exact<{
   filterAchievementInput?: InputMaybe<FilterAchievementInput>;
 }>;
@@ -2013,6 +2027,76 @@ export function useUpdateTeacherMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateTeacherMutationHookResult = ReturnType<typeof useUpdateTeacherMutation>;
 export type UpdateTeacherMutationResult = Apollo.MutationResult<UpdateTeacherMutation>;
 export type UpdateTeacherMutationOptions = Apollo.BaseMutationOptions<UpdateTeacherMutation, UpdateTeacherMutationVariables>;
+export const GenerateReportAreaDocument = gql`
+    query GenerateReportArea($generateReportAreaInput: GenerateReportAreaInput) {
+  generateReportArea(generateReportAreaInput: $generateReportAreaInput) {
+    report_content
+  }
+}
+    `;
+
+/**
+ * __useGenerateReportAreaQuery__
+ *
+ * To run a query within a React component, call `useGenerateReportAreaQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGenerateReportAreaQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGenerateReportAreaQuery({
+ *   variables: {
+ *      generateReportAreaInput: // value for 'generateReportAreaInput'
+ *   },
+ * });
+ */
+export function useGenerateReportAreaQuery(baseOptions?: Apollo.QueryHookOptions<GenerateReportAreaQuery, GenerateReportAreaQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GenerateReportAreaQuery, GenerateReportAreaQueryVariables>(GenerateReportAreaDocument, options);
+      }
+export function useGenerateReportAreaLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GenerateReportAreaQuery, GenerateReportAreaQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GenerateReportAreaQuery, GenerateReportAreaQueryVariables>(GenerateReportAreaDocument, options);
+        }
+export type GenerateReportAreaQueryHookResult = ReturnType<typeof useGenerateReportAreaQuery>;
+export type GenerateReportAreaLazyQueryHookResult = ReturnType<typeof useGenerateReportAreaLazyQuery>;
+export type GenerateReportAreaQueryResult = Apollo.QueryResult<GenerateReportAreaQuery, GenerateReportAreaQueryVariables>;
+export const GenerateReportDocument = gql`
+    query GenerateReport($generateStudentsListInput: GenerateStudentsListInput) {
+  generateReport(generateStudentsListInput: $generateStudentsListInput) {
+    report_content
+  }
+}
+    `;
+
+/**
+ * __useGenerateReportQuery__
+ *
+ * To run a query within a React component, call `useGenerateReportQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGenerateReportQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGenerateReportQuery({
+ *   variables: {
+ *      generateStudentsListInput: // value for 'generateStudentsListInput'
+ *   },
+ * });
+ */
+export function useGenerateReportQuery(baseOptions?: Apollo.QueryHookOptions<GenerateReportQuery, GenerateReportQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GenerateReportQuery, GenerateReportQueryVariables>(GenerateReportDocument, options);
+      }
+export function useGenerateReportLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GenerateReportQuery, GenerateReportQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GenerateReportQuery, GenerateReportQueryVariables>(GenerateReportDocument, options);
+        }
+export type GenerateReportQueryHookResult = ReturnType<typeof useGenerateReportQuery>;
+export type GenerateReportLazyQueryHookResult = ReturnType<typeof useGenerateReportLazyQuery>;
+export type GenerateReportQueryResult = Apollo.QueryResult<GenerateReportQuery, GenerateReportQueryVariables>;
 export const AchievementsDocument = gql`
     query Achievements($filterAchievementInput: FilterAchievementInput) {
   achievements(filterAchievementInput: $filterAchievementInput) {

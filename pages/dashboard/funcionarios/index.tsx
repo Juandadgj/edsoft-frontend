@@ -8,7 +8,7 @@ export default function Funcionaries() {
   const router = useRouter();
   const { componente } = router.query;
   return (
-    <Layaout>
+    <Layaout textpage="Funcionarios">
       {componente == "profesores" && <Teachers />}
       {componente == "secretarios" && <Secretaries />}
     </Layaout>

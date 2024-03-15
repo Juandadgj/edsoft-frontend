@@ -37,7 +37,7 @@ const GlobalGradesundetermined = () => {
   const year = today.getFullYear();
   const [active, setActive] = useState(false);
   const [selectedReport, setSelectedReport] = useState<any>([]);
-  const [pdfBase64, setPdfBase64] = useState<any>();
+  const [pdfBase64, setPdfBase64] = useState<any>("");
 
   const { data, loading } = useGroupsQuery({
     variables: { filterGroupInput: { id_year: 2017 } },
@@ -59,7 +59,8 @@ const GlobalGradesundetermined = () => {
         },
       },
     }).then((res)=>{
-      const {data} = res
+      const {data} = res 
+      console.log(data?.generateReport.report_content)
       setPdfBase64(data?.generateReport.report_content)
     });
   };
@@ -83,6 +84,7 @@ const GlobalGradesundetermined = () => {
   }, [data]);
 
   const handleDownloadPDF = () => {
+    console.log(pdfBase64)
     if (pdfBase64) {
       // Convert the base64 string to a Blob
       const byteCharacters = atob(pdfBase64);

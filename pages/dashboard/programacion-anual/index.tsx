@@ -12,16 +12,15 @@ import React from "react";
 
 export default function Anual() {
   const router = useRouter();
-  const { componente, a } = router.query;
-  console.log("a", a);
+  const { componente } = router.query;
   return (
-    <Layaout>
+    <Layaout textpage="Programacion anual">
       {componente == "calificacion" && <QualificationType />}
-      {componente == "establecer" && <SetYear />}
-      {componente == "copiar" && <CopyYear />}
+      {componente == "establecer-año" && <SetYear />}
+      {componente == "copiar-año" && <CopyYear />}
       {componente == "crear-curso" && <CreateCourses />}
-      {componente == "area" && <Areas />}
-      {componente == "asignatura" && <Subjects />}
+      {componente == "areas" && <Areas />}
+      {componente == "asignaturas" && <Subjects />}
       {componente == "logros" && <Achievements />}
       {componente == "matriculas" && <Enrollment />}
     </Layaout>

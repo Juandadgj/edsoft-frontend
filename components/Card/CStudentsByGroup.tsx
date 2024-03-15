@@ -8,16 +8,16 @@ const CStudentsByGroup = (props: StudentsByGroupCard) => {
         <td className="flex w-full justify-center items-center text-center py-0">
           {name}
         </td>
-        <td className="flex w-full justify-center items-center text-center">
+        <td className="flex w-full justify-center items-center text-center py-0">
           {certified}
         </td>
-        <td className="flex w-full justify-center items-center text-center">
+        <td className="flex w-full justify-center items-center text-center py-0">
           {info}
         </td>
-        <td className="flex w-full justify-center items-center text-center">
+        <td className="flex w-full justify-center items-center text-center py-0">
           {edit}
         </td>
-        <td className="flex w-full justify-center items-center text-center">
+        <td className="flex w-full justify-center items-center text-center py-0">
           {leave}
         </td>
       </tr>

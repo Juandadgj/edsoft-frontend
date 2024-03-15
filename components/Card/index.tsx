@@ -13,7 +13,8 @@ import {
   SubjectCard,
   TeachersCard,
   CourseCard,
-  StudentsByGroupCard
+  StudentsByGroupCard,
+  DeliverableCard
 } from "./types";
 import CScretaries from "./CScretaries";
 import CQualificationType from "./CQualificationType";
@@ -24,6 +25,7 @@ import CSubject from "./CSubject";
 import CEnrollment from "./CEnrollment";
 import CCourses from "./CCourses";
 import CStudentsByGroup from "./CStudentsByGroup";
+import CDeliverables from "./CDeliverables";
 
 const Card = ({ type, item }: ICard) => {
   switch (type) {
@@ -49,6 +51,9 @@ const Card = ({ type, item }: ICard) => {
       return <CCourses {...(item as CourseCard)} />;
     case "studentsByGroup":
       return <CStudentsByGroup {...(item as StudentsByGroupCard)}/>
+    case "deliverables":
+        return <CDeliverables {...(item as DeliverableCard)}/>
+
     default:
       break;
   }

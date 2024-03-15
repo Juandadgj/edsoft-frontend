@@ -4,7 +4,14 @@ import { useRouter } from "next/router";
 import { SchoolNav } from "./SchoolNav";
 import { SchoolAvatar } from "./SchoolAvatar";
 
-const Layaout = ({ children }: { children: React.ReactNode }) => {
+
+interface ILayaout {
+  children : React.ReactNode
+  textpage : string
+}
+
+
+const Layaout = ({ children, textpage }:  ILayaout) => {
   const [textComponent, setTextComponent] = useState("Inicio");
   const router = useRouter();
   const {} = router.query;
@@ -17,18 +24,17 @@ const Layaout = ({ children }: { children: React.ReactNode }) => {
   // }, []);
 
   const manageComponentStatus = ({ target }: any) => {
-    console.log("a",target.id, target.innerText, target.alt);
+    console.log("a", target.id, target.innerText, target.alt);
     router.push(`/dashboard/${target.id}`);
   };
-
+  console.log(router.asPath === "/dashboard")
   return (
     <div className="h-screen">
-      {/* {router.asPath === "/dashboard" ? null : (
+      {router.asPath === "/dashboard" ? null : (
         <SchoolNav
-          textComponent={textComponent}
-          manage={manageComponentStatus}
+          textComponent={textpage}
         />
-      )} */}
+      )}
 
       {router.asPath === "/dashboard" ? (
         <SchoolAvatar
@@ -40,18 +46,12 @@ const Layaout = ({ children }: { children: React.ReactNode }) => {
 
       <div
         className={`flex ${
-          router.asPath === "/dashboard" ? "h-full" : "h-full"
+          router.asPath == "/dashboard" ? "h-full" : "h-[90%]"
         } w-full`}
       >
-        {router.asPath === "/dashboard" ? (
-          <div className="w-[5%] max-w-[65px]">
-            <SideBar manage={manageComponentStatus} logo={true} />
-          </div>
-        ) : (
-          <div className="w-[5%] max-w-[65px]">
-            <SideBar manage={manageComponentStatus} logo={false} />
-          </div>
-        )}
+        <div className="w-[5%] max-w-[65px]">
+          <SideBar manage={manageComponentStatus} logo={false} />
+        </div>
         <div className="bg-blue3 flex flex-col h-full w-full">{children}</div>
       </div>
     </div>

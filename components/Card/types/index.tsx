@@ -103,4 +103,12 @@ export interface StudentsByGroupCard {
   leave: any
 }
 
+export interface DeliverableCard {
+  name: string;
+  working_time?: string;
+  group_teacher: string;
+  id_group?: number;
+  click?: () => void;
+}
+
 export interface Qualification {}

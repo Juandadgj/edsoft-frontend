@@ -6,7 +6,7 @@ function Settings() {
   const [active, setActive] = useState(false);
 
   return (
-    <Layaout>
+    <Layaout textpage="Ajustes">
       <div className="rounded-tl-[20px] w-full h-full overflow-hidden bg-gray1 p-10 pb-3">
         <div className="h-[6%]">
           <div>

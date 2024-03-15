@@ -9,7 +9,7 @@ export default function Anual() {
   const { componente } = router.query;
   console.log(router.query)
   return (
-    <Layaout>
+    <Layaout textpage="Proceso anual">
       {componente == "calificacion" && <Qualification />}
     </Layaout>
   );

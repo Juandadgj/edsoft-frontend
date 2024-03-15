@@ -13,8 +13,15 @@ const Student = ({ data }: any) => {
     error: errorStudent,
   } = useStudentByIdQuery({ variables: { idStudent: Number(id) } });
   return (
-    <Layaout>
-      <div className="rounded-tl-[20px] w-full h-[100vh] overflow-auto bg-gray1 p-9">
+    <Layaout textpage="Estudiante">
+      <div
+        className="rounded-tl-[20px] w-full h-[100vh] overflow-auto bg-gray1 p-9"
+        style={{
+          scrollbarWidth: "thin",
+          scrollbarColor: "#25429e #F3F4F6",
+          scrollbarGutter: "20px",
+        }}
+      >
         <div className="">
           <div>
             <strong className="text-xl text-black ps-8">General</strong>

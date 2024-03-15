@@ -17,26 +17,22 @@ import Table from "../Table";
 
 const columns = [
   {
-    Header: "Apellido",
-    accessor: "lastName",
-  },
-  {
-    Header: "Nombre",
+    Header: "Apellido y Nombre",
     accessor: "name",
   },
   {
-    Header: "Título",
-    accessor: "degree",
+    Header: "Certi. Matri.",
+    accessor: "certi",
   },
-  {
-    Header: "Editar",
-    accessor: "editar",
-  },
-  {
-    Header: "Borrar",
-    accessor: "borrar",
-  },
+  { Header: "Info", accessor: "info" },
+  { Header: "Editar", accessor: "edit" },
+  { Header: "Sacar", accessor: "leave" },
 ];
+
+
+const data = [
+  {name: "Sebastian" ,lastName: "Camero",}
+]
 
 const CssTextField = styled(TextField)({
   fontFamily: ["Scada", "sans-serif"].join(","),
@@ -340,7 +336,7 @@ function Teachers() {
   }
 
   return (
-    <div className="rounded-tl-[20px] w-full overflow-hidden bg-gray1 p-10 pb-3 h-screen">
+    <div className="rounded-tl-[20px] w-full overflow-hidden bg-gray1 p-10 pb-3 h-full">
       <div className="h-[6%] flex justify-between">
         <div>
           <strong className="text-xl text-black ps-8">

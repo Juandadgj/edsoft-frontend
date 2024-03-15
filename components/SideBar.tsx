@@ -104,7 +104,7 @@ const SideBar = ({ manage, logo }: any) => {
                 id="SetYear"
                 onClick={() =>
                   router.push(
-                    "/dashboard/programacion-anual?componente=establecer"
+                    "/dashboard/programacion-anual?componente=establecer-año"
                   )
                 }
               >
@@ -116,7 +116,7 @@ const SideBar = ({ manage, logo }: any) => {
                 className="dropdown-item"
                 id="CopyYear"
                 onClick={() =>
-                  router.push("/dashboard/programacion-anual?componente=copiar")
+                  router.push("/dashboard/programacion-anual?componente=copiar-año")
                 }
               >
                 Copiar Año Anterior
@@ -140,7 +140,7 @@ const SideBar = ({ manage, logo }: any) => {
                 className="dropdown-item"
                 id="Areas"
                 onClick={() =>
-                  router.push("/dashboard/programacion-anual?componente=area")
+                  router.push("/dashboard/programacion-anual?componente=areas")
                 }
               >
                 Áreas
@@ -152,7 +152,7 @@ const SideBar = ({ manage, logo }: any) => {
                 id="Subjects"
                 onClick={() =>
                   router.push(
-                    "/dashboard/programacion-anual?componente=asignatura"
+                    "/dashboard/programacion-anual?componente=asignaturas"
                   )
                 }
               >
@@ -242,7 +242,7 @@ const SideBar = ({ manage, logo }: any) => {
               </button>
             </li>
             <li>
-              <button className="dropdown-item" id="Teachers" onClick={manage}>
+              <button className="dropdown-item" id="Spreadsheet" onClick={() => router.push("/dashboard/reportes?componente=planillas")}>
                 Planillas
               </button>
             </li>
@@ -252,7 +252,7 @@ const SideBar = ({ manage, logo }: any) => {
               </button>
             </li>
             <li>
-              <button className="dropdown-item" id="Teachers" onClick={manage}>
+              <button className="dropdown-item" id="Teachers" onClick={() => router.push("/dashboard/reportes?componente=entregables")}>
                 Entregables
               </button>
             </li>

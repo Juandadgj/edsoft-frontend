@@ -4,12 +4,12 @@ import Grid from "@mui/material/Grid";
 const NewStudent = () => {
   return (
     <div className="h-full">
-      <div className="">
+      <div className="h-[6%]">
         <strong className="text-xl text-black">
           Estudiante nuevo en el sistema
         </strong>
       </div>
-      <div className="h-full overflow-auto bg-white shadow-2xl rounded-[2rem] p-5 text-black text-xs">
+      <div className="overflow-auto bg-white shadow-2xl rounded-[2rem] p-5 text-black text-xs h-[94%]">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-5 h-full">
           <div className="flex items-center">
             <div className="w-full">

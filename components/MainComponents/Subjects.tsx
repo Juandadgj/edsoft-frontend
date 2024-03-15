@@ -93,7 +93,7 @@ function Subjects() {
   const [DeleteCourse] = useDeleteCourseMutation({});
 
   const handlerSelectedCourse = (id: number | undefined) => {
-    router.push(`/dashboard/programacion-anual?componente=asignatura&c=${id}`);
+    router.push(`/dashboard/programacion-anual?componente=asignaturas&c=${id}`);
   };
 
   const [formValues, setFormValues] = useState<any>({
