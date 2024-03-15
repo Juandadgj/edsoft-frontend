@@ -1,0 +1,91 @@
+import { useMemo } from "react";
+import { useEffect, useState } from "react";
+import edit from "../../../public/assets/01editar.png";
+import delet from "../../../public/assets/01eliminar.png";
+import Grid from "@mui/material/Grid";
+import SearchIcon from "@mui/icons-material/Search";
+import Image from "next/image";
+import { useGroupsQuery } from "@/generated/graphql";
+import Table from "@/components/Table";
+import DescriptionIcon from '@mui/icons-material/Description';
+
+const columns = [
+  {
+    Header: "Curso",
+    accessor: "name",
+  },
+  {
+    Header: "Jornada",
+    accessor: "working_time",
+  },
+  {
+    Header: "Profesor del Grupo",
+    accessor: "group_teacher",
+  },
+  {
+    Header: "Planillar",
+    accessor: "editar",
+  }
+];
+const AbsencesPerMonth = () => {
+  
+  const today = new Date();
+  const year = today.getFullYear();
+  const [active, setActive] = useState(false);
+  
+  const { data, loading } = useGroupsQuery({
+    variables: { filterGroupInput: { id_year: 2017 } },
+  });
+
+  useEffect(() => {
+    setActive(true);
+  }, []);
+
+  const processedGroups = useMemo(() => {
+    if (!data?.groups) return [];
+    return data.groups.map((group, index) => ({
+      name: `${group?.level}-${group?.sublevel}` ?? "",
+      working_time: group?.working_time ?? "",
+      group_teacher: group?.representative ?? "",
+      editar: (
+        <button className="btn btn-ghost border-0">
+          <DescriptionIcon color="action" fontSize="medium" />
+        </button>
+      )
+    }));
+  }, [data]);
+
+  return (
+    <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1">
+      <Grid container>
+        <Grid className="pb-4" item xs={9}>
+          <strong className="text-2xl text-black ps-8">
+            Cursos Creados para el año {year} para la planilla de inasistencia por mes
+          </strong>
+        </Grid>
+      </Grid>
+      <Grid
+        container
+        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full"
+      >
+        <Grid item xs={12} className="h-full">
+          {loading ? (
+            <div className="w-full h-full flex justify-center items-center">
+              <span className="loading loading-dots loading-lg bg-blue3"></span>
+            </div>
+          ) : data?.groups ? (
+            <div
+              className="d-flex border-white py-4 h-full"
+            >
+              <Table column={columns} data={processedGroups} type={"groups"} />
+            </div>
+          ) : (
+            <h3>¡Ocurrio un error!</h3>
+          )}
+        </Grid>
+      </Grid>
+    </div>
+  );
+}
+
+export default AbsencesPerMonth

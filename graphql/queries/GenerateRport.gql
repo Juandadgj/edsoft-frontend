@@ -1,0 +1,5 @@
+query GenerateReport($generateStudentsListInput: GenerateStudentsListInput) {
+  generateReport(generateStudentsListInput: $generateStudentsListInput) {
+    report_content
+  }
+}
