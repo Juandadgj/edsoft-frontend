@@ -1,10 +1,5 @@
 import { useMemo } from "react";
 import { useEffect, useState } from "react";
-import edit from "../../../public/assets/01editar.png";
-import delet from "../../../public/assets/01eliminar.png";
-import Grid from "@mui/material/Grid";
-import SearchIcon from "@mui/icons-material/Search";
-import Image from "next/image";
 import { useGroupsQuery } from "@/generated/graphql";
 import Table from "@/components/Table";
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -57,18 +52,18 @@ const AbsencesPerMonth = () => {
 
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1">
-      <Grid container>
-        <Grid className="pb-4" item xs={9}>
+      <div>
+        <div className="pb-4">
           <strong className="text-2xl text-black ps-8">
             Cursos Creados para el año {year} para la planilla de inasistencia por mes
           </strong>
-        </Grid>
-      </Grid>
-      <Grid
-        container
+        </div>
+      </div>
+      <div
+        
         className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full"
       >
-        <Grid item xs={12} className="h-full">
+        <div className="h-full">
           {loading ? (
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-blue3"></span>
@@ -82,8 +77,8 @@ const AbsencesPerMonth = () => {
           ) : (
             <h3>¡Ocurrio un error!</h3>
           )}
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo } from "react";
-import Grid from "@mui/material/Grid";
 import {
   useCoursesLazyQuery,
   useGroupsQuery,
@@ -140,18 +139,15 @@ const NavigationComponent = () => {
   return (
     <div className="h-full">
       <div className="h-[6%] flex justify-between">
-        <Grid item xs={6}>
+        <div>
           <strong className="text-xl text-black ps-8">
             Elegir curso para ver sus estudiantes
           </strong>
-        </Grid>
+        </div>
       </div>
-      <Grid
-        container
-        className="bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]"
-      >
+      <div className="bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]">
         {!g && (
-          <Grid item xs={12} className="h-full">
+          <div className="h-full">
             {loadingGroups ? (
               <div className="w-full h-full flex justify-center items-center">
                 <span className="loading loading-dots loading-lg bg-blue3"></span>
@@ -167,10 +163,10 @@ const NavigationComponent = () => {
             ) : (
               <h3>¡Ocurrio un error!</h3>
             )}
-          </Grid>
+          </div>
         )}
         {g && opcion && (
-          <Grid item xs={12} className="h-full">
+          <div className="h-full">
             {loadingStudents ? (
               <div className="w-full h-full flex justify-center items-center">
                 <span className="loading loading-dots loading-lg bg-blue3"></span>
@@ -292,10 +288,10 @@ const NavigationComponent = () => {
             ) : (
               <h3>¡Ocurrio un error!</h3>
             )}
-          </Grid>
+          </div>
         )}
         {g && opcion && Number(opcion) == 6 && s && <ReportConfigurable />}
-      </Grid>
+      </div>
     </div>
   );
 };

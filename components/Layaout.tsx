@@ -38,9 +38,6 @@ const Layaout = ({ children, textpage }:  ILayaout) => {
 
       {router.asPath === "/dashboard" ? (
         <SchoolAvatar
-          textComponent={textComponent}
-          homeAvatar={true}
-          manage={manageComponentStatus}
         />
       ) : null}
 

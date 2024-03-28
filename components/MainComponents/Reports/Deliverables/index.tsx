@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import Grid from "@mui/material/Grid";
-import Card from "../../../Card";
+import React, { useEffect } from "react";
 import PublicIcon from "@mui/icons-material/Public";
 import SubjectIcon from "@mui/icons-material/Subject";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";

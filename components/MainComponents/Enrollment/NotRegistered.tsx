@@ -1,12 +1,7 @@
 import React, { useMemo } from "react";
 import { useEffect, useState } from "react";
-import Grid from "@mui/material/Grid";
-import SearchIcon from "@mui/icons-material/Search";
-import Table from "@/components/Table";
 import { useQuery } from "@apollo/client";
 import { GET_STUDENTS } from "@/graphql/queries/GetStudents";
-import Swal from "sweetalert2";
-import Image from "next/image";
 
 const columns = [
   {
@@ -33,53 +28,17 @@ export const NotRegistered = () => {
     setActive(true);
   }, []);
 
-  
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-5">
-      <Grid container className="pb-4">
-        <Grid item xs={12}>
+      <div className="pb-4">
+        <div>
           <strong className="text-2xl text-black ps-8">
             Estudiantes no matriculados en el {year}
           </strong>
-        </Grid>
-      </Grid>
-      <Grid
-        container
-        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5"
-      >
-        <Grid item xs={12}>
-          <form role="search">
-            <Grid container>
-              <Grid item xs={6}>
-                <Grid container>
-                  <Grid item xs={1} className="text-end pt-4">
-                    <SearchIcon />
-                  </Grid>
-                  <Grid item xs={11}>
-                    <input
-                      className="w-full bg-gray2 text-black rounded-[2rem] border-0 p-3"
-                      type="search"
-                      placeholder="Buscar Estudiantes"
-                      aria-label="Search"
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={6} className="text-end">
-                <select
-                  className={`bg-gray2 text-gray3 rounded-[2rem] border-0 p-3 fs-5 w-[70%] opacity${
-                    active ? "active" : ""
-                  } transitionDown ${active ? "active" : ""}`}
-                >
-                  <option>Filtrar por</option>
-                  <option>Nombre</option>
-                  <option>Apellido</option>
-                </select>
-              </Grid>
-            </Grid>
-          </form>
-        </Grid>
-        <Grid item xs={12}>
+        </div>
+      </div>
+      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5">
+        <div>
           {loading ? (
             <div className="w-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-blue3"></span>
@@ -98,8 +57,8 @@ export const NotRegistered = () => {
           ) : (
             <h3>¡Ocurrio un error!</h3>
           )}
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </div>
   );
 };

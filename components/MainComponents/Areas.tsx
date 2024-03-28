@@ -6,15 +6,10 @@ import {
   useDeleteAreaMutation,
 } from "../../generated/graphql";
 import { useEffect, useState } from "react";
-import { Grid, TextField } from "@mui/material";
-import { styled } from "@material-ui/styles";
-import edit from "../../public/assets/01editar.png";
-import delet from "../../public/assets/01eliminar.png";
-import SearchIcon from "@mui/icons-material/Search";
 import DynamicModal from "../DynamicModal";
 import Swal from "sweetalert2";
-import Image from "next/image";
 import Table from "../Table";
+import { Input } from "../Input";
 
 const columns = [
   {
@@ -31,18 +26,6 @@ const columns = [
     accessor: "delete",
   },
 ];
-
-const CssTextField = styled(TextField)({
-  fontFamily: ["Scada", "sans-serif"].join(","),
-  "& .MuiOutlinedInput-root": {
-    "&:hover fieldset": {
-      borderColor: "blue",
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "green",
-    },
-  },
-});
 
 function Areas() {
   const [UpdateArea] = useUpdateAreaMutation();
@@ -96,28 +79,25 @@ function Areas() {
     for (const item in errors) {
       setErrors((err: any) => ({ ...err, [item]: "" }));
     }
-
     for (const i in formValue) {
       setFormValue((val: any) => ({ ...val, [i]: "" }));
     }
-
     getArea();
   };
 
   const arrayInputs: Array<any> = [
     {
       html: (
-        <CssTextField
+        <Input
           required
-          label="Nombre Area"
           name="name"
-          color="success"
           type="text"
           value={formValue.name}
           onChange={({ target }: any) =>
             setFormValue({ ...formValue, [target.name]: target.value })
           }
-          helperText={errors.name}
+          label="Nombre del area"
+          errorText={errors.name}
         />
       ),
     },
@@ -125,8 +105,8 @@ function Areas() {
 
   const processedAreas = useMemo(() => {
     if (!data?.areas) return [];
-    return data.areas.map((areas, index) => ({
-      name: areas?.name ?? "",
+    return data.areas.map((area, index) => ({
+      name: area?.name ?? "",
       edit: (
         <button
           className="border-0"
@@ -135,20 +115,31 @@ function Areas() {
             // We set the values selected to our inputs
             setFormValue((a: any) => ({
               ...a,
-              name: areas?.name,
-              status: areas?.status,
-              id_area: areas?.id_area,
+              name: area?.name,
+              status: area?.status,
+              id_area: area?.id_area,
             }));
-            setOpen(true);
+            modal?.showModal();
           }}
         >
-          <Image
-            className={`h-13 w-15`}
-            src={delet}
-            alt=""
-            width={50}
-            height={50}
-          />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            viewBox="0 0 36 36"
+          >
+            <path
+              fill="#0055A6"
+              d="M28 30H6V8h13.22l2-2H6a2 2 0 0 0-2 2v22a2 2 0 0 0 2 2h22a2 2 0 0 0 2-2V15l-2 2Z"
+              className="clr-i-outline clr-i-outline-path-1"
+            />
+            <path
+              fill="#0055A6"
+              d="m33.53 5.84l-3.37-3.37a1.61 1.61 0 0 0-2.28 0L14.17 16.26l-1.11 4.81A1.61 1.61 0 0 0 14.63 23a1.69 1.69 0 0 0 .37 0l4.85-1.07L33.53 8.12a1.61 1.61 0 0 0 0-2.28M18.81 20.08l-3.66.81l.85-3.63L26.32 6.87l2.82 2.82ZM30.27 8.56l-2.82-2.82L29 4.16L31.84 7Z"
+              className="clr-i-outline clr-i-outline-path-2"
+            />
+            <path fill="none" d="M0 0h36v36H0z" />
+          </svg>
         </button>
       ),
       borrar: (
@@ -165,16 +156,14 @@ function Areas() {
               confirmButtonText: "Eliminar",
             }).then((result) => {
               // If there is an id selected we delete that area
-              if (result.isConfirmed && areas?.id_area) {
+              if (result.isConfirmed && area?.id_area) {
                 DeleteArea({
-                  variables: { idArea: areas?.id_area },
+                  variables: { idArea: area?.id_area },
                 }).then((res) => {
                   if (res.data?.deleteArea) {
-                    console.log("DELETEADO");
-
                     Swal.fire({
                       title: "Eliminado",
-                      text: "Tipo Calificacion Eliminada!",
+                      text: "Area Eliminada!",
                       icon: "success",
                       showConfirmButton: false,
                       timer: 1500,
@@ -193,68 +182,68 @@ function Areas() {
             })
           }
         >
-          <Image
-            className={`h-13 w-15`}
-            src={edit}
-            alt=""
-            width={50}
-            height={50}
-          />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            viewBox="0 0 256 256"
+          >
+            <path
+              fill="#e11d48"
+              d="M216 50h-42V40a22 22 0 0 0-22-22h-48a22 22 0 0 0-22 22v10H40a6 6 0 0 0 0 12h10v146a14 14 0 0 0 14 14h128a14 14 0 0 0 14-14V62h10a6 6 0 0 0 0-12ZM94 40a10 10 0 0 1 10-10h48a10 10 0 0 1 10 10v10H94Zm100 168a2 2 0 0 1-2 2H64a2 2 0 0 1-2-2V62h132Zm-84-104v64a6 6 0 0 1-12 0v-64a6 6 0 0 1 12 0Zm48 0v64a6 6 0 0 1-12 0v-64a6 6 0 0 1 12 0Z"
+            />
+          </svg>
         </button>
       ),
     }));
   }, [data, DeleteArea]);
 
   const handlerCreateArea = async () => {
-    return await CreateArea({variables:{createAreaInput:formValue}})
-  }
+    return await CreateArea({ variables: { createAreaInput: formValue } });
+  };
 
   const handlerUpdateArea = async () => {
-    return await UpdateArea({variables:{updateAreaInput:formValue}})
-  }
+    return await UpdateArea({ variables: { updateAreaInput: formValue } });
+  };
+
+  const modal = document.getElementById("modal") as HTMLDialogElement;
 
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-10 pb-3">
       <div className="flex justify-between h-[6%]">
-        <Grid item xs={6}>
+        <div>
           <strong className="text-xl text-black ps-8 pb-4">
             Listado de Áreas
           </strong>
-        </Grid>
-        <Grid item xs={6} className="text-end pr-6">
+        </div>
+        <div className="text-end pr-6">
           <button
             type="button"
             className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
             onClick={() => {
               setAreaAdd(true);
-              setOpen(true);
+              modal?.showModal();
             }}
           >
             <h4 className="text-white">+ Nueva Área</h4>
           </button>
-        </Grid>
+        </div>
       </div>
-      <Grid
-        container
-        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]"
-      >
-
-        <Grid item xs={12} className="h-full">
+      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]">
+        <div className="h-full">
           {loading ? (
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-blue3"></span>
             </div>
           ) : data?.areas ? (
-            <div
-              className="d-flex border-white py-4 h-full"
-            >
+            <div className="d-flex border-white py-4 h-full">
               <Table column={columns} data={processedAreas} type={"area"} />
             </div>
           ) : (
             <h3>¡Ocurrio un error!</h3>
           )}
-        </Grid>
-      </Grid>
+        </div>
+      </div>
       {/* Modal */}
 
       <DynamicModal

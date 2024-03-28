@@ -1,7 +1,3 @@
-import { styled } from "@mui/material";
-import TableCell, { TableCellProps } from "@mui/material/TableCell";
-import { AnyCnameRecord } from "dns";
-import Link from "next/link";
 import { TeachersCard } from "./types";
 
 const CTeachers = (props: TeachersCard) => {

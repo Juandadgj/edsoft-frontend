@@ -1,5 +1,4 @@
 import React, {useEffect} from "react";
-import Grid from "@mui/material/Grid";
 import Card from "../../Card";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import PersonOffIcon from "@mui/icons-material/PersonOff";
@@ -61,13 +60,13 @@ export const Enrollment = () => {
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-10 pb-3">
       {opcion ? '' : (
-      <Grid container className="pb-6">
-        <Grid item xs={12}>
+      <div className="pb-6">
+        <div>
           <strong className="text-xl text-black ps-8">
             Gestiones de Estudiantes {year}
           </strong>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
       )}
       {opcion ? (
         <>

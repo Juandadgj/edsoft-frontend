@@ -9,17 +9,11 @@ import {
   useDeleteCourseMutation,
 } from "../../generated/graphql";
 import { useEffect, useState } from "react";
-import Grid from "@mui/material/Grid";
 import Table from "../Table";
 import { useRouter } from "next/router";
 import DynamicModal from "../DynamicModal";
-import Image from "next/image";
-import edit from "../../public/assets/01editar.png";
-import Select from "@mui/material/Select";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
 import Swal from "sweetalert2";
+import { Input } from "../Input";
 
 const columnsGroup = [
   {
@@ -83,6 +77,7 @@ function Subjects() {
     getCourses,
     { data: courses, loading: loadingCourses, error: errorCourses, refetch },
   ] = useCoursesLazyQuery({ fetchPolicy: "network-only" });
+  
   const { data: groups, loading: loadingGroups } = useGroupsQuery({
     variables: { filterGroupInput: { id_year: 2017 } },
   });
@@ -96,20 +91,9 @@ function Subjects() {
     router.push(`/dashboard/programacion-anual?componente=asignaturas&c=${id}`);
   };
 
-  const [formValues, setFormValues] = useState<any>({
-    name: "",
-    id_area: 0,
-    area: "",
-    id_tehacer: 0,
-    teacher: "",
-    hour: 0,
-    percentage: 0,
-    average: "",
-    id_group: c,
-  });
   const [course, setCourse] = useState<number>(0);
   const [name, setName] = useState("");
-  const [teacher, setTeacher] = useState(0);
+  const [teacher, setTeacher] = useState<number>(0);
   const [area, setArea] = useState(0);
   const [hour, setHour] = useState(0);
   const [percentage, setPercentage] = useState(0);
@@ -124,65 +108,66 @@ function Subjects() {
     percentage: "",
     hour: "",
   });
+  const modal = document.getElementById("modal") as HTMLDialogElement;
 
   const options = [];
   for (let i = 1; i <= 24; i++) {
     options.push(
-      <MenuItem key={i} value={i}>
+      <option key={i} value={i} className="text-xs">
         {i}
-      </MenuItem>
+      </option>
     );
   }
   const optionsPercentage = [];
   for (let i = 1; i <= 100; i++) {
     optionsPercentage.push(
-      <MenuItem key={i} value={i}>
+      <option key={i} value={i} className="text-xs">
         {i}
-      </MenuItem>
+      </option>
     );
   }
 
   const arrayInputs: any[] = [
     {
       html: (
-        <div className="text-black">
-          <input
-            type="text"
-            value={name}
-            id=""
-            name="name"
-            placeholder="Nombre de la asignatura"
-            className="input border-gray5 w-full h-12 bg-transparent text-sm"
-            onChange={({ target }: any) => setName(target.value)}
-          />
-          <div>
-            <label className="label-text-alt text-[red]">{errors.name}</label>
-          </div>
-        </div>
+        <Input
+          type="text"
+          value={name}
+          name="name"
+          label="Nombre de la asignatura"
+          onChange={({ target }: any) => setName(target.value)}
+        />
       ),
     },
     {
       html: (
         <div className="form-control text-black">
-          <FormControl fullWidth>
-            <InputLabel id="label-teacher">Profesor</InputLabel>
-            <Select
-              labelId="label-teacher"
+          <div className="label text-gray5 p-1">
+            <label className="text-xs">Profesor de la asignatura</label>
+          </div>
+          <div className="w-full">
+            <select
               id="teacher"
               name="teacher"
-              value={teacher}
-              label="Profesor"
+              value={teacher ? teacher : "Selecciona un profesor"}
               onChange={({ target }: any) => {
                 setTeacher(target.value);
               }}
+              className="border rounded-btn border-gray5 w-full h-12 bg-transparent text-sm px-2"
+              required
             >
+              <option disabled>Selecciona un profesor</option>
               {teachers?.teachers.map((teacher: any) => (
-                <MenuItem key={teacher?.id_teacher} value={teacher?.id_teacher}>
+                <option
+                  key={teacher?.id_teacher}
+                  value={teacher?.id_teacher}
+                  className="text-xs"
+                >
                   {teacher?.name} {teacher?.last_name}
-                </MenuItem>
+                </option>
               ))}
-            </Select>
-          </FormControl>
+            </select>
+          </div>
           <div>
             <label className="label-text-alt text-[red]">
               {errors.id_teacher}
@@ -194,25 +179,33 @@ function Subjects() {
     {
       html: (
         <div className="form-control text-black">
-          <FormControl fullWidth>
-            <InputLabel id="label-area">Area</InputLabel>
-            <Select
-              labelId="label-area"
+          <div className="label text-gray5 p-1">
+            <label className="text-xs">
+              Area donde pertenece la asignatura
+            </label>
+          </div>
+          <div className="w-full">
+            <select
               id="area"
               name="id_area"
-              value={area}
-              label="Area"
+              value={area ? area : "Selecciona un area"}
               onChange={({ target }: any) => {
                 setArea(target.value);
               }}
+              className="border rounded-btn border-gray5 w-full h-12 bg-transparent text-sm px-2"
             >
+              <option disabled>Selecciona un area</option>
               {areas?.areas.map((area: any) => (
-                <MenuItem key={area?.id_area} value={area?.id_area}>
-                  {area?.name}
-                </MenuItem>
+                <option
+                  key={area?.id_area}
+                  value={area?.id_area}
+                  className="text-xs"
+                >
+                  {area.name}
+                </option>
               ))}
-            </Select>
-          </FormControl>
+            </select>
+          </div>
           <div>
             <label className="label-text-alt text-[red]">
               {errors.id_area}
@@ -224,20 +217,28 @@ function Subjects() {
     {
       html: (
         <div className="from-control text-black">
-          <FormControl fullWidth>
-            <InputLabel id="average">Promediar</InputLabel>
-            <Select
-              labelId="average"
-              id="demo-simple-select"
-              name="average"
-              value={average}
-              label="Promediar"
-              onChange={({ target }: any) => setAverage(target.value)}
+          <div className="label text-gray5 p-1">
+            <label className="text-xs">
+              Promediar con todas las asignatura
+            </label>
+          </div>
+          <div className="w-full">
+            <select
+              id="area"
+              name="id_area"
+              value={average ? average : "Promediar"}
+              onChange={({ target }: any) => {
+                setAverage(target.value);
+              }}
+              className="border rounded-btn border-gray5 w-full h-12 bg-transparent text-sm px-2"
             >
-              <MenuItem value={"Si"}> Si</MenuItem>
-              <MenuItem value={"No"}> No</MenuItem>
-            </Select>
-          </FormControl>
+              <option selected disabled>
+                Promediar
+              </option>
+              <option value={"Si"}> Si</option>
+              <option value={"No"}> No</option>
+            </select>
+          </div>
           <div>
             <label className="label-text-alt text-[red]">
               {errors.average}
@@ -248,20 +249,24 @@ function Subjects() {
     },
     {
       html: (
-        <div>
-          <FormControl fullWidth>
-            <InputLabel id="hour">IHC</InputLabel>
-            <Select
-              labelId="hour"
-              id="demo-simple-select"
-              name="hour"
-              value={hour}
-              label="ihc"
-              onChange={({ target }: any) => setHour(target.value)}
+        <div className="form-control text-black">
+          <div className="label text-gray5 p-1">
+            <label className="text-xs">Intensidad horaria (Semanal)</label>
+          </div>
+          <div className="w-full">
+            <select
+              value={hour ? hour : "Intensidad Horaria"}
+              onChange={({ target }: any) => {
+                setHour(target.value);
+              }}
+              className="border rounded-btn border-gray5 w-full h-12 bg-transparent text-sm px-2"
             >
+              <option selected disabled>
+                Intensidad Horaria
+              </option>
               {options}
-            </Select>
-          </FormControl>
+            </select>
+          </div>
           <div>
             <label className="label-text-alt text-[red]">{errors.hour}</label>
           </div>
@@ -271,20 +276,23 @@ function Subjects() {
     ,
     {
       html: (
-        <div>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Valor %</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
+        <div className="form-control text-black">
+          <div className="label text-gray5 p-1">
+            <label className="text-xs">Valor porcentual</label>
+          </div>
+          <div className="w-full">
+            <select
               name="percentage"
-              value={percentage}
-              label="Valor %"
+              value={percentage ? percentage : "Selecciona porcentaje"}
               onChange={({ target }: any) => setPercentage(target.value)}
+              className="border rounded-btn border-gray5 w-full h-12 bg-transparent text-sm px-2"
             >
+              <option selected disabled>
+                Selecciona porcentaje
+              </option>
               {optionsPercentage}
-            </Select>
-          </FormControl>
+            </select>
+          </div>
           <div>
             <label className="label-text-alt text-[red]">
               {errors.percentage}
@@ -334,9 +342,9 @@ function Subjects() {
     setName("");
     setTeacher(0);
     setArea(0);
-    setAverage("")
-    setHour(0)
-    setPercentage(0)
+    setAverage("");
+    setHour(0);
+    setPercentage(0);
   };
 
   const processedSubjects = (data: any) => {
@@ -352,18 +360,7 @@ function Subjects() {
           className="border-0"
           onClick={() => {
             setTypeAdd(false);
-            // We set the values selected to our inputs
-            setFormValues((t: any) => ({
-              ...t,
-              id_course: courses.id_course,
-              name: courses?.name,
-              id_area: courses?.id_area,
-              id_teacher: courses.id_teacher,
-              hour: courses?.hour,
-              percentage: courses?.percentage,
-              average: courses?.average,
-              id_group: courses?.id_group,
-            }));
+            cleaningStates();
             setCourse(courses.id_course);
             setName(courses.name);
             setTeacher(courses.id_teacher);
@@ -371,10 +368,27 @@ function Subjects() {
             setAverage(courses.average);
             setHour(courses.hour);
             setPercentage(courses.percentage);
-            setOpen(true);
+            modal?.showModal();
           }}
         >
-          <Image className={``} src={edit} alt="" width={50} height={50} />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            viewBox="0 0 36 36"
+          >
+            <path
+              fill="#0055A6"
+              d="M28 30H6V8h13.22l2-2H6a2 2 0 0 0-2 2v22a2 2 0 0 0 2 2h22a2 2 0 0 0 2-2V15l-2 2Z"
+              className="clr-i-outline clr-i-outline-path-1"
+            />
+            <path
+              fill="#0055A6"
+              d="m33.53 5.84l-3.37-3.37a1.61 1.61 0 0 0-2.28 0L14.17 16.26l-1.11 4.81A1.61 1.61 0 0 0 14.63 23a1.69 1.69 0 0 0 .37 0l4.85-1.07L33.53 8.12a1.61 1.61 0 0 0 0-2.28M18.81 20.08l-3.66.81l.85-3.63L26.32 6.87l2.82 2.82ZM30.27 8.56l-2.82-2.82L29 4.16L31.84 7Z"
+              className="clr-i-outline clr-i-outline-path-2"
+            />
+            <path fill="none" d="M0 0h36v36H0z" />
+          </svg>{" "}
         </button>
       ),
       borrar: (
@@ -410,10 +424,9 @@ function Subjects() {
     if (c) {
       getCourses({
         variables: { filterCourseInput: { id_group: Number(c) } },
-      })
+      });
     }
   }, [router]);
-
 
   useEffect(() => {
     if (courses) {
@@ -451,7 +464,7 @@ function Subjects() {
           id_group: Number(c),
         },
       },
-    })
+    });
   };
   const handlerDeleteCourse = async (id_course: number) => {
     Swal.fire({
@@ -490,7 +503,7 @@ function Subjects() {
     });
   };
   const handlerRefetchCourse = () => {
-    refetch()
+    refetch();
   };
 
   return (
@@ -502,26 +515,25 @@ function Subjects() {
           </strong>
         </div>
         {c && (
-          <Grid item xs={6} className="text-end pr-6">
+          <div className="text-end pr-6">
             <button
               type="button"
               className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
               onClick={() => {
                 setTypeAdd(true);
-                setOpen(true);
+                modal?.showModal();
               }}
             >
               <h4 className="text-white text-xs">+ Nueva asignatura</h4>
             </button>
-          </Grid>
+          </div>
         )}
       </div>
-      <Grid
-        container
+      <div
         className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]"
       >
         {!c ? (
-          <Grid item xs={12} className="h-full">
+          <div className="h-full">
             {loadingGroups ? (
               <div className="w-full h-full flex justify-center items-center">
                 <span className="loading loading-dots loading-lg bg-blue3"></span>
@@ -537,9 +549,9 @@ function Subjects() {
             ) : (
               <h3>¡Ocurrio un error!</h3>
             )}
-          </Grid>
+          </div>
         ) : (
-          <Grid item xs={12} className="text-black h-full">
+          <div className="text-black h-full">
             {loadingCourses ? (
               <div className="w-full h-full flex justify-center items-center">
                 <span className="loading loading-dots loading-lg bg-blue3"></span>
@@ -555,9 +567,9 @@ function Subjects() {
             ) : (
               errorCourses && <h3>Ocurrio un error: {errorCourses?.message}</h3>
             )}
-          </Grid>
+          </div>
         )}
-      </Grid>
+      </div>
       {/* Modal */}
       <DynamicModal
         arrayInputs={arrayInputs}

@@ -1,7 +1,5 @@
 import React, { useMemo } from "react";
 import { useEffect, useState } from "react";
-import Grid from "@mui/material/Grid";
-import SearchIcon from "@mui/icons-material/Search";
 import Table from "@/components/Table";
 import {
   useGroupsQuery,
@@ -193,12 +191,9 @@ export const StudentsPerCourse = () => {
           </strong>
         </div>
       </div>
-      <Grid
-        container
-        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]"
-      >
+      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]">
         {!g && (
-          <Grid item xs={12} className="h-full">
+          <div className="h-full">
             {loadingGroups && (
               <div className="w-full h-full flex justify-center items-center">
                 <span className="loading loading-dots loading-lg bg-blue3"></span>
@@ -214,10 +209,10 @@ export const StudentsPerCourse = () => {
               </div>
             )}
             {errorGroups && <h3>¡Ocurrio un error!</h3>}
-          </Grid>
+          </div>
         )}
         {g && (
-          <Grid item xs={12} className="h-full">
+          <div className="h-full">
             {loadingStudentsByGroup && (
               <div className="w-full h-full flex justify-center items-center">
                 <span className="loading loading-dots loading-lg bg-blue3"></span>
@@ -233,9 +228,9 @@ export const StudentsPerCourse = () => {
               </div>
             )}
             {errorStudentsByGroup && <h3>¡Ocurrio un error!</h3>}
-          </Grid>
+          </div>
         )}
-      </Grid>
+      </div>
     </div>
   );
 };

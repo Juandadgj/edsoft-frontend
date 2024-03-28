@@ -22,7 +22,8 @@ module.exports = {
       "gray2": "#f5f5f5",
       "gray1": "#efefef",
       "gray7":"#323232",
-      "btn":"rgba(255, 255, 255, 0.2)"
+      "red-500": "rgb(239 68 68)",
+      "red-600" : "rgb(220 38 38)"
     },
     borderRadius:{
       "custom": "19px 81px 93px 17px / 60px 0px 0px 50px;"

@@ -1,18 +1,14 @@
 import { useMemo } from "react";
 import { useEffect, useState } from "react";
-import edit from "../../public/assets/01editar.png";
-import { Grid, TextField } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
 import {
   useCreateSetYearMutation,
   useGetSchoolarYearsQuery,
   useUpdateScholarYearMutation,
 } from "../../generated/graphql";
-import { styled } from "@material-ui/styles";
 import DynamicModal from "../DynamicModal";
 import Swal from "sweetalert2";
-import Image from "next/image";
 import Table from "../Table";
+import { Input } from "../Input";
 
 const columns = [
   {
@@ -36,18 +32,6 @@ const columns = [
     accessor: "edit",
   },
 ];
-
-const CssTextField = styled(TextField)({
-  fontFamily: ["Scada", "sans-serif"].join(","),
-  "& .MuiOutlinedInput-root": {
-    "&:hover fieldset": {
-      borderColor: "blue",
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "green",
-    },
-  },
-});
 
 function SetYear() {
   const [AddSetYear] = useCreateSetYearMutation();
@@ -122,70 +106,64 @@ function SetYear() {
   const arrayInputs: Array<any> = [
     {
       html: (
-        <CssTextField
+        <Input
           required
           disabled={!typeAdd}
-          label="Año"
           name="id_year"
-          color="success"
           type="number"
           value={formValues.id_year}
           onChange={({ target }: any) => {
             const val = parseInt(target.value);
             setFormValues({ ...formValues, [target.name]: val });
           }}
-          helperText={errors.id_year}
+          label="Año escolar"
+          errorText={errors.id_year}
         />
       ),
     },
     {
       html: (
-        <CssTextField
+        <Input
           required
-          id="outlined-basic"
-          label="Rector"
           name="rector"
-          color="success"
           type="text"
           value={formValues.rector}
           onChange={({ target }: any) => {
             setFormValues({ ...formValues, [target.name]: target.value });
           }}
-          helperText={errors.rector}
+          placeholder="Rector"
+          label="Nombres y Apellidos del rector"
+          errorText={errors.rector}
         />
       ),
     },
     {
       html: (
-        <CssTextField
+        <Input
           required
-          id="outlined-basic"
-          label="Secretaria"
           name="secretary"
-          color="success"
           type="text"
           value={formValues.secretary}
           onChange={({ target }: any) => {
             setFormValues({ ...formValues, [target.name]: target.value });
           }}
-          helperText={errors.secretary}
+          label="Nombres y Apellidos del secretario"
+          errorText={errors.secretary}
         />
       ),
     },
     {
       html: (
-        <CssTextField
+        <Input
           required
-          id="outlined-basic"
-          label="Detalles"
           name="comment"
-          color="success"
           type="text"
           value={formValues.comment}
           onChange={({ target }: any) => {
             setFormValues({ ...formValues, [target.name]: target.value });
           }}
-          helperText={errors.comment}
+          label="Comentarios"
+          errorText={errors.comment}
         />
       ),
     },
@@ -210,16 +188,27 @@ function SetYear() {
               rector: schoYear?.rector,
               comment: schoYear?.comment,
             }));
-            setOpen(true);
+            modal?.showModal();
           }}
         >
-          <Image
-            className={`h-13 w-15`}
-            src={edit}
-            alt=""
-            width={50}
-            height={50}
-          />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            viewBox="0 0 36 36"
+          >
+            <path
+              fill="#0055A6"
+              d="M28 30H6V8h13.22l2-2H6a2 2 0 0 0-2 2v22a2 2 0 0 0 2 2h22a2 2 0 0 0 2-2V15l-2 2Z"
+              className="clr-i-outline clr-i-outline-path-1"
+            />
+            <path
+              fill="#0055A6"
+              d="m33.53 5.84l-3.37-3.37a1.61 1.61 0 0 0-2.28 0L14.17 16.26l-1.11 4.81A1.61 1.61 0 0 0 14.63 23a1.69 1.69 0 0 0 .37 0l4.85-1.07L33.53 8.12a1.61 1.61 0 0 0 0-2.28M18.81 20.08l-3.66.81l.85-3.63L26.32 6.87l2.82 2.82ZM30.27 8.56l-2.82-2.82L29 4.16L31.84 7Z"
+              className="clr-i-outline clr-i-outline-path-2"
+            />
+            <path fill="none" d="M0 0h36v36H0z" />
+          </svg>
         </button>
       ),
     }));
@@ -236,6 +225,8 @@ function SetYear() {
     });
   };
 
+  const modal = document.getElementById("modal") as HTMLDialogElement;
+
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-10 pb-3">
       <div className="h-[6%] flex justify-between">
@@ -244,24 +235,21 @@ function SetYear() {
             Elegir Año Académico
           </strong>
         </div>
-        <Grid item xs={6} className="text-end pr-6">
+        <div className="text-end pr-6">
           <button
             type="button"
             className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
             onClick={() => {
               setTypeAdd(true);
-              setOpen(true);
+              modal?.showModal();
             }}
           >
             <h4 className="text-white text-xs">+ Nuevo Año</h4>
           </button>
-        </Grid>
+        </div>
       </div>
-      <Grid
-        container
-        className="mx-auto  bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]"
-      >
-        <Grid item xs={12} className="text-black h-full">
+      <div className="mx-auto  bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]">
+        <div className="text-black h-full">
           {loading && (
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-blue3"></span>
@@ -269,10 +257,7 @@ function SetYear() {
           )}
           {error && <div>¡Ocurrio un error!</div>}
           {data?.scholarYears && !loading && (
-            <div
-              className="border-white py-4 h-full"
-              
-            >
+            <div className="border-white py-4 h-full">
               <Table
                 column={columns}
                 data={processedScholarYears}
@@ -280,8 +265,8 @@ function SetYear() {
               />
             </div>
           )}
-        </Grid>
-      </Grid>
+        </div>
+      </div>
 
       <DynamicModal
         arrayInputs={arrayInputs}

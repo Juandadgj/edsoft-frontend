@@ -1,89 +1,6 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Grid from "@material-ui/core/Grid";
-import AddIcon from "@mui/icons-material/Add";
-import CloseIcon from "@mui/icons-material/Close";
-import EditIcon from "@mui/icons-material/Edit";
-import { FormControl } from "@material-ui/core";
-import PropTypes from "prop-types";
+
 import Swal from "sweetalert2";
-
-const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  height: "fit-content",
-  maxHeight: "95%",
-  width: "60%",
-  bgcolor: "background.paper",
-  borderRadius: "10px",
-  boxShadow: 24,
-};
-
-const boxTitle = {
-  backgroundColor: "#0055a6",
-  borderRadius: "10px 10px 0px 0px",
-  padding: "2% 4%",
-};
-
-const title = {
-  color: "white",
-  fontFamily: ["Scada", "sans-serif"],
-};
-
-const boxContainer = {
-  padding: " 3% 5%",
-};
-
-const inputContainer = {
-  overflow: "auto",
-  maxHeight: "500px",
-  display: "grid",
-  gridTemplateColumns: "repeat(2, 1fr)",
-  gridGap: "5px",
-};
-
-const input = {
-  margin: "10px 5px",
-  width: "98%",
-  padding: "1px",
-  fontFamily: ["Scada", "sans-serif"],
-};
-
-const buttonsContainer = {
-  width: "100%",
-  padding: "2% 0%",
-};
-
-const addButton = {
-  width: "100%",
-  "&:hover": {
-    backgroundColor: "#0782F7",
-  },
-  fontFamily: ["Scada", "sans-serif"],
-};
-
-const updateButton = {
-  width: "100%",
-  "&:hover": {
-    backgroundColor: "#0782F7",
-  },
-  fontFamily: ["Scada", "sans-serif"],
-};
-
-const cancelButton = {
-  width: "100%",
-  color: "white",
-  backgroundColor: "#D81717",
-  "&:hover": {
-    backgroundColor: "#FF0000",
-  },
-  fontFamily: ["Scada", "sans-serif"],
-};
 
 export default function DynamicModal({
   arrayInputs,
@@ -92,7 +9,6 @@ export default function DynamicModal({
   setOpen,
   addSuccessMsg,
   updateSuccessMsg,
-  formValues,
   addMutation,
   updateMutation,
   cleaningStates,
@@ -102,13 +18,14 @@ export default function DynamicModal({
 }: any) {
   const handleClose = () => {
     cleaningStates();
-    setOpen(false);
+    modal.close();
   };
 
   const handleAdd = () => {
     if (validationEvent()) {
       addMutation().then((res: any) => {
         if (res.data) {
+          modal.close();
           Swal.fire({
             icon: "success",
             title: addSuccessMsg,
@@ -134,6 +51,7 @@ export default function DynamicModal({
     if (validationEvent()) {
       updateMutation().then((res: any) => {
         if (res.data) {
+          modal.close();
           Swal.fire({
             icon: "success",
             title: updateSuccessMsg,
@@ -144,6 +62,7 @@ export default function DynamicModal({
           refetch();
           setOpen(false);
         } else {
+          modal.close();
           Swal.fire({
             icon: "error",
             title: "Ha habido un error...",
@@ -154,88 +73,46 @@ export default function DynamicModal({
       });
     } else return;
   };
-
+  const modal = document.getElementById("modal") as HTMLDialogElement;
+  
   return (
-    <Modal
-      keepMounted
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="keep-mounted-modal-title"
-      aria-describedby="keep-mounted-modal-description"
-    >
-      <Box sx={style}>
-        <Box sx={boxTitle}>
-          <Typography variant="h3" component="h2" sx={title}>
-            Formulario
-          </Typography>
-        </Box>
-        <Box sx={boxContainer}>
-          <Box sx={inputContainer} component="form" noValidate>
-            {arrayInputs.map((item: any, i: any) => (
-              <Box sx={input} key={i}>
-                <FormControl variant="standard" fullWidth>
-                  {item.html}
-                </FormControl>
-              </Box>
-            ))}
-          </Box>
-          <Box sx={buttonsContainer}>
-            <Grid container spacing={2}>
-              {typeAdd ? (
-                <Grid item xs={6}>
-                  <Button
-                    className="bg-[#1976d2]"
-                    variant="contained"
-                    sx={addButton}
-                    endIcon={<AddIcon />}
-                    onClick={handleAdd}
-                  >
-                    Agregar
-                  </Button>
-                </Grid>
-              ) : (
-                <Grid item xs={6}>
-                  <Button
-                    className="bg-[#1976d2]"
-                    variant="contained"
-                    sx={updateButton}
-                    endIcon={<EditIcon />}
-                    onClick={handleUpdate}
-                  >
-                    Editar
-                  </Button>
-                </Grid>
-              )}
-              <Grid item xs={6}>
-                <Button
-                  className="bg-[#D81717]"
-                  variant="contained"
-                  onClick={() => handleClose()}
-                  sx={cancelButton}
-                  endIcon={<CloseIcon />}
-                >
-                  Cancelar
-                </Button>
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
-      </Box>
-    </Modal>
+    <dialog id="modal" className="modal">
+      <div className="modal-box bg-white max-w-2xl">
+        <div className="grid grid-cols-2 mb-3">
+          {arrayInputs.map((item: any, i: any) => (
+            <div key={i} className="ms-4 me-4">
+              <div className="w-full">{item.html}</div>
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-center items-center gap-3">
+          <div>
+            {typeAdd ? (
+              <button
+                onClick={handleAdd}
+                className="btn bg-blue3 border-none text-white hover:bg-[#0b5ed7] transition duration-500"
+              >
+                Agregar
+              </button>
+            ) : (
+              <button
+                onClick={handleUpdate}
+                className="btn bg-blue3 border-none text-white hover:bg-[#0b5ed7] transition duration-500"
+              >
+                Editar
+              </button>
+            )}
+          </div>
+          <div>
+            <button
+              onClick={handleClose}
+              className="btn bg-red-500 hover:bg-red-600 text-white border-none transition duration-500"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+    </dialog>
   );
 }
-
-DynamicModal.propTypes = {
-  arrayInputs: PropTypes.array.isRequired,
-  typeAdd: PropTypes.bool.isRequired,
-  open: PropTypes.bool.isRequired,
-  setOpen: PropTypes.func.isRequired,
-  addSuccessMsg: PropTypes.string.isRequired,
-  updateSuccessMsg: PropTypes.string.isRequired,
-  formValues: PropTypes.object.isRequired,
-  addMutation: PropTypes.func.isRequired,
-  updateMutation: PropTypes.func.isRequired,
-  cleaningStates: PropTypes.func.isRequired,
-  validationEvent: PropTypes.func.isRequired,
-  refetch: PropTypes.func.isRequired,
-};

@@ -1,7 +1,5 @@
 import React, { useMemo } from "react";
 import { useEffect, useState } from "react";
-import Grid from "@mui/material/Grid";
-import SearchIcon from "@mui/icons-material/Search";
 import Table from "@/components/Table";
 import { useRouter } from "next/router";
 import { useGroupsQuery } from "@/generated/graphql";
@@ -70,18 +68,15 @@ export const StudentsLastYear = () => {
   }, [dataGroups]);
   return (
     <div className="h-full">
-      <Grid container className="pb-4">
-        <Grid item xs={12}>
+      <div className="pb-4">
+        <div>
           <strong className="text-2xl text-black ps-8">
             Elija el curso para ingresar estudiantes para el {year}
           </strong>
-        </Grid>
-      </Grid>
-      <Grid
-        container
-        className="h-full bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5"
-      >
-        <Grid item xs={12} className="h-full">
+        </div>
+      </div>
+      <div className="h-full bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5">
+        <div className="h-full">
           {loadingGroups && (
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-blue3"></span>
@@ -93,8 +88,8 @@ export const StudentsLastYear = () => {
             </div>
           )}
           {errorGroups && <h3>¡Ocurrio un error!</h3>}
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </div>
   );
 };

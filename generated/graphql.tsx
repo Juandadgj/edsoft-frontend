@@ -586,6 +586,7 @@ export type Query = {
   studentByID?: Maybe<Student>;
   studentDefinitives: Array<Maybe<Definitives>>;
   studentQualifications: Array<Maybe<QualificationList>>;
+  students?: Maybe<Array<Maybe<Student>>>;
   studentsByGroup: Array<Maybe<Student>>;
   teacherByID?: Maybe<Teacher>;
   teachers: Array<Maybe<Teacher>>;
@@ -675,6 +676,11 @@ export type QueryStudentDefinitivesArgs = {
 
 export type QueryStudentQualificationsArgs = {
   filterQualificationInput?: InputMaybe<FilterQualificationInput>;
+};
+
+
+export type QueryStudentsArgs = {
+  filterStudentInput?: InputMaybe<FilterStudentInput>;
 };
 
 
@@ -1160,6 +1166,13 @@ export type GetStudentQualificationsQueryVariables = Exact<{
 
 
 export type GetStudentQualificationsQuery = { __typename?: 'Query', studentQualifications: Array<{ __typename?: 'QualificationList', student: string, qualifications: Array<{ __typename?: 'Qualification', score?: number | null, id_achievement?: number | null, id_student?: number | null, id_achie_stu: number } | null> } | null> };
+
+export type GetStudentsQueryVariables = Exact<{
+  filterStudentInput?: InputMaybe<FilterStudentInput>;
+}>;
+
+
+export type GetStudentsQuery = { __typename?: 'Query', students?: Array<{ __typename?: 'Student', name?: string | null, last_name?: string | null, id_student: number } | null> | null };
 
 export type GetStudentsByGroupQueryVariables = Exact<{
   idGroup: Scalars['Int'];
@@ -2498,6 +2511,43 @@ export function useGetStudentQualificationsLazyQuery(baseOptions?: Apollo.LazyQu
 export type GetStudentQualificationsQueryHookResult = ReturnType<typeof useGetStudentQualificationsQuery>;
 export type GetStudentQualificationsLazyQueryHookResult = ReturnType<typeof useGetStudentQualificationsLazyQuery>;
 export type GetStudentQualificationsQueryResult = Apollo.QueryResult<GetStudentQualificationsQuery, GetStudentQualificationsQueryVariables>;
+export const GetStudentsDocument = gql`
+    query GetStudents($filterStudentInput: FilterStudentInput) {
+  students(filterStudentInput: $filterStudentInput) {
+    name
+    last_name
+    id_student
+  }
+}
+    `;
+
+/**
+ * __useGetStudentsQuery__
+ *
+ * To run a query within a React component, call `useGetStudentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetStudentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetStudentsQuery({
+ *   variables: {
+ *      filterStudentInput: // value for 'filterStudentInput'
+ *   },
+ * });
+ */
+export function useGetStudentsQuery(baseOptions?: Apollo.QueryHookOptions<GetStudentsQuery, GetStudentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetStudentsQuery, GetStudentsQueryVariables>(GetStudentsDocument, options);
+      }
+export function useGetStudentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetStudentsQuery, GetStudentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetStudentsQuery, GetStudentsQueryVariables>(GetStudentsDocument, options);
+        }
+export type GetStudentsQueryHookResult = ReturnType<typeof useGetStudentsQuery>;
+export type GetStudentsLazyQueryHookResult = ReturnType<typeof useGetStudentsLazyQuery>;
+export type GetStudentsQueryResult = Apollo.QueryResult<GetStudentsQuery, GetStudentsQueryVariables>;
 export const GetStudentsByGroupDocument = gql`
     query GetStudentsByGroup($idGroup: Int!) {
   studentsByGroup(id_group: $idGroup) {

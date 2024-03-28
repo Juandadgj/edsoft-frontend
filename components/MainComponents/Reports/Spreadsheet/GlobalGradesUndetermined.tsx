@@ -1,10 +1,5 @@
 import { useMemo } from "react";
 import { useEffect, useState } from "react";
-import edit from "../../../public/assets/01editar.png";
-import delet from "../../../public/assets/01eliminar.png";
-import Grid from "@mui/material/Grid";
-import SearchIcon from "@mui/icons-material/Search";
-import Image from "next/image";
 import {
   useGenerateReportAreaLazyQuery,
   useGenerateReportLazyQuery,
@@ -13,7 +8,6 @@ import {
 import Table from "@/components/Table";
 import { useRouter } from "next/router";
 import DescriptionIcon from "@mui/icons-material/Description";
-import { useLazyQuery } from "@apollo/client";
 
 const columns = [
   {
@@ -139,18 +133,18 @@ const GlobalGradesundetermined = () => {
 
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1">
-      <Grid container>
-        <Grid className="pb-4" item xs={9}>
+      <div >
+        <div className="pb-4" >
           <strong className="text-xl text-black ps-8">
             Cursos Creados para el año {year} para la planilla de notas simple
           </strong>
-        </Grid>
-      </Grid>
-      <Grid
-        container
+        </div>
+      </div>
+      <div
+        
         className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full"
       >
-        <Grid item xs={12} className="h-full">
+        <div  className="h-full">
           {loading ? (
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-blue3"></span>
@@ -162,8 +156,8 @@ const GlobalGradesundetermined = () => {
           ) : (
             <h3>¡Ocurrio un error!</h3>
           )}
-        </Grid>
-      </Grid>
+        </div>
+      </div>
       {g && pdfBase64 && (
         <iframe
           src={`data:application/pdf;base64,${pdfBase64.generateReport.report_content}`}

@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import { useEffect, useState } from "react";
 import edit from "../../../public/assets/01editar.png";
 import delet from "../../../public/assets/01eliminar.png";
-import Grid from "@mui/material/Grid";
 import BookIcon from '@mui/icons-material/Book';
 import Image from "next/image";
 import { useCoursesLazyQuery, useGroupsQuery } from "@/generated/graphql";
@@ -115,21 +114,21 @@ const GlobalGradesDetermined = () => {
 
   return (
     <div className="rounded-tl-[20px] w-full h-[70vh] overflow-hidden bg-gray1">
-      <Grid container>
-        <Grid className="pb-4" item xs={9}>
+      <div >
+        <div className="pb-4" >
           <strong className="text-2xl text-black ps-8 pb-4">
             Cursos Creados para el año {year} para la planilla de nota por
             asignatura
           </strong>
-        </Grid>
-      </Grid>
-      <Grid
-        container
+        </div>
+      </div>
+      <div
+        
         className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full"
       >
         
         {g ? (
-          <Grid item xs={12} className="text-black h-full">
+          <div  className="text-black h-full">
             {loadingCourses ? (
               <div className="w-full h-full flex justify-center items-center">
                 <span className="loading loading-dots loading-lg bg-blue3"></span>
@@ -145,9 +144,9 @@ const GlobalGradesDetermined = () => {
             ) : (
               errorCourses && <h3>Ocurrio un error: {errorCourses?.message}</h3>
             )}
-          </Grid>
+          </div>
         ): 
-        <Grid item xs={12} className="h-full">
+        <div  className="h-full">
           {loading ? (
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-blue3"></span>
@@ -159,8 +158,8 @@ const GlobalGradesDetermined = () => {
           ) : (
             <h3>¡Ocurrio un error!</h3>
           )}
-        </Grid>}
-      </Grid>
+        </div>}
+      </div>
     </div>
   );
 }

@@ -1,9 +1,5 @@
 import React from "react";
-import Link from "next/link";
-import { useEffect } from "react";
-import CInstitutions from "../Card/CInstitutions";
 import Card from "../Card";
-import { TableContainer } from "@material-ui/core";
 import { useRouter } from "next/router";
 
 const Table = ({ data, column, type }: any) => {

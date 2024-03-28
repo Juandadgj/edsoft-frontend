@@ -6,15 +6,11 @@ import {
   useUpdateQualificationsMutation,
 } from "../../generated/graphql";
 import { useEffect, useState } from "react";
-import edit from "../../public/assets/01editar.png";
-import { Grid, TextField } from "@mui/material";
-import { styled } from "@material-ui/styles";
 import Swal from "sweetalert2";
-import SearchIcon from "@mui/icons-material/Search";
 import DynamicModal from "../DynamicModal";
-import delet from "../../public/assets/01eliminar.png";
-import Image from "next/image";
+
 import Table from "../Table";
+import { Input } from "../Input";
 
 const columns = [
   {
@@ -46,18 +42,6 @@ const columns = [
     accessor: "delete",
   },
 ];
-
-const CssTextField = styled(TextField)({
-  fontFamily: ["Scada", "sans-serif"].join(","),
-  "& .MuiOutlinedInput-root": {
-    "&:hover fieldset": {
-      borderColor: "blue",
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "green",
-    },
-  },
-});
 
 function QualificationType() {
   const [DeleteQualificationType] = useDeleteQualificationTypeMutation();
@@ -125,71 +109,64 @@ function QualificationType() {
   const arrayInputs: Array<any> = [
     {
       html: (
-        <CssTextField
+        <Input
           required
-          label="Nombre Calificacion"
           name="name"
-          color="success"
           type="text"
           value={formValues.name}
           onChange={({ target }: any) =>
             setFormValues({ ...formValues, [target.name]: target.value })
           }
-          helperText={errors.name}
+          label="Nombre del tipo de nota"
+          errorText={errors.name}
         />
       ),
     },
     {
       html: (
-        <CssTextField
+        <Input
           required
-          id="outlined-basic"
-          label="Floor"
           name="floor_score"
-          color="success"
           type="number"
           value={formValues.floor_score}
           onChange={({ target }: any) => {
             const val = parseFloat(target.value);
             setFormValues({ ...formValues, [target.name]: val });
           }}
-          helperText={errors.floor_score}
+          label="Piso"
+          errorText={errors.floor_score}
         />
       ),
     },
     {
       html: (
-        <CssTextField
+        <Input
           required
-          id="outlined-basic"
-          label="Ceiling"
           name="ceiling_score"
-          color="success"
           type={"number"}
           value={formValues.ceiling_score}
           onChange={({ target }: any) => {
             const val = parseFloat(target.value);
             setFormValues({ ...formValues, [target.name]: val });
           }}
-          helperText={errors.ceiling_score}
+          label="Ceiling"
+          errorText={errors.ceiling_score}
         />
       ),
     },
     {
       html: (
-        <CssTextField
+        <Input
           required
-          id="outlined-basic"
-          label="Año"
           name="year"
-          color="success"
           type={"number"}
           value={formValues.year}
           onChange={({ target }: any) => {
             const val = parseInt(target.value);
             setFormValues({ ...formValues, [target.name]: val });
           }}
-          helperText={errors.year}
+          label="Año"
+          errorText={errors.year}
         />
       ),
     },
@@ -217,10 +194,27 @@ function QualificationType() {
               name: quty?.name,
               year: quty?.year,
             }));
-            setOpen(true);
+            modal?.showModal();
           }}
         >
-          <Image className={``} src={edit} alt="" width={50} height={50} />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            viewBox="0 0 36 36"
+          >
+            <path
+              fill="#0055A6"
+              d="M28 30H6V8h13.22l2-2H6a2 2 0 0 0-2 2v22a2 2 0 0 0 2 2h22a2 2 0 0 0 2-2V15l-2 2Z"
+              className="clr-i-outline clr-i-outline-path-1"
+            />
+            <path
+              fill="#0055A6"
+              d="m33.53 5.84l-3.37-3.37a1.61 1.61 0 0 0-2.28 0L14.17 16.26l-1.11 4.81A1.61 1.61 0 0 0 14.63 23a1.69 1.69 0 0 0 .37 0l4.85-1.07L33.53 8.12a1.61 1.61 0 0 0 0-2.28M18.81 20.08l-3.66.81l.85-3.63L26.32 6.87l2.82 2.82ZM30.27 8.56l-2.82-2.82L29 4.16L31.84 7Z"
+              className="clr-i-outline clr-i-outline-path-2"
+            />
+            <path fill="none" d="M0 0h36v36H0z" />
+          </svg>
         </button>
       ),
       borrar: (
@@ -263,13 +257,17 @@ function QualificationType() {
             })
           }
         >
-          <Image
-            className={`h-8 w-10`}
-            src={delet}
-            alt=""
-            width={50}
-            height={50}
-          />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            viewBox="0 0 256 256"
+          >
+            <path
+              fill="#e11d48"
+              d="M216 50h-42V40a22 22 0 0 0-22-22h-48a22 22 0 0 0-22 22v10H40a6 6 0 0 0 0 12h10v146a14 14 0 0 0 14 14h128a14 14 0 0 0 14-14V62h10a6 6 0 0 0 0-12ZM94 40a10 10 0 0 1 10-10h48a10 10 0 0 1 10 10v10H94Zm100 168a2 2 0 0 1-2 2H64a2 2 0 0 1-2-2V62h132Zm-84-104v64a6 6 0 0 1-12 0v-64a6 6 0 0 1 12 0Zm48 0v64a6 6 0 0 1-12 0v-64a6 6 0 0 1 12 0Z"
+            />
+          </svg>
         </button>
       ),
     }));
@@ -285,6 +283,8 @@ function QualificationType() {
       variables: { updateQualificationsInput: formValues },
     });
   };
+  const modal = document.getElementById("modal") as HTMLDialogElement;
+
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-10 pb-3">
       <div className="h-[6%] flex justify-between">
@@ -299,18 +299,15 @@ function QualificationType() {
             className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
             onClick={() => {
               setTypeAdd(true);
-              setOpen(true);
+              modal?.showModal();
             }}
           >
             <h4 className="text-white text-xs">+ Nueva calificacion</h4>
           </button>
         </div>
       </div>
-      <Grid
-        container
-        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]"
-      >
-        <Grid item xs={12} className="text-black h-full">
+      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]">
+        <div className="text-black h-full">
           {loading ? (
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-blue3"></span>
@@ -326,8 +323,8 @@ function QualificationType() {
           ) : (
             <h3>¡Ocurrio un error!</h3>
           )}
-        </Grid>
-      </Grid>
+        </div>
+      </div>
       {/* Modal */}
 
       <DynamicModal

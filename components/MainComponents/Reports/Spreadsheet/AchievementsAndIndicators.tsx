@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { useEffect, useState } from "react";
-import { Grid, TextField } from "@mui/material";
 import {
   useCoursesLazyQuery,
   useGroupsQuery,
@@ -12,10 +11,10 @@ import {
 import { useRouter } from "next/router";
 import Table from "../../../Table";
 import edit from "../../../../public/assets/01editar.png";
-import { styled } from "@material-ui/styles";
 import DynamicModal from "../../../DynamicModal";
 import Image from "next/image";
 import Swal from "sweetalert2";
+import { Input } from "@/components/Input";
 
 const columsCourses = [
   {
@@ -60,18 +59,6 @@ const columnsGroup = [
   { Header: "Asignaturas", accessor: "subjects" },
 ];
 
-const CssTextField = styled(TextField)({
-  fontFamily: ["Scada", "sans-serif"].join(","),
-  "& .MuiOutlinedInput-root": {
-    "&:hover fieldset": {
-      borderColor: "blue",
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "green",
-    },
-  },
-});
-
 const AchievementsAndIndicators = () => {
   const [CreateAchievement] = useCreateAchievementMutation();
   const [DeleteAchievement] = useDeleteAchievementMutation();
@@ -103,15 +90,15 @@ const AchievementsAndIndicators = () => {
   const [formValues, setFormValues] = useState<any>({
     description: "",
     id_course: 0,
-    period: 0
+    period: 0,
   });
   // Obj to manage every input error
   const [errors, setErrors] = useState<any>({
     description: "",
     id_course: 0,
-    period: 0
+    period: 0,
   });
-  
+
   // Here we validate if every item is filled and if it is we return true
   const validationEvent = () => {
     if (formValues.description) {
@@ -148,16 +135,17 @@ const AchievementsAndIndicators = () => {
   const arrayInputs: Array<any> = [
     {
       html: (
-        <CssTextField
+        <Input
           required
-          label="Descripción"
           name="description"
-          color="success"
           value={formValues.description}
           onChange={({ target }: any) =>
             setFormValues({ ...formValues, [target.name]: target.value })
           }
-          helperText={errors.description}
+          type="text"
+          placeholder="Descripcion del logro"
+          label="Descripcion del logro"
+          errorText={errors.description}
         />
       ),
     },
@@ -179,7 +167,7 @@ const AchievementsAndIndicators = () => {
               description: achievements?.description,
               id_course: achievements?.id_course,
               period: achievements?.period,
-              id_achievement: achievements?.id_achievement
+              id_achievement: achievements?.id_achievement,
             }));
             setOpen(true);
           }}
@@ -219,7 +207,7 @@ const AchievementsAndIndicators = () => {
               if (result.isConfirmed && achievements?.id_achievement) {
                 DeleteAchievement({
                   variables: { idAchievement: achievements?.id_achievement },
-                }).then((res:any) => {
+                }).then((res: any) => {
                   if (res.data?.deleteAchievement) {
                     Swal.fire({
                       title: "Eliminado",
@@ -260,7 +248,7 @@ const AchievementsAndIndicators = () => {
 
   const processedGroups = useMemo(() => {
     if (!groups?.groups) return [];
-    return groups?.groups.map((group:any) => ({
+    return groups?.groups.map((group: any) => ({
       name: `${group?.level}-${group?.sublevel}` ?? "",
       group_teacher: group?.representative ?? "",
       asignaturas: group?.coursesCount,
@@ -280,7 +268,7 @@ const AchievementsAndIndicators = () => {
       periodo2: "-",
       periodo3: "-",
       periodo4: "-",
-      route: 'reportes?componente=planillas&opcion=3'
+      route: "reportes?componente=planillas&opcion=3",
     }));
   };
 
@@ -288,7 +276,7 @@ const AchievementsAndIndicators = () => {
     if (g) {
       getCourses({
         variables: { filterCourseInput: { id_group: Number(g) } },
-      }).then((res:any) => {
+      }).then((res: any) => {
         const { data } = res;
         setSelectedCourses(processedCourses(data?.courses));
       });
@@ -298,16 +286,16 @@ const AchievementsAndIndicators = () => {
         variables: {
           filterAchievementInput: { id_course: Number(a), period: Number(per) },
         },
-      })
+      });
     }
   }, [router]);
 
-  useEffect(()=>{
-    if(achievements){
+  useEffect(() => {
+    if (achievements) {
       setSelectedAchievements(processedAchievements(achievements));
     }
-  },[achievements])
-    
+  }, [achievements]);
+
   const handlerCreateAchievement = async () => {
     return await CreateAchievement({
       variables: { createAchievementInput: formValues },
@@ -322,14 +310,14 @@ const AchievementsAndIndicators = () => {
 
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-1">
-      <Grid container>
-        <Grid item xs={6}>
+      <div>
+        <div>
           <strong className="text-2xl text-black ps-8 pb-4">
             Logros por curso para el año {year}
           </strong>
-        </Grid>
+        </div>
         {a && per && (
-          <Grid item xs={6} className="text-end pr-6">
+          <div className="text-end pr-6">
             <button
               type="button"
               className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-2 rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
@@ -339,21 +327,18 @@ const AchievementsAndIndicators = () => {
                   ...t,
                   id_course: parseInt(Array.isArray(a) ? a[0] : a, 10),
                   period: parseInt(Array.isArray(per) ? per[0] : per, 10),
-                }))
+                }));
                 setOpen(true);
               }}
             >
               <h4 className="text-white">+ Nuevo Logro</h4>
             </button>
-          </Grid>
+          </div>
         )}
-      </Grid>
-      <Grid
-        container
-        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full"
-      >
+      </div>
+      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full">
         {!g && (
-          <Grid item xs={12} className="h-full">
+          <div className="h-full">
             {loadingGroups ? (
               <div className="w-full h-full flex justify-center items-center">
                 <span className="loading loading-dots loading-lg bg-blue3"></span>
@@ -369,10 +354,10 @@ const AchievementsAndIndicators = () => {
             ) : (
               <h3>¡Ocurrio un error!</h3>
             )}
-          </Grid>
+          </div>
         )}
         {g && !a && !per && (
-          <Grid item xs={12} className="text-black h-full">
+          <div className="text-black h-full">
             {loadingCourses ? (
               <div className="w-full h-full flex justify-center items-center">
                 <span className="loading loading-dots loading-lg bg-blue3"></span>
@@ -388,10 +373,10 @@ const AchievementsAndIndicators = () => {
             ) : (
               errorCourses && <h3>Ocurrio un error: {errorCourses?.message}</h3>
             )}
-          </Grid>
+          </div>
         )}
         {a && per && (
-          <Grid item xs={12} className="text-black h-full">
+          <div className="text-black h-full">
             {loadingAchievements ? (
               <div className="w-full h-full flex justify-center items-center">
                 <span className="loading loading-dots loading-lg bg-blue3"></span>
@@ -422,9 +407,9 @@ const AchievementsAndIndicators = () => {
             ) : (
               <h3>Ocurrio un error</h3>
             )}
-          </Grid>
+          </div>
         )}
-      </Grid>
+      </div>
 
       {/* Modal */}
       <DynamicModal
@@ -443,6 +428,6 @@ const AchievementsAndIndicators = () => {
       />
     </div>
   );
-}
+};
 
-export default AchievementsAndIndicators
+export default AchievementsAndIndicators;

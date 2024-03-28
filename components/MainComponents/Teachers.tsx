@@ -6,14 +6,10 @@ import {
   useTeachersQuery,
 } from "../../generated/graphql";
 import { useEffect, useState } from "react";
-import edit from "../../public/assets/01editar.png";
-import delet from "../../public/assets/01eliminar.png";
-import { Grid, TextField } from "@mui/material";
 import DynamicModal from "../DynamicModal";
-import { styled } from "@material-ui/styles";
 import Swal from "sweetalert2";
-import Image from "next/image";
 import Table from "../Table";
+import { Input } from "../Input";
 
 const columns = [
   {
@@ -28,23 +24,6 @@ const columns = [
   { Header: "Editar", accessor: "edit" },
   { Header: "Sacar", accessor: "leave" },
 ];
-
-
-const data = [
-  {name: "Sebastian" ,lastName: "Camero",}
-]
-
-const CssTextField = styled(TextField)({
-  fontFamily: ["Scada", "sans-serif"].join(","),
-  "& .MuiOutlinedInput-root": {
-    "&:hover fieldset": {
-      borderColor: "blue",
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "green",
-    },
-  },
-});
 
 function Teachers() {
   const [DeleteDocente] = useDeleteTeacherMutation();
@@ -129,113 +108,104 @@ function Teachers() {
   const arrayInputs: Array<any> = [
     {
       html: (
-        <CssTextField
-          required
-          label="Nombre"
+        <Input
           name="name"
-          color="success"
           value={formValues.name}
           onChange={({ target }: any) =>
             setFormValues({ ...formValues, [target.name]: target.value })
           }
-          helperText={errors.name}
+          type="text"
+          label="Nombres"
+          errorText={errors.name}
         />
       ),
     },
     {
       html: (
-        <CssTextField
-          required
-          id="outlined-basic"
-          label="Apellidos"
+        <Input
           name="last_name"
-          color="success"
           value={formValues.last_name}
           onChange={({ target }: any) =>
             setFormValues({ ...formValues, [target.name]: target.value })
           }
-          helperText={errors.last_name}
+          type="text"
+          label="Apellidos"
+          errorText={errors.last_name}
         />
       ),
     },
     {
       html: (
-        <CssTextField
-          required
-          id="outlined-basic"
-          label="Identificacion"
+        <Input
           name="identification"
-          color="success"
           value={formValues.identification}
           onChange={({ target }: any) =>
             setFormValues({ ...formValues, [target.name]: target.value })
           }
-          helperText={errors.identification}
+          type="text"
+          label="Numero de Identificacion"
+          errorText={errors.identification}
         />
       ),
     },
     {
       html: (
-        <CssTextField
+        <Input
           required
-          id="outlined-basic"
-          label="Direccion"
           name="direction"
-          color="success"
           value={formValues.direction}
           onChange={({ target }: any) =>
             setFormValues({ ...formValues, [target.name]: target.value })
           }
-          helperText={errors.direction}
+          type="text"
+          label="Direccion"
+          errorText={errors.direction}
         />
       ),
     },
     {
       html: (
-        <CssTextField
+        <Input
           required
-          id="outlined-basic"
-          label="Telefono"
           name="phone"
-          color="success"
           value={formValues.phone}
           onChange={({ target }: any) =>
             setFormValues({ ...formValues, [target.name]: target.value })
           }
-          helperText={errors.phone}
+          label="Telefono"
+          type="text"
+          errorText={errors.phone}
         />
       ),
     },
     {
       html: (
-        <CssTextField
+        <Input
           required
-          id="outlined-basic"
-          label="Email"
-          type="email"
           name="email"
-          color="success"
           value={formValues.email}
           onChange={({ target }: any) =>
             setFormValues({ ...formValues, [target.name]: target.value })
           }
-          helperText={errors.email}
+          type="email"
+          placeholder="example@correo.com"
+          label="Correo electronico"
+          errorText={errors.email}
         />
       ),
     },
     {
       html: (
-        <CssTextField
+        <Input
           required
-          id="outlined-basic"
-          label="Titulo"
           name="degree"
-          color="success"
           value={formValues.degree}
           onChange={({ target }: any) =>
             setFormValues({ ...formValues, [target.name]: target.value })
           }
-          helperText={errors.degree}
+          type="text"
+          label="Titulo"
+          errorText={errors.degree}
         />
       ),
     },
@@ -253,7 +223,7 @@ function Teachers() {
           className="border-0"
           onClick={() => {
             setTypeAdd(false);
-            // We set the values selected to our inputs
+            cleaningStates();
             setFormValues((t: any) => ({
               ...t,
               id_teacher: teacher?.id_teacher,
@@ -265,10 +235,27 @@ function Teachers() {
               email: teacher?.email,
               degree: teacher?.degree,
             }));
-            setOpen(true);
+            modal?.showModal();
           }}
         >
-          <Image className={``} src={edit} alt="" width={50} height={50} />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            viewBox="0 0 36 36"
+          >
+            <path
+              fill="#0055A6"
+              d="M28 30H6V8h13.22l2-2H6a2 2 0 0 0-2 2v22a2 2 0 0 0 2 2h22a2 2 0 0 0 2-2V15l-2 2Z"
+              className="clr-i-outline clr-i-outline-path-1"
+            />
+            <path
+              fill="#0055A6"
+              d="m33.53 5.84l-3.37-3.37a1.61 1.61 0 0 0-2.28 0L14.17 16.26l-1.11 4.81A1.61 1.61 0 0 0 14.63 23a1.69 1.69 0 0 0 .37 0l4.85-1.07L33.53 8.12a1.61 1.61 0 0 0 0-2.28M18.81 20.08l-3.66.81l.85-3.63L26.32 6.87l2.82 2.82ZM30.27 8.56l-2.82-2.82L29 4.16L31.84 7Z"
+              className="clr-i-outline clr-i-outline-path-2"
+            />
+            <path fill="none" d="M0 0h36v36H0z" />
+          </svg>
         </button>
       ),
       borrar: (
@@ -328,39 +315,38 @@ function Teachers() {
   }, [data, DeleteDocente]);
 
   const handlerCreateTeacher = async () => {
-   return await AddTeacher({ variables: { createTeacherInput: formValues } });
+    return await AddTeacher({ variables: { createTeacherInput: formValues } });
   };
 
-  const handlerUpdateTeacher = async (form:any) => {
-   return await UpdateTeacher({variables:{updateTeacherInput: formValues}})
-  }
+  const handlerUpdateTeacher = async (form: any) => {
+    return await UpdateTeacher({
+      variables: { updateTeacherInput: formValues },
+    });
+  };
+  const modal = document.getElementById("modal") as HTMLDialogElement;
 
   return (
     <div className="rounded-tl-[20px] w-full overflow-hidden bg-gray1 p-10 pb-3 h-full">
       <div className="h-[6%] flex justify-between">
         <div>
-          <strong className="text-xl text-black ps-8">
-            Lista de Docentes
-          </strong>
+          <strong className="text-xl text-black ps-8">Lista de Docentes</strong>
         </div>
         <div className="text-end pr-6 h-full [&>button]:h-20">
           <button
             type="button"
             className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
             onClick={() => {
+              cleaningStates();
               setTypeAdd(true);
-              setOpen(true);
+              modal?.showModal();
             }}
           >
             <h4 className="text-white text-xs">+ Nuevo Docente</h4>
           </button>
         </div>
       </div>
-      <Grid
-        container
-        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]"
-      >
-        <Grid item xs={12} className="text-black h-full">
+      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]">
+        <div className="text-black h-full">
           {loading ? (
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-blue3"></span>
@@ -376,8 +362,8 @@ function Teachers() {
           ) : (
             <h3>¡Ocurrio un error!</h3>
           )}
-        </Grid>
-      </Grid>
+        </div>
+      </div>
 
       {/* Modal */}
       <DynamicModal

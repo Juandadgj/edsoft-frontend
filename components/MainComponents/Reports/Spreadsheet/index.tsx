@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import Grid from "@mui/material/Grid";
 import Card from "../../../Card";
 import PublicIcon from "@mui/icons-material/Public";
 import SubjectIcon from "@mui/icons-material/Subject";
@@ -59,7 +58,6 @@ const Spreadsheet = () => {
     (card) => card.id === Number(opcion)
   );
 
-
   return (
     <div
       className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-14"
@@ -72,13 +70,13 @@ const Spreadsheet = () => {
       {opcion ? (
         ""
       ) : (
-        <Grid container className="pb-6">
-          <Grid item xs={12}>
+        <div className="pb-6">
+          <div>
             <strong className="text-2xl text-black ps-8">
               Crear planilla de:
             </strong>
-          </Grid>
-        </Grid>
+          </div>
+        </div>
       )}
       {opcion ? (
         <>{opcionelegida?.component}</>
@@ -90,9 +88,7 @@ const Spreadsheet = () => {
                 style={{ borderRadius: "30px" }}
                 className="w-[70%] h-full cursor-pointer transition-transform shadow-2xl bg-white hover:bg-[#ededed89] hover:scale-105 text-center p-4"
               >
-                <Link
-                  href={`reportes?componente=planillas&opcion=${item.id}`}
-                >
+                <Link href={`reportes?componente=planillas&opcion=${item.id}`}>
                   <div className="text-4xl mb-2">{item.icon}</div>
                   <h3 className="text-md font-semibold text-black">
                     {item.title}

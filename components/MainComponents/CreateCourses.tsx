@@ -6,21 +6,11 @@ import {
   useDeleteGroupMutation,
   useTeachersQuery,
 } from "../../generated/graphql";
-import { useEffect, useState } from "react";
-import edit from "../../public/assets/01editar.png";
-import delet from "../../public/assets/01eliminar.png";
-import Grid from "@mui/material/Grid";
-import Image from "next/image";
+import { useState } from "react";
+
 import Table from "../Table";
 import DynamicModal from "../DynamicModal";
-import { styled } from "@material-ui/styles";
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
+
 import Swal from "sweetalert2";
 
 const columns = [
@@ -49,7 +39,6 @@ const columns = [
 function CreateCourses() {
   const today = new Date();
   const year = today.getFullYear();
-  const [active, setActive] = useState(false);
   const [open, setOpen] = useState(false);
   const [typeAdd, setTypeAdd] = useState(false);
   const { data: teachers } = useTeachersQuery();
@@ -59,18 +48,8 @@ function CreateCourses() {
   const [idGroup, setIdGroup] = useState<any>(0);
   const [course, setCourse] = useState<any>(0);
   const [group, setGroup] = useState<any>("");
-  const [workingTime, setWorkingTime] = useState<string | null | undefined>("");
+  const [workingTime, setWorkingTime] = useState<any>("");
   const [teacher, setTeacher] = useState<any>("");
-  const [formValues, setFormValues] = useState<any>({
-    name: "",
-    last_name: "",
-    type_id: 1,
-    identification: "",
-    direction: "",
-    phone: "",
-    email: "",
-    degree: "",
-  });
 
   const [errors, setErrors] = useState<any>({
     course: "",
@@ -83,17 +62,6 @@ function CreateCourses() {
     variables: { filterGroupInput: { id_year: 2013 } },
   });
 
-  const CssTextField = styled(TextField)({
-    fontFamily: ["Scada", "sans-serif"].join(","),
-    "& .MuiOutlinedInput-root": {
-      "&:hover fieldset": {
-        borderColor: "blue",
-      },
-      "&.Mui-focused fieldset": {
-        borderColor: "green",
-      },
-    },
-  });
   const courses = [
     { value: -3, text: "Parvulo" },
     { value: -2, text: "Prejardin" },
@@ -153,25 +121,28 @@ function CreateCourses() {
     {
       html: (
         <div className="form-control text-black">
-          <FormControl fullWidth>
-            <InputLabel id="label-course">Curso</InputLabel>
-            <Select
-              labelId="label-course"
-              id="course"
+          <div className="label text-gray5 p-1">
+            <label className="text-xs">Curso</label>
+          </div>
+          <div className="w-full">
+            <select
               name="course"
-              value={course}
-              label="Course"
+              value={course ? course : "Selecciona un curso"}
               onChange={({ target }: any) => {
                 setCourse(target.value);
               }}
+              className="border rounded-btn border-gray5 w-full h-12 bg-transparent text-sm px-2"
             >
+              <option disabled selected>
+                Selecciona un curso
+              </option>
               {courses.map((course: any, index) => (
-                <MenuItem key={index} value={course.value}>
+                <option key={index} value={course.value}>
                   {course.text}
-                </MenuItem>
+                </option>
               ))}
-            </Select>
-          </FormControl>
+            </select>
+          </div>
           <div>
             <label className="label-text-alt text-[red]">{errors.course}</label>
           </div>
@@ -181,25 +152,28 @@ function CreateCourses() {
     {
       html: (
         <div className="form-control text-black">
-          <FormControl fullWidth>
-            <InputLabel id="label-group">Grupo</InputLabel>
-            <Select
-              labelId="label-group"
-              id="group"
+          <div className="label text-gray5 p-1">
+            <label className="text-xs">Grupo</label>
+          </div>
+          <div className="w-full">
+            <select
               name="group"
-              value={group}
-              label="Grupo"
+              value={group ? group : "Selecciona un grupo"}
               onChange={({ target }: any) => {
                 setGroup(target.value);
               }}
+              className="border rounded-btn border-gray5 w-full h-12 bg-transparent text-sm px-2"
             >
+              <option disabled selected>
+                Selecciona un grupo
+              </option>
               {groups.map((group: any, index) => (
-                <MenuItem key={index} value={group.value}>
+                <option key={index} value={group.value}>
                   {group.text}
-                </MenuItem>
+                </option>
               ))}
-            </Select>
-          </FormControl>
+            </select>
+          </div>
           <div>
             <label className="label-text-alt text-[red]">{errors.group}</label>
           </div>
@@ -209,25 +183,29 @@ function CreateCourses() {
     {
       html: (
         <div className="form-control text-black">
-          <FormControl fullWidth>
-            <InputLabel id="label-working">Jornada</InputLabel>
-            <Select
-              labelId="label-working"
+          <div className="label text-gray5 p-1">
+            <label className="text-xs">Jornada</label>
+          </div>
+          <div className="w-full">
+            <select
               id="working"
               name="working"
-              value={workingTime}
-              label="Jornada"
+              value={workingTime ? workingTime : "Selecciona una jornada"}
               onChange={({ target }: any) => {
                 setWorkingTime(target.value);
               }}
+              className="border rounded-btn border-gray5 w-full h-12 bg-transparent text-sm px-2"
             >
+              <option disabled selected>
+                Selecciona una jornada
+              </option>
               {working_time.map((time: any, index) => (
-                <MenuItem key={index} value={time.value}>
+                <option key={index} value={time.value}>
                   {time.text}
-                </MenuItem>
+                </option>
               ))}
-            </Select>
-          </FormControl>
+            </select>
+          </div>
           <div>
             <label className="label-text-alt text-[red]">
               {errors.working_time}
@@ -239,25 +217,28 @@ function CreateCourses() {
     {
       html: (
         <div className="form-control text-black">
-          <FormControl fullWidth>
-            <InputLabel id="label-teacher">Profesor</InputLabel>
-            <Select
-              labelId="label-teacher"
-              id="teacher"
+          <div className="label text-gray5 p-1">
+            <label className="text-xs">Profesor de grupo</label>
+          </div>
+          <div className="w-full">
+            <select
               name="teacher"
-              value={teacher}
-              label="Profesor"
+              value={teacher ? teacher : "Selecciona un profesor"}
               onChange={({ target }: any) => {
                 setTeacher(target.value);
               }}
+              className="border rounded-btn border-gray5 w-full h-12 bg-transparent text-sm px-2"
             >
+              <option disabled selected>
+                Selecciona un profesor
+              </option>
               {teachers?.teachers.map((teacher: any) => (
-                <MenuItem key={teacher?.id_teacher} value={teacher?.id_teacher}>
+                <option key={teacher?.id_teacher} value={teacher?.id_teacher}>
                   {teacher?.name} {teacher?.last_name}
-                </MenuItem>
+                </option>
               ))}
-            </Select>
-          </FormControl>
+            </select>
+          </div>
           <div>
             <label className="label-text-alt text-[red]">
               {errors.teacher}
@@ -386,16 +367,27 @@ function CreateCourses() {
             setGroup(group?.sublevel);
             setTeacher(group?.representative);
             setWorkingTime(group?.working_time);
-            setOpen(true);
+            modal?.showModal();
           }}
         >
-          <Image
-            className={`h-13 w-15`}
-            src={edit}
-            alt=""
-            width={50}
-            height={50}
-          />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            viewBox="0 0 36 36"
+          >
+            <path
+              fill="#0055A6"
+              d="M28 30H6V8h13.22l2-2H6a2 2 0 0 0-2 2v22a2 2 0 0 0 2 2h22a2 2 0 0 0 2-2V15l-2 2Z"
+              className="clr-i-outline clr-i-outline-path-1"
+            />
+            <path
+              fill="#0055A6"
+              d="m33.53 5.84l-3.37-3.37a1.61 1.61 0 0 0-2.28 0L14.17 16.26l-1.11 4.81A1.61 1.61 0 0 0 14.63 23a1.69 1.69 0 0 0 .37 0l4.85-1.07L33.53 8.12a1.61 1.61 0 0 0 0-2.28M18.81 20.08l-3.66.81l.85-3.63L26.32 6.87l2.82 2.82ZM30.27 8.56l-2.82-2.82L29 4.16L31.84 7Z"
+              className="clr-i-outline clr-i-outline-path-2"
+            />
+            <path fill="none" d="M0 0h36v36H0z" />
+          </svg>
         </button>
       ),
       borrar: (
@@ -419,32 +411,33 @@ function CreateCourses() {
     }));
   }, [data]);
 
+  const modal = document.getElementById("modal") as HTMLDialogElement;
+
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-10 pb-3">
       <div className="flex justify-between h-[6%]">
-        <Grid item xs={6}>
+        <div>
           <strong className="text-xl text-black ps-8 pb-4">
             Cursos Creados para el año {year}
           </strong>
-        </Grid>
-        <Grid item xs={6} className="text-end pr-6">
+        </div>
+        <div className="text-end pr-6">
           <button
             type="button"
             className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
             onClick={() => {
               setTypeAdd(true);
-              setOpen(true);
+              modal?.showModal();
             }}
           >
             <h4 className="text-white text-xs">+ Nuevo Curso</h4>
           </button>
-        </Grid>
+        </div>
       </div>
-      <Grid
-        container
+      <div
         className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]"
       >
-        <Grid item xs={12} className="h-full">
+        <div className="h-full">
           {loading ? (
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-blue3"></span>
@@ -456,8 +449,8 @@ function CreateCourses() {
           ) : (
             <h3>¡Ocurrio un error!</h3>
           )}
-        </Grid>
-      </Grid>
+        </div>
+      </div>
       <DynamicModal
         arrayInputs={arrayInputs}
         typeAdd={typeAdd}
@@ -465,7 +458,6 @@ function CreateCourses() {
         setOpen={setOpen}
         addSuccessMsg={"Grupo Creado!"}
         updateSuccessMsg={"Grupo Actualizado!"}
-        formValues={formValues}
         addMutation={handlerCreateGroup}
         updateMutation={handlerUpdateGroup}
         cleaningStates={cleaningStates}

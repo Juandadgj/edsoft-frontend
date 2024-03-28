@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { useEffect, useState } from "react";
-import { Grid, TextField } from "@mui/material";
 import {
   useCoursesLazyQuery,
   useGroupsQuery,
@@ -11,11 +10,9 @@ import {
 } from "../../generated/graphql";
 import { useRouter } from "next/router";
 import Table from "../Table";
-import edit from "../../public/assets/01editar.png";
-import { styled } from "@material-ui/styles";
 import DynamicModal from "../DynamicModal";
-import Image from "next/image";
 import Swal from "sweetalert2";
+import { Input } from "../Input";
 
 const columsCourses = [
   {
@@ -56,18 +53,6 @@ const columnsGroup = [
   { Header: "Asignaturas", accessor: "subjects" },
 ];
 
-const CssTextField = styled(TextField)({
-  fontFamily: ["Scada", "sans-serif"].join(","),
-  "& .MuiOutlinedInput-root": {
-    "&:hover fieldset": {
-      borderColor: "blue",
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "green",
-    },
-  },
-});
-
 function Achievements() {
   const [CreateAchievement] = useCreateAchievementMutation();
   const [DeleteAchievement] = useDeleteAchievementMutation();
@@ -99,15 +84,15 @@ function Achievements() {
   const [formValues, setFormValues] = useState<any>({
     description: "",
     id_course: 0,
-    period: 0
+    period: 0,
   });
   // Obj to manage every input error
   const [errors, setErrors] = useState<any>({
     description: "",
     id_course: 0,
-    period: 0
+    period: 0,
   });
-  
+
   // Here we validate if every item is filled and if it is we return true
   const validationEvent = () => {
     if (formValues.description) {
@@ -144,16 +129,17 @@ function Achievements() {
   const arrayInputs: Array<any> = [
     {
       html: (
-        <CssTextField
+        <Input
           required
-          label="Descripción"
           name="description"
-          color="success"
           value={formValues.description}
           onChange={({ target }: any) =>
             setFormValues({ ...formValues, [target.name]: target.value })
           }
-          helperText={errors.description}
+          type="text"
+          placeholder="Descripcion del logro"
+          label="Descripcion del logro"
+          errorText={errors.description}
         />
       ),
     },
@@ -169,18 +155,35 @@ function Achievements() {
           className="border-0"
           onClick={() => {
             setTypeAdd(false);
-            // We set the values selected to our inputs
+            cleaningStates();
             setFormValues((t: any) => ({
               ...t,
               description: achievements?.description,
               id_course: achievements?.id_course,
               period: achievements?.period,
-              id_achievement: achievements?.id_achievement
+              id_achievement: achievements?.id_achievement,
             }));
-            setOpen(true);
+            modal?.showModal();
           }}
         >
-          <Image src={edit} alt="" width={50} height={50} />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            viewBox="0 0 36 36"
+          >
+            <path
+              fill="#0055A6"
+              d="M28 30H6V8h13.22l2-2H6a2 2 0 0 0-2 2v22a2 2 0 0 0 2 2h22a2 2 0 0 0 2-2V15l-2 2Z"
+              className="clr-i-outline clr-i-outline-path-1"
+            />
+            <path
+              fill="#0055A6"
+              d="m33.53 5.84l-3.37-3.37a1.61 1.61 0 0 0-2.28 0L14.17 16.26l-1.11 4.81A1.61 1.61 0 0 0 14.63 23a1.69 1.69 0 0 0 .37 0l4.85-1.07L33.53 8.12a1.61 1.61 0 0 0 0-2.28M18.81 20.08l-3.66.81l.85-3.63L26.32 6.87l2.82 2.82ZM30.27 8.56l-2.82-2.82L29 4.16L31.84 7Z"
+              className="clr-i-outline clr-i-outline-path-2"
+            />
+            <path fill="none" d="M0 0h36v36H0z" />
+          </svg>
         </button>
       ),
       indicator: (
@@ -275,7 +278,7 @@ function Achievements() {
       periodo2: "-",
       periodo3: "-",
       periodo4: "-",
-      route: 'programacion-anual?componente=logros'
+      route: "programacion-anual?componente=logros",
     }));
   };
 
@@ -293,18 +296,16 @@ function Achievements() {
         variables: {
           filterAchievementInput: { id_course: Number(a), period: Number(per) },
         },
-      })
+      });
     }
   }, [router]);
 
-  useEffect(()=>{
-    if(achievements){
+  useEffect(() => {
+    if (achievements) {
       setSelectedAchievements(processedAchievements(achievements));
     }
-  },[achievements])
-  
+  }, [achievements]);
 
-  
   const handlerCreateAchievement = async () => {
     return await CreateAchievement({
       variables: { createAchievementInput: formValues },
@@ -317,40 +318,41 @@ function Achievements() {
     });
   };
 
+  const modal = document.getElementById("modal") as HTMLDialogElement;
+
   return (
-    <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-9">
-      <Grid container>
-        <Grid item xs={6}>
-          <strong className="text-2xl text-black ps-8 pb-4">
+    <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-10 pb-3">
+      <div className="flex justify-between h-[6%]">
+        <div>
+          <strong className="text-xl text-black ps-8 pb-4">
             Logros por curso para el año {year}
           </strong>
-        </Grid>
+        </div>
         {a && per && (
-          <Grid item xs={6} className="text-end pr-6">
+          <div className="text-end pr-6">
             <button
               type="button"
-              className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-2 rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
+              className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
               onClick={() => {
                 setTypeAdd(true);
                 setFormValues((t: any) => ({
                   ...t,
-                  id_course: parseInt(Array.isArray(a) ? a[0] : a, 10),
-                  period: parseInt(Array.isArray(per) ? per[0] : per, 10),
-                }))
-                setOpen(true);
+                  id_course: Number(a),
+                  period: Number(per),
+                }));
+                modal?.showModal();
               }}
             >
               <h4 className="text-white">+ Nuevo Logro</h4>
             </button>
-          </Grid>
+          </div>
         )}
-      </Grid>
-      <Grid
-        container
-        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full"
+      </div>
+      <div
+        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]"
       >
         {!g && (
-          <Grid item xs={12} className="h-full">
+          <div className="h-full">
             {loadingGroups ? (
               <div className="w-full h-full flex justify-center items-center">
                 <span className="loading loading-dots loading-lg bg-blue3"></span>
@@ -366,10 +368,10 @@ function Achievements() {
             ) : (
               <h3>¡Ocurrio un error!</h3>
             )}
-          </Grid>
+          </div>
         )}
         {g && !a && !per && (
-          <Grid item xs={12} className="text-black h-full">
+          <div className="text-black h-full">
             {loadingCourses ? (
               <div className="w-full h-full flex justify-center items-center">
                 <span className="loading loading-dots loading-lg bg-blue3"></span>
@@ -385,10 +387,10 @@ function Achievements() {
             ) : (
               errorCourses && <h3>Ocurrio un error: {errorCourses?.message}</h3>
             )}
-          </Grid>
+          </div>
         )}
         {a && per && (
-          <Grid item xs={12} className="text-black h-full">
+          <div className="text-black h-full">
             {loadingAchievements ? (
               <div className="w-full h-full flex justify-center items-center">
                 <span className="loading loading-dots loading-lg bg-blue3"></span>
@@ -419,9 +421,9 @@ function Achievements() {
             ) : (
               <h3>Ocurrio un error</h3>
             )}
-          </Grid>
+          </div>
         )}
-      </Grid>
+      </div>
 
       {/* Modal */}
       <DynamicModal

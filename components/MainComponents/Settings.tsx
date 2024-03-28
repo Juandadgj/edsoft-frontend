@@ -1,5 +1,3 @@
-import { TextField } from "@material-ui/core";
-import { Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 
 function Settings() {
@@ -10,60 +8,54 @@ function Settings() {
 
   return (
     <div className="h-full w-full rounded-tl-[20px] overflow-hidden bg-gray1 p-9">
-      <Grid container className="pb-8">
-        <Grid item xs={12}>
-          <h1
-            className="text-black fs-2 text-2xl font-bold ps-4 animate-fade-down"
-          >
+      <div className="pb-8">
+        <div>
+          <h1 className="text-black fs-2 text-2xl font-bold ps-4 animate-fade-down">
             Cambiar Contraseña
           </h1>
-        </Grid>
-      </Grid>
-      <Grid
-        container
-        className="bg-white border-gray4 rounded-[2rem] p-5 shadow-2xl"
-        rowSpacing={3}
-      >
-        <Grid item xs={6} className="pe-10">
+        </div>
+      </div>
+      <div className="bg-white border-gray4 rounded-[2rem] p-5 shadow-2xl">
+        <div className="pe-10">
           <h1
             className={`text-black text-center text-lg font-medium animate-fade-left `}
           >
             Contraseña actual
           </h1>
-        </Grid>
-        <Grid item xs={6} className="text-center pe-10">
+        </div>
+        <div className="text-center pe-10">
           <input className="text-black bg-white border rounded-[0.5rem] border-gray4 ps-6 fs-5 w-[70%]" />
-        </Grid>
+        </div>
 
-        <Grid item xs={6} className="pe-10">
+        <div className="pe-10">
           <h2
             className={`text-black text-center text-lg font-medium animate-fade-left`}
           >
             Nueva Contraseña
           </h2>
-        </Grid>
-        <Grid item xs={6} className="text-center pe-10">
+        </div>
+        <div className="text-center pe-10">
           <input className="text-black bg-white border rounded-[0.5rem] border-gray4 ps-6 fs-5 w-[70%]" />
-        </Grid>
-        <Grid item xs={6} className="pe-10">
+        </div>
+        <div className="pe-10">
           <h3
             className={`text-black text-lg text-center font-medium animate-fade-left `}
           >
             Confirme Contraseña
           </h3>
-        </Grid>
-        <Grid item xs={6} className="text-center pe-10">
+        </div>
+        <div className="text-center pe-10">
           <input className="text-black bg-white border rounded-[0.5rem] border-gray4 ps-6 fs-5 w-[70%]" />
-        </Grid>
-        <Grid item xs={12} className="flex justify-center items-center">
+        </div>
+        <div className="flex justify-center items-center">
           <button
             type="button"
             className={`btn bg-blue3 btn-primary w-[80%] rounded-4 hover:bg-[#0b5ed7] animate-fade-up`}
           >
             <h4 className="text-white">Guardar</h4>
           </button>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </div>
   );
 }

@@ -15,7 +15,11 @@ const CCourses = (props: GroupsCars) => {
   } = props;
   return (
     <div style={{ textDecoration: "none", width: "100%" }} onClick={click}>
-      <tr className="flex w-full p-1 my-4 bg-gray1 border-none rounded-[20px] text-sm font-semibold">
+      <tr
+        className={`flex w-full p-1 my-4 bg-gray1 border-none rounded-[20px] text-sm font-semibold 
+        ${!see && !editar && 'hover:bg-gray6 transition duration-500 cursor-pointer'}
+        `}
+      >
         <td className="flex w-full justify-center items-center text-center">
           {name}
         </td>
