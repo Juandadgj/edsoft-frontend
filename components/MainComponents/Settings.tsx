@@ -50,7 +50,7 @@ function Settings() {
         <div className="flex justify-center items-center">
           <button
             type="button"
-            className={`btn bg-blue3 btn-primary w-[80%] rounded-4 hover:bg-[#0b5ed7] animate-fade-up`}
+            className={`btn bg-main-blue btn-primary w-[80%] rounded-4 hover:bg-[#0b5ed7] animate-fade-up`}
           >
             <h4 className="text-white">Guardar</h4>
           </button>

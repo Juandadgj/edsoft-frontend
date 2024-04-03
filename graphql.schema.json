@@ -2628,6 +2628,65 @@
       },
       {
         "kind": "INPUT_OBJECT",
+        "name": "GenerateAchievementsAndIndicators",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "id_course",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "id_group",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "period",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
         "name": "GenerateReportAreaInput",
         "description": null,
         "fields": null,
@@ -2687,34 +2746,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "GenerateStudentsListInput",
-        "description": null,
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "id_group",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
-        "name": "GenerateStudentsListInput2",
+        "name": "GenerateStudentsListDeterminatedInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -2749,9 +2781,20 @@
             "defaultValue": null,
             "isDeprecated": false,
             "deprecationReason": null
-          },
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "GenerateStudentsListUndeterminatedInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
           {
-            "name": "period",
+            "name": "id_group",
             "description": null,
             "type": {
               "kind": "NON_NULL",
@@ -3887,6 +3930,35 @@
             "deprecationReason": null
           },
           {
+            "name": "selectScholarYear",
+            "description": null,
+            "args": [
+              {
+                "name": "id_year",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "ScholarYear",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "updateAbsence",
             "description": null,
             "args": [
@@ -4719,44 +4791,15 @@
             "deprecationReason": null
           },
           {
-            "name": "generateReport",
+            "name": "generateAchievementsAndIndicators",
             "description": null,
             "args": [
               {
-                "name": "generateStudentsListInput",
+                "name": "generateAchievementsAndIndicators",
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "GenerateStudentsListInput",
-                  "ofType": null
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Report",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "generateReport2",
-            "description": null,
-            "args": [
-              {
-                "name": "generateStudentsListInput2",
-                "description": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "GenerateStudentsListInput2",
+                  "name": "GenerateAchievementsAndIndicators",
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -4786,6 +4829,64 @@
                 "type": {
                   "kind": "INPUT_OBJECT",
                   "name": "GenerateReportAreaInput",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Report",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "generateStudentsListDeterminated",
+            "description": null,
+            "args": [
+              {
+                "name": "generateStudentsListDeterminatedInput",
+                "description": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "GenerateStudentsListDeterminatedInput",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Report",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "generateStudentsListUndeterminated",
+            "description": null,
+            "args": [
+              {
+                "name": "generateStudentsListUndeterminatedInput",
+                "description": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "GenerateStudentsListUndeterminatedInput",
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -4902,6 +5003,22 @@
                   "name": "ScholarYear",
                   "ofType": null
                 }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "scholearYearSelected",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "ScholarYear",
+                "ofType": null
               }
             },
             "isDeprecated": false,
@@ -5292,6 +5409,18 @@
           },
           {
             "name": "hour",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "position",
             "description": null,
             "type": {
               "kind": "SCALAR",

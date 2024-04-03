@@ -72,20 +72,6 @@ const cardsSpreadsheet: any[] = [
 const Deliverables = () => {
   const router = useRouter();
   const { opcion } = router.query;
-
-  const opcionelegida = cardsSpreadsheet.find(
-    (card) => card.id === Number(opcion)
-  );
-  useEffect(() => {
-    const { opcion, ...rest } = router.query; // Elimina 'opcion' de la URL
-    if (opcion) {
-      router.replace({
-        pathname: router.pathname,
-        query: rest,
-      });
-    }
-  }, []);
-
   return (
     <div className="rounded-tl-[20px] w-full bg-gray1 p-10 pb-3 h-full">
       {opcion ? (

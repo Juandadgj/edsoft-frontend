@@ -99,7 +99,7 @@ function Test() {
             <p>¿Olvidaste tu contraseña?</p>
           </span>
           <button
-            className="btn bg-blue2 btn-primary rounded-5 pl-4 h-15 mb-5 hover:bg-[#0b5ed7]"
+            className="btn bg-main-blue pl-4 h-15 mb-5 hover:bg-[#0b5ed7] text-white border-none"
             onClick={(e) => {
               getUser({
                 variables: {

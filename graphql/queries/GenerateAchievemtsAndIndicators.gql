@@ -1,0 +1,5 @@
+query GenerateAchievementsAndIndicators($generateAchievementsAndIndicators: GenerateAchievementsAndIndicators) {
+  generateAchievementsAndIndicators(generateAchievementsAndIndicators: $generateAchievementsAndIndicators) {
+    report_content
+  }
+}

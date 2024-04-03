@@ -36,6 +36,7 @@ export default function DynamicModal({
           refetch();
           setOpen(false);
         } else {
+          modal.close();
           Swal.fire({
             icon: "error",
             title: "Ha habido un error...",
@@ -74,7 +75,7 @@ export default function DynamicModal({
     } else return;
   };
   const modal = document.getElementById("modal") as HTMLDialogElement;
-  
+
   return (
     <dialog id="modal" className="modal">
       <div className="modal-box bg-white max-w-2xl">
@@ -90,14 +91,14 @@ export default function DynamicModal({
             {typeAdd ? (
               <button
                 onClick={handleAdd}
-                className="btn bg-blue3 border-none text-white hover:bg-[#0b5ed7] transition duration-500"
+                className="btn bg-main-blue border-none text-white hover:bg-[#0b5ed7] transition duration-500"
               >
                 Agregar
               </button>
             ) : (
               <button
                 onClick={handleUpdate}
-                className="btn bg-blue3 border-none text-white hover:bg-[#0b5ed7] transition duration-500"
+                className="btn bg-main-blue border-none text-white hover:bg-[#0b5ed7] transition duration-500"
               >
                 Editar
               </button>

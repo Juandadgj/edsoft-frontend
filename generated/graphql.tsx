@@ -286,20 +286,25 @@ export type FilterTeacherInput = {
   type_id?: InputMaybe<Scalars['Int']>;
 };
 
+export type GenerateAchievementsAndIndicators = {
+  id_course: Scalars['Int'];
+  id_group: Scalars['Int'];
+  period: Scalars['Int'];
+};
+
 export type GenerateReportAreaInput = {
   id_group: Scalars['Int'];
   id_student: Scalars['Int'];
   report_options: ReportDictionary;
 };
 
-export type GenerateStudentsListInput = {
+export type GenerateStudentsListDeterminatedInput = {
+  id_course: Scalars['Int'];
   id_group: Scalars['Int'];
 };
 
-export type GenerateStudentsListInput2 = {
-  id_course: Scalars['Int'];
+export type GenerateStudentsListUndeterminatedInput = {
   id_group: Scalars['Int'];
-  period: Scalars['Int'];
 };
 
 export type Group = {
@@ -359,6 +364,7 @@ export type Mutation = {
   deleteStudent?: Maybe<Student>;
   deleteTeacher?: Maybe<Teacher>;
   deleteTypeQualification?: Maybe<TypeQualification>;
+  selectScholarYear?: Maybe<ScholarYear>;
   updateAbsence: Absence;
   updateAchievement: Achievement;
   updateArea: Area;
@@ -485,6 +491,11 @@ export type MutationDeleteTypeQualificationArgs = {
 };
 
 
+export type MutationSelectScholarYearArgs = {
+  id_year: Scalars['Int'];
+};
+
+
 export type MutationUpdateAbsenceArgs = {
   updateAbsenceInput: UpdateAbsenceInput;
 };
@@ -575,13 +586,15 @@ export type Query = {
   enrollmentByID?: Maybe<Enrollment>;
   enrollments: Array<Maybe<Enrollment>>;
   featured: Array<Maybe<Featured>>;
-  generateReport: Report;
-  generateReport2: Report;
+  generateAchievementsAndIndicators: Report;
   generateReportArea: Report;
+  generateStudentsListDeterminated: Report;
+  generateStudentsListUndeterminated: Report;
   groupByID?: Maybe<Group>;
   groups: Array<Maybe<Group>>;
   institutions: Array<Maybe<Institution>>;
   scholarYears: Array<Maybe<ScholarYear>>;
+  scholearYearSelected: ScholarYear;
   signIn: Auth;
   studentByID?: Maybe<Student>;
   studentDefinitives: Array<Maybe<Definitives>>;
@@ -634,18 +647,23 @@ export type QueryFeaturedArgs = {
 };
 
 
-export type QueryGenerateReportArgs = {
-  generateStudentsListInput?: InputMaybe<GenerateStudentsListInput>;
-};
-
-
-export type QueryGenerateReport2Args = {
-  generateStudentsListInput2?: InputMaybe<GenerateStudentsListInput2>;
+export type QueryGenerateAchievementsAndIndicatorsArgs = {
+  generateAchievementsAndIndicators?: InputMaybe<GenerateAchievementsAndIndicators>;
 };
 
 
 export type QueryGenerateReportAreaArgs = {
   generateReportAreaInput?: InputMaybe<GenerateReportAreaInput>;
+};
+
+
+export type QueryGenerateStudentsListDeterminatedArgs = {
+  generateStudentsListDeterminatedInput?: InputMaybe<GenerateStudentsListDeterminatedInput>;
+};
+
+
+export type QueryGenerateStudentsListUndeterminatedArgs = {
+  generateStudentsListUndeterminatedInput?: InputMaybe<GenerateStudentsListUndeterminatedInput>;
 };
 
 
@@ -711,6 +729,7 @@ export type ReportDictionary = {
   average_group?: InputMaybe<Scalars['Boolean']>;
   average_per?: InputMaybe<Scalars['Boolean']>;
   hour?: InputMaybe<Scalars['Boolean']>;
+  position?: InputMaybe<Scalars['Boolean']>;
   professor_course?: InputMaybe<Scalars['Boolean']>;
   qualification_per1?: InputMaybe<Scalars['Boolean']>;
   qualification_per2?: InputMaybe<Scalars['Boolean']>;
@@ -1044,6 +1063,13 @@ export type DeleteTeacherMutationVariables = Exact<{
 
 export type DeleteTeacherMutation = { __typename?: 'Mutation', deleteTeacher?: { __typename?: 'Teacher', id_teacher: number } | null };
 
+export type SelectScholarYearMutationVariables = Exact<{
+  idYear: Scalars['Int'];
+}>;
+
+
+export type SelectScholarYearMutation = { __typename?: 'Mutation', selectScholarYear?: { __typename?: 'ScholarYear', id_year: number, rector?: string | null, secretary?: string | null, comment?: string | null } | null };
+
 export type UpdateAchievementMutationVariables = Exact<{
   updateAchievementInput: UpdateAchievementInput;
 }>;
@@ -1093,6 +1119,13 @@ export type UpdateTeacherMutationVariables = Exact<{
 
 export type UpdateTeacherMutation = { __typename?: 'Mutation', updateTeacher: { __typename?: 'Teacher', id_teacher: number } };
 
+export type GenerateAchievementsAndIndicatorsQueryVariables = Exact<{
+  generateAchievementsAndIndicators?: InputMaybe<GenerateAchievementsAndIndicators>;
+}>;
+
+
+export type GenerateAchievementsAndIndicatorsQuery = { __typename?: 'Query', generateAchievementsAndIndicators: { __typename?: 'Report', report_content: string } };
+
 export type GenerateReportAreaQueryVariables = Exact<{
   generateReportAreaInput?: InputMaybe<GenerateReportAreaInput>;
 }>;
@@ -1100,12 +1133,19 @@ export type GenerateReportAreaQueryVariables = Exact<{
 
 export type GenerateReportAreaQuery = { __typename?: 'Query', generateReportArea: { __typename?: 'Report', report_content: string } };
 
-export type GenerateReportQueryVariables = Exact<{
-  generateStudentsListInput?: InputMaybe<GenerateStudentsListInput>;
+export type GenerateStudentsListDeterminatedQueryVariables = Exact<{
+  generateStudentsListDeterminatedInput?: InputMaybe<GenerateStudentsListDeterminatedInput>;
 }>;
 
 
-export type GenerateReportQuery = { __typename?: 'Query', generateReport: { __typename?: 'Report', report_content: string } };
+export type GenerateStudentsListDeterminatedQuery = { __typename?: 'Query', generateStudentsListDeterminated: { __typename?: 'Report', report_content: string } };
+
+export type GenerateStudentsListUndeterminatedQueryVariables = Exact<{
+  generateStudentsListUndeterminatedInput?: InputMaybe<GenerateStudentsListUndeterminatedInput>;
+}>;
+
+
+export type GenerateStudentsListUndeterminatedQuery = { __typename?: 'Query', generateStudentsListUndeterminated: { __typename?: 'Report', report_content: string } };
 
 export type AchievementsQueryVariables = Exact<{
   filterAchievementInput?: InputMaybe<FilterAchievementInput>;
@@ -1197,6 +1237,11 @@ export type SignInQueryVariables = Exact<{
 
 
 export type SignInQuery = { __typename?: 'Query', signIn: { __typename?: 'Auth', token?: string | null, role?: string | null } };
+
+export type ScholearYearSelectedQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ScholearYearSelectedQuery = { __typename?: 'Query', scholearYearSelected: { __typename?: 'ScholarYear', id_year: number, rector?: string | null, secretary?: string | null, comment?: string | null } };
 
 export const RegularAchievementFragmentDoc = gql`
     fragment RegularAchievement on Achievement {
@@ -1782,6 +1827,42 @@ export function useDeleteTeacherMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteTeacherMutationHookResult = ReturnType<typeof useDeleteTeacherMutation>;
 export type DeleteTeacherMutationResult = Apollo.MutationResult<DeleteTeacherMutation>;
 export type DeleteTeacherMutationOptions = Apollo.BaseMutationOptions<DeleteTeacherMutation, DeleteTeacherMutationVariables>;
+export const SelectScholarYearDocument = gql`
+    mutation SelectScholarYear($idYear: Int!) {
+  selectScholarYear(id_year: $idYear) {
+    id_year
+    rector
+    secretary
+    comment
+  }
+}
+    `;
+export type SelectScholarYearMutationFn = Apollo.MutationFunction<SelectScholarYearMutation, SelectScholarYearMutationVariables>;
+
+/**
+ * __useSelectScholarYearMutation__
+ *
+ * To run a mutation, you first call `useSelectScholarYearMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSelectScholarYearMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [selectScholarYearMutation, { data, loading, error }] = useSelectScholarYearMutation({
+ *   variables: {
+ *      idYear: // value for 'idYear'
+ *   },
+ * });
+ */
+export function useSelectScholarYearMutation(baseOptions?: Apollo.MutationHookOptions<SelectScholarYearMutation, SelectScholarYearMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SelectScholarYearMutation, SelectScholarYearMutationVariables>(SelectScholarYearDocument, options);
+      }
+export type SelectScholarYearMutationHookResult = ReturnType<typeof useSelectScholarYearMutation>;
+export type SelectScholarYearMutationResult = Apollo.MutationResult<SelectScholarYearMutation>;
+export type SelectScholarYearMutationOptions = Apollo.BaseMutationOptions<SelectScholarYearMutation, SelectScholarYearMutationVariables>;
 export const UpdateAchievementDocument = gql`
     mutation UpdateAchievement($updateAchievementInput: UpdateAchievementInput!) {
   updateAchievement(updateAchievementInput: $updateAchievementInput) {
@@ -2040,6 +2121,43 @@ export function useUpdateTeacherMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateTeacherMutationHookResult = ReturnType<typeof useUpdateTeacherMutation>;
 export type UpdateTeacherMutationResult = Apollo.MutationResult<UpdateTeacherMutation>;
 export type UpdateTeacherMutationOptions = Apollo.BaseMutationOptions<UpdateTeacherMutation, UpdateTeacherMutationVariables>;
+export const GenerateAchievementsAndIndicatorsDocument = gql`
+    query GenerateAchievementsAndIndicators($generateAchievementsAndIndicators: GenerateAchievementsAndIndicators) {
+  generateAchievementsAndIndicators(
+    generateAchievementsAndIndicators: $generateAchievementsAndIndicators
+  ) {
+    report_content
+  }
+}
+    `;
+
+/**
+ * __useGenerateAchievementsAndIndicatorsQuery__
+ *
+ * To run a query within a React component, call `useGenerateAchievementsAndIndicatorsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGenerateAchievementsAndIndicatorsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGenerateAchievementsAndIndicatorsQuery({
+ *   variables: {
+ *      generateAchievementsAndIndicators: // value for 'generateAchievementsAndIndicators'
+ *   },
+ * });
+ */
+export function useGenerateAchievementsAndIndicatorsQuery(baseOptions?: Apollo.QueryHookOptions<GenerateAchievementsAndIndicatorsQuery, GenerateAchievementsAndIndicatorsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GenerateAchievementsAndIndicatorsQuery, GenerateAchievementsAndIndicatorsQueryVariables>(GenerateAchievementsAndIndicatorsDocument, options);
+      }
+export function useGenerateAchievementsAndIndicatorsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GenerateAchievementsAndIndicatorsQuery, GenerateAchievementsAndIndicatorsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GenerateAchievementsAndIndicatorsQuery, GenerateAchievementsAndIndicatorsQueryVariables>(GenerateAchievementsAndIndicatorsDocument, options);
+        }
+export type GenerateAchievementsAndIndicatorsQueryHookResult = ReturnType<typeof useGenerateAchievementsAndIndicatorsQuery>;
+export type GenerateAchievementsAndIndicatorsLazyQueryHookResult = ReturnType<typeof useGenerateAchievementsAndIndicatorsLazyQuery>;
+export type GenerateAchievementsAndIndicatorsQueryResult = Apollo.QueryResult<GenerateAchievementsAndIndicatorsQuery, GenerateAchievementsAndIndicatorsQueryVariables>;
 export const GenerateReportAreaDocument = gql`
     query GenerateReportArea($generateReportAreaInput: GenerateReportAreaInput) {
   generateReportArea(generateReportAreaInput: $generateReportAreaInput) {
@@ -2075,41 +2193,80 @@ export function useGenerateReportAreaLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GenerateReportAreaQueryHookResult = ReturnType<typeof useGenerateReportAreaQuery>;
 export type GenerateReportAreaLazyQueryHookResult = ReturnType<typeof useGenerateReportAreaLazyQuery>;
 export type GenerateReportAreaQueryResult = Apollo.QueryResult<GenerateReportAreaQuery, GenerateReportAreaQueryVariables>;
-export const GenerateReportDocument = gql`
-    query GenerateReport($generateStudentsListInput: GenerateStudentsListInput) {
-  generateReport(generateStudentsListInput: $generateStudentsListInput) {
+export const GenerateStudentsListDeterminatedDocument = gql`
+    query GenerateStudentsListDeterminated($generateStudentsListDeterminatedInput: GenerateStudentsListDeterminatedInput) {
+  generateStudentsListDeterminated(
+    generateStudentsListDeterminatedInput: $generateStudentsListDeterminatedInput
+  ) {
     report_content
   }
 }
     `;
 
 /**
- * __useGenerateReportQuery__
+ * __useGenerateStudentsListDeterminatedQuery__
  *
- * To run a query within a React component, call `useGenerateReportQuery` and pass it any options that fit your needs.
- * When your component renders, `useGenerateReportQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGenerateStudentsListDeterminatedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGenerateStudentsListDeterminatedQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGenerateReportQuery({
+ * const { data, loading, error } = useGenerateStudentsListDeterminatedQuery({
  *   variables: {
- *      generateStudentsListInput: // value for 'generateStudentsListInput'
+ *      generateStudentsListDeterminatedInput: // value for 'generateStudentsListDeterminatedInput'
  *   },
  * });
  */
-export function useGenerateReportQuery(baseOptions?: Apollo.QueryHookOptions<GenerateReportQuery, GenerateReportQueryVariables>) {
+export function useGenerateStudentsListDeterminatedQuery(baseOptions?: Apollo.QueryHookOptions<GenerateStudentsListDeterminatedQuery, GenerateStudentsListDeterminatedQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GenerateReportQuery, GenerateReportQueryVariables>(GenerateReportDocument, options);
+        return Apollo.useQuery<GenerateStudentsListDeterminatedQuery, GenerateStudentsListDeterminatedQueryVariables>(GenerateStudentsListDeterminatedDocument, options);
       }
-export function useGenerateReportLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GenerateReportQuery, GenerateReportQueryVariables>) {
+export function useGenerateStudentsListDeterminatedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GenerateStudentsListDeterminatedQuery, GenerateStudentsListDeterminatedQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GenerateReportQuery, GenerateReportQueryVariables>(GenerateReportDocument, options);
+          return Apollo.useLazyQuery<GenerateStudentsListDeterminatedQuery, GenerateStudentsListDeterminatedQueryVariables>(GenerateStudentsListDeterminatedDocument, options);
         }
-export type GenerateReportQueryHookResult = ReturnType<typeof useGenerateReportQuery>;
-export type GenerateReportLazyQueryHookResult = ReturnType<typeof useGenerateReportLazyQuery>;
-export type GenerateReportQueryResult = Apollo.QueryResult<GenerateReportQuery, GenerateReportQueryVariables>;
+export type GenerateStudentsListDeterminatedQueryHookResult = ReturnType<typeof useGenerateStudentsListDeterminatedQuery>;
+export type GenerateStudentsListDeterminatedLazyQueryHookResult = ReturnType<typeof useGenerateStudentsListDeterminatedLazyQuery>;
+export type GenerateStudentsListDeterminatedQueryResult = Apollo.QueryResult<GenerateStudentsListDeterminatedQuery, GenerateStudentsListDeterminatedQueryVariables>;
+export const GenerateStudentsListUndeterminatedDocument = gql`
+    query GenerateStudentsListUndeterminated($generateStudentsListUndeterminatedInput: GenerateStudentsListUndeterminatedInput) {
+  generateStudentsListUndeterminated(
+    generateStudentsListUndeterminatedInput: $generateStudentsListUndeterminatedInput
+  ) {
+    report_content
+  }
+}
+    `;
+
+/**
+ * __useGenerateStudentsListUndeterminatedQuery__
+ *
+ * To run a query within a React component, call `useGenerateStudentsListUndeterminatedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGenerateStudentsListUndeterminatedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGenerateStudentsListUndeterminatedQuery({
+ *   variables: {
+ *      generateStudentsListUndeterminatedInput: // value for 'generateStudentsListUndeterminatedInput'
+ *   },
+ * });
+ */
+export function useGenerateStudentsListUndeterminatedQuery(baseOptions?: Apollo.QueryHookOptions<GenerateStudentsListUndeterminatedQuery, GenerateStudentsListUndeterminatedQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GenerateStudentsListUndeterminatedQuery, GenerateStudentsListUndeterminatedQueryVariables>(GenerateStudentsListUndeterminatedDocument, options);
+      }
+export function useGenerateStudentsListUndeterminatedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GenerateStudentsListUndeterminatedQuery, GenerateStudentsListUndeterminatedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GenerateStudentsListUndeterminatedQuery, GenerateStudentsListUndeterminatedQueryVariables>(GenerateStudentsListUndeterminatedDocument, options);
+        }
+export type GenerateStudentsListUndeterminatedQueryHookResult = ReturnType<typeof useGenerateStudentsListUndeterminatedQuery>;
+export type GenerateStudentsListUndeterminatedLazyQueryHookResult = ReturnType<typeof useGenerateStudentsListUndeterminatedLazyQuery>;
+export type GenerateStudentsListUndeterminatedQueryResult = Apollo.QueryResult<GenerateStudentsListUndeterminatedQuery, GenerateStudentsListUndeterminatedQueryVariables>;
 export const AchievementsDocument = gql`
     query Achievements($filterAchievementInput: FilterAchievementInput) {
   achievements(filterAchievementInput: $filterAchievementInput) {
@@ -2708,3 +2865,40 @@ export function useSignInLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Sig
 export type SignInQueryHookResult = ReturnType<typeof useSignInQuery>;
 export type SignInLazyQueryHookResult = ReturnType<typeof useSignInLazyQuery>;
 export type SignInQueryResult = Apollo.QueryResult<SignInQuery, SignInQueryVariables>;
+export const ScholearYearSelectedDocument = gql`
+    query ScholearYearSelected {
+  scholearYearSelected {
+    id_year
+    rector
+    secretary
+    comment
+  }
+}
+    `;
+
+/**
+ * __useScholearYearSelectedQuery__
+ *
+ * To run a query within a React component, call `useScholearYearSelectedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useScholearYearSelectedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useScholearYearSelectedQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useScholearYearSelectedQuery(baseOptions?: Apollo.QueryHookOptions<ScholearYearSelectedQuery, ScholearYearSelectedQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ScholearYearSelectedQuery, ScholearYearSelectedQueryVariables>(ScholearYearSelectedDocument, options);
+      }
+export function useScholearYearSelectedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ScholearYearSelectedQuery, ScholearYearSelectedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ScholearYearSelectedQuery, ScholearYearSelectedQueryVariables>(ScholearYearSelectedDocument, options);
+        }
+export type ScholearYearSelectedQueryHookResult = ReturnType<typeof useScholearYearSelectedQuery>;
+export type ScholearYearSelectedLazyQueryHookResult = ReturnType<typeof useScholearYearSelectedLazyQuery>;
+export type ScholearYearSelectedQueryResult = Apollo.QueryResult<ScholearYearSelectedQuery, ScholearYearSelectedQueryVariables>;

@@ -1,0 +1,8 @@
+mutation SelectScholarYear($idYear: Int!) {
+  selectScholarYear(id_year: $idYear) {
+    id_year
+    rector
+    secretary
+    comment
+  }
+}

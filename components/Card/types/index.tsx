@@ -59,6 +59,7 @@ export interface QualifificationTypeCard {
   borrar: any;
 }
 export interface SetYearCard {
+  selected: boolean;
   year: string;
   rector: string;
   secretary: string;

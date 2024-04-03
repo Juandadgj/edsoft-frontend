@@ -1,0 +1,8 @@
+query ScholearYearSelected {
+  scholearYearSelected {
+    id_year
+    rector
+    secretary
+    comment
+  }
+}

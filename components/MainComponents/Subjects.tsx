@@ -14,6 +14,8 @@ import { useRouter } from "next/router";
 import DynamicModal from "../DynamicModal";
 import Swal from "sweetalert2";
 import { Input } from "../Input";
+import { useScholarYearContext } from "@/context/YearContext";
+import useSchoolYear from "@/hooks/useSchoolYear";
 
 const columnsGroup = [
   {
@@ -66,8 +68,7 @@ const columnsSubjects = [
 ];
 
 function Subjects() {
-  const today = new Date();
-  const year = today.getFullYear();
+  const { year } = useSchoolYear();
   const router = useRouter();
   const { c } = router.query;
   const [selectedGroup, setSelectedGroup] = useState<any>([]);
@@ -77,9 +78,9 @@ function Subjects() {
     getCourses,
     { data: courses, loading: loadingCourses, error: errorCourses, refetch },
   ] = useCoursesLazyQuery({ fetchPolicy: "network-only" });
-  
+
   const { data: groups, loading: loadingGroups } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: 2017 } },
+    variables: { filterGroupInput: { id_year: year } },
   });
   const { data: teachers } = useTeachersQuery();
   const { data: areas } = useGetAreasQuery();
@@ -421,6 +422,16 @@ function Subjects() {
   }, [groups]);
 
   useEffect(() => {
+    const { c, ...rest } = router.query; // Elimina 'opcion' de la URL
+    if (c) {
+      router.replace({
+        pathname: router.pathname,
+        query: rest,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
     if (c) {
       getCourses({
         variables: { filterCourseInput: { id_group: Number(c) } },
@@ -505,7 +516,6 @@ function Subjects() {
   const handlerRefetchCourse = () => {
     refetch();
   };
-
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-10 pb-3">
       <div className=" h-[6%] flex justify-between">
@@ -518,7 +528,7 @@ function Subjects() {
           <div className="text-end pr-6">
             <button
               type="button"
-              className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
+              className="btn bg-main-blue btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
               onClick={() => {
                 setTypeAdd(true);
                 modal?.showModal();
@@ -529,14 +539,12 @@ function Subjects() {
           </div>
         )}
       </div>
-      <div
-        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]"
-      >
+      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]">
         {!c ? (
           <div className="h-full">
             {loadingGroups ? (
               <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-blue3"></span>
+                <span className="loading loading-dots loading-lg bg-main-blue"></span>
               </div>
             ) : groups?.groups ? (
               <div className=" border-white py-4 h-full">
@@ -554,7 +562,7 @@ function Subjects() {
           <div className="text-black h-full">
             {loadingCourses ? (
               <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-blue3"></span>
+                <span className="loading loading-dots loading-lg bg-main-blue"></span>
               </div>
             ) : courses?.courses ? (
               <div className=" border-white py-4 h-full">

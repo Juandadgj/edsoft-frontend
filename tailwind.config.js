@@ -1,5 +1,15 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  // daisyui: {
+  //   themes : [
+  //     {
+  //       myTheme : {
+  //         "base-100" : "#fff",
+  //         "secondary": "#0055a6"
+  //       }
+  //     }
+  //   ]
+  // },
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -14,7 +24,6 @@ module.exports = {
       "gray4": "#8d8d8d",
       "gray6": "#8a8a8ab6",
       "blue2": "#5472d3",
-      "blue3": "#0055a6",
       "blue4": "#25429e",
       "gray3": "#4d4d4d",
       "main-gray": "#707070",
@@ -23,7 +32,7 @@ module.exports = {
       "gray1": "#efefef",
       "gray7":"#323232",
       "red-500": "rgb(239 68 68)",
-      "red-600" : "rgb(220 38 38)"
+      "red-600" : "rgb(220 38 38)",
     },
     borderRadius:{
       "custom": "19px 81px 93px 17px / 60px 0px 0px 50px;"

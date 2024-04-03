@@ -79,7 +79,7 @@ export const StudentsLastYear = () => {
         <div className="h-full">
           {loadingGroups && (
             <div className="w-full h-full flex justify-center items-center">
-              <span className="loading loading-dots loading-lg bg-blue3"></span>
+              <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
           )}
           {dataGroups?.groups && (

@@ -8,7 +8,6 @@ import {
 } from "../../../../../generated/graphql";
 import Table from "@/components/Table";
 import { useRouter } from "next/router";
-import Card from "@/components/Card";
 import ReportConfigurable from "../ReportConfigurable";
 
 const columnsDeliverable = [
@@ -46,11 +45,13 @@ const columsStudentPer = [
 ];
 
 const NavigationComponent = () => {
+  const year = sessionStorage.getItem("year");
+  const yearParse = parseInt(year ? year : "", 10);
   const router = useRouter();
   const { g, per, opcion, s } = router.query;
 
   const { data: groups, loading: loadingGroups } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: 2017 } },
+    variables: { filterGroupInput: { id_year: yearParse } },
   });
 
   const [
@@ -68,41 +69,39 @@ const NavigationComponent = () => {
     );
   };
 
-  const handlerSelectStudent = (id: number, s: number | undefined) => {
-    router.push(
-      `/dashboard/reportes?componente=entregables&opcion=${opcion}&g=${id}&s=${s}`
-    );
-  };
-
-  const handlerSpreadsheet = (id: any, student: any) => {
-    reportArea({
-      variables: {
-        generateReportAreaInput: {
-          id_group: id,
-          id_student: student,
-          report_options: {
-            professor_course: false,
-            average_general: false,
-            average_group: false,
-            average_area: true,
-            hour: true,
-            absences: true,
-            all_qualifications: true,
-            qualification_per1: true,
-            qualification_per2: true,
-            qualification_per3: true,
-            qualification_per4: true,
-            average_per: true,
-            signature: {
-              professor_group: true,
+  const handlerSpreadsheet = (id: any, id_student: any) => {
+    if (opcion !== "6") {
+      reportArea({
+        variables: {
+          generateReportAreaInput: {
+            id_group: id,
+            id_student: id_student,
+            report_options: {
+              professor_course: false,
+              average_general: false,
+              average_group: false,
+              average_area: true,
+              hour: true,
+              absences: true,
+              all_qualifications: true,
+              qualification_per1: true,
+              qualification_per2: true,
+              qualification_per3: true,
+              qualification_per4: true,
+              average_per: true,
+              signature: {
+                professor_group: true,
+              },
             },
           },
         },
-      },
-    }).then((res) => {
-      const { data } = res;
-      handleOpenHTML(data?.generateReportArea.report_content);
-    });
+      }).then((res) => {
+        const { data } = res;
+        handleOpenHTML(data?.generateReportArea.report_content);
+      });
+    } else {
+      router.push(`${router.asPath}&s=${id_student}`);
+    }
   };
 
   const handleOpenHTML = (htmlString: any) => {
@@ -121,7 +120,7 @@ const NavigationComponent = () => {
 
   const processedStudents = useMemo(() => {
     if (!students?.studentsByGroup) return [];
-    return students.studentsByGroup.map((student: any, index: any) => ({
+    return students.studentsByGroup.map((student: any) => ({
       id_student: student?.id_student,
       name: `${student?.name} ${student?.last_name}`,
       click: () => handlerSpreadsheet(Number(g), student?.id_student),
@@ -150,7 +149,7 @@ const NavigationComponent = () => {
           <div className="h-full">
             {loadingGroups ? (
               <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-blue3"></span>
+                <span className="loading loading-dots loading-lg bg-main-blue"></span>
               </div>
             ) : groups?.groups ? (
               <div className="border-white py-4 h-full">
@@ -165,30 +164,30 @@ const NavigationComponent = () => {
             )}
           </div>
         )}
-        {g && opcion && (
+        {g && opcion && !s && (
           <div className="h-full">
             {loadingStudents ? (
               <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-blue3"></span>
+                <span className="loading loading-dots loading-lg bg-main-blue"></span>
               </div>
             ) : students?.studentsByGroup ? (
               <div className="border-white py-4 h-full overflow-x-auto">
                 <table className="table text-black">
                   <thead className="flex items-center justify-center">
-                    <tr className="flex w-full justify-center border-blue3 border-b-4 text-base font-semibold">
+                    <tr className="flex w-full justify-center border-main-blue border-b-4 text-base font-semibold">
                       {columsStudentPer.map((key: any, index: any) => (
                         <>
                           {index == 0 ? (
                             <th
                               key={index}
-                              className="w-full text-center text-blue3 whitespace-normal flex items-center justify-center"
+                              className="w-full text-center text-main-blue whitespace-normal flex items-center justify-center"
                             >
                               <p className="w-full">{key.Header}</p>
                             </th>
                           ) : (
                             <th
                               key={index}
-                              className="w-1/4 text-center text-blue3 whitespace-normal flex items-center justify-center"
+                              className="w-1/4 text-center text-main-blue whitespace-normal flex items-center justify-center"
                             >
                               <p className="w-full">{key.Header}</p>
                             </th>
@@ -210,7 +209,7 @@ const NavigationComponent = () => {
                           <td className="flex w-1/4 justify-center items-center text-center py-0">
                             <button
                               className="btn bg-transparent border-none p-0 hover:bg-transparent btn-sm h-5 w-5"
-                              // onClick={() => click()}
+                              onClick={() => item.click()}
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -228,7 +227,7 @@ const NavigationComponent = () => {
                           <td className="flex w-1/4 justify-center items-center text-center py-0">
                             <button
                               className="btn bg-transparent border-none p-0 hover:bg-transparent btn-sm h-5 w-5"
-                              // onClick={() => click()}
+                              onClick={() => item.click()}
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -246,7 +245,7 @@ const NavigationComponent = () => {
                           <td className="flex w-1/4 justify-center items-center text-center py-0">
                             <button
                               className="btn bg-transparent border-none p-0 hover:bg-transparent btn-sm h-5 w-5"
-                              // onClick={() => handlerSelectedAchievement(id_course, 3)}
+                              onClick={() => item.click()}
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -264,7 +263,7 @@ const NavigationComponent = () => {
                           <td className="flex w-1/4 justify-center items-center text-center py-0">
                             <button
                               className="btn bg-transparent border-none p-0 hover:bg-transparent btn-sm h-5 w-5"
-                              // onClick={() => handlerSelectedAchievement(id_course, 4)}
+                              onClick={() => item.click()}
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"

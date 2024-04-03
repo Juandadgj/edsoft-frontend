@@ -219,7 +219,7 @@ function Areas() {
         <div className="text-end pr-6">
           <button
             type="button"
-            className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
+            className="btn bg-main-blue btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
             onClick={() => {
               setAreaAdd(true);
               modal?.showModal();
@@ -233,7 +233,7 @@ function Areas() {
         <div className="h-full">
           {loading ? (
             <div className="w-full h-full flex justify-center items-center">
-              <span className="loading loading-dots loading-lg bg-blue3"></span>
+              <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
           ) : data?.areas ? (
             <div className="d-flex border-white py-4 h-full">

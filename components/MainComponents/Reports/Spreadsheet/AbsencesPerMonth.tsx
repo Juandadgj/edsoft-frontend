@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useEffect, useState } from "react";
 import { useGroupsQuery } from "@/generated/graphql";
 import Table from "@/components/Table";
-import DescriptionIcon from '@mui/icons-material/Description';
+import DescriptionIcon from "@mui/icons-material/Description";
 
 const columns = [
   {
@@ -20,21 +20,15 @@ const columns = [
   {
     Header: "Planillar",
     accessor: "editar",
-  }
+  },
 ];
 const AbsencesPerMonth = () => {
-  
-  const today = new Date();
-  const year = today.getFullYear();
-  const [active, setActive] = useState(false);
-  
-  const { data, loading } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: 2017 } },
-  });
+  const year = sessionStorage.getItem("year");
+  const yearParse = parseInt(year ? year : "", 10);
 
-  useEffect(() => {
-    setActive(true);
-  }, []);
+  const { data, loading } = useGroupsQuery({
+    variables: { filterGroupInput: { id_year: yearParse } },
+  });
 
   const processedGroups = useMemo(() => {
     if (!data?.groups) return [];
@@ -46,7 +40,7 @@ const AbsencesPerMonth = () => {
         <button className="btn btn-ghost border-0">
           <DescriptionIcon color="action" fontSize="medium" />
         </button>
-      )
+      ),
     }));
   }, [data]);
 
@@ -55,23 +49,19 @@ const AbsencesPerMonth = () => {
       <div>
         <div className="pb-4">
           <strong className="text-2xl text-black ps-8">
-            Cursos Creados para el año {year} para la planilla de inasistencia por mes
+            Cursos Creados para el año {yearParse} para la planilla de
+            inasistencia por mes
           </strong>
         </div>
       </div>
-      <div
-        
-        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full"
-      >
+      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full">
         <div className="h-full">
           {loading ? (
             <div className="w-full h-full flex justify-center items-center">
-              <span className="loading loading-dots loading-lg bg-blue3"></span>
+              <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
           ) : data?.groups ? (
-            <div
-              className="d-flex border-white py-4 h-full"
-            >
+            <div className="d-flex border-white py-4 h-full">
               <Table column={columns} data={processedGroups} type={"groups"} />
             </div>
           ) : (
@@ -81,6 +71,6 @@ const AbsencesPerMonth = () => {
       </div>
     </div>
   );
-}
+};
 
-export default AbsencesPerMonth
+export default AbsencesPerMonth;

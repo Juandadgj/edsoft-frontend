@@ -17,11 +17,11 @@ const Table = ({ data, column, type }: any) => {
     >
       <table className="table text-black">
         <thead className="flex items-center justify-center">
-          <tr className="flex w-full justify-center border-blue3 border-b-4 text-base font-semibold">
+          <tr className="flex w-full justify-center border-main-blue border-b-4 text-base font-semibold">
             {column.map((key: any, index: any) => (
               <th
                 key={index}
-                className="w-full text-center text-blue3 whitespace-normal flex items-center justify-center"
+                className="w-full text-center text-main-blue whitespace-normal flex items-center justify-center"
               >
                 <p className="w-full">{key.Header}</p>
               </th>

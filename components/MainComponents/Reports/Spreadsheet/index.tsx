@@ -60,7 +60,7 @@ const Spreadsheet = () => {
 
   return (
     <div
-      className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-14"
+      className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-10 pb-3"
       style={{
         scrollbarWidth: "thin",
         scrollbarColor: "#25429e #F3F4F6",

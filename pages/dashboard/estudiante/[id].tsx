@@ -29,7 +29,7 @@ const Student = ({ data }: any) => {
         </div>
         {loadingStudent && (
           <div className="w-full h-full flex justify-center items-center">
-            <span className="loading loading-dots loading-lg bg-blue3"></span>
+            <span className="loading loading-dots loading-lg bg-main-blue"></span>
           </div>
         )}
         {dataStudent?.studentByID && (
@@ -110,7 +110,7 @@ const Student = ({ data }: any) => {
                 </div>
               </div>
               <div className="pt-8 text-sm">
-                <div className="border-0 border-b-4 border-blue3 max-w-[150px] flex justify-center">
+                <div className="border-0 border-b-4 border-main-blue max-w-[150px] flex justify-center">
                   <p>
                     <strong>Registro por año</strong>
                   </p>

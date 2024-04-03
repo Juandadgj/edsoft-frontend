@@ -57,8 +57,8 @@ function Achievements() {
   const [CreateAchievement] = useCreateAchievementMutation();
   const [DeleteAchievement] = useDeleteAchievementMutation();
   const [UpdateAchievement] = useUpdateAchievementMutation();
-  const today = new Date();
-  const year = today.getFullYear();
+  const year = sessionStorage.getItem("year");
+  const yearParse = parseInt(year ? year : "", 10);
   const router = useRouter();
   const { g, a, per } = router.query;
   const [selectedCourses, setSelectedCourses] = useState<any>([]);
@@ -75,7 +75,7 @@ function Achievements() {
   ] = useCoursesLazyQuery();
 
   const { data: groups, loading: loadingGroups } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: 2017 } },
+    variables: { filterGroupInput: { id_year: yearParse } },
   });
   const handlerSelectedCourse = (id: number | undefined) => {
     router.push(`/dashboard/programacion-anual?componente=logros&g=${id}`);
@@ -325,14 +325,14 @@ function Achievements() {
       <div className="flex justify-between h-[6%]">
         <div>
           <strong className="text-xl text-black ps-8 pb-4">
-            Logros por curso para el año {year}
+            Logros por curso para el año {yearParse}
           </strong>
         </div>
         {a && per && (
           <div className="text-end pr-6">
             <button
               type="button"
-              className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
+              className="btn bg-main-blue btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
               onClick={() => {
                 setTypeAdd(true);
                 setFormValues((t: any) => ({
@@ -355,7 +355,7 @@ function Achievements() {
           <div className="h-full">
             {loadingGroups ? (
               <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-blue3"></span>
+                <span className="loading loading-dots loading-lg bg-main-blue"></span>
               </div>
             ) : groups?.groups ? (
               <div className="d-flex border-white py-4 h-full">
@@ -374,7 +374,7 @@ function Achievements() {
           <div className="text-black h-full">
             {loadingCourses ? (
               <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-blue3"></span>
+                <span className="loading loading-dots loading-lg bg-main-blue"></span>
               </div>
             ) : courses?.courses ? (
               <div className=" border-white py-4 h-full">
@@ -393,13 +393,13 @@ function Achievements() {
           <div className="text-black h-full">
             {loadingAchievements ? (
               <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-blue3"></span>
+                <span className="loading loading-dots loading-lg bg-main-blue"></span>
               </div>
             ) : achievements?.achievements ? (
               <div className="overflow-x-auto h-full">
                 <table className="table">
                   <thead>
-                    <tr className="border-none text-lg font-semibold text-blue3">
+                    <tr className="border-none text-lg font-semibold text-main-blue">
                       <th>Descripcion</th>
                       <th>Editar</th>
                       <th>Agregar indicador</th>

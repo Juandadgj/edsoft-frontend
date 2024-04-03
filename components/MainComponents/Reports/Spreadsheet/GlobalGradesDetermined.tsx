@@ -1,13 +1,14 @@
 import { useMemo } from "react";
 import { useEffect, useState } from "react";
-import edit from "../../../public/assets/01editar.png";
-import delet from "../../../public/assets/01eliminar.png";
-import BookIcon from '@mui/icons-material/Book';
-import Image from "next/image";
-import { useCoursesLazyQuery, useGroupsQuery } from "@/generated/graphql";
+import BookIcon from "@mui/icons-material/Book";
+import {
+  useCoursesLazyQuery,
+  useGenerateStudentsListDeterminatedLazyQuery,
+  useGroupsQuery,
+} from "@/generated/graphql";
 import Table from "@/components/Table";
 import { useRouter } from "next/router";
-import DescriptionIcon from '@mui/icons-material/Description';
+import DescriptionIcon from "@mui/icons-material/Description";
 
 const columns = [
   {
@@ -15,17 +16,13 @@ const columns = [
     accessor: "name",
   },
   {
-    Header: "Jornada",
-    accessor: "working_time",
-  },
-  {
     Header: "Profesor del Grupo",
     accessor: "group_teacher",
   },
   {
-    Header: "Asignatura",
+    Header: "Asignaturas",
     accessor: "editar",
-  }
+  },
 ];
 
 const columsCourses = [
@@ -40,32 +37,67 @@ const columsCourses = [
   {
     Header: "Planilla",
     accessor: "editar",
-  }
+  },
 ];
 
 const GlobalGradesDetermined = () => {
   const router = useRouter();
   const { g } = router.query;
-  const today = new Date();
-  const year = today.getFullYear();
-  const [active, setActive] = useState(false);
+  const year = sessionStorage.getItem("year");
+  const yearParse = parseInt(year ? year : "", 10);
   const [selectedCourses, setSelectedCourses] = useState<any>([]);
-  
+
   const [
     getCourses,
     { data: courses, loading: loadingCourses, error: errorCourses },
   ] = useCoursesLazyQuery();
 
   const { data, loading } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: 2017 } },
+    variables: { filterGroupInput: { id_year: yearParse } },
   });
 
-  const handlerSelectedCourse = (id: number | undefined) => {
-    const currentParams = new URLSearchParams(router.asPath.split('?')[1]);
-    currentParams.set('g', `${id}`);
-    router.push(`${router.pathname}?${currentParams.toString()}`);
-    // router.push(`/dashboard/reportes?componente=planillas&&opcion=2g=${id}`);
+  const [reportArea] = useGenerateStudentsListDeterminatedLazyQuery({
+    fetchPolicy: "network-only",
+  });
+
+  const handlerSpreadsheet = (id_course: number) => {
+    reportArea({
+      variables: {
+        generateStudentsListDeterminatedInput: {
+          id_group: Number(g),
+          id_course: id_course,
+        },
+      },
+    }).then((res) => {
+      const { data } = res;
+      handleOpenHTML(data?.generateStudentsListDeterminated.report_content);
+    });
   };
+
+  const handleOpenHTML = (htmlString: any) => {
+    window.open()?.document.write(htmlString);
+  };
+
+  const handlerSelectedCourse = (id: number | undefined) => {
+    router.push(`${router.asPath}&g=${id}`);
+  };
+
+  const processedGroups = useMemo(() => {
+    if (!data?.groups) return [];
+    return data.groups.map((group, index) => ({
+      name: `${group?.level}-${group?.sublevel}` ?? "",
+      working_time: group?.working_time ?? "",
+      group_teacher: group?.representative ?? "",
+      editar: (
+        <button
+          onClick={() => handlerSelectedCourse(group?.id_group)}
+          className="btn btn-ghost border-0"
+        >
+          <BookIcon color="action" fontSize="medium" />
+        </button>
+      ),
+    }));
+  }, [data]);
 
   const processedCourses = (data: any) => {
     if (!data) return [];
@@ -75,10 +107,13 @@ const GlobalGradesDetermined = () => {
       name: `${courses?.name}` ?? "",
       teacher: `${courses?.teacher.name}` ?? "-",
       editar: (
-        <button className="btn btn-ghost border-0">
+        <button
+          className="btn btn-ghost border-0"
+          onClick={() => handlerSpreadsheet(Number(courses.id_course))}
+        >
           <DescriptionIcon color="action" fontSize="medium" />
         </button>
-      )
+      ),
     }));
   };
 
@@ -86,82 +121,104 @@ const GlobalGradesDetermined = () => {
     if (g) {
       getCourses({
         variables: { filterCourseInput: { id_group: Number(g) } },
-      }).then((res) => {
-        const { data } = res;
-        setSelectedCourses(processedCourses(data?.courses));
       });
     }
   }, [router]);
 
   useEffect(() => {
-    setActive(true);
-  }, []);
-
-  const processedGroups = useMemo(() => {
-    if (!data?.groups) return [];
-    return data.groups.map((group, index) => ({
-      name: `${group?.level}-${group?.sublevel}` ?? "",
-      working_time: group?.working_time ?? "",
-      group_teacher: group?.representative ?? "",
-      editar: (
-        <button onClick={() => handlerSelectedCourse(group?.id_group)} className="btn btn-ghost border-0">
-          <BookIcon color="action" fontSize="medium" />
-        </button>
-      ),
-      route: 'reportes'
-    }));
-  }, [data]);
+    if (courses) {
+      setSelectedCourses(processedCourses(courses.courses));
+    }
+  }, [courses]);
 
   return (
-    <div className="rounded-tl-[20px] w-full h-[70vh] overflow-hidden bg-gray1">
-      <div >
-        <div className="pb-4" >
-          <strong className="text-2xl text-black ps-8 pb-4">
+    <div className="h-full">
+      <div className="h-[6%]">
+        <div className="pb-4">
+          <strong className="text-xl text-black ps-8 pb-4">
             Cursos Creados para el año {year} para la planilla de nota por
             asignatura
           </strong>
         </div>
       </div>
-      <div
-        
-        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full"
-      >
-        
-        {g ? (
-          <div  className="text-black h-full">
+      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]">
+        {g && (
+          <div className="text-black h-full">
             {loadingCourses ? (
               <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-blue3"></span>
+                <span className="loading loading-dots loading-lg bg-main-blue"></span>
               </div>
             ) : courses?.courses ? (
               <div className=" border-white py-4 h-full">
-                <Table
-                  column={columsCourses}
-                  data={selectedCourses}
-                  type={"courses"}
-                />
+                <div
+                  className={`w-full px-3 overflow-x-auto animate-fade-left h-full `}
+                  style={{
+                    scrollbarWidth: "thin",
+                    scrollbarColor: "#25429e #F3F4F6",
+                    scrollbarGutter: "20px",
+                  }}
+                >
+                  <table className="table text-black">
+                    <thead className="flex items-center justify-center">
+                      <tr className="flex w-full justify-center border-main-blue border-b-4 text-base font-semibold">
+                        {columsCourses.map((key: any, index: any) => (
+                          <th
+                            key={index}
+                            className="w-full text-center text-main-blue whitespace-normal flex items-center justify-center"
+                          >
+                            <p className="w-full">{key.Header}</p>
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="w-full py-2">
+                      {selectedCourses.map((item: any, index: number) => (
+                        <div style={{ textDecoration: "none", width: "100%" }} key={index}>
+                          <tr className="flex w-full p-1 my-4 bg-gray1 border-none rounded-[20px] text-sm font-semibold">
+                            <td className="flex w-full justify-center items-center text-center py-0">
+                              {item.name}
+                            </td>
+                            <td className="flex w-full justify-center items-center text-center py-0">
+                              {item.teacher}
+                            </td>
+                            <td className="flex w-full justify-center items-center text-center py-0">
+                              {item.editar}
+                            </td>
+                          </tr>
+                        </div>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             ) : (
               errorCourses && <h3>Ocurrio un error: {errorCourses?.message}</h3>
             )}
           </div>
-        ): 
-        <div  className="h-full">
-          {loading ? (
-            <div className="w-full h-full flex justify-center items-center">
-              <span className="loading loading-dots loading-lg bg-blue3"></span>
-            </div>
-          ) : data?.groups ? (
-            <div className="d-flex border-white py-4 h-full">
-              <Table column={columns} data={processedGroups} type={"groups"} />
-            </div>
-          ) : (
-            <h3>¡Ocurrio un error!</h3>
-          )}
-        </div>}
+        )}
+
+        {!g && (
+          <div className="h-full">
+            {loading ? (
+              <div className="w-full h-full flex justify-center items-center">
+                <span className="loading loading-dots loading-lg bg-main-blue"></span>
+              </div>
+            ) : data?.groups ? (
+              <div className="d-flex border-white py-4 h-full">
+                <Table
+                  column={columns}
+                  data={processedGroups}
+                  type={"groups"}
+                />
+              </div>
+            ) : (
+              <h3>¡Ocurrio un error!</h3>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
-}
+};
 
-export default GlobalGradesDetermined
+export default GlobalGradesDetermined;

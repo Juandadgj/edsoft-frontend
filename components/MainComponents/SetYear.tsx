@@ -1,5 +1,5 @@
-import { useMemo } from "react";
-import { useEffect, useState } from "react";
+import { useRef } from "react";
+import { useState } from "react";
 import {
   useCreateSetYearMutation,
   useGetSchoolarYearsQuery,
@@ -9,8 +9,13 @@ import DynamicModal from "../DynamicModal";
 import Swal from "sweetalert2";
 import Table from "../Table";
 import { Input } from "../Input";
+import useSchoolYear from "@/hooks/useSchoolYear";
 
 const columns = [
+  {
+    Header: "",
+    accessor: "selected",
+  },
   {
     Header: "Año",
     accessor: "year",
@@ -18,10 +23,6 @@ const columns = [
   {
     Header: "Rector",
     accessor: "rector",
-  },
-  {
-    Header: "Secretario",
-    accessor: "secretary",
   },
   {
     Header: "Detalle",
@@ -34,11 +35,14 @@ const columns = [
 ];
 
 function SetYear() {
+  const { year, selectScholarYear } = useSchoolYear();
   const [AddSetYear] = useCreateSetYearMutation();
   const [UpdateSchoolarYear] = useUpdateScholarYearMutation();
-  const [active, setActive] = useState(false);
   const [open, setOpen] = useState(false);
   const [typeAdd, setTypeAdd] = useState(false);
+  const modal = document.getElementById("modal") as HTMLDialogElement;
+  const modalLoading = useRef<any>();
+  const modalClose = useRef<any>();
 
   // Form to manage inputs values
   const [formValues, setFormValues] = useState<any>({
@@ -55,12 +59,9 @@ function SetYear() {
     secretary: "",
     comment: "",
   });
-
-  const { data, loading, error, refetch } = useGetSchoolarYearsQuery();
-
-  useEffect(() => {
-    setActive(true);
-  }, []);
+  const { data, loading, error, refetch } = useGetSchoolarYearsQuery({
+    fetchPolicy: "network-only",
+  });
 
   const validationEvent = () => {
     if (formValues.id_year && formValues.rector && formValues.secretary) {
@@ -70,6 +71,7 @@ function SetYear() {
         );
         if (year_repeated!.length > 0) {
           setOpen(false);
+          modal.close();
           Swal.fire({
             icon: "error",
             title: "Año establecido ya existe...",
@@ -97,7 +99,6 @@ function SetYear() {
     for (const item in errors) {
       setErrors((err: any) => ({ ...err, [item]: "" }));
     }
-
     for (const i in formValues) {
       setFormValues((val: any) => ({ ...val, [i]: "" }));
     }
@@ -169,13 +170,51 @@ function SetYear() {
     },
   ];
 
-  const processedScholarYears = useMemo(() => {
+  const processedScholarYears = () => {
     if (!data?.scholarYears) return [];
-    return data.scholarYears.map((schoYear, index) => ({
-      year: schoYear?.id_year ?? "",
+    return data.scholarYears.map((schoYear) => ({
+      selected: year == schoYear?.id_year,
+      year: (
+        <button
+          onClick={() => handlerSelectScholarYear(schoYear?.id_year)}
+          className="btn bg-transparent hover:bg-transparent border-none shadow-none text-black text-base hover:text-main-blue hover:scale-105 transition duration-500"
+        >
+          {schoYear?.id_year}
+        </button>
+      ),
       rector: schoYear?.rector ?? "",
-      secretary: schoYear?.secretary ?? "",
-      details: schoYear?.comment ?? "",
+      details: (
+        <button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="25"
+            height="25"
+            viewBox="0 0 36 36"
+          >
+            <path
+              fill="#0055A6"
+              d="M32 6H4a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h28a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2m0 22H4V8h28Z"
+              className="clr-i-outline clr-i-outline-path-1"
+            />
+            <path
+              fill="#0055A6"
+              d="M9 14h18a1 1 0 0 0 0-2H9a1 1 0 0 0 0 2"
+              className="clr-i-outline clr-i-outline-path-2"
+            />
+            <path
+              fill="#0055A6"
+              d="M9 18h18a1 1 0 0 0 0-2H9a1 1 0 0 0 0 2"
+              className="clr-i-outline clr-i-outline-path-3"
+            />
+            <path
+              fill="#0055A6"
+              d="M9 22h10a1 1 0 0 0 0-2H9a1 1 0 0 0 0 2"
+              className="clr-i-outline clr-i-outline-path-4"
+            />
+            <path fill="none" d="M0 0h36v36H0z" />
+          </svg>
+        </button>
+      ),
       edit: (
         <button
           className="border-0"
@@ -212,7 +251,7 @@ function SetYear() {
         </button>
       ),
     }));
-  }, [data]);
+  };
 
   const handlerCreateSetYear = async () => {
     return await AddSetYear({
@@ -225,20 +264,27 @@ function SetYear() {
     });
   };
 
-  const modal = document.getElementById("modal") as HTMLDialogElement;
+  const handlerSelectScholarYear = async (year: number | undefined) => {
+    if (year) {
+      modalLoading?.current.click();
+      selectScholarYear({ variables: { idYear: year } }).then(() => {
+        modalClose?.current.click();
+      });
+    }
+  };
 
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-10 pb-3">
       <div className="h-[6%] flex justify-between">
         <div>
           <strong className="text-xl text-black ps-8 pb-4">
-            Elegir Año Académico
+            Elegir Año Académico {year}
           </strong>
         </div>
         <div className="text-end pr-6">
           <button
             type="button"
-            className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
+            className="btn bg-main-blue btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
             onClick={() => {
               setTypeAdd(true);
               modal?.showModal();
@@ -252,7 +298,7 @@ function SetYear() {
         <div className="text-black h-full">
           {loading && (
             <div className="w-full h-full flex justify-center items-center">
-              <span className="loading loading-dots loading-lg bg-blue3"></span>
+              <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
           )}
           {error && <div>¡Ocurrio un error!</div>}
@@ -260,14 +306,29 @@ function SetYear() {
             <div className="border-white py-4 h-full">
               <Table
                 column={columns}
-                data={processedScholarYears}
+                data={processedScholarYears()}
                 type={"setYear"}
               />
             </div>
           )}
         </div>
       </div>
-
+      <input
+        type="checkbox"
+        ref={modalLoading}
+        id="modalLoading"
+        className="modal-toggle"
+      />
+      <div className="modal" role="dialog">
+        <div className="modal-box h-14 w-14 rounded-[100%] p-0">
+          <div className="w-full h-full flex justify-center items-center">
+            <span className="loading loading-dots loading-lg bg-main-blue"></span>
+          </div>
+          <label ref={modalClose} className="hidden" htmlFor="modalLoading">
+            Close Modal
+          </label>
+        </div>
+      </div>
       <DynamicModal
         arrayInputs={arrayInputs}
         typeAdd={typeAdd}

@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useEffect, useState } from "react";
 import {
   useGenerateReportAreaLazyQuery,
-  useGenerateReportLazyQuery,
+  useGenerateStudentsListUndeterminatedLazyQuery,
   useGroupsQuery,
 } from "@/generated/graphql";
 import Table from "@/components/Table";
@@ -24,7 +24,7 @@ const columns = [
   },
 ];
 
-const GlobalGradesundetermined = () => {
+const GlobalGradesUndetermined = () => {
   const router = useRouter();
   const { g } = router.query;
   const today = new Date();
@@ -37,9 +37,17 @@ const GlobalGradesundetermined = () => {
     variables: { filterGroupInput: { id_year: 2017 } },
   });
 
-  const [getGenerateReport, { data: reports }] = useGenerateReportAreaLazyQuery();
+  const [
+    getGenerateReport,
+    { data: reports },
+  ] = useGenerateReportAreaLazyQuery();
 
-  const [reportArea, { data: areaReport }] = useGenerateReportLazyQuery({fetchPolicy: "no-cache"});
+  const [
+    reportArea,
+    { data: areaReport },
+  ] = useGenerateStudentsListUndeterminatedLazyQuery({
+    fetchPolicy: "no-cache",
+  });
 
   useEffect(() => {
     setActive(true);
@@ -48,14 +56,10 @@ const GlobalGradesundetermined = () => {
   const handlerSpreadsheet = (id: any) => {
     reportArea({
       variables: {
-        generateStudentsListInput: {
+        generateStudentsListUndeterminatedInput: {
           id_group: id,
         },
       },
-    }).then((res)=>{
-      const {data} = res 
-      console.log(data?.generateReport.report_content)
-      setPdfBase64(data?.generateReport.report_content)
     });
   };
 
@@ -77,77 +81,30 @@ const GlobalGradesundetermined = () => {
     }));
   }, [data]);
 
-  const handleDownloadPDF = () => {
-    console.log(pdfBase64)
-    if (pdfBase64) {
-      // Convert the base64 string to a Blob
-      const byteCharacters = atob(pdfBase64);
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
-      }
-      const byteArray = new Uint8Array(byteNumbers);
-      const blob = new Blob([byteArray], { type: "application/pdf" });
-      // Create a URL for the Blob
-      const blobUrl = URL.createObjectURL(blob);
-      // Abrir una nueva ventana con el PDF
-
-       window.open(blobUrl, "_blank");
-
-      // Liberar el objeto URL después de abrir la ventana
-      URL.revokeObjectURL(blobUrl);
-    } else {
-      throw new Error(
-        "pdfBase64 no está definido. Asegúrate de que haya datos antes de llamar a handleDownloadPDF."
-      );
-    }
-  };
-
-  const handleOpenHTML = (htmlString: string) => {
-    window.open()?.document.write(htmlString);
-  };
-
-  // useEffect(() => {
-  //   if (g) {
-  //     getGenerateReport({
-  //       variables: { generateStudentsListInput: { id_group: Number(g) } },
-  //     }).then((res) => {
-  //       const { data } = res;
-  //       setPdfBase64(data);
-  //     });
-  //   }
-  // }, [router])
-
   useEffect(() => {
-    // Llama a handleDownloadPDF cuando pdfBase64 se actualiza
-    if (pdfBase64) {
-      handleDownloadPDF();
+    if (areaReport) {
+      window
+        .open()
+        ?.document.write(
+          areaReport.generateStudentsListUndeterminated.report_content
+        );
     }
-  }, [pdfBase64]);
-
-  // useEffect(() => {
-  //   if (areaReport) {
-  //     handleOpenHTML(areaReport.generateReportArea.report_content);
-  //   }
-  // }, [areaReport]);
+  }, [areaReport]);
 
   return (
-    <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1">
-      <div >
-        <div className="pb-4" >
+    <div className="h-full">
+      <div className="h-[6%]">
+        <div className="pb-4">
           <strong className="text-xl text-black ps-8">
             Cursos Creados para el año {year} para la planilla de notas simple
           </strong>
         </div>
       </div>
-      <div
-        
-        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full"
-      >
-        <div  className="h-full">
+      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]">
+        <div className="h-full">
           {loading ? (
             <div className="w-full h-full flex justify-center items-center">
-              <span className="loading loading-dots loading-lg bg-blue3"></span>
+              <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
           ) : data?.groups ? (
             <div className="d-flex border-white py-4 h-full">
@@ -170,4 +127,4 @@ const GlobalGradesundetermined = () => {
   );
 };
 
-export default GlobalGradesundetermined;
+export default GlobalGradesUndetermined;

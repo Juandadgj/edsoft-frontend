@@ -7,6 +7,7 @@ import {
   useDeleteAchievementMutation,
   useUpdateAchievementMutation,
   useCreateAchievementMutation,
+  useGenerateAchievementsAndIndicatorsLazyQuery,
 } from "../../../../generated/graphql";
 import { useRouter } from "next/router";
 import Table from "../../../Table";
@@ -60,190 +61,24 @@ const columnsGroup = [
 ];
 
 const AchievementsAndIndicators = () => {
-  const [CreateAchievement] = useCreateAchievementMutation();
-  const [DeleteAchievement] = useDeleteAchievementMutation();
-  const [UpdateAchievement] = useUpdateAchievementMutation();
-  const today = new Date();
-  const year = today.getFullYear();
+  const year = sessionStorage.getItem("year");
+  const yearParse = parseInt(year ? year : "", 10);
   const router = useRouter();
   const { g, a, per } = router.query;
   const [selectedCourses, setSelectedCourses] = useState<any>([]);
-  const [selectedAchievements, setSelectedAchievements] = useState<any>([]);
-  const [open, setOpen] = useState(false);
-  const [typeAdd, setTypeAdd] = useState(false);
-  const [
-    getAchievements,
-    { data: achievements, loading: loadingAchievements, error, refetch },
-  ] = useAchievementsLazyQuery();
   const [
     getCourses,
     { data: courses, loading: loadingCourses, error: errorCourses },
   ] = useCoursesLazyQuery();
+  const [generateAchievements] = useGenerateAchievementsAndIndicatorsLazyQuery({
+    fetchPolicy: "network-only",
+  });
 
   const { data: groups, loading: loadingGroups } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: 2017 } },
+    variables: { filterGroupInput: { id_year: yearParse } },
   });
   const handlerSelectedCourse = (id: number | undefined) => {
     router.push(`/dashboard/reportes?componente=planillas&opcion=3&g=${id}`);
-  };
-  // Form to manage inputs values
-  const [formValues, setFormValues] = useState<any>({
-    description: "",
-    id_course: 0,
-    period: 0,
-  });
-  // Obj to manage every input error
-  const [errors, setErrors] = useState<any>({
-    description: "",
-    id_course: 0,
-    period: 0,
-  });
-
-  // Here we validate if every item is filled and if it is we return true
-  const validationEvent = () => {
-    if (formValues.description) {
-      return true;
-    } else {
-      for (const item in formValues) {
-        if (!formValues[item]) {
-          setErrors((err: any) => ({ ...err, [item]: "Campo Requerido!" }));
-        } else {
-          setErrors((err: any) => ({ ...err, [item]: "" }));
-        }
-      }
-      return false;
-    }
-  };
-
-  // We are using formvalues for add and update, so once the user finishes a proccess, it's necessary to clean this state
-  const cleaningStates = () => {
-    for (const item in errors) {
-      setErrors((err: any) => ({ ...err, [item]: "" }));
-    }
-
-    for (const i in formValues) {
-      if (i === "id_achievement") {
-        setFormValues((val: any) => ({ ...val, [i]: undefined }));
-      } else if (i === "type_id") {
-        setFormValues((val: any) => ({ ...val, [i]: 1 }));
-      } else {
-        setFormValues((val: any) => ({ ...val, [i]: "" }));
-      }
-    }
-  };
-
-  const arrayInputs: Array<any> = [
-    {
-      html: (
-        <Input
-          required
-          name="description"
-          value={formValues.description}
-          onChange={({ target }: any) =>
-            setFormValues({ ...formValues, [target.name]: target.value })
-          }
-          type="text"
-          placeholder="Descripcion del logro"
-          label="Descripcion del logro"
-          errorText={errors.description}
-        />
-      ),
-    },
-  ];
-
-  const processedAchievements = (data: any) => {
-    if (!data?.achievements) return [];
-    return data.achievements.map((achievements: any, index: any) => ({
-      id_achievement: achievements?.id_achievement ?? "",
-      description: achievements?.description ?? "",
-      editar: (
-        <button
-          className="border-0"
-          onClick={() => {
-            setTypeAdd(false);
-            // We set the values selected to our inputs
-            setFormValues((t: any) => ({
-              ...t,
-              description: achievements?.description,
-              id_course: achievements?.id_course,
-              period: achievements?.period,
-              id_achievement: achievements?.id_achievement,
-            }));
-            setOpen(true);
-          }}
-        >
-          <Image src={edit} alt="" width={50} height={50} />
-        </button>
-      ),
-      indicator: (
-        <div className="flex justify-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="30"
-            height="30"
-            viewBox="0 0 24 24"
-            className="text-center"
-          >
-            <path
-              fill="#0055A6"
-              d="M14 22v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55q0 .275-.1.563t-.325.512l-5.5 5.5H14Zm7.5-6.575l-.925-.925l.925.925Zm-6 5.075h.95l3.025-3.05l-.45-.475l-.475-.45l-3.05 3.025v.95ZM6 22q-.825 0-1.413-.588T4 20V4q0-.825.588-1.413T6 2h8l6 6v3h-2V9h-5V4H6v16h6v2H6Zm7-10Zm6.025 4.975l-.475-.45l.925.925l-.45-.475Z"
-            />
-          </svg>
-        </div>
-      ),
-      borrar: (
-        <button
-          className="border-0 flex justify-center items-center"
-          onClick={() =>
-            Swal.fire({
-              title: "¿Estás seguro?",
-              text: "No podrás revertir esta acción!",
-              icon: "warning",
-              showCancelButton: true,
-              confirmButtonColor: "#0055a6",
-              cancelButtonColor: "#d33",
-              confirmButtonText: "Eliminar",
-            }).then((result) => {
-              if (result.isConfirmed && achievements?.id_achievement) {
-                DeleteAchievement({
-                  variables: { idAchievement: achievements?.id_achievement },
-                }).then((res: any) => {
-                  if (res.data?.deleteAchievement) {
-                    Swal.fire({
-                      title: "Eliminado",
-                      text: "Logro Eliminado!",
-                      icon: "success",
-                      showConfirmButton: false,
-                      timer: 1500,
-                    });
-                    refetch();
-                  } else {
-                    Swal.fire({
-                      icon: "error",
-                      title: "Ha habido un error...",
-                      showConfirmButton: false,
-                      timer: 1500,
-                    });
-                  }
-                });
-              }
-            })
-          }
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="30"
-            height="30"
-            viewBox="0 0 256 256"
-          >
-            <path
-              fill="#e11d48"
-              d="M216 50h-42V40a22 22 0 0 0-22-22h-48a22 22 0 0 0-22 22v10H40a6 6 0 0 0 0 12h10v146a14 14 0 0 0 14 14h128a14 14 0 0 0 14-14V62h10a6 6 0 0 0 0-12ZM94 40a10 10 0 0 1 10-10h48a10 10 0 0 1 10 10v10H94Zm100 168a2 2 0 0 1-2 2H64a2 2 0 0 1-2-2V62h132Zm-84-104v64a6 6 0 0 1-12 0v-64a6 6 0 0 1 12 0Zm48 0v64a6 6 0 0 1-12 0v-64a6 6 0 0 1 12 0Z"
-            />
-          </svg>
-        </button>
-      ),
-    }));
   };
 
   const processedGroups = useMemo(() => {
@@ -251,9 +86,30 @@ const AchievementsAndIndicators = () => {
     return groups?.groups.map((group: any) => ({
       name: `${group?.level}-${group?.sublevel}` ?? "",
       group_teacher: group?.representative ?? "",
-      asignaturas: group?.coursesCount,
-      working_time: group?.working_time,
-      click: () => handlerSelectedCourse(group?.id_group),
+      jornada: group?.working_time,
+      asignaturas: (
+        <button onClick={() => handlerSelectedCourse(group.id_group)}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            viewBox="0 0 24 24"
+          >
+            <g
+              fill="none"
+              stroke="#0055A6"
+              stroke-linejoin="round"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                d="M4 4v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8.342a2 2 0 0 0-.602-1.43l-4.44-4.342A2 2 0 0 0 13.56 2H6a2 2 0 0 0-2 2"
+              />
+              <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+            </g>
+          </svg>
+        </button>
+      ),
     }));
   }, [groups]);
 
@@ -281,67 +137,41 @@ const AchievementsAndIndicators = () => {
         setSelectedCourses(processedCourses(data?.courses));
       });
     }
-    if (a && per) {
-      getAchievements({
-        variables: {
-          filterAchievementInput: { id_course: Number(a), period: Number(per) },
-        },
-      });
-    }
   }, [router]);
 
-  useEffect(() => {
-    if (achievements) {
-      setSelectedAchievements(processedAchievements(achievements));
-    }
-  }, [achievements]);
-
-  const handlerCreateAchievement = async () => {
-    return await CreateAchievement({
-      variables: { createAchievementInput: formValues },
+  const handlerSelectAchievement = (id_course: number, period: number) => {
+    console.log(id_course, period);
+    generateAchievements({
+      variables: {
+        generateAchievementsAndIndicators: {
+          id_group: Number(g),
+          id_course,
+          period,
+        },
+      },
+    }).then((res) => {
+      const { data } = res;
+      handleOpenHTML(data?.generateAchievementsAndIndicators.report_content);
     });
   };
-
-  const handlerUpdateAchievement = async () => {
-    return await UpdateAchievement({
-      variables: { updateAchievementInput: formValues },
-    });
+  const handleOpenHTML = (htmlString: any) => {
+    window.open()?.document.write(htmlString);
   };
-
   return (
-    <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-1">
-      <div>
+    <div className="h-full">
+      <div className="h-[6%]">
         <div>
-          <strong className="text-2xl text-black ps-8 pb-4">
-            Logros por curso para el año {year}
+          <strong className="text-xl text-black ps-8 pb-4">
+            Logros por curso para el año {yearParse}
           </strong>
         </div>
-        {a && per && (
-          <div className="text-end pr-6">
-            <button
-              type="button"
-              className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-2 rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
-              onClick={() => {
-                setTypeAdd(true);
-                setFormValues((t: any) => ({
-                  ...t,
-                  id_course: parseInt(Array.isArray(a) ? a[0] : a, 10),
-                  period: parseInt(Array.isArray(per) ? per[0] : per, 10),
-                }));
-                setOpen(true);
-              }}
-            >
-              <h4 className="text-white">+ Nuevo Logro</h4>
-            </button>
-          </div>
-        )}
       </div>
-      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full">
+      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]">
         {!g && (
           <div className="h-full">
             {loadingGroups ? (
               <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-blue3"></span>
+                <span className="loading loading-dots loading-lg bg-main-blue"></span>
               </div>
             ) : groups?.groups ? (
               <div className="d-flex border-white py-4 h-full">
@@ -360,72 +190,134 @@ const AchievementsAndIndicators = () => {
           <div className="text-black h-full">
             {loadingCourses ? (
               <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-blue3"></span>
+                <span className="loading loading-dots loading-lg bg-main-blue"></span>
               </div>
             ) : courses?.courses ? (
               <div className=" border-white py-4 h-full">
-                <Table
-                  column={columsCourses}
-                  data={selectedCourses}
-                  type={"courses"}
-                />
+                <div
+                  className={`w-full px-3 overflow-x-auto animate-fade-left h-full`}
+                  style={{
+                    scrollbarWidth: "thin",
+                    scrollbarColor: "#25429e #F3F4F6",
+                    scrollbarGutter: "20px",
+                  }}
+                >
+                  <table className="table text-black">
+                    <thead className="flex items-center justify-center">
+                      <tr className="flex w-full justify-center border-main-blue border-b-4 text-base font-semibold">
+                        {columsCourses.map((key: any, index: any) => (
+                          <th
+                            key={index}
+                            className="w-full text-center text-main-blue whitespace-normal flex items-center justify-center"
+                          >
+                            <p className="w-full">{key.Header}</p>
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="w-full py-2">
+                      {selectedCourses.map((item: any, index: number) => (
+                        <div style={{ textDecoration: "none", width: "100%" }} key={index}>
+                          <tr className="flex w-full p-1 my-4 bg-gray1 border-none rounded-[20px] text-sm font-semibold">
+                            <td className="flex w-full justify-center items-center text-center">
+                              {item.name}
+                            </td>
+                            <td className="flex w-full justify-center items-center text-center">
+                              {item.teacher.name}
+                            </td>
+                            <td className="flex w-full justify-center items-center text-center">
+                              <p
+                                className="cursor-pointer"
+                                onClick={() =>
+                                  handlerSelectAchievement(item.id_course, 1)
+                                }
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="30px"
+                                  height="30px"
+                                  viewBox="0 0 2048 2048"
+                                >
+                                  <path
+                                    fill="#0055A6"
+                                    d="M1664 512h256v1536H256V512h256V384h128v128h896V384h128v128zm128 128h-128v128h128V640zm-256 0H640v128h896V640zm-1024 0H384v128h128V640zM384 1920h1408V896H384v1024zM256 384V256H128v1408H0V128h256V0h128v128h896V0h128v128h256v128h-256v128h-128V256H384v128H256zm384 1024v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128zm-768 256v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm-256-512v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128z"
+                                  />
+                                </svg>
+                              </p>
+                            </td>
+                            <td className="flex w-full justify-center items-center text-center">
+                              <p
+                                className="cursor-pointer"
+                                onClick={() =>
+                                  handlerSelectAchievement(item.id_course, 2)
+                                }
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="30px"
+                                  height="30px"
+                                  viewBox="0 0 2048 2048"
+                                >
+                                  <path
+                                    fill="#0055A6"
+                                    d="M1664 512h256v1536H256V512h256V384h128v128h896V384h128v128zm128 128h-128v128h128V640zm-256 0H640v128h896V640zm-1024 0H384v128h128V640zM384 1920h1408V896H384v1024zM256 384V256H128v1408H0V128h256V0h128v128h896V0h128v128h256v128h-256v128h-128V256H384v128H256zm384 1024v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128zm-768 256v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm-256-512v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128z"
+                                  />
+                                </svg>
+                              </p>
+                            </td>
+                            <td className="flex w-full justify-center items-center text-center">
+                              <p
+                                className="cursor-pointer"
+                                onClick={() =>
+                                  handlerSelectAchievement(item.id_course, 3)
+                                }
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="30px"
+                                  height="30px"
+                                  viewBox="0 0 2048 2048"
+                                >
+                                  <path
+                                    fill="#0055A6"
+                                    d="M1664 512h256v1536H256V512h256V384h128v128h896V384h128v128zm128 128h-128v128h128V640zm-256 0H640v128h896V640zm-1024 0H384v128h128V640zM384 1920h1408V896H384v1024zM256 384V256H128v1408H0V128h256V0h128v128h896V0h128v128h256v128h-256v128h-128V256H384v128H256zm384 1024v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128zm-768 256v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm-256-512v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128z"
+                                  />
+                                </svg>
+                              </p>
+                            </td>
+                            <td className="flex w-full justify-center items-center text-center">
+                              <p
+                                className="cursor-pointer"
+                                onClick={() =>
+                                  handlerSelectAchievement(item.id_course, 4)
+                                }
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="30px"
+                                  height="30px"
+                                  viewBox="0 0 2048 2048"
+                                >
+                                  <path
+                                    fill="#0055A6"
+                                    d="M1664 512h256v1536H256V512h256V384h128v128h896V384h128v128zm128 128h-128v128h128V640zm-256 0H640v128h896V640zm-1024 0H384v128h128V640zM384 1920h1408V896H384v1024zM256 384V256H128v1408H0V128h256V0h128v128h896V0h128v128h256v128h-256v128h-128V256H384v128H256zm384 1024v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128zm-768 256v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm-256-512v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128z"
+                                  />
+                                </svg>
+                              </p>
+                            </td>
+                          </tr>
+                        </div>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             ) : (
               errorCourses && <h3>Ocurrio un error: {errorCourses?.message}</h3>
             )}
           </div>
         )}
-        {a && per && (
-          <div className="text-black h-full">
-            {loadingAchievements ? (
-              <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-blue3"></span>
-              </div>
-            ) : achievements?.achievements ? (
-              <div className="overflow-x-auto h-full">
-                <table className="table">
-                  <thead>
-                    <tr className="border-none text-lg font-semibold text-blue3">
-                      <th>Descripcion</th>
-                      <th>Editar</th>
-                      <th>Agregar indicador</th>
-                      <th className="text-[#e11d48]">Eliminar</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {selectedAchievements.map((a: any, i: number) => (
-                      <tr key={a.id_achievement} className="border-none">
-                        <th>{a?.description}</th>
-                        <th>{a?.editar}</th>
-                        <th>{a?.indicator}</th>
-                        <th className="flex justify-center">{a?.borrar}</th>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <h3>Ocurrio un error</h3>
-            )}
-          </div>
-        )}
       </div>
-
-      {/* Modal */}
-      <DynamicModal
-        arrayInputs={arrayInputs}
-        typeAdd={typeAdd}
-        open={open}
-        setOpen={setOpen}
-        addSuccessMsg={"Logro Creado!"}
-        updateSuccessMsg={"Logro Actualizado!"}
-        formValues={formValues}
-        addMutation={handlerCreateAchievement}
-        updateMutation={handlerUpdateAchievement}
-        cleaningStates={cleaningStates}
-        validationEvent={validationEvent}
-        refetch={refetch}
-      />
     </div>
   );
 };

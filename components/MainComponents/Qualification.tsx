@@ -11,6 +11,8 @@ import Table from "../Table";
 import { useRouter } from "next/router";
 
 const Qualification = () => {
+  const year = sessionStorage.getItem("year");
+  const yearParse = parseInt(year ? year : "", 10);
   const router = useRouter();
   const { g, a, per, qualify } = router.query;
   const [selectedCourses, setSelectedCourses] = useState<any>([]);
@@ -31,7 +33,7 @@ const Qualification = () => {
     { data: courses, loading: loadingCourses, error: errorCourses, refetch },
   ] = useCoursesLazyQuery();
   const { data: groups, loading: loadingGroups } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: 2017 } },
+    variables: { filterGroupInput: { id_year: yearParse } },
   });
   const [
     getStudentQualifications,
@@ -279,7 +281,7 @@ const Qualification = () => {
       <div className="flex justify-between h-[6%]">
         <div>
           <strong className="text-black text-xl ps-8">
-            Cursos creados para el a�o 2023 Para la calificacion de logros e
+            Cursos creados para el a�o {yearParse} Para la calificacion de logros e
             indicadores de logros por asignatura
           </strong>
         </div>
@@ -289,7 +291,7 @@ const Qualification = () => {
           <div className="h-full">
             {loadingGroups ? (
               <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-blue3"></span>
+                <span className="loading loading-dots loading-lg bg-main-blue"></span>
               </div>
             ) : groups?.groups ? (
               <div className="d-flex border-white py-4 h-full">
@@ -308,7 +310,7 @@ const Qualification = () => {
           <div className="text-black h-full">
             {loadingCourses ? (
               <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-blue3"></span>
+                <span className="loading loading-dots loading-lg bg-main-blue"></span>
               </div>
             ) : courses?.courses ? (
               <div className=" border-white py-4 h-full">
@@ -327,7 +329,7 @@ const Qualification = () => {
           <div className="h-full w-full">
             {loadingAchievements && loadingStudentQualifications && (
               <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-blue3"></span>
+                <span className="loading loading-dots loading-lg bg-main-blue"></span>
               </div>
             )}
             <div className="border-white h-full w-full ">
@@ -384,12 +386,12 @@ const Qualification = () => {
                     )}
                     <table className="table text-black ">
                       <thead className="w-full">
-                        <tr className="border-blue3 border-b-4 text-xl font-semibold">
+                        <tr className="border-main-blue border-b-4 text-xl font-semibold">
                           {columnsQualification.map(
                             (header: any, index: any) => (
                               <td
                                 key={index}
-                                className="items-center justify-center text-center text-blue3 text-sm"
+                                className="items-center justify-center text-center text-main-blue text-sm"
                               >
                                 {header.Header}
                               </td>
@@ -478,7 +480,7 @@ const Qualification = () => {
                     </button>
                   )}
                   {loadingUpdate && (
-                    <span className="loading loading-dots loading-lg bg-blue3 h-4"></span>
+                    <span className="loading loading-dots loading-lg bg-main-blue h-4"></span>
                   )}
                 </div>
               )}

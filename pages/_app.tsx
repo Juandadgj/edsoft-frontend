@@ -1,3 +1,4 @@
+import ScholarYearContextProvider from "@/context/YearContext";
 import "@/styles/globals.css";
 import {
   ApolloClient,
@@ -12,8 +13,6 @@ const SERVER_URI = process.env.NEXT_PUBLIC_REACT_APP_URL || "localhost/graphql";
 const httpLink = createHttpLink({
   uri: SERVER_URI,
 });
-
-const SECURE = SERVER_URI.includes("localhost") ? "" : "s";
 
 // Every time context is updated this method is gonna run!!!!!!!!!!!!!!
 const authLink = setContext((_, { headers }) => {
@@ -40,8 +39,10 @@ const client = new ApolloClient({
 });
 export default function App({ Component, pageProps }: AppProps) {
   return (
-  <ApolloProvider client={client}>
-    <Component {...pageProps} />
-  </ApolloProvider>
-  )
+    <ApolloProvider client={client}>
+      <ScholarYearContextProvider>
+        <Component {...pageProps} />
+      </ScholarYearContextProvider>
+    </ApolloProvider>
+  );
 }

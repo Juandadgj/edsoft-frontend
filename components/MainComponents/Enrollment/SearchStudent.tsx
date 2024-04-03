@@ -153,7 +153,7 @@ export const SearchStudent = () => {
               <div className="w-full flex justify-center items-center mt-2">
                 {loadingStudentsData ? (
                   <div className="w-full flex justify-center items-center">
-                    <span className="loading loading-dots loading-lg bg-blue3"></span>
+                    <span className="loading loading-dots loading-lg bg-main-blue"></span>
                   </div>
                 ) : (
                   <button

@@ -37,8 +37,8 @@ const columns = [
 ];
 
 function CreateCourses() {
-  const today = new Date();
-  const year = today.getFullYear();
+  const year = sessionStorage.getItem("year");
+  const yearParse = parseInt(year ? year : "", 10);
   const [open, setOpen] = useState(false);
   const [typeAdd, setTypeAdd] = useState(false);
   const { data: teachers } = useTeachersQuery();
@@ -59,7 +59,7 @@ function CreateCourses() {
   });
 
   const { data, loading, refetch } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: 2013 } },
+    variables: { filterGroupInput: { id_year: yearParse } },
   });
 
   const courses = [
@@ -274,7 +274,6 @@ function CreateCourses() {
       return false;
     }
   };
-
   // We are using formvalues for add and update, so once the user finishes a proccess it is necessary to clean this state
   const cleaningStates = () => {
     for (const item in errors) {
@@ -292,7 +291,7 @@ function CreateCourses() {
     return await createGroup({
       variables: {
         createGroupInput: {
-          id_year: year,
+          id_year: yearParse,
           level: course,
           sublevel: group,
           representative: teacher.toString(),
@@ -424,7 +423,7 @@ function CreateCourses() {
         <div className="text-end pr-6">
           <button
             type="button"
-            className="btn bg-blue3 btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
+            className="btn bg-main-blue btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
             onClick={() => {
               setTypeAdd(true);
               modal?.showModal();
@@ -440,7 +439,7 @@ function CreateCourses() {
         <div className="h-full">
           {loading ? (
             <div className="w-full h-full flex justify-center items-center">
-              <span className="loading loading-dots loading-lg bg-blue3"></span>
+              <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
           ) : data?.groups ? (
             <div className="d-flex border-white py-4 h-full">

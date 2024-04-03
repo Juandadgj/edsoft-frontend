@@ -24,12 +24,12 @@ const columns = [
 ];
 const GeneralAbsences = () => {
   
-  const today = new Date();
-  const year = today.getFullYear();
+  const year = sessionStorage.getItem("year");
+  const yearParse = parseInt(year ? year : "", 10);
   const [active, setActive] = useState(false);
   
   const { data, loading } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: 2016 } },
+    variables: { filterGroupInput: { id_year: yearParse } },
   });
 
   useEffect(() => {
@@ -65,7 +65,7 @@ const GeneralAbsences = () => {
         <div  className="h-full">
           {loading ? (
             <div className="w-full h-full flex justify-center items-center">
-              <span className="loading loading-dots loading-lg bg-blue3"></span>
+              <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
           ) : data?.groups ? (
             <div
