@@ -2,7 +2,8 @@ import { useMemo } from "react";
 import { useEffect, useState } from "react";
 import { useGroupsQuery } from "@/generated/graphql";
 import Table from "@/components/Table";
-import DescriptionIcon from '@mui/icons-material/Description';
+import DescriptionIcon from "@mui/icons-material/Description";
+import useSchoolYear from "@/hooks/useSchoolYear";
 
 const columns = [
   {
@@ -20,21 +21,13 @@ const columns = [
   {
     Header: "Planillar",
     accessor: "editar",
-  }
+  },
 ];
 const GeneralAbsences = () => {
-  
-  const year = sessionStorage.getItem("year");
-  const yearParse = parseInt(year ? year : "", 10);
-  const [active, setActive] = useState(false);
-  
+  const { year } = useSchoolYear();
   const { data, loading } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: yearParse } },
+    variables: { filterGroupInput: { id_year: year } },
   });
-
-  useEffect(() => {
-    setActive(true);
-  }, []);
 
   const processedGroups = useMemo(() => {
     if (!data?.groups) return [];
@@ -46,7 +39,7 @@ const GeneralAbsences = () => {
         <button className="btn btn-ghost border-0">
           <DescriptionIcon color="action" fontSize="medium" />
         </button>
-      )
+      ),
     }));
   }, [data]);
 
@@ -59,18 +52,14 @@ const GeneralAbsences = () => {
           </strong>
         </div>
       </div>
-      <div
-        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full"
-      >
-        <div  className="h-full">
+      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full">
+        <div className="h-full">
           {loading ? (
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
           ) : data?.groups ? (
-            <div
-              className="d-flex border-white py-4 h-full"
-            >
+            <div className="d-flex border-white py-4 h-full">
               <Table column={columns} data={processedGroups} type={"groups"} />
             </div>
           ) : (
@@ -80,6 +69,6 @@ const GeneralAbsences = () => {
       </div>
     </div>
   );
-}
+};
 
-export default GeneralAbsences
+export default GeneralAbsences;

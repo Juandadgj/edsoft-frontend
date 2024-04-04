@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_STUDENTS } from "@/graphql/queries/GetStudents";
+import useSchoolYear from "@/hooks/useSchoolYear";
 
 const columns = [
   {
@@ -19,15 +20,9 @@ const columns = [
 ];
 
 export const NotRegistered = () => {
-  const today = new Date();
-  const year = today.getFullYear();
-  const [active, setActive] = useState(false);
+  const { year } = useSchoolYear();
   const { data, loading, error } = useQuery(GET_STUDENTS);
-
-  useEffect(() => {
-    setActive(true);
-  }, []);
-
+    
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-5">
       <div className="pb-4">

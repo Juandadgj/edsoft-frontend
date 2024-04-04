@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Table from "@/components/Table";
 import { useRouter } from "next/router";
 import { useGroupsQuery } from "@/generated/graphql";
+import useSchoolYear from "@/hooks/useSchoolYear";
 
 const columns = [
   {
@@ -20,8 +21,7 @@ const columns = [
 ];
 
 export const StudentsLastYear = () => {
-  const today = new Date();
-  const year = today.getFullYear();
+  const { year } = useSchoolYear();
   const router = useRouter();
   const { g } = router.query;
   const [studentsByGroup, setStudentsByGroup] = useState<any[]>([]);
@@ -30,7 +30,7 @@ export const StudentsLastYear = () => {
     loading: loadingGroups,
     error: errorGroups,
   } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: 2013 } },
+    variables: { filterGroupInput: { id_year: year } },
   });
 
   const processedGroups = useMemo(() => {

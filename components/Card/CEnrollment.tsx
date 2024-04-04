@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { EnrollmentCard } from "./types";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const CEnrollment = (props: EnrollmentCard) => {
   const [isSelected, setIsSelected] = useState(false);
-
+  const router = useRouter()
   const toggleSelection = () => {
     setIsSelected(!isSelected);
 
@@ -16,11 +17,11 @@ const CEnrollment = (props: EnrollmentCard) => {
   return (
     <div
       style={{ borderRadius: "30px" }}
-      className="w-[70%] h-full cursor-pointer transition-transform shadow-2xl bg-white hover:bg-[#ededed89] hover:scale-105 text-center p-4"
+      className="w-full h-full cursor-pointer shadow-2xl bg-white hover:bg-[#ededed89] hover:scale-105 transition duration-500 text-center p-4 flex justify-center items-center"
     >
-      <Link href={`programacion-anual?componente=matriculas&opcion=${id}`}>
+      <Link href={`${router.asPath}&opcion=${id}`}>
         <div className="text-4xl mb-2">{icon}</div>
-        <h3 className="text-md font-semibold text-black">{title}</h3>
+        <h3 className="text-sm  text-black">{title}</h3>
       </Link>
     </div>
   );

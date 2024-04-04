@@ -16,6 +16,7 @@ import DynamicModal from "../../../DynamicModal";
 import Image from "next/image";
 import Swal from "sweetalert2";
 import { Input } from "@/components/Input";
+import useSchoolYear from "@/hooks/useSchoolYear";
 
 const columsCourses = [
   {
@@ -61,8 +62,7 @@ const columnsGroup = [
 ];
 
 const AchievementsAndIndicators = () => {
-  const year = sessionStorage.getItem("year");
-  const yearParse = parseInt(year ? year : "", 10);
+  const { year } = useSchoolYear();
   const router = useRouter();
   const { g, a, per } = router.query;
   const [selectedCourses, setSelectedCourses] = useState<any>([]);
@@ -75,7 +75,7 @@ const AchievementsAndIndicators = () => {
   });
 
   const { data: groups, loading: loadingGroups } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: yearParse } },
+    variables: { filterGroupInput: { id_year: year } },
   });
   const handlerSelectedCourse = (id: number | undefined) => {
     router.push(`/dashboard/reportes?componente=planillas&opcion=3&g=${id}`);
@@ -162,7 +162,7 @@ const AchievementsAndIndicators = () => {
       <div className="h-[6%]">
         <div>
           <strong className="text-xl text-black ps-8 pb-4">
-            Logros por curso para el año {yearParse}
+            Logros por curso para el año {year}
           </strong>
         </div>
       </div>

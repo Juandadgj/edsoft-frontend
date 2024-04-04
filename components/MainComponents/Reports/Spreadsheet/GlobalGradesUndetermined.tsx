@@ -8,6 +8,7 @@ import {
 import Table from "@/components/Table";
 import { useRouter } from "next/router";
 import DescriptionIcon from "@mui/icons-material/Description";
+import useSchoolYear from "@/hooks/useSchoolYear";
 
 const columns = [
   {
@@ -27,14 +28,13 @@ const columns = [
 const GlobalGradesUndetermined = () => {
   const router = useRouter();
   const { g } = router.query;
-  const today = new Date();
-  const year = today.getFullYear();
+  const { year } = useSchoolYear();
   const [active, setActive] = useState(false);
   const [selectedReport, setSelectedReport] = useState<any>([]);
   const [pdfBase64, setPdfBase64] = useState<any>("");
 
   const { data, loading } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: 2017 } },
+    variables: { filterGroupInput: { id_year: year } },
   });
 
   const [

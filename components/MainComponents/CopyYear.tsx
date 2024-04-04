@@ -1,11 +1,4 @@
-import { useEffect, useState } from "react";
-
 function CopyYear() {
-  const [active, setActive] = useState(false);
-  useEffect(() => {
-    setActive(true);
-  }, []);
-
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-10 pb-3">
       <div className="pb-4">

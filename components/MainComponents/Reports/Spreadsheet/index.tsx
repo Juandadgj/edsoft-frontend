@@ -81,16 +81,16 @@ const Spreadsheet = () => {
       {opcion ? (
         <>{opcionelegida?.component}</>
       ) : (
-        <div className="flex flex-wrap ps-8 justify-start gap-4">
+        <div className="grid grid-cols-3 ps-8 place-content-start gap-6 max-w-4xl">
           {cardsSpreadsheet.map((item: any, i: any) => (
-            <div key={i} className=" w-1/4 h-full p-4 ">
+            <div key={i} className="h-52 w-52 flex justify-center items-center">
               <div
                 style={{ borderRadius: "30px" }}
-                className="w-[70%] h-full cursor-pointer transition-transform shadow-2xl bg-white hover:bg-[#ededed89] hover:scale-105 text-center p-4"
+                className="w-full h-full cursor-pointer shadow-2xl bg-white hover:bg-[#ededed89] hover:scale-105 transition duration-500 text-center p-4 flex justify-center items-center"
               >
                 <Link href={`reportes?componente=planillas&opcion=${item.id}`}>
                   <div className="text-4xl mb-2">{item.icon}</div>
-                  <h3 className="text-md font-semibold text-black">
+                  <h3 className="text-sm text-black">
                     {item.title}
                   </h3>
                 </Link>

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useGroupsQuery } from "@/generated/graphql";
 import Table from "@/components/Table";
 import DescriptionIcon from "@mui/icons-material/Description";
+import useSchoolYear from "@/hooks/useSchoolYear";
 
 const columns = [
   {
@@ -23,11 +24,9 @@ const columns = [
   },
 ];
 const AbsencesPerMonth = () => {
-  const year = sessionStorage.getItem("year");
-  const yearParse = parseInt(year ? year : "", 10);
-
+  const { year } = useSchoolYear();
   const { data, loading } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: yearParse } },
+    variables: { filterGroupInput: { id_year: year } },
   });
 
   const processedGroups = useMemo(() => {
@@ -49,8 +48,8 @@ const AbsencesPerMonth = () => {
       <div>
         <div className="pb-4">
           <strong className="text-2xl text-black ps-8">
-            Cursos Creados para el año {yearParse} para la planilla de
-            inasistencia por mes
+            Cursos Creados para el año {year} para la planilla de inasistencia
+            por mes
           </strong>
         </div>
       </div>

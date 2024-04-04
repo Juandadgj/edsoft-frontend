@@ -80,7 +80,7 @@ const Deliverables = () => {
         <div className="h-[6%] flex justify-between">
           <div>
             <strong className="text-xl text-black ps-8">
-              Lista de Docentes
+              Crear entregable de
             </strong>
           </div>
         </div>
@@ -88,28 +88,29 @@ const Deliverables = () => {
       {opcion ? (
         <NavigationComponent />
       ) : (
-        <div className="h-[94%] flex justify-start gap-6">
-          <div
-            className="flex flex-wrap w-full justify-start gap-6 overflow-y-auto"
-            style={{
-              scrollbarWidth: "thin",
-              scrollbarColor: "#25429e #F3F4F6",
-              scrollbarGutter: "20px",
-            }}
-          >
+        <div
+          className="h-[94%] overflow-y-auto"
+          style={{
+            scrollbarWidth: "thin",
+            scrollbarColor: "#25429e #F3F4F6",
+            scrollbarGutter: "20px",
+          }}
+        >
+          <div className="grid grid-cols-3 ps-8 pe-8 place-content-start gap-6 max-w-4xl">
             {cardsSpreadsheet.map((item: any, i: any) => (
-              <div key={i} className="w-1/4 py-4">
+              <div
+                key={i}
+                className="h-52 w-52 flex justify-center items-center"
+              >
                 <div
                   style={{ borderRadius: "30px" }}
-                  className="w-[70%] h-full cursor-pointer transition-transform bg-white hover:bg-[#ededed89] hover:scale-105 text-center p-4 flex justify-center items-center"
+                  className="w-full h-full cursor-pointer shadow-2xl bg-white hover:bg-[#ededed89] hover:scale-105 transition duration-500 text-center p-4 flex justify-center items-center"
                 >
                   <Link
                     href={`reportes?componente=entregables&opcion=${item.id}`}
                   >
                     <div className="text-4xl mb-2">{item.icon}</div>
-                    <h3 className="text-sm font-semibold text-black">
-                      {item.title}
-                    </h3>
+                    <h3 className="text-sm text-black">{item.title}</h3>
                   </Link>
                 </div>
               </div>

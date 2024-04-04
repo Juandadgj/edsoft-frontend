@@ -4,10 +4,10 @@ import {
   useCreateSetYearMutation,
   useGetSchoolarYearsQuery,
   useUpdateScholarYearMutation,
+  ScholarYear,
 } from "../../generated/graphql";
 import DynamicModal from "../DynamicModal";
 import Swal from "sweetalert2";
-import Table from "../Table";
 import { Input } from "../Input";
 import useSchoolYear from "@/hooks/useSchoolYear";
 
@@ -40,6 +40,8 @@ function SetYear() {
   const [UpdateSchoolarYear] = useUpdateScholarYearMutation();
   const [open, setOpen] = useState(false);
   const [typeAdd, setTypeAdd] = useState(false);
+  const [comment, setComment] = useState<ScholarYear>();
+  const modalComment = useRef<any>();
   const modal = document.getElementById("modal") as HTMLDialogElement;
   const modalLoading = useRef<any>();
   const modalClose = useRef<any>();
@@ -184,7 +186,17 @@ function SetYear() {
       ),
       rector: schoYear?.rector ?? "",
       details: (
-        <button>
+        <button
+          onClick={() => {
+            setComment({
+              id_year: schoYear?.id_year ?? 0,
+              rector: schoYear?.rector,
+              secretary: schoYear?.secretary,
+              comment: schoYear?.comment,
+            });
+            modalComment.current.showModal();
+          }}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="25"
@@ -304,15 +316,77 @@ function SetYear() {
           {error && <div>¡Ocurrio un error!</div>}
           {data?.scholarYears && !loading && (
             <div className="border-white py-4 h-full">
-              <Table
-                column={columns}
-                data={processedScholarYears()}
-                type={"setYear"}
-              />
+              <div
+                className={`w-full px-3 overflow-x-auto animate-fade-left h-full`}
+                style={{
+                  scrollbarWidth: "thin",
+                  scrollbarColor: "#25429e #F3F4F6",
+                  scrollbarGutter: "20px",
+                }}
+              >
+                <table className="table text-black">
+                  <thead className="flex items-center justify-center">
+                    <tr className="flex w-full justify-center border-main-blue border-b-4 text-base font-semibold">
+                      {columns.map((key: any, index: any) => (
+                        <th
+                          key={index}
+                          className={`text-center text-main-blue whitespace-normal flex items-center justify-center ${
+                            index == 0 ? "w-[20%]" : "w-full"
+                          }`}
+                        >
+                          <p className="w-full">{key.Header}</p>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="w-full py-2">
+                    {processedScholarYears().map((item: any, index: number) => (
+                      <div style={{ textDecoration: "none", width: "100%" }} key={index}>
+                        <tr className="flex w-full p-1 my-4 bg-gray1 border-none rounded-[20px] text-sm font-semibold">
+                          <td className="flex w-[20%] justify-center items-center text-center">
+                            {item.selected ? (
+                              <div className="w-full flex justify-center items-center">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="25"
+                                  height="25"
+                                  viewBox="0 0 36 36"
+                                >
+                                  <path
+                                    fill="#0055A6"
+                                    d="m28.89 20.91l-5-2.91l4.87-2.86a3.11 3.11 0 0 0 1.14-1.08a3 3 0 0 0-4.09-4.15L21 12.76V7a3 3 0 0 0-6 0v5.76l-4.85-2.85a3 3 0 1 0-3 5.18l5 2.91l-4.95 2.86a3.11 3.11 0 0 0-1.14 1.08a3 3 0 0 0 4.09 4.14L15 23.24v5.66a3 3 0 0 0 2 2.94A3 3 0 0 0 21 29v-5.76l4.85 2.85a3 3 0 1 0 3-5.18Z"
+                                    className="clr-i-solid clr-i-solid-path-1"
+                                  />
+                                  <path fill="none" d="M0 0h36v36H0z" />
+                                </svg>
+                              </div>
+                            ) : (
+                              ""
+                            )}
+                          </td>
+                          <td className="flex w-full justify-center items-center text-center">
+                            <p className="w-full">{item.year}</p>
+                          </td>
+                          <td className="flex w-full justify-center items-center text-center">
+                            <p className="w-full">{item.rector}</p>
+                          </td>
+                          <td className="flex w-full justify-center items-center text-center">
+                            {item.details}
+                          </td>
+                          <td className="flex w-full justify-center items-center text-center">
+                            {item.edit}
+                          </td>
+                        </tr>
+                      </div>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
         </div>
       </div>
+      {/**Modal loading mutatio select year */}
       <input
         type="checkbox"
         ref={modalLoading}
@@ -329,6 +403,32 @@ function SetYear() {
           </label>
         </div>
       </div>
+      {/**Modal year comments */}
+      <dialog ref={modalComment} className="modal">
+        <div className="modal-box text-black">
+          <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 text-red-500">
+              ✕
+            </button>
+          </form>
+          <h3 className="text-center font-bold text-md">
+            Datos del año academico
+          </h3>
+          <br />
+          <div className="w-full flex justify-center items-center">
+            <div className="text-center text-sm">
+              <p className="">Año Escolar: {comment?.id_year}</p>
+              <p className="">
+                Nombres y apellido de la rector: {comment?.rector}
+              </p>
+              <p className="">
+                Nombres y apellido del secretario: {comment?.secretary}
+              </p>
+              <p className="">Comentario: {comment?.comment}</p>
+            </div>
+          </div>
+        </div>
+      </dialog>
       <DynamicModal
         arrayInputs={arrayInputs}
         typeAdd={typeAdd}

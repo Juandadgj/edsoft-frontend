@@ -9,6 +9,7 @@ import {
 import Table from "@/components/Table";
 import { useRouter } from "next/router";
 import DescriptionIcon from "@mui/icons-material/Description";
+import useSchoolYear from "@/hooks/useSchoolYear";
 
 const columns = [
   {
@@ -43,8 +44,7 @@ const columsCourses = [
 const GlobalGradesDetermined = () => {
   const router = useRouter();
   const { g } = router.query;
-  const year = sessionStorage.getItem("year");
-  const yearParse = parseInt(year ? year : "", 10);
+  const { year } = useSchoolYear();
   const [selectedCourses, setSelectedCourses] = useState<any>([]);
 
   const [
@@ -53,7 +53,7 @@ const GlobalGradesDetermined = () => {
   ] = useCoursesLazyQuery();
 
   const { data, loading } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: yearParse } },
+    variables: { filterGroupInput: { id_year: year } },
   });
 
   const [reportArea] = useGenerateStudentsListDeterminatedLazyQuery({

@@ -10,7 +10,6 @@ import DynamicModal from "../DynamicModal";
 import Swal from "sweetalert2";
 import Table from "../Table";
 import { Input } from "../Input";
-import { useScholarYearContext } from "@/context/YearContext";
 
 const columns = [
   {

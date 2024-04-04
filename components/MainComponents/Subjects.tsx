@@ -14,7 +14,6 @@ import { useRouter } from "next/router";
 import DynamicModal from "../DynamicModal";
 import Swal from "sweetalert2";
 import { Input } from "../Input";
-import { useScholarYearContext } from "@/context/YearContext";
 import useSchoolYear from "@/hooks/useSchoolYear";
 
 const columnsGroup = [

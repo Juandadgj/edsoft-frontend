@@ -13,6 +13,7 @@ import Table from "../Table";
 import DynamicModal from "../DynamicModal";
 import Swal from "sweetalert2";
 import { Input } from "../Input";
+import useSchoolYear from "@/hooks/useSchoolYear";
 
 const columsCourses = [
   {
@@ -57,8 +58,7 @@ function Achievements() {
   const [CreateAchievement] = useCreateAchievementMutation();
   const [DeleteAchievement] = useDeleteAchievementMutation();
   const [UpdateAchievement] = useUpdateAchievementMutation();
-  const year = sessionStorage.getItem("year");
-  const yearParse = parseInt(year ? year : "", 10);
+  const { year } = useSchoolYear();
   const router = useRouter();
   const { g, a, per } = router.query;
   const [selectedCourses, setSelectedCourses] = useState<any>([]);
@@ -75,7 +75,7 @@ function Achievements() {
   ] = useCoursesLazyQuery();
 
   const { data: groups, loading: loadingGroups } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: yearParse } },
+    variables: { filterGroupInput: { id_year: year } },
   });
   const handlerSelectedCourse = (id: number | undefined) => {
     router.push(`/dashboard/programacion-anual?componente=logros&g=${id}`);
@@ -325,7 +325,7 @@ function Achievements() {
       <div className="flex justify-between h-[6%]">
         <div>
           <strong className="text-xl text-black ps-8 pb-4">
-            Logros por curso para el año {yearParse}
+            Logros por curso para el año {year}
           </strong>
         </div>
         {a && per && (

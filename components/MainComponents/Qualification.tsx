@@ -9,10 +9,10 @@ import {
 import { useEffect, useState } from "react";
 import Table from "../Table";
 import { useRouter } from "next/router";
+import useSchoolYear from "@/hooks/useSchoolYear";
 
 const Qualification = () => {
-  const year = sessionStorage.getItem("year");
-  const yearParse = parseInt(year ? year : "", 10);
+  const { year } = useSchoolYear();
   const router = useRouter();
   const { g, a, per, qualify } = router.query;
   const [selectedCourses, setSelectedCourses] = useState<any>([]);
@@ -33,7 +33,7 @@ const Qualification = () => {
     { data: courses, loading: loadingCourses, error: errorCourses, refetch },
   ] = useCoursesLazyQuery();
   const { data: groups, loading: loadingGroups } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: yearParse } },
+    variables: { filterGroupInput: { id_year: year } },
   });
   const [
     getStudentQualifications,
@@ -281,7 +281,7 @@ const Qualification = () => {
       <div className="flex justify-between h-[6%]">
         <div>
           <strong className="text-black text-xl ps-8">
-            Cursos creados para el a�o {yearParse} Para la calificacion de logros e
+            Cursos creados para el a�o {year} Para la calificacion de logros e
             indicadores de logros por asignatura
           </strong>
         </div>

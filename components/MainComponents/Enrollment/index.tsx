@@ -11,6 +11,7 @@ import { NotRegistered } from "./NotRegistered";
 import { StudentsPerCourse } from "./StudentsPerCourse";
 import { StudentsLastYear } from "./StudentLastYear";
 import { SearchStudent } from "./SearchStudent";
+import useSchoolYear from "@/hooks/useSchoolYear";
 
 const cardsEnrollment = [
   {
@@ -41,21 +42,20 @@ const cardsEnrollment = [
 ];
 
 export const Enrollment = () => {
-  const today = new Date();
-  const year = today.getFullYear();
+  const { year } = useSchoolYear();
   const router = useRouter();
   const { opcion } = router.query;
   const opcionelegida = cardsEnrollment.find(card => card.id === Number(opcion))
 
-  // useEffect(() => {
-  //   const { opcion, ...rest } = router.query; // Elimina 'opcion' de la URL
-  //   if (opcion) {
-  //     router.replace({
-  //       pathname: router.pathname,
-  //       query: rest,
-  //     });
-  //   }
-  // }, []);
+  useEffect(() => {
+    const { opcion, ...rest } = router.query; // Elimina 'opcion' de la URL
+    if (opcion) {
+      router.replace({
+        pathname: router.pathname,
+        query: rest,
+      });
+    }
+  }, []);
 
   return (
     <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-10 pb-3">
@@ -73,9 +73,9 @@ export const Enrollment = () => {
         {opcionelegida?.component}
         </>
       ) : (
-        <div className="flex flex-wrap ps-8 justify-start gap-6">
+        <div className="grid grid-cols-3 ps-8 place-content-start gap-6 max-w-4xl">
           {cardsEnrollment.map((item, i) => (
-            <div key={i} className="w-1/4 p-4">
+            <div key={i} className="h-52 w-52 flex justify-center items-center">
               <Card type={"enrollment"} item={item} />
             </div>
           ))}

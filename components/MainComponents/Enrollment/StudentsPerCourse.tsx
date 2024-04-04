@@ -6,6 +6,7 @@ import {
   useGetStudentsByGroupLazyQuery,
 } from "@/generated/graphql";
 import { useRouter } from "next/router";
+import useSchoolYear from "@/hooks/useSchoolYear";
 
 const columns = [
   {
@@ -38,8 +39,7 @@ const columnsStudent = [
 ];
 
 export const StudentsPerCourse = () => {
-  const today = new Date();
-  const year = today.getFullYear();
+  const { year } = useSchoolYear();
   const router = useRouter();
   const { g } = router.query;
   const [studentsByGroup, setStudentsByGroup] = useState<any[]>([]);
@@ -48,7 +48,7 @@ export const StudentsPerCourse = () => {
     loading: loadingGroups,
     error: errorGroups,
   } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: 2016 } },
+    variables: { filterGroupInput: { id_year: year } },
   });
 
   const [

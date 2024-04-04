@@ -6,7 +6,9 @@ import { useEffect } from "react";
 
 function Dashboard() {
   const router = useRouter();
-  const { data } = useScholearYearSelectedQuery();
+  const { data } = useScholearYearSelectedQuery({
+    fetchPolicy: "network-only",
+  });
 
   useEffect(() => {
     if (data?.scholearYearSelected) {

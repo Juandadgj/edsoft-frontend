@@ -9,6 +9,7 @@ import {
 import Table from "@/components/Table";
 import { useRouter } from "next/router";
 import ReportConfigurable from "../ReportConfigurable";
+import useSchoolYear from "@/hooks/useSchoolYear";
 
 const columnsDeliverable = [
   {
@@ -45,13 +46,12 @@ const columsStudentPer = [
 ];
 
 const NavigationComponent = () => {
-  const year = sessionStorage.getItem("year");
-  const yearParse = parseInt(year ? year : "", 10);
+  const { year } = useSchoolYear();
   const router = useRouter();
   const { g, per, opcion, s } = router.query;
 
   const { data: groups, loading: loadingGroups } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: yearParse } },
+    variables: { filterGroupInput: { id_year: year } },
   });
 
   const [

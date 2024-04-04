@@ -12,6 +12,7 @@ import Table from "../Table";
 import DynamicModal from "../DynamicModal";
 
 import Swal from "sweetalert2";
+import useSchoolYear from "@/hooks/useSchoolYear";
 
 const columns = [
   {
@@ -37,8 +38,7 @@ const columns = [
 ];
 
 function CreateCourses() {
-  const year = sessionStorage.getItem("year");
-  const yearParse = parseInt(year ? year : "", 10);
+  const { year } = useSchoolYear();
   const [open, setOpen] = useState(false);
   const [typeAdd, setTypeAdd] = useState(false);
   const { data: teachers } = useTeachersQuery();
@@ -59,7 +59,7 @@ function CreateCourses() {
   });
 
   const { data, loading, refetch } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: yearParse } },
+    variables: { filterGroupInput: { id_year: year } },
   });
 
   const courses = [
@@ -291,7 +291,7 @@ function CreateCourses() {
     return await createGroup({
       variables: {
         createGroupInput: {
-          id_year: yearParse,
+          id_year: year ? year : 0,
           level: course,
           sublevel: group,
           representative: teacher.toString(),
@@ -301,7 +301,7 @@ function CreateCourses() {
     });
   };
 
-  const handlerUpdateGroup = async (form: any) => {
+  const handlerUpdateGroup = async () => {
     return await updateGroup({
       variables: {
         updateGroupInput: {
