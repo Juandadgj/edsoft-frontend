@@ -31,12 +31,22 @@ body {
 input[type="date"]::-webkit-calendar-picker-indicator {
   -webkit-appearance: none;
  cursor: pointer;
-
 }
 input[type="date"] {
   color-scheme: light;
 }
 
+
 details > summary::-webkit-details-marker {
   display: none;
+}
+.ant-menu-submenu-title:hover {
+  color: #fff !important;
+}
+.ant-menu-submenu-popup {
+  color: #0055a6 !important;
+}
+.ant-menu-submenu-selected .ant-menu-submenu-title {
+  color: #0055a6 !important;
+  background-color: #fff !important;
 }

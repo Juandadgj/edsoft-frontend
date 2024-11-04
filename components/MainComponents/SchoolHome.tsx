@@ -5,7 +5,7 @@ import MailOutlineIcon from "@mui/icons-material/MailOutline";
 export const SchoolHome = ({ textComponent, manage }: any) => {
   return (
     <div
-      className="flex flex-col justify-center items-center h-full"
+      className="flex flex-col justify-center items-center h-full rounded-btn"
       style={{
         backgroundImage: `url("/assets/background@2x.png")`,
         backgroundRepeat: "no-repeat",
@@ -14,11 +14,11 @@ export const SchoolHome = ({ textComponent, manage }: any) => {
       }}
     >
       <h1 className="text-white mb-2 text-6xl font-bold">Bienvenido</h1>
-      <h6 className="text-muted mb-2">
+      <h6 className="text-white mb-2">
         La mejor forma de gestionar su colegio
       </h6>
 
-      <div className="block absolute end-0 mr-7">
+      <div className="block absolute end-3 mr-7">
         <div className="bg-btn text-white mb-4 p-4 rounded-[100%]">
           <a href="#!" role="button">
             <WhatsAppIcon color="success" />

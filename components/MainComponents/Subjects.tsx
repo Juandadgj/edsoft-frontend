@@ -15,6 +15,7 @@ import DynamicModal from "../DynamicModal";
 import Swal from "sweetalert2";
 import { Input } from "../Input";
 import useSchoolYear from "@/hooks/useSchoolYear";
+import { GroupsCars } from "../Card/types";
 
 const columnsGroup = [
   {
@@ -105,7 +106,6 @@ function Subjects() {
     id_teacher: "",
     teacher: "",
     average: "",
-    percentage: "",
     hour: "",
   });
   const modal = document.getElementById("modal") as HTMLDialogElement;
@@ -303,7 +303,7 @@ function Subjects() {
     },
   ];
   const validationEvent = () => {
-    if (name && teacher && area && average && percentage && hour) {
+    if (name && teacher && area && average && hour) {
       return true;
     } else {
       !name
@@ -321,12 +321,6 @@ function Subjects() {
       !average
         ? setErrors((err: any) => ({ ...err, average: "Promedio Requerido!" }))
         : setErrors((err: any) => ({ ...err, average: "" }));
-      !percentage
-        ? setErrors((err: any) => ({
-            ...err,
-            percentage: "Porcentaje Requerido!",
-          }))
-        : setErrors((err: any) => ({ ...err, percentage: "" }));
       !hour
         ? setErrors((err: any) => ({ ...err, hour: "Horario Requerido!" }))
         : setErrors((err: any) => ({ ...err, hour: "" }));
@@ -415,7 +409,7 @@ function Subjects() {
       id: group?.id_group,
       name: `${group?.level}-${group?.sublevel}` ?? "",
       group_teacher: group?.representative ?? "",
-      asignaturas: group?.coursesCount,
+      course_count: group?.coursesCount ?? 0,
       click: () => handlerSelectedCourse(group?.id_group),
     }));
   }, [groups]);
@@ -449,10 +443,10 @@ function Subjects() {
       variables: {
         createCourseInput: {
           name: name,
-          id_area: area,
-          id_teacher: teacher,
+          id_area: Number(area),
+          id_teacher: Number(teacher),
           average: average,
-          hour: hour,
+          hour: Number(hour),
           percentage: percentage,
           id_group: Number(c),
         },
@@ -466,10 +460,10 @@ function Subjects() {
         updateCourseInput: {
           name: name,
           id_course: course,
-          id_area: area,
-          id_teacher: teacher,
+          id_area: Number(area),
+          id_teacher: Number(teacher),
           average: average,
-          hour: hour,
+          hour: Number(hour),
           percentage: percentage,
           id_group: Number(c),
         },
@@ -547,11 +541,63 @@ function Subjects() {
               </div>
             ) : groups?.groups ? (
               <div className=" border-white py-4 h-full">
-                <Table
-                  column={columnsGroup}
-                  data={processedGroups}
-                  type={"groups"}
-                />
+                <div
+                  className={`w-full px-3 overflow-x-auto animate-fade-left`}
+                  style={{
+                    scrollbarWidth: "thin",
+                    scrollbarColor: "#25429e #F3F4F6",
+                    scrollbarGutter: "100px",
+                  }}
+                >
+                  <table className="table text-black">
+                    <thead className="flex items-center justify-center">
+                      <tr className="flex w-full justify-center border-main-blue border-b-4 text-base font-semibold">
+                        {columnsGroup.map((key: any, index: any) => (
+                          <th
+                            key={index}
+                            className="w-full text-center text-main-blue whitespace-normal flex items-center justify-center"
+                          >
+                            <p className="w-full">{key.Header}</p>
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="w-full py-2">
+                      {processedGroups.map(
+                        (
+                          {
+                            name,
+                            group_teacher,
+                            course_count,
+                            click,
+                          }: GroupsCars,
+                          index: number
+                        ) => (
+                          <div
+                            style={{ textDecoration: "none", width: "100%" }}
+                            onClick={click}
+                            key={index}
+                          >
+                            <tr
+                              className={`flex w-full p-1 my-4 bg-gray1 border-none rounded-[20px] text-sm font-semibold 
+                          `}
+                            >
+                              <td className="flex w-full justify-center items-center text-center">
+                                {name}
+                              </td>
+                              <td className="flex w-full justify-center items-center text-center py-0">
+                                {group_teacher}
+                              </td>
+                              <td className="flex w-full justify-center items-center text-center py-0">
+                                {course_count}
+                              </td>
+                            </tr>
+                          </div>
+                        )
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             ) : (
               <h3>¡Ocurrio un error!</h3>

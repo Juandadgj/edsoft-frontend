@@ -24,7 +24,7 @@ const SideBar = ({ manage, logo }: any) => {
 
         <li className="mt-3 text-white dropdown dropdown-right flex justify-center group">
           <div className="group w-full">
-            <button className="btn btn-sm w-full border-none bg-transparent shadow-none hover:bg-transparent transition duration-500 hover:scale-110">
+            <button title="Funcionarios" className="btn btn-sm w-full border-none bg-transparent shadow-none hover:bg-transparent transition duration-500 hover:scale-110">
               <div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -39,16 +39,6 @@ const SideBar = ({ manage, logo }: any) => {
                 </svg>
               </div>
             </button>
-            <ul
-              tabIndex={0}
-              className="menu w-36 max-w-xs absolute top-0 left-[100%] origin-left  ms-2 text-black bg-white rounded-[5px] z-30 text-xs invisible opacity-0 group-hover:visible group-hover:opacity-100 shadow-md transition duration-500"
-            >
-              <li>
-                <p className="w-full" id="Teacher">
-                  Funcionarios
-                </p>
-              </li>
-            </ul>
           </div>
 
           <ul className="menu w-36  dropdown-content ms-2 text-black bg-white rounded-[5px] z-30 text-xs">
@@ -78,8 +68,8 @@ const SideBar = ({ manage, logo }: any) => {
         </li>
 
         <li className="mt-3 text-white dropdown dropdown-right flex justify-center group">
-          <div className="group w-full">
-            <button className="btn btn-sm w-full border-none bg-transparent shadow-none hover:bg-transparent transition duration-500 hover:scale-110">
+          <div className="w-full">
+            <button title="Programacion Anual" className="btn btn-sm w-full border-none bg-transparent shadow-none hover:bg-transparent transition duration-500 hover:scale-110">
               <div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -94,16 +84,6 @@ const SideBar = ({ manage, logo }: any) => {
                 </svg>
               </div>
             </button>
-            <ul
-              tabIndex={0}
-              className="menu w-36 max-w-xs absolute top-0 left-[100%] origin-left  ms-2 text-black bg-white rounded-[5px] z-30 text-xs invisible opacity-0 group-hover:visible group-hover:opacity-100 shadow-md transition duration-500"
-            >
-              <li>
-                <p className="w-full" id="Teacher">
-                  Programacion Anual
-                </p>
-              </li>
-            </ul>
           </div>
           <ul className="menu w-36 dropdown-content ms-2 text-black bg-white rounded-[5px] z-30 text-xs">
             <li className="">
@@ -210,8 +190,8 @@ const SideBar = ({ manage, logo }: any) => {
         </li>
 
         <li className="mt-3 text-white  dropdown dropdown-right flex justify-center">
-          <div className="group w-full">
-            <button className=" btn w-full border-none bg-transparent shadow-none hover:bg-transparent transition duration-500 hover:scale-110">
+          <div className="w-full">
+            <button title="Proceso Academico" className=" btn w-full border-none bg-transparent shadow-none hover:bg-transparent transition duration-500 hover:scale-110">
               <div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -226,16 +206,6 @@ const SideBar = ({ manage, logo }: any) => {
                 </svg>{" "}
               </div>
             </button>
-            <ul
-              tabIndex={0}
-              className="menu w-36 max-w-xs absolute top-0 left-[100%] origin-left  ms-2 text-black bg-white rounded-[5px] z-30 text-xs invisible opacity-0 group-hover:visible group-hover:opacity-100 shadow-md transition duration-500"
-            >
-              <li>
-                <p className="w-full" id="Teacher">
-                  Proceso Academico
-                </p>
-              </li>
-            </ul>
           </div>
 
           <ul className="menu w-36 max-w-xs dropdown-content ms-2 text-black bg-white rounded-[5px] z-40 text-xs">
@@ -256,8 +226,8 @@ const SideBar = ({ manage, logo }: any) => {
         </li>
 
         <div className="mt-3 text-white dropdown dropdown-right flex justify-center w-full group">
-          <div className="group w-full">
-            <button className=" btn w-full border-none bg-transparent shadow-none hover:bg-transparent transition duration-500 hover:scale-110">
+          <div className="w-full">
+            <button title="Reportes" className=" btn w-full border-none bg-transparent shadow-none hover:bg-transparent transition duration-500 hover:scale-110">
               <div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -276,16 +246,6 @@ const SideBar = ({ manage, logo }: any) => {
                 </svg>
               </div>
             </button>
-            <ul
-              tabIndex={0}
-              className="menu w-36 max-w-xs absolute top-0 left-[100%] origin-left  ms-2 text-black bg-white rounded-[5px] z-30 text-xs invisible opacity-0 group-hover:visible group-hover:opacity-100 shadow-md transition duration-500"
-            >
-              <li>
-                <p className="w-full" id="Teacher">
-                  Reportes
-                </p>
-              </li>
-            </ul>
           </div>
           <ul
             tabIndex={0}
@@ -327,7 +287,7 @@ const SideBar = ({ manage, logo }: any) => {
         </div>
         <li className="nav-item mt-3 text-white dropdown dropdown-right dropdown-end flex justify-center">
           <div className="w-full group">
-            <button className="btn w-full bg-transparent border-none hover:bg-transparent transition duration-500 hover:scale-110">
+            <button title="Ajustes" className="btn w-full bg-transparent border-none hover:bg-transparent transition duration-500 hover:scale-110">
               <div className="avatar">
                 <div className="w-12 rounded-[100%]">
                   <img
@@ -338,16 +298,7 @@ const SideBar = ({ manage, logo }: any) => {
                 </div>
               </div>
             </button>
-            <ul
-              tabIndex={0}
-              className="menu w-36 max-w-xs absolute top-0 left-[100%] origin-left  ms-2 text-black bg-white rounded-[5px] z-30 text-xs invisible opacity-0 group-hover:visible group-hover:opacity-100 shadow-md transition duration-500"
-            >
-              <li>
-                <p className="w-full" id="Teacher">
-                  Ajustes
-                </p>
-              </li>
-            </ul>
+            
           </div>
           <ul className="menu w-36 max-w-xs dropdown-content top-0 ms-2 text-black bg-white rounded-[5px] z-30 text-xs">
             <li>

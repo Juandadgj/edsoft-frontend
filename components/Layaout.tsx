@@ -1,48 +1,125 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import SideBar from "./SideBar";
 import { useRouter } from "next/router";
 import { SchoolNav } from "./SchoolNav";
 import { SchoolAvatar } from "./SchoolAvatar";
+import { Button, Layout, Menu } from "antd";
+import Image from "next/image";
+import Logo from "../public/assets/logo@2x.png";
+import { BreadCrumbs } from "./BreadCrumbs";
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 
 interface ILayaout {
   children: React.ReactNode;
   textpage: string;
 }
+const { Header, Sider, Content } = Layout;
 
 const Layaout = ({ children, textpage }: ILayaout) => {
   const router = useRouter();
-  useEffect(() => {
-    const token = sessionStorage.getItem("userToken");
-    if (!token) {
-      router.push("/instituciones");
-    }
-  }, []);
+  // useEffect(() => {
+  //   const token = sessionStorage.getItem("userToken");
+  //   if (!token) {
+  //     router.push("/instituciones");
+  //   }
+  // }, []);
+  const [collapsed, setCollapsed] = useState(false);
 
   const manageComponentStatus = ({ target }: any) => {
     console.log("a", target.id, target.innerText, target.alt);
     router.push(`/dashboard/${target.id}`);
   };
   return (
-    <div className="h-screen">
-      {router.asPath === "/dashboard" ? null : (
-        <SchoolNav textComponent={textpage} />
-      )}
-
-      {router.asPath === "/dashboard" ? <SchoolAvatar /> : null}
-
-      <div
-        className={`flex ${
-          router.asPath == "/dashboard" ? "h-full" : "h-[90%]"
-        } w-full`}
+    <Layout className="h-screen">
+      <Sider
+        trigger={null}
+        collapsible
+        collapsed={collapsed}
+        className="bg-gray1 py-4"
       >
-        <div className="w-[5%] max-w-[65px]">
-          <SideBar manage={manageComponentStatus} logo={false} />
+        <div className="flex items-center justify-center gap-2 mb-3">
+          <Image src={Logo} alt="Inicio" className={`h-10 w-10`} />
+          {!collapsed && (
+            <h1 className="font-bold text-2xl text-black">EdSoft</h1>
+          )}
         </div>
-        <div className="bg-main-blue flex flex-col h-full w-full">
-          {children}
-        </div>
-      </div>
-    </div>
+        <Menu
+        getPopupContainer={(node) => node.parentNode as HTMLElement}
+        className="bg-gray1"
+        mode="inline"
+          items={[
+            {
+              key: "1",
+              label: "Funcionarios",
+              children: [
+                { key: "1-1", label: "Docentes", onClick: () => router.push("/dashboard/funcionarios?componente=profesores") },
+                { key: "1-2", label: "Secretarios", onClick: () => router.push("/dashboard/funcionarios?componente=secretarios") },
+              ],
+            },
+            {
+              key: "2",
+              label: "Programacion Anual",
+              children: [
+                { key: "2-1", label: "Tipo de Calificación", onClick: () => router.push("/dashboard/programacion-anual?componente=calificacion") },
+                { key: "2-2", label: "Establecer año", onClick: () => router.push("/dashboard/programacion-anual?componente=establecer-año") },
+                { key: "2-3", label: "Copiar Año Anterior", onClick: () => router.push("/dashboard/programacion-anual?componente=copiar-año") },
+                { key: "2-4", label: "Crear Cursos", onClick: () => router.push("/dashboard/programacion-anual?componente=crear-curso") },
+                { key: "2-5", label: "Áreas", onClick: () => router.push("/dashboard/programacion-anual?componente=areas") },
+                { key: "2-6", label: "Asignaturas", onClick: () => router.push("/dashboard/programacion-anual?componente=asignaturas") },  
+                { key: "2-7", label: "Logros", onClick: () => router.push("/dasboard/programacion-anual?componente=logros") },
+                { key: "2-8", label: "Matrículas", onClick: () => router.push("/dasboard/programacion-anual?componente=matriculas") },
+              ],
+            },
+            {
+              key: "3",
+              label: "Proceso Academico",
+              children: [{ key: "3-1", label: "Calificación", onClick: () => router.push("/dashboard/proceso-anual?componente=calificacion") }],
+            },
+            {
+              key: "4",
+              label: "Reportes",
+              children: [
+                { key: "4-1", label: "Indicadores", onClick: () => router.push("/dashboard/reportes?componente=indicadores") },
+                { key: "4-2", label: "Planillas", onClick: () => router.push("/dashboard/reportes?componente=planillas") },
+                { key: "4-3", label: "Listados", onClick: () => router.push("/dashboard/reportes?componente=listados") },
+                { key: "4-4", label: "Entregables", onClick: () => router.push("/dashboard/reportes?componente=entregables") },
+              ],
+            },
+            {
+              key: "5",
+              label: "Ajustes",
+              children: [
+                { key: "5-1", label: "Cambiar contraseña" },
+                { key: "5-2", label: "Cerrar sesion" },
+              ],
+            },
+          ]}
+        />
+      </Sider>
+      <Layout>
+        <Header className="bg-gray2 flex justify-between items-center w-full relative gap-2">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setCollapsed(!collapsed)}
+              style={{
+                fontSize: "16px",
+              }}
+            >
+              {collapsed ? (
+                <MenuUnfoldOutlined color="white" />
+              ) : (
+                <MenuFoldOutlined color="white" />
+              )}
+            </button>
+            <div className="hidden md:flex">
+              <BreadCrumbs page={textpage} />
+            </div>
+          </div>
+          <SchoolAvatar /> 
+        </Header>
+        <Content className="bg-gray1 p-10">{children}</Content>
+      </Layout>
+    </Layout>
   );
 };
 

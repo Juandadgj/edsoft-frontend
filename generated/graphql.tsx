@@ -294,7 +294,7 @@ export type GenerateAchievementsAndIndicators = {
 
 export type GenerateReportAreaInput = {
   id_group: Scalars['Int'];
-  id_student: Scalars['Int'];
+  id_student?: InputMaybe<Scalars['Int']>;
   report_options: ReportDictionary;
 };
 
@@ -1007,6 +1007,14 @@ export type CreateSetYearMutationVariables = Exact<{
 
 export type CreateSetYearMutation = { __typename?: 'Mutation', createScholarYear: { __typename?: 'ScholarYear', id_year: number, rector?: string | null, secretary?: string | null, comment?: string | null } };
 
+export type CreateStudentMutationVariables = Exact<{
+  createStudentInput: CreateStudentInput;
+  idGroup: Scalars['Int'];
+}>;
+
+
+export type CreateStudentMutation = { __typename?: 'Mutation', createStudent: { __typename?: 'Student', email?: string | null, last_name?: string | null, name?: string | null } };
+
 export type CreateTeacherMutationVariables = Exact<{
   createTeacherInput: CreateTeacherInput;
 }>;
@@ -1547,6 +1555,42 @@ export function useCreateSetYearMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateSetYearMutationHookResult = ReturnType<typeof useCreateSetYearMutation>;
 export type CreateSetYearMutationResult = Apollo.MutationResult<CreateSetYearMutation>;
 export type CreateSetYearMutationOptions = Apollo.BaseMutationOptions<CreateSetYearMutation, CreateSetYearMutationVariables>;
+export const CreateStudentDocument = gql`
+    mutation CreateStudent($createStudentInput: CreateStudentInput!, $idGroup: Int!) {
+  createStudent(createStudentInput: $createStudentInput, id_group: $idGroup) {
+    email
+    last_name
+    name
+  }
+}
+    `;
+export type CreateStudentMutationFn = Apollo.MutationFunction<CreateStudentMutation, CreateStudentMutationVariables>;
+
+/**
+ * __useCreateStudentMutation__
+ *
+ * To run a mutation, you first call `useCreateStudentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateStudentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createStudentMutation, { data, loading, error }] = useCreateStudentMutation({
+ *   variables: {
+ *      createStudentInput: // value for 'createStudentInput'
+ *      idGroup: // value for 'idGroup'
+ *   },
+ * });
+ */
+export function useCreateStudentMutation(baseOptions?: Apollo.MutationHookOptions<CreateStudentMutation, CreateStudentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateStudentMutation, CreateStudentMutationVariables>(CreateStudentDocument, options);
+      }
+export type CreateStudentMutationHookResult = ReturnType<typeof useCreateStudentMutation>;
+export type CreateStudentMutationResult = Apollo.MutationResult<CreateStudentMutation>;
+export type CreateStudentMutationOptions = Apollo.BaseMutationOptions<CreateStudentMutation, CreateStudentMutationVariables>;
 export const CreateTeacherDocument = gql`
     mutation CreateTeacher($createTeacherInput: CreateTeacherInput!) {
   createTeacher(createTeacherInput: $createTeacherInput) {

@@ -24,12 +24,12 @@ export const BreadCrumbs = ({ page }: TBreadcrumbs) => {
     }
   }
   return (
-    <div className=" flex items-center text-[#BBAFAF] gap-3 text-sm">
-      <p className="hover:text-white transition duration-500">{page}</p>
+    <div className=" flex items-center text-main-blue gap-3 text-sm font-medium">
+      <p className="hover:text-main-blue transition duration-500">{page}</p>
       {router.query.componente && (
         <>
           <span> {">"} </span>
-          <p className="hover:text-white transition duration-500">{convertirTexto(router.query.componente)}</p>
+          <p className="hover:text-main-blue transition duration-500">{convertirTexto(router.query.componente)}</p>
         </>
       )}
     </div>

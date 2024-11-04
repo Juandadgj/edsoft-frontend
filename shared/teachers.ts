@@ -1,0 +1,48 @@
+const teachers = [
+  {
+    id_teacher: 1,
+    name: "John",
+    last_name: "Doe",
+    type_id: "CC",
+    identification: "123456789",
+    direction: "123 Main St, Cityville",
+    phone: "+1 234-567-890",
+    email: "john.doe@example.com",
+    degree: "Master's in Education",
+  },
+  {
+    id_teacher: 2,
+    name: "Jane",
+    last_name: "Smith",
+    type_id: "CC",
+    identification: "987654321",
+    direction: "456 Oak Ave, Townsville",
+    phone: "+1 987-654-3210",
+    email: "jane.smith@example.com",
+    degree: "Bachelor's in Mathematics",
+  },
+  {
+    id_teacher: 3,
+    name: "Michael",
+    last_name: "Johnson",
+    type_id: "CC",
+    identification: "123123123",
+    direction: "789 Pine Rd, Villagetown",
+    phone: "+1 321-654-9870",
+    email: "michael.johnson@example.com",
+    degree: "PhD in Physics",
+  },
+  {
+    id_teacher: 4,
+    name: "Emily",
+    last_name: "Davis",
+    type_id: "CC",
+    identification: "321321321",
+    direction: "321 Maple St, Hamlet",
+    phone: "+1 654-321-1234",
+    email: "emily.davis@example.com",
+    degree: "Master's in Biology",
+  },
+];
+
+export default teachers;

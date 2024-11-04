@@ -8,8 +8,10 @@ import {
 import { useEffect, useState } from "react";
 import DynamicModal from "../DynamicModal";
 import Swal from "sweetalert2";
-import Table from "../Table";
+import TableComponent from "../Table";
 import { Input } from "../Input";
+import teachers from "@/shared/teachers";
+import { InputAdornment, TextField } from "@mui/material";
 
 const columns = [
   {
@@ -212,9 +214,9 @@ function Teachers() {
   ];
 
   const processedTeachers = useMemo(() => {
-    if (!data?.teachers) return [];
+    if (!teachers) return [];
 
-    return data.teachers.map((teacher, index) => ({
+    return teachers.map((teacher, index) => ({
       name: teacher?.name ?? "",
       lastName: teacher?.last_name ?? "",
       degree: teacher?.degree ?? "",
@@ -324,40 +326,57 @@ function Teachers() {
     });
   };
   const modal = document.getElementById("modal") as HTMLDialogElement;
-
   return (
-    <div className="rounded-tl-[20px] w-full overflow-hidden bg-gray1 p-10 pb-3 h-full">
-      <div className="h-[6%] flex justify-between">
-        <div>
-          <strong className="text-xl text-black ps-8">Lista de Docentes</strong>
+    <div className=" w-full overflow-hidden h-full">
+      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[10px] h-full py-4 px-2">
+        <div className="w-full flex items-center justify-between my-3">
+          <h3>
+            <strong className="text-xl text-black ps-8">
+              Lista de Docentes
+            </strong>
+          </h3>
+          <div className="flex items-center gap-2">
+            <label className="input input-bordered input-sm h-9 py-5 flex items-center gap-2 focus-within:outline-none focus-within:border-2 focus-within:border-main-blue text-black transition">
+              <input type="text" className="grow" placeholder="Buscar" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                className="h-4 w-4 opacity-70"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </label>
+            <button
+              onClick={() => {
+                cleaningStates();
+                setTypeAdd(true);
+                modal?.showModal();
+              }}
+              className="btn btn-sm bg-main-blue mb-0 px-10 h-9 rounded-[10px] transition border-none hover:bg-[#0b5ed7] text-white text-xs"
+            >
+              Crear docente
+            </button>
+          </div>
         </div>
-        <div className="text-end pr-6 h-full [&>button]:h-20">
-          <button
-            type="button"
-            className="btn bg-main-blue btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
-            onClick={() => {
-              cleaningStates();
-              setTypeAdd(true);
-              modal?.showModal();
-            }}
-          >
-            <h4 className="text-white text-xs">+ Nuevo Docente</h4>
-          </button>
-        </div>
-      </div>
-      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]">
         <div className="text-black h-full">
           {loading ? (
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
-          ) : data?.teachers ? (
+          ) : teachers ? (
             <div className=" border-white py-4 h-full">
-              <Table
+              <TableComponent
                 column={columns}
                 data={processedTeachers}
                 type={"teacher"}
               />
+              {/* Componente para paginacion */}
+              <div className="w-full flex justify-end items-center"></div>
             </div>
           ) : (
             <h3>¡Ocurrio un error!</h3>

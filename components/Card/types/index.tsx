@@ -76,6 +76,7 @@ export interface GroupsCars {
   asignaturas?: number;
   students?: number;
   see?: string;
+  course_count?: number;
   click?: () => void;
 }
 export interface AreaCard {

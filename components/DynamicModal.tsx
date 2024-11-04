@@ -81,7 +81,7 @@ export default function DynamicModal({
       <div className="modal-box bg-white max-w-2xl">
         <div className="grid grid-cols-2 mb-3">
           {arrayInputs.map((item: any, i: any) => (
-            <div key={i} className="ms-4 me-4">
+            <div key={i} className="ms-4 me-4 py-[6px]">
               <div className="w-full">{item.html}</div>
             </div>
           ))}

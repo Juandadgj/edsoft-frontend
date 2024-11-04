@@ -6,6 +6,7 @@ import {
   createHttpLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { ConfigProvider } from "antd";
 import type { AppProps } from "next/app";
 const SERVER_URI = process.env.NEXT_PUBLIC_REACT_APP_URL || "localhost/graphql";
 
@@ -39,7 +40,22 @@ const client = new ApolloClient({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <ApolloProvider client={client}>
+      <ConfigProvider
+        theme={{
+          components: {
+            Menu: {
+              /* here is your component tokens */
+              itemHoverColor: "#fff",
+              itemHoverBg: "#0055a6",
+              itemSelectedBg: "#fff",
+              itemSelectedColor: "#0055a6",
+              itemActiveBg: "#0055a6",
+            },
+          },
+        }}
+      >
         <Component {...pageProps} />
+      </ConfigProvider>
     </ApolloProvider>
   );
 }

@@ -1,23 +1,24 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 export const SchoolAvatar = () => {
-  const router = useRouter();  
+  const router = useRouter();
   return (
-    <div className="absolute mr-5 right-0 top-10">
-      <div className="dropdown dropdown-left">
-        <button
-          className="w-20 p-2 hover:scale-105 transition duration-500"
-        >
-          <div className="avatar">
-            <div className="w-20 rounded-[100%]">
-              <img src={"/assets/institucionLogo@2x.png"} alt="icon" />
-            </div>
+    <div className="flex items-center">
+      <div className="dropdown dropdown-end">
+        <button className="btn btn-ghost btn-circle avatar flex items-center justify-center">
+          <div className="w-10 rounded-[100%]">
+            <img
+              src={"/assets/institucionLogo@2x.png"}
+              alt="icon"
+              className="rounded-full w-full h-full object-cover"
+            />
           </div>
         </button>
         <ul
           tabIndex={0}
-          className="dropdown-content z-[1] menu p-2 shadow bg-white text-black rounded-box w-52"
+          className="dropdown-content z-[1] menu p-2 shadow bg-white text-black rounded-box w-52 mt-2"
         >
           <li>
             <button

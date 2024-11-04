@@ -15,7 +15,7 @@ export const Input = ({
   label,
 }: IInput) => {
   return (
-    <div className="form-control">
+    <div className={`form-control relative ${errorText ? `border-red-500 after:absolute after:left-0 after:-bottom-4 after:content-['Campo_requerido!'] after:ml-0.5 after:text-red-500 after:text-xs after:italic` : ''} `}>
       {label && (
         <div className="label text-gray5 p-1">
           <label className="text-xs">{label}</label>
@@ -26,14 +26,14 @@ export const Input = ({
         value={value}
         name={name}
         placeholder={placeholder}
-        className={`input border-gray5 w-full h-12 bg-transparent text-sm text-black ${errorText ? 'border-red-500' : 'focus:outline-none focus:border-main-blue hover:border-main-blue '}  transition duration-300 appearance-none`}
+        className={`input border-gray5 w-full h-9 bg-transparent text-sm text-black focus:outline-none ${errorText ? `border-red-500 focus:border-red-500 hover:border-red-500` : 'focus:border-main-blue hover:border-main-blue '}  transition duration-300 appearance-none`}
         onChange={onChange}
       />
-      {errorText && (
+      {/* {errorText && (
         <div className="label p-1 animate-fade-right">
           <label className="text-xs text-red-500 italic ">{errorText}</label>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

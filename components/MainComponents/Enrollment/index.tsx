@@ -48,8 +48,8 @@ export const Enrollment = () => {
   const opcionelegida = cardsEnrollment.find(card => card.id === Number(opcion))
 
   useEffect(() => {
-    const { opcion, ...rest } = router.query; // Elimina 'opcion' de la URL
-    if (opcion) {
+    const { opcion, groups, ...rest } = router.query; // Elimina 'opcion' de la URL
+    if (opcion && groups) {
       router.replace({
         pathname: router.pathname,
         query: rest,

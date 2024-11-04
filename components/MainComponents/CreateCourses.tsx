@@ -292,7 +292,7 @@ function CreateCourses() {
       variables: {
         createGroupInput: {
           id_year: year ? year : 0,
-          level: course,
+          level: Number(course),
           sublevel: group,
           representative: teacher.toString(),
           working_time: workingTime,
@@ -442,7 +442,7 @@ function CreateCourses() {
               <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
           ) : data?.groups ? (
-            <div className="d-flex border-white py-4 h-full">
+            <div className="border-white py-4 h-full">
               <Table column={columns} data={processedCourses} type={"groups"} />
             </div>
           ) : (

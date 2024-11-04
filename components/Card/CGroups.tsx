@@ -11,6 +11,7 @@ const CCourses = (props: GroupsCars) => {
     asignaturas,
     see,
     students,
+    course_count,
     click,
   } = props;
   return (
@@ -38,6 +39,11 @@ const CCourses = (props: GroupsCars) => {
         {borrar && (
           <td className="flex w-full justify-center items-center text-center py-0">
             {borrar}
+          </td>
+        )}
+        {course_count && (
+          <td className="flex w-full justify-center items-center text-center py-0">
+            {course_count}
           </td>
         )}
         {asignaturas && (
