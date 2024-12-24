@@ -4,6 +4,9 @@ import Table from "@/components/Table";
 import { useRouter } from "next/router";
 import { useGroupsQuery } from "@/generated/graphql";
 import useSchoolYear from "@/hooks/useSchoolYear";
+import { Container } from "postcss";
+import { ContainerComponents } from "@/components/ContainerComponents";
+import TableComponent from "@/components/Table";
 
 const columns = [
   {
@@ -36,7 +39,7 @@ export const StudentsLastYear = () => {
   const processedGroups = useMemo(() => {
     if (!dataGroups?.groups) return [];
     return dataGroups.groups.map((group, index) => ({
-      name: `${group?.level}-${group?.sublevel}` ?? "",
+      name: `${group?.level}-${group?.sublevel}`,
       group_teacher: group?.representative ?? "",
       students: 30,
       see: (
@@ -67,29 +70,27 @@ export const StudentsLastYear = () => {
     }));
   }, [dataGroups]);
   return (
-    <div className="h-full">
-      <div className="pb-4">
+    <ContainerComponents>
+      <div className="w-full flex items-center justify-between my-3">
         <div>
-          <strong className="text-2xl text-black ps-8">
+          <strong className="text-black text-xl ps-8">
             Elija el curso para ingresar estudiantes para el {year}
           </strong>
         </div>
       </div>
-      <div className="h-full bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5">
-        <div className="h-full">
-          {loadingGroups && (
-            <div className="w-full h-full flex justify-center items-center">
-              <span className="loading loading-dots loading-lg bg-main-blue"></span>
-            </div>
-          )}
-          {dataGroups?.groups && (
-            <div className="h-full border-white py-4">
-              <Table column={columns} data={processedGroups} type={"groups"} />
-            </div>
-          )}
-          {errorGroups && <h3>¡Ocurrio un error!</h3>}
-        </div>
+      <div className="h-full">
+        {loadingGroups && (
+          <div className="w-full h-full flex justify-center items-center">
+            <span className="loading loading-dots loading-lg bg-main-blue"></span>
+          </div>
+        )}
+        {dataGroups?.groups && (
+          <div className="h-full border-white py-4">
+            <TableComponent column={columns} data={processedGroups} />
+          </div>
+        )}
+        {errorGroups && <h3>¡Ocurrio un error!</h3>}
       </div>
-    </div>
+    </ContainerComponents>
   );
 };

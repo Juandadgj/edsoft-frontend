@@ -10,6 +10,9 @@ import { useEffect, useState } from "react";
 import Table from "../Table";
 import { useRouter } from "next/router";
 import useSchoolYear from "@/hooks/useSchoolYear";
+import TableComponent from "../Table";
+import { data } from "autoprefixer";
+import { ContainerComponents } from "../ContainerComponents";
 
 const Qualification = () => {
   const { year } = useSchoolYear();
@@ -70,47 +73,57 @@ const Qualification = () => {
 
   const columsCourses = [
     {
-      Header: "Asignatura",
-      accessor: "name",
+      name: "Asignatura",
+      dataIndex: "name",
+      key: "name",
     },
     {
-      Header: "Profesor",
-      accessor: "teacher",
+      name: "Profesor",
+      dataIndex: "teacher",
+      key: "teacher",
     },
     {
-      Header: "1 Per.",
-      accessor: "perido",
+      name: "1 Per.",
+      dataIndex: "perido",
+      key: "perido",
     },
     {
-      Header: "2 Per.",
-      accessor: "perido",
+      name: "2 Per.",
+      dataIndex: "perido",
+      key: "perido",
     },
     {
-      Header: "3 Per.",
-      accessor: "perido",
+      name: "3 Per.",
+      dataIndex: "perido",
+      key: "perido",
     },
     {
-      Header: "4 Per.",
-      accessor: "perido",
+      name: "4 Per.",
+      dataIndex: "perido",
+      key: "perido",
     },
   ];
 
   const columnsGroup = [
     {
-      Header: "Curso",
-      accessor: "name",
+      name: "Curso",
+      dataIndex: "name",
+      key: "name",
     },
     {
-      Header: "Jornada",
-      accessor: "group_teacher",
+      name: "Jornada",
+      dataIndex: "group_teacher",
+      key: "group_teacher",
     },
     {
-      Header: "Profesor del Grupo",
-      accessor: "group_teacher",
+      name: "Profesor del Grupo",
+      dataIndex: "group_teacher",
+      key: "group_teacher",
     },
     {
-      Header: "Asignaturas",
-      accessor: "courses",
+      name: "Asignaturas",
+      dataIndex: "courses",
+      key: "courses",
     },
   ];
 
@@ -131,8 +144,8 @@ const Qualification = () => {
     return data.map((courses: any, index: any) => ({
       id_course: courses?.id_course,
       id_group: courses?.id_group,
-      name: `${courses?.name}` ?? "",
-      teacher: `${courses?.teacher.name}` ?? "-",
+      name: `${courses.name}`,
+      teacher: courses.teacher.name ?? "-",
       route: "proceso-anual?componente=calificacion",
     }));
   };
@@ -140,7 +153,7 @@ const Qualification = () => {
   const processedGroups = useMemo(() => {
     if (!groups?.groups) return [];
     return groups.groups.map((group, index) => ({
-      name: `${group?.level}-${group?.sublevel}` ?? "",
+      name: `${group?.level}-${group?.sublevel}`,
       jornada: group?.working_time,
       group_teacher: group?.representative ?? "",
       asignaturas: (
@@ -277,8 +290,8 @@ const Qualification = () => {
   };
 
   return (
-    <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-10 pb-3">
-      <div className="flex justify-between h-[6%]">
+    <ContainerComponents>
+      <div className="w-full flex items-center justify-between my-3">
         <div>
           <strong className="text-black text-xl ps-8">
             Cursos creados para el a�o {year} Para la calificacion de logros e
@@ -286,211 +299,198 @@ const Qualification = () => {
           </strong>
         </div>
       </div>
-      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]">
-        {!g && (
-          <div className="h-full">
-            {loadingGroups ? (
-              <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-main-blue"></span>
-              </div>
-            ) : groups?.groups ? (
-              <div className="d-flex border-white py-4 h-full">
-                <Table
-                  column={columnsGroup}
-                  data={processedGroups}
-                  type={"groups"}
-                />
-              </div>
-            ) : (
-              <h3>¡Ocurrio un error!</h3>
-            )}
-          </div>
-        )}
-        {g && !a && !per && (
-          <div className="text-black h-full">
-            {loadingCourses ? (
-              <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-main-blue"></span>
-              </div>
-            ) : courses?.courses ? (
-              <div className=" border-white py-4 h-full">
-                <Table
-                  column={columsCourses}
-                  data={selectedCourses}
-                  type={"courses"}
-                />
-              </div>
-            ) : (
-              errorCourses && <h3>Ocurrio un error: {errorCourses?.message}</h3>
-            )}
-          </div>
-        )}
-        {a && per && (
-          <div className="h-full w-full">
-            {loadingAchievements && loadingStudentQualifications && (
-              <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-main-blue"></span>
-              </div>
-            )}
-            <div className="border-white h-full w-full ">
-              <div
-                className={`w-full h-[80%] px-3 overflow-x-auto animate-fade-left `}
-              >
-                {achievements && (
-                  <div className="w-full text-black flex flex-col gap-2 my-2 text-sm">
-                    {selectedAchievements.map(
-                      (achievement: any, index: number) => (
-                        <div key={achievement.id_achievement}>
-                          {index + 1}.{achievement.description}
-                        </div>
-                      )
-                    )}
-                  </div>
-                )}
-                {errorAchievements && (
-                  <h3 className="text-[red]">
-                    {errorStudentQualifications?.message}
-                  </h3>
-                )}
-                {dataStudentQualifications && (
-                  <>
-                    {!qualify ? (
-                      <div className="w-full text-black flex items-center justify-end">
-                        <button
-                          onClick={() => handlerToogleUpdate()}
-                          className="btn btn-sm h-[35px] bg-transparent border-none text-main-gray hover:text-white hover:bg-[#0055A6] group text-xs"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="15"
-                            height="15"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              className="fill-[#0055A6] group-hover:fill-white"
-                              d="m5.433 13.916l1.262-3.154a4 4 0 0 1 .885-1.343L14.5 2.5a2.121 2.121 0 1 1 3 3l-6.92 6.919c-.383.383-.84.684-1.343.885l-3.154 1.262a.5.5 0 0 1-.65-.65ZM2.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0 0 10 3H3.75A2.75 2.75 0 0 0 1 5.75v10.5A2.75 2.75 0 0 0 3.75 19h10.5A2.75 2.75 0 0 0 17 16.25V10a.75.75 0 0 0-1.5 0v6.25c0 .69-.56 1.25-1.25 1.25H3.75c-.69 0-1.25-.56-1.25-1.25V5.75Z"
-                            />
-                          </svg>
-                          <p>Cambiar notas ya calificadas</p>
-                        </button>
+      {!g && (
+        <div className="h-full">
+          {loadingGroups ? (
+            <div className="w-full h-full flex justify-center items-center">
+              <span className="loading loading-dots loading-lg bg-main-blue"></span>
+            </div>
+          ) : groups?.groups ? (
+            <div className="d-flex border-white py-4 h-full">
+              <TableComponent column={columnsGroup} data={processedGroups} />
+            </div>
+          ) : (
+            <h3>¡Ocurrio un error!</h3>
+          )}
+        </div>
+      )}
+      {g && !a && !per && (
+        <div className="text-black h-full">
+          {loadingCourses ? (
+            <div className="w-full h-full flex justify-center items-center">
+              <span className="loading loading-dots loading-lg bg-main-blue"></span>
+            </div>
+          ) : courses?.courses ? (
+            <div className=" border-white py-4 h-full">
+              <Table
+                column={columsCourses}
+                data={selectedCourses}
+                type={"courses"}
+              />
+            </div>
+          ) : (
+            errorCourses && <h3>Ocurrio un error: {errorCourses?.message}</h3>
+          )}
+        </div>
+      )}
+      {a && per && (
+        <div className="h-full w-full">
+          {loadingAchievements && loadingStudentQualifications && (
+            <div className="w-full h-full flex justify-center items-center">
+              <span className="loading loading-dots loading-lg bg-main-blue"></span>
+            </div>
+          )}
+          <div className="border-white h-full w-full ">
+            <div
+              className={`w-full h-[80%] px-3 overflow-x-auto animate-fade-left `}
+            >
+              {achievements && (
+                <div className="w-full text-black flex flex-col gap-2 my-2 text-sm">
+                  {selectedAchievements.map(
+                    (achievement: any, index: number) => (
+                      <div key={achievement.id_achievement}>
+                        {index + 1}.{achievement.description}
                       </div>
-                    ) : (
-                      <div className="w-full text-black flex items-center justify-end">
-                        <button
-                          onClick={() => router.back()}
-                          className="btn btn-sm h-[35px] bg-transparent border-none text-main-gray hover:text-white hover:bg-[#0055A6] group text-xs"
-                        >
-                          <p>Volver</p>
-                        </button>
-                      </div>
-                    )}
-                    <table className="table text-black ">
-                      <thead className="w-full">
-                        <tr className="border-main-blue border-b-4 text-xl font-semibold">
-                          {columnsQualification.map(
-                            (header: any, index: any) => (
-                              <td
-                                key={index}
-                                className="items-center justify-center text-center text-main-blue text-sm"
-                              >
-                                {header.Header}
-                              </td>
-                            )
-                          )}
-                        </tr>
-                      </thead>
-                      <tbody className="w-full py-4 ">
-                        {studentQualifications.map((item: any, key: any) => (
-                          <tr
-                            key={item.id}
-                            className="border-none p-3 bg-gray1"
-                          >
-                            <td className="text-center text-xs">
-                              {item.student}
-                            </td>
-                            {item.qualifications &&
-                              item.qualifications.map(
-                                (qualification: any, index: number) => (
-                                  <td
-                                    key={index}
-                                    className="text-center max-w-[50px] p-1"
-                                  >
-                                    {qualify && (
-                                      <>
-                                        {qualification.score ? (
-                                          <input
-                                            className="input border-gray5 w-full max-w-[50px] h-8 bg-transparent text-sm p-1 "
-                                            placeholder={qualification.score}
-                                            onChange={({ target }) =>
-                                              updateScore(
-                                                qualification,
-                                                target.value
-                                              )
-                                            }
-                                          />
-                                        ) : (
-                                          <div className="w-full text-[red]">
-                                            <p>?</p>
-                                          </div>
-                                        )}{" "}
-                                      </>
-                                    )}
-                                    {!qualify && (
-                                      <>
-                                        {qualification.score ? (
-                                          qualification.score
-                                        ) : (
-                                          <input
-                                            type="text"
-                                            className="input border-gray5 w-full max-w-[50px] h-8 bg-transparent text-sm p-1 "
-                                            onChange={({ target }) =>
-                                              updateScore(
-                                                qualification,
-                                                target.value
-                                              )
-                                            }
-                                          />
-                                        )}
-                                      </>
-                                    )}
-                                  </td>
-                                )
-                              )}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </>
-                )}
-                {errorStudentQualifications && (
-                  <h3 className="text-[red]">
-                    {errorStudentQualifications?.message}
-                  </h3>
-                )}
-              </div>
-              {dataStudentQualifications && (
-                <div className="w-full flex justify-center items-center h-[20%]">
-                  {!loadingUpdate && (
-                    <button
-                      disabled={loadingUpdate}
-                      onClick={handlerUpdateQualifications}
-                      className="btn btn-sm border-none text-white bg-[#0b5ed7] hover:bg-[#0b5ed7] text-xs"
-                    >
-                      Guardar notas
-                    </button>
-                  )}
-                  {loadingUpdate && (
-                    <span className="loading loading-dots loading-lg bg-main-blue h-4"></span>
+                    )
                   )}
                 </div>
               )}
+              {errorAchievements && (
+                <h3 className="text-[red]">
+                  {errorStudentQualifications?.message}
+                </h3>
+              )}
+              {dataStudentQualifications && (
+                <>
+                  {!qualify ? (
+                    <div className="w-full text-black flex items-center justify-end">
+                      <button
+                        onClick={() => handlerToogleUpdate()}
+                        className="btn btn-sm h-[35px] bg-transparent border-none text-main-gray hover:text-white hover:bg-[#0055A6] group text-xs"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="15"
+                          height="15"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            className="fill-[#0055A6] group-hover:fill-white"
+                            d="m5.433 13.916l1.262-3.154a4 4 0 0 1 .885-1.343L14.5 2.5a2.121 2.121 0 1 1 3 3l-6.92 6.919c-.383.383-.84.684-1.343.885l-3.154 1.262a.5.5 0 0 1-.65-.65ZM2.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0 0 10 3H3.75A2.75 2.75 0 0 0 1 5.75v10.5A2.75 2.75 0 0 0 3.75 19h10.5A2.75 2.75 0 0 0 17 16.25V10a.75.75 0 0 0-1.5 0v6.25c0 .69-.56 1.25-1.25 1.25H3.75c-.69 0-1.25-.56-1.25-1.25V5.75Z"
+                          />
+                        </svg>
+                        <p>Cambiar notas ya calificadas</p>
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="w-full text-black flex items-center justify-end">
+                      <button
+                        onClick={() => router.back()}
+                        className="btn btn-sm h-[35px] bg-transparent border-none text-main-gray hover:text-white hover:bg-[#0055A6] group text-xs"
+                      >
+                        <p>Volver</p>
+                      </button>
+                    </div>
+                  )}
+                  <table className="table text-black ">
+                    <thead className="w-full">
+                      <tr className="border-main-blue border-b-4 text-xl font-semibold">
+                        {columnsQualification.map((header: any, index: any) => (
+                          <td
+                            key={index}
+                            className="items-center justify-center text-center text-main-blue text-sm"
+                          >
+                            {header.Header}
+                          </td>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="w-full py-4 ">
+                      {studentQualifications.map((item: any, key: any) => (
+                        <tr key={item.id} className="border-none p-3 bg-gray1">
+                          <td className="text-center text-xs">
+                            {item.student}
+                          </td>
+                          {item.qualifications &&
+                            item.qualifications.map(
+                              (qualification: any, index: number) => (
+                                <td
+                                  key={index}
+                                  className="text-center max-w-[50px] p-1"
+                                >
+                                  {qualify && (
+                                    <>
+                                      {qualification.score ? (
+                                        <input
+                                          className="input border-gray5 w-full max-w-[50px] h-8 bg-transparent text-sm p-1 "
+                                          placeholder={qualification.score}
+                                          onChange={({ target }) =>
+                                            updateScore(
+                                              qualification,
+                                              target.value
+                                            )
+                                          }
+                                        />
+                                      ) : (
+                                        <div className="w-full text-[red]">
+                                          <p>?</p>
+                                        </div>
+                                      )}{" "}
+                                    </>
+                                  )}
+                                  {!qualify && (
+                                    <>
+                                      {qualification.score ? (
+                                        qualification.score
+                                      ) : (
+                                        <input
+                                          type="text"
+                                          className="input border-gray5 w-full max-w-[50px] h-8 bg-transparent text-sm p-1 "
+                                          onChange={({ target }) =>
+                                            updateScore(
+                                              qualification,
+                                              target.value
+                                            )
+                                          }
+                                        />
+                                      )}
+                                    </>
+                                  )}
+                                </td>
+                              )
+                            )}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </>
+              )}
+              {errorStudentQualifications && (
+                <h3 className="text-[red]">
+                  {errorStudentQualifications?.message}
+                </h3>
+              )}
             </div>
+            {dataStudentQualifications && (
+              <div className="w-full flex justify-center items-center h-[20%]">
+                {!loadingUpdate && (
+                  <button
+                    disabled={loadingUpdate}
+                    onClick={handlerUpdateQualifications}
+                    className="btn btn-sm border-none text-white bg-[#0b5ed7] hover:bg-[#0b5ed7] text-xs"
+                  >
+                    Guardar notas
+                  </button>
+                )}
+                {loadingUpdate && (
+                  <span className="loading loading-dots loading-lg bg-main-blue h-4"></span>
+                )}
+              </div>
+            )}
           </div>
-        )}
-      </div>
-
-      {/* Modal */}
-    </div>
+        </div>
+      )}
+    </ContainerComponents>
   );
 };
 

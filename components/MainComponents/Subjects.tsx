@@ -16,6 +16,10 @@ import Swal from "sweetalert2";
 import { Input } from "../Input";
 import useSchoolYear from "@/hooks/useSchoolYear";
 import { GroupsCars } from "../Card/types";
+import TableComponent from "../Table";
+import { ContainerComponents } from "../ContainerComponents";
+import CustomModal from "../CustomModal";
+import { SubjectForm } from "./forms/SubjectForm";
 
 const columnsGroup = [
   {
@@ -73,7 +77,6 @@ function Subjects() {
   const { c } = router.query;
   const [selectedGroup, setSelectedGroup] = useState<any>([]);
   const [open, setOpen] = useState(false);
-  const [typeAdd, setTypeAdd] = useState(false);
   const [
     getCourses,
     { data: courses, loading: loadingCourses, error: errorCourses, refetch },
@@ -84,262 +87,19 @@ function Subjects() {
   });
   const { data: teachers } = useTeachersQuery();
   const { data: areas } = useGetAreasQuery();
-  const [AddCourse] = useCreateCourseMutation();
-  const [UpdateCourse] = useUpdateCourseMutation();
   const [DeleteCourse] = useDeleteCourseMutation({});
-
   const handlerSelectedCourse = (id: number | undefined) => {
     router.push(`/dashboard/programacion-anual?componente=asignaturas&c=${id}`);
   };
-
-  const [course, setCourse] = useState<number>(0);
-  const [name, setName] = useState("");
-  const [teacher, setTeacher] = useState<number>(0);
-  const [area, setArea] = useState(0);
-  const [hour, setHour] = useState(0);
-  const [percentage, setPercentage] = useState(0);
-  const [average, setAverage] = useState("");
-
-  const [errors, setErrors] = useState<any>({
+  const [formValues, setFormValues] = useState<any>({
     name: "",
-    id_area: "",
     id_teacher: "",
-    teacher: "",
+    id_area: "",
     average: "",
     hour: "",
+    percentage: "",
   });
   const modal = document.getElementById("modal") as HTMLDialogElement;
-
-  const options = [];
-  for (let i = 1; i <= 24; i++) {
-    options.push(
-      <option key={i} value={i} className="text-xs">
-        {i}
-      </option>
-    );
-  }
-  const optionsPercentage = [];
-  for (let i = 1; i <= 100; i++) {
-    optionsPercentage.push(
-      <option key={i} value={i} className="text-xs">
-        {i}
-      </option>
-    );
-  }
-
-  const arrayInputs: any[] = [
-    {
-      html: (
-        <Input
-          type="text"
-          value={name}
-          name="name"
-          label="Nombre de la asignatura"
-          onChange={({ target }: any) => setName(target.value)}
-        />
-      ),
-    },
-    {
-      html: (
-        <div className="form-control text-black">
-          <div className="label text-gray5 p-1">
-            <label className="text-xs">Profesor de la asignatura</label>
-          </div>
-          <div className="w-full">
-            <select
-              id="teacher"
-              name="teacher"
-              value={teacher ? teacher : "Selecciona un profesor"}
-              onChange={({ target }: any) => {
-                setTeacher(target.value);
-              }}
-              className="border rounded-btn border-gray5 w-full h-12 bg-transparent text-sm px-2"
-              required
-            >
-              <option disabled>Selecciona un profesor</option>
-              {teachers?.teachers.map((teacher: any) => (
-                <option
-                  key={teacher?.id_teacher}
-                  value={teacher?.id_teacher}
-                  className="text-xs"
-                >
-                  {teacher?.name} {teacher?.last_name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="label-text-alt text-[red]">
-              {errors.id_teacher}
-            </label>
-          </div>
-        </div>
-      ),
-    },
-    {
-      html: (
-        <div className="form-control text-black">
-          <div className="label text-gray5 p-1">
-            <label className="text-xs">
-              Area donde pertenece la asignatura
-            </label>
-          </div>
-          <div className="w-full">
-            <select
-              id="area"
-              name="id_area"
-              value={area ? area : "Selecciona un area"}
-              onChange={({ target }: any) => {
-                setArea(target.value);
-              }}
-              className="border rounded-btn border-gray5 w-full h-12 bg-transparent text-sm px-2"
-            >
-              <option disabled>Selecciona un area</option>
-              {areas?.areas.map((area: any) => (
-                <option
-                  key={area?.id_area}
-                  value={area?.id_area}
-                  className="text-xs"
-                >
-                  {area.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="label-text-alt text-[red]">
-              {errors.id_area}
-            </label>
-          </div>
-        </div>
-      ),
-    },
-    {
-      html: (
-        <div className="from-control text-black">
-          <div className="label text-gray5 p-1">
-            <label className="text-xs">
-              Promediar con todas las asignatura
-            </label>
-          </div>
-          <div className="w-full">
-            <select
-              id="area"
-              name="id_area"
-              value={average ? average : "Promediar"}
-              onChange={({ target }: any) => {
-                setAverage(target.value);
-              }}
-              className="border rounded-btn border-gray5 w-full h-12 bg-transparent text-sm px-2"
-            >
-              <option selected disabled>
-                Promediar
-              </option>
-              <option value={"Si"}> Si</option>
-              <option value={"No"}> No</option>
-            </select>
-          </div>
-          <div>
-            <label className="label-text-alt text-[red]">
-              {errors.average}
-            </label>
-          </div>
-        </div>
-      ),
-    },
-    {
-      html: (
-        <div className="form-control text-black">
-          <div className="label text-gray5 p-1">
-            <label className="text-xs">Intensidad horaria (Semanal)</label>
-          </div>
-          <div className="w-full">
-            <select
-              value={hour ? hour : "Intensidad Horaria"}
-              onChange={({ target }: any) => {
-                setHour(target.value);
-              }}
-              className="border rounded-btn border-gray5 w-full h-12 bg-transparent text-sm px-2"
-            >
-              <option selected disabled>
-                Intensidad Horaria
-              </option>
-              {options}
-            </select>
-          </div>
-          <div>
-            <label className="label-text-alt text-[red]">{errors.hour}</label>
-          </div>
-        </div>
-      ),
-    },
-    ,
-    {
-      html: (
-        <div className="form-control text-black">
-          <div className="label text-gray5 p-1">
-            <label className="text-xs">Valor porcentual</label>
-          </div>
-          <div className="w-full">
-            <select
-              name="percentage"
-              value={percentage ? percentage : "Selecciona porcentaje"}
-              onChange={({ target }: any) => setPercentage(target.value)}
-              className="border rounded-btn border-gray5 w-full h-12 bg-transparent text-sm px-2"
-            >
-              <option selected disabled>
-                Selecciona porcentaje
-              </option>
-              {optionsPercentage}
-            </select>
-          </div>
-          <div>
-            <label className="label-text-alt text-[red]">
-              {errors.percentage}
-            </label>
-          </div>
-        </div>
-      ),
-    },
-  ];
-  const validationEvent = () => {
-    if (name && teacher && area && average && hour) {
-      return true;
-    } else {
-      !name
-        ? setErrors((err: any) => ({ ...err, name: "Nombre Requerido!" }))
-        : setErrors((err: any) => ({ ...err, name: "" }));
-      !teacher
-        ? setErrors((err: any) => ({
-            ...err,
-            id_teacher: "Profesor Requerido!",
-          }))
-        : setErrors((err: any) => ({ ...err, id_teacher: "" }));
-      !area
-        ? setErrors((err: any) => ({ ...err, id_area: "Area Requerido!" }))
-        : setErrors((err: any) => ({ ...err, id_area: "" }));
-      !average
-        ? setErrors((err: any) => ({ ...err, average: "Promedio Requerido!" }))
-        : setErrors((err: any) => ({ ...err, average: "" }));
-      !hour
-        ? setErrors((err: any) => ({ ...err, hour: "Horario Requerido!" }))
-        : setErrors((err: any) => ({ ...err, hour: "" }));
-      return false;
-    }
-  };
-
-  const cleaningStates = () => {
-    for (const item in errors) {
-      setErrors((err: any) => ({ ...err, [item]: "" }));
-    }
-    setCourse(0);
-    setName("");
-    setTeacher(0);
-    setArea(0);
-    setAverage("");
-    setHour(0);
-    setPercentage(0);
-  };
 
   const processedSubjects = (data: any) => {
     return data.map((courses: any, index: number) => ({
@@ -353,16 +113,15 @@ function Subjects() {
         <button
           className="border-0"
           onClick={() => {
-            setTypeAdd(false);
-            cleaningStates();
-            setCourse(courses.id_course);
-            setName(courses.name);
-            setTeacher(courses.id_teacher);
-            setArea(courses.id_area);
-            setAverage(courses.average);
-            setHour(courses.hour);
-            setPercentage(courses.percentage);
-            modal?.showModal();
+            setFormValues({
+              name: courses.name,
+              id_teacher: courses.id_teacher,
+              id_area: courses.id_area,
+              average: courses.average,
+              hour: courses.hour,
+              percentage: courses.percentage,
+            });
+            setOpen(true);
           }}
         >
           <svg
@@ -407,7 +166,7 @@ function Subjects() {
     if (!groups?.groups) return [];
     return groups.groups.map((group, index) => ({
       id: group?.id_group,
-      name: `${group?.level}-${group?.sublevel}` ?? "",
+      name: `${group?.level}-${group?.sublevel}`,
       group_teacher: group?.representative ?? "",
       course_count: group?.coursesCount ?? 0,
       click: () => handlerSelectedCourse(group?.id_group),
@@ -438,38 +197,6 @@ function Subjects() {
     }
   }, [courses]);
 
-  const handlerCreateCourse = async () => {
-    return await AddCourse({
-      variables: {
-        createCourseInput: {
-          name: name,
-          id_area: Number(area),
-          id_teacher: Number(teacher),
-          average: average,
-          hour: Number(hour),
-          percentage: percentage,
-          id_group: Number(c),
-        },
-      },
-    });
-  };
-
-  const handlerUpdateCourse = async () => {
-    return await UpdateCourse({
-      variables: {
-        updateCourseInput: {
-          name: name,
-          id_course: course,
-          id_area: Number(area),
-          id_teacher: Number(teacher),
-          average: average,
-          hour: Number(hour),
-          percentage: percentage,
-          id_group: Number(c),
-        },
-      },
-    });
-  };
   const handlerDeleteCourse = async (id_course: number) => {
     Swal.fire({
       title: "¿Estás seguro?",
@@ -509,22 +236,41 @@ function Subjects() {
   const handlerRefetchCourse = () => {
     refetch();
   };
+  const handlerCloseModal = () => {
+    setOpen(false);
+    setFormValues({
+      name: "",
+      id_teacher: "",
+      id_area: "",
+      average: "",
+      hour: "",
+      percentage: "",
+    });
+  };
   return (
-    <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-10 pb-3">
-      <div className=" h-[6%] flex justify-between">
+    <ContainerComponents>
+      <div className="w-full flex items-center justify-between my-3">
         <div>
           <strong className="text-xl text-black ps-8">
             Asignaturas creadas para el año {year}
           </strong>
         </div>
+
         {c && (
           <div className="text-end pr-6">
             <button
               type="button"
-              className="btn bg-main-blue btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
+              className="btn btn-sm bg-main-blue mb-0 px-10 h-9 rounded-[10px] transition border-none hover:bg-[#0b5ed7] text-white text-xs"
               onClick={() => {
-                setTypeAdd(true);
-                modal?.showModal();
+                setFormValues({
+                  name: "",
+                  id_teacher: "",
+                  id_area: "",
+                  average: "",
+                  hour: "",
+                  percentage: "",
+                });
+                setOpen(true);
               }}
             >
               <h4 className="text-white text-xs">+ Nueva asignatura</h4>
@@ -532,113 +278,52 @@ function Subjects() {
           </div>
         )}
       </div>
-      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]">
-        {!c ? (
-          <div className="h-full">
-            {loadingGroups ? (
-              <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-main-blue"></span>
-              </div>
-            ) : groups?.groups ? (
-              <div className=" border-white py-4 h-full">
-                <div
-                  className={`w-full px-3 overflow-x-auto animate-fade-left`}
-                  style={{
-                    scrollbarWidth: "thin",
-                    scrollbarColor: "#25429e #F3F4F6",
-                    scrollbarGutter: "100px",
-                  }}
-                >
-                  <table className="table text-black">
-                    <thead className="flex items-center justify-center">
-                      <tr className="flex w-full justify-center border-main-blue border-b-4 text-base font-semibold">
-                        {columnsGroup.map((key: any, index: any) => (
-                          <th
-                            key={index}
-                            className="w-full text-center text-main-blue whitespace-normal flex items-center justify-center"
-                          >
-                            <p className="w-full">{key.Header}</p>
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody className="w-full py-2">
-                      {processedGroups.map(
-                        (
-                          {
-                            name,
-                            group_teacher,
-                            course_count,
-                            click,
-                          }: GroupsCars,
-                          index: number
-                        ) => (
-                          <div
-                            style={{ textDecoration: "none", width: "100%" }}
-                            onClick={click}
-                            key={index}
-                          >
-                            <tr
-                              className={`flex w-full p-1 my-4 bg-gray1 border-none rounded-[20px] text-sm font-semibold 
-                          `}
-                            >
-                              <td className="flex w-full justify-center items-center text-center">
-                                {name}
-                              </td>
-                              <td className="flex w-full justify-center items-center text-center py-0">
-                                {group_teacher}
-                              </td>
-                              <td className="flex w-full justify-center items-center text-center py-0">
-                                {course_count}
-                              </td>
-                            </tr>
-                          </div>
-                        )
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            ) : (
-              <h3>¡Ocurrio un error!</h3>
-            )}
-          </div>
-        ) : (
-          <div className="text-black h-full">
-            {loadingCourses ? (
-              <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-main-blue"></span>
-              </div>
-            ) : courses?.courses ? (
-              <div className=" border-white py-4 h-full">
-                <Table
-                  column={columnsSubjects}
-                  data={selectedGroup}
-                  type={"subject"}
-                />
-              </div>
-            ) : (
-              errorCourses && <h3>Ocurrio un error: {errorCourses?.message}</h3>
-            )}
-          </div>
-        )}
-      </div>
+      {!c ? (
+        <div className="text-black h-full">
+          {loadingGroups ? (
+            <div className="w-full h-full flex justify-center items-center">
+              <span className="loading loading-dots loading-lg bg-main-blue"></span>
+            </div>
+          ) : groups?.groups ? (
+            <div className=" border-white py-4 h-full">
+              <TableComponent column={columnsGroup} data={processedGroups} />
+            </div>
+          ) : (
+            <h3>¡Ocurrio un error!</h3>
+          )}
+        </div>
+      ) : (
+        <div className="text-black h-full">
+          {loadingCourses ? (
+            <div className="w-full h-full flex justify-center items-center">
+              <span className="loading loading-dots loading-lg bg-main-blue"></span>
+            </div>
+          ) : courses?.courses ? (
+            <div className=" border-white py-4 h-full">
+              <Table
+                column={columnsSubjects}
+                data={selectedGroup}
+                type={"subject"}
+              />
+              <TableComponent column={columnsSubjects} data={selectedGroup} />
+            </div>
+          ) : (
+            errorCourses && <h3>Ocurrio un error: {errorCourses?.message}</h3>
+          )}
+        </div>
+      )}
       {/* Modal */}
-      <DynamicModal
-        arrayInputs={arrayInputs}
-        typeAdd={typeAdd}
-        open={open}
-        setOpen={setOpen}
-        addSuccessMsg={"Curso creado!"}
-        updateSuccessMsg={"Curso actualizado!"}
-        formValues={{ course, c }}
-        addMutation={handlerCreateCourse}
-        updateMutation={handlerUpdateCourse}
-        cleaningStates={cleaningStates}
-        validationEvent={validationEvent}
-        refetch={handlerRefetchCourse}
-      />
-    </div>
+      <CustomModal open={open}>
+        <SubjectForm
+          subject={formValues}
+          onClose={handlerCloseModal}
+          areas={areas?.areas}
+          courses={courses?.courses}
+          groups={groups?.groups}
+          teachers={teachers?.teachers}
+        />
+      </CustomModal>
+    </ContainerComponents>
   );
 }
 

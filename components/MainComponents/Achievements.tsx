@@ -14,6 +14,9 @@ import DynamicModal from "../DynamicModal";
 import Swal from "sweetalert2";
 import { Input } from "../Input";
 import useSchoolYear from "@/hooks/useSchoolYear";
+import { ContainerComponents } from "../ContainerComponents";
+import CustomModal from "../CustomModal";
+import { AchievementsForm } from "./forms/AchievementsForm";
 
 const columsCourses = [
   {
@@ -55,9 +58,12 @@ const columnsGroup = [
 ];
 
 function Achievements() {
-  const [CreateAchievement] = useCreateAchievementMutation();
+  const [formValues, setFormValues] = useState<any>({
+    description: "",
+    id_course: 0,
+    period: 0,
+  });
   const [DeleteAchievement] = useDeleteAchievementMutation();
-  const [UpdateAchievement] = useUpdateAchievementMutation();
   const { year } = useSchoolYear();
   const router = useRouter();
   const { g, a, per } = router.query;
@@ -80,70 +86,6 @@ function Achievements() {
   const handlerSelectedCourse = (id: number | undefined) => {
     router.push(`/dashboard/programacion-anual?componente=logros&g=${id}`);
   };
-  // Form to manage inputs values
-  const [formValues, setFormValues] = useState<any>({
-    description: "",
-    id_course: 0,
-    period: 0,
-  });
-  // Obj to manage every input error
-  const [errors, setErrors] = useState<any>({
-    description: "",
-    id_course: 0,
-    period: 0,
-  });
-
-  // Here we validate if every item is filled and if it is we return true
-  const validationEvent = () => {
-    if (formValues.description) {
-      return true;
-    } else {
-      for (const item in formValues) {
-        if (!formValues[item]) {
-          setErrors((err: any) => ({ ...err, [item]: "Campo Requerido!" }));
-        } else {
-          setErrors((err: any) => ({ ...err, [item]: "" }));
-        }
-      }
-      return false;
-    }
-  };
-
-  // We are using formvalues for add and update, so once the user finishes a proccess, it's necessary to clean this state
-  const cleaningStates = () => {
-    for (const item in errors) {
-      setErrors((err: any) => ({ ...err, [item]: "" }));
-    }
-
-    for (const i in formValues) {
-      if (i === "id_achievement") {
-        setFormValues((val: any) => ({ ...val, [i]: undefined }));
-      } else if (i === "type_id") {
-        setFormValues((val: any) => ({ ...val, [i]: 1 }));
-      } else {
-        setFormValues((val: any) => ({ ...val, [i]: "" }));
-      }
-    }
-  };
-
-  const arrayInputs: Array<any> = [
-    {
-      html: (
-        <Input
-          required
-          name="description"
-          value={formValues.description}
-          onChange={({ target }: any) =>
-            setFormValues({ ...formValues, [target.name]: target.value })
-          }
-          type="text"
-          placeholder="Descripcion del logro"
-          label="Descripcion del logro"
-          errorText={errors.description}
-        />
-      ),
-    },
-  ];
 
   const processedAchievements = (data: any) => {
     if (!data?.achievements) return [];
@@ -154,8 +96,6 @@ function Achievements() {
         <button
           className="border-0"
           onClick={() => {
-            setTypeAdd(false);
-            cleaningStates();
             setFormValues((t: any) => ({
               ...t,
               description: achievements?.description,
@@ -163,7 +103,7 @@ function Achievements() {
               period: achievements?.period,
               id_achievement: achievements?.id_achievement,
             }));
-            modal?.showModal();
+            setOpen(true);
           }}
         >
           <svg
@@ -260,7 +200,7 @@ function Achievements() {
   const processedGroups = useMemo(() => {
     if (!groups?.groups) return [];
     return groups?.groups.map((group, index) => ({
-      name: `${group?.level}-${group?.sublevel}` ?? "",
+      name: `${group?.level}-${group?.sublevel}`,
       group_teacher: group?.representative ?? "",
       asignaturas: group?.coursesCount,
       click: () => handlerSelectedCourse(group?.id_group),
@@ -272,8 +212,8 @@ function Achievements() {
     return data.map((courses: any, index: any) => ({
       id_course: courses?.id_course,
       id_group: courses?.id_group,
-      name: `${courses?.name}` ?? "",
-      teacher: `${courses?.teacher.name}` ?? "-",
+      name: courses?.name ?? "",
+      teacher: courses?.teacher.name ?? "-",
       periodo1: "-",
       periodo2: "-",
       periodo3: "-",
@@ -306,141 +246,102 @@ function Achievements() {
     }
   }, [achievements]);
 
-  const handlerCreateAchievement = async () => {
-    return await CreateAchievement({
-      variables: { createAchievementInput: formValues },
+  const handlerCloseModal = () => {
+    setOpen(false);
+    setFormValues({
+      description: "",
+      id_course: 0,
+      period: 0,
     });
   };
-
-  const handlerUpdateAchievement = async () => {
-    return await UpdateAchievement({
-      variables: { updateAchievementInput: formValues },
-    });
-  };
-
-  const modal = document.getElementById("modal") as HTMLDialogElement;
-
   return (
-    <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-10 pb-3">
-      <div className="flex justify-between h-[6%]">
-        <div>
+    <ContainerComponents>
+      <div className="w-full flex items-center justify-between my-3">
+        <h3>
           <strong className="text-xl text-black ps-8 pb-4">
             Logros por curso para el año {year}
           </strong>
+        </h3>
+      </div>
+      {!g && (
+        <div className="h-full">
+          {loadingGroups ? (
+            <div className="w-full h-full flex justify-center items-center">
+              <span className="loading loading-dots loading-lg bg-main-blue"></span>
+            </div>
+          ) : groups?.groups ? (
+            <div className="d-flex border-white py-4 h-full">
+              <Table
+                column={columnsGroup}
+                data={processedGroups}
+                type={"groups"}
+              />
+            </div>
+          ) : (
+            <h3>¡Ocurrio un error!</h3>
+          )}
         </div>
-        {a && per && (
-          <div className="text-end pr-6">
-            <button
-              type="button"
-              className="btn bg-main-blue btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
-              onClick={() => {
-                setTypeAdd(true);
-                setFormValues((t: any) => ({
-                  ...t,
-                  id_course: Number(a),
-                  period: Number(per),
-                }));
-                modal?.showModal();
-              }}
-            >
-              <h4 className="text-white">+ Nuevo Logro</h4>
-            </button>
-          </div>
-        )}
-      </div>
-      <div
-        className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]"
-      >
-        {!g && (
-          <div className="h-full">
-            {loadingGroups ? (
-              <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-main-blue"></span>
-              </div>
-            ) : groups?.groups ? (
-              <div className="d-flex border-white py-4 h-full">
-                <Table
-                  column={columnsGroup}
-                  data={processedGroups}
-                  type={"groups"}
-                />
-              </div>
-            ) : (
-              <h3>¡Ocurrio un error!</h3>
-            )}
-          </div>
-        )}
-        {g && !a && !per && (
-          <div className="text-black h-full">
-            {loadingCourses ? (
-              <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-main-blue"></span>
-              </div>
-            ) : courses?.courses ? (
-              <div className=" border-white py-4 h-full">
-                <Table
-                  column={columsCourses}
-                  data={selectedCourses}
-                  type={"courses"}
-                />
-              </div>
-            ) : (
-              errorCourses && <h3>Ocurrio un error: {errorCourses?.message}</h3>
-            )}
-          </div>
-        )}
-        {a && per && (
-          <div className="text-black h-full">
-            {loadingAchievements ? (
-              <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-main-blue"></span>
-              </div>
-            ) : achievements?.achievements ? (
-              <div className="overflow-x-auto h-full">
-                <table className="table">
-                  <thead>
-                    <tr className="border-none text-lg font-semibold text-main-blue">
-                      <th>Descripcion</th>
-                      <th>Editar</th>
-                      <th>Agregar indicador</th>
-                      <th className="text-[#e11d48]">Eliminar</th>
+      )}
+      {g && !a && !per && (
+        <div className="text-black h-full">
+          {loadingCourses ? (
+            <div className="w-full h-full flex justify-center items-center">
+              <span className="loading loading-dots loading-lg bg-main-blue"></span>
+            </div>
+          ) : courses?.courses ? (
+            <div className=" border-white py-4 h-full">
+              <Table
+                column={columsCourses}
+                data={selectedCourses}
+                type={"courses"}
+              />
+            </div>
+          ) : (
+            errorCourses && <h3>Ocurrio un error: {errorCourses?.message}</h3>
+          )}
+        </div>
+      )}
+      {a && per && (
+        <div className="text-black h-full">
+          {loadingAchievements ? (
+            <div className="w-full h-full flex justify-center items-center">
+              <span className="loading loading-dots loading-lg bg-main-blue"></span>
+            </div>
+          ) : achievements?.achievements ? (
+            <div className="overflow-x-auto h-full">
+              <table className="table">
+                <thead>
+                  <tr className="border-none text-lg font-semibold text-main-blue">
+                    <th>Descripcion</th>
+                    <th>Editar</th>
+                    <th>Agregar indicador</th>
+                    <th className="text-[#e11d48]">Eliminar</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedAchievements.map((a: any, i: number) => (
+                    <tr key={a.id_achievement} className="border-none">
+                      <th>{a?.description}</th>
+                      <th>{a?.editar}</th>
+                      <th>{a?.indicator}</th>
+                      <th className="flex justify-center">{a?.borrar}</th>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {selectedAchievements.map((a: any, i: number) => (
-                      <tr key={a.id_achievement} className="border-none">
-                        <th>{a?.description}</th>
-                        <th>{a?.editar}</th>
-                        <th>{a?.indicator}</th>
-                        <th className="flex justify-center">{a?.borrar}</th>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <h3>Ocurrio un error</h3>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Modal */}
-      <DynamicModal
-        arrayInputs={arrayInputs}
-        typeAdd={typeAdd}
-        open={open}
-        setOpen={setOpen}
-        addSuccessMsg={"Logro Creado!"}
-        updateSuccessMsg={"Logro Actualizado!"}
-        formValues={formValues}
-        addMutation={handlerCreateAchievement}
-        updateMutation={handlerUpdateAchievement}
-        cleaningStates={cleaningStates}
-        validationEvent={validationEvent}
-        refetch={refetch}
-      />
-    </div>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <h3>Ocurrio un error</h3>
+          )}
+        </div>
+      )}
+      <CustomModal open={open}>
+        <AchievementsForm
+          achievement={formValues}
+          onClose={handlerCloseModal}
+        />
+      </CustomModal>
+    </ContainerComponents>
   );
 }
 

@@ -66,7 +66,6 @@ const SideBar = ({ manage, logo }: any) => {
             </li>
           </ul>
         </li>
-
         <li className="mt-3 text-white dropdown dropdown-right flex justify-center group">
           <div className="w-full">
             <button title="Programacion Anual" className="btn btn-sm w-full border-none bg-transparent shadow-none hover:bg-transparent transition duration-500 hover:scale-110">
@@ -188,7 +187,6 @@ const SideBar = ({ manage, logo }: any) => {
             </li>
           </ul>
         </li>
-
         <li className="mt-3 text-white  dropdown dropdown-right flex justify-center">
           <div className="w-full">
             <button title="Proceso Academico" className=" btn w-full border-none bg-transparent shadow-none hover:bg-transparent transition duration-500 hover:scale-110">
@@ -224,7 +222,6 @@ const SideBar = ({ manage, logo }: any) => {
             </li>
           </ul>
         </li>
-
         <div className="mt-3 text-white dropdown dropdown-right flex justify-center w-full group">
           <div className="w-full">
             <button title="Reportes" className=" btn w-full border-none bg-transparent shadow-none hover:bg-transparent transition duration-500 hover:scale-110">

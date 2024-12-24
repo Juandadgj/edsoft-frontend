@@ -7,6 +7,8 @@ import {
 } from "@/generated/graphql";
 import { useRouter } from "next/router";
 import useSchoolYear from "@/hooks/useSchoolYear";
+import { ContainerComponents } from "@/components/ContainerComponents";
+import TableComponent from "@/components/Table";
 
 const columns = [
   {
@@ -63,8 +65,8 @@ export const StudentsPerCourse = () => {
   const processedGroups = useMemo(() => {
     if (!dataGroups?.groups) return [];
     return dataGroups.groups.map((group, index) => ({
-      name: `${group?.level}-${group?.sublevel}` ?? "",
-      group_teacher: group?.representative ?? "",
+      name: `${group?.level}-${group?.sublevel}`,
+      group_teacher: group?.representative,
       students: 30,
       see: (
         <button
@@ -98,7 +100,7 @@ export const StudentsPerCourse = () => {
     if (!data) return [];
     return data.map((student: any, index: any) => ({
       id_student: student?.id_course,
-      name: `${student.name} ${student.last_name}` ?? "",
+      name: `${student.name} ${student.last_name}`,
       certified: "",
       info: (
         <button
@@ -183,54 +185,48 @@ export const StudentsPerCourse = () => {
   }, [dataStudentsByGroup]);
 
   return (
-    <div className="h-full">
-      <div className="h-[6%]">
-        <div>
+    <ContainerComponents>
+      <div className="w-full flex items-center justify-between my-3">
+        <h3>
           <strong className="text-xl text-black ps-8">
             Estudiantes por curso en el año {year}
           </strong>
+        </h3>
+      </div>
+      {!g && (
+        <div className="text-black h-full">
+          {loadingGroups && (
+            <div className="w-full h-full flex justify-center items-center">
+              <span className="loading loading-dots loading-lg bg-main-blue"></span>
+            </div>
+          )}
+          {dataGroups?.groups && (
+            <div className="h-full border-white py-4">
+              <TableComponent column={columns} data={processedGroups} />
+            </div>
+          )}
+          {errorGroups && <h3>¡Ocurrio un error!</h3>}
         </div>
-      </div>
-      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]">
-        {!g && (
-          <div className="h-full">
-            {loadingGroups && (
-              <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-main-blue"></span>
-              </div>
-            )}
-            {dataGroups?.groups && (
-              <div className="h-full border-white py-4">
-                <Table
-                  column={columns}
-                  data={processedGroups}
-                  type={"groups"}
-                />
-              </div>
-            )}
-            {errorGroups && <h3>¡Ocurrio un error!</h3>}
-          </div>
-        )}
-        {g && (
-          <div className="h-full">
-            {loadingStudentsByGroup && (
-              <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-main-blue"></span>
-              </div>
-            )}
-            {dataStudentsByGroup?.studentsByGroup && (
-              <div className="h-full">
-                <Table
-                  column={columnsStudent}
-                  data={studentsByGroup}
-                  type={"studentsByGroup"}
-                />
-              </div>
-            )}
-            {errorStudentsByGroup && <h3>¡Ocurrio un error!</h3>}
-          </div>
-        )}
-      </div>
-    </div>
+      )}
+      {g && (
+        <div className="h-full">
+          {loadingStudentsByGroup && (
+            <div className="w-full h-full flex justify-center items-center">
+              <span className="loading loading-dots loading-lg bg-main-blue"></span>
+            </div>
+          )}
+          {dataStudentsByGroup?.studentsByGroup && (
+            <div className="h-full">
+              <Table
+                column={columnsStudent}
+                data={studentsByGroup}
+                type={"studentsByGroup"}
+              />
+            </div>
+          )}
+          {errorStudentsByGroup && <h3>¡Ocurrio un error!</h3>}
+        </div>
+      )}
+    </ContainerComponents>
   );
 };

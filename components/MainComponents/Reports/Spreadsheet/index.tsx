@@ -60,7 +60,7 @@ const Spreadsheet = () => {
 
   return (
     <div
-      className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-10 pb-3"
+      className="h-full w-full overflow-hidden"
       style={{
         scrollbarWidth: "thin",
         scrollbarColor: "#25429e #F3F4F6",
@@ -72,30 +72,30 @@ const Spreadsheet = () => {
       ) : (
         <div className="pb-6">
           <div>
-            <strong className="text-2xl text-black ps-8">
+            <strong className="text-xl text-black ps-8">
               Crear planilla de:
             </strong>
           </div>
         </div>
       )}
       {opcion ? (
-        <>{opcionelegida?.component}</>
+        <div className="h-full w-full">{opcionelegida?.component}</div>
       ) : (
         <div className="grid grid-cols-3 ps-8 place-content-start gap-6 max-w-4xl">
           {cardsSpreadsheet.map((item: any, i: any) => (
-            <div key={i} className="h-52 w-52 flex justify-center items-center">
-              <div
-                style={{ borderRadius: "30px" }}
-                className="w-full h-full cursor-pointer shadow-2xl bg-white hover:bg-[#ededed89] hover:scale-105 transition duration-500 text-center p-4 flex justify-center items-center"
-              >
-                <Link href={`reportes?componente=planillas&opcion=${item.id}`}>
-                  <div className="text-4xl mb-2">{item.icon}</div>
-                  <h3 className="text-sm text-black">
-                    {item.title}
-                  </h3>
-                </Link>
+            <Link
+              href={`reportes?componente=planillas&opcion=${item.id}`}
+              className="card bg-base-100  px-5 py-5"
+            >
+              <figure>
+                <div className="text-4xl mb-2">{item.icon}</div>
+              </figure>
+              <div className="card-body justify-center items-center py-0">
+                <div className="card-title text-center text-base">
+                  {item.title}
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}

@@ -8,22 +8,32 @@ import {
 import { useEffect, useState } from "react";
 import DynamicModal from "../DynamicModal";
 import Swal from "sweetalert2";
-import Table from "../Table";
 import { Input } from "../Input";
+import TableComponent from "../Table";
+import { ContainerComponents } from "../ContainerComponents";
+import CustomModal from "../CustomModal";
+import { AreaForm } from "./forms/AreaForm";
 
-const columns = [
+const columns: {
+  key: string;
+  title: string;
+  dataIndex: string;
+}[] = [
   {
-    Header: "Nombre",
-    accessor: "name",
+    title: "Nombre",
+    dataIndex: "name",
+    key: "name",
   },
 
   {
-    Header: "Editar",
-    accessor: "edit",
+    title: "Editar",
+    dataIndex: "edit",
+    key: "edit",
   },
   {
-    Header: "Borrar",
-    accessor: "delete",
+    title: "Borrar",
+    dataIndex: "delete",
+    key: "delete",
   },
 ];
 
@@ -36,18 +46,12 @@ function Areas() {
   const [areaAdd, setAreaAdd] = useState(false);
 
   const [getArea, { data, loading, error, refetch }] = useGetAreasLazyQuery();
-  console.log(data, loading, error);
 
   // Form to manage inputs values
   const [formValue, setFormValue] = useState<any>({
     name: "",
     status: "",
   });
-
-  useEffect(() => {
-    console.log("VALUES: ", formValue);
-  }, [formValue]);
-
   // Obj to manage every input error
   const [errors, setErrors] = useState<any>({
     name: "",
@@ -111,15 +115,13 @@ function Areas() {
         <button
           className="border-0"
           onClick={() => {
-            setAreaAdd(false);
-            // We set the values selected to our inputs
             setFormValue((a: any) => ({
               ...a,
               name: area?.name,
               status: area?.status,
               id_area: area?.id_area,
             }));
-            modal?.showModal();
+           setOpen(true);
           }}
         >
           <svg
@@ -198,69 +200,56 @@ function Areas() {
     }));
   }, [data, DeleteArea]);
 
-  const handlerCreateArea = async () => {
-    return await CreateArea({ variables: { createAreaInput: formValue } });
+  const hanclerCloseModal = () => {
+    setOpen(false);
+    setFormValue({
+      name: "",
+      status: "",
+      id_area: "",
+    });
   };
-
-  const handlerUpdateArea = async () => {
-    return await UpdateArea({ variables: { updateAreaInput: formValue } });
-  };
-
-  const modal = document.getElementById("modal") as HTMLDialogElement;
-
   return (
-    <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-10 pb-3">
-      <div className="flex justify-between h-[6%]">
-        <div>
+    <ContainerComponents>
+      <div className="w-full flex items-center justify-between my-3">
+        <h3>
           <strong className="text-xl text-black ps-8 pb-4">
             Listado de Áreas
           </strong>
-        </div>
+        </h3>
         <div className="text-end pr-6">
           <button
             type="button"
-            className="btn bg-main-blue btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
+            className="btn btn-sm bg-main-blue mb-0 px-10 h-9 rounded-[10px] transition border-none hover:bg-[#0b5ed7] text-white text-xs"
             onClick={() => {
-              setAreaAdd(true);
-              modal?.showModal();
+              setFormValue({
+                name: "",
+                status: "",
+                id_area: "",
+              });
+              setOpen(true);
             }}
           >
             <h4 className="text-white">+ Nueva Área</h4>
           </button>
         </div>
       </div>
-      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]">
-        <div className="h-full">
-          {loading ? (
-            <div className="w-full h-full flex justify-center items-center">
-              <span className="loading loading-dots loading-lg bg-main-blue"></span>
-            </div>
-          ) : data?.areas ? (
-            <div className="d-flex border-white py-4 h-full">
-              <Table column={columns} data={processedAreas} type={"area"} />
-            </div>
-          ) : (
-            <h3>¡Ocurrio un error!</h3>
-          )}
-        </div>
+      <div className="text-black h-full">
+        {loading ? (
+          <div className="w-full h-full flex justify-center items-center">
+            <span className="loading loading-dots loading-lg bg-main-blue"></span>
+          </div>
+        ) : data?.areas ? (
+          <div className="border-white py-4 h-full">
+            <TableComponent column={columns} data={processedAreas} />
+          </div>
+        ) : (
+          <h3>¡Ocurrio un error!</h3>
+        )}
       </div>
-      {/* Modal */}
-
-      <DynamicModal
-        arrayInputs={arrayInputs}
-        typeAdd={areaAdd}
-        open={open}
-        setOpen={setOpen}
-        addSuccessMsg={"Area Creada!"}
-        updateSuccessMsg={"Area Actualizada!"}
-        formValues={formValue}
-        addMutation={handlerCreateArea}
-        updateMutation={handlerUpdateArea}
-        cleaningStates={cleaningStates}
-        validationEvent={validationEvent}
-        refetch={refetch}
-      />
-    </div>
+      <CustomModal open={open}>
+        <AreaForm area={formValue} onClose={hanclerCloseModal} />
+      </CustomModal>
+    </ContainerComponents>
   );
 }
 

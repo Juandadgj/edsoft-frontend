@@ -1,6 +1,7 @@
 import Layaout from "@/components/Layaout";
-import Secretaries from "@/components/MainComponents/Secretaries";
-import Teachers from "@/components/MainComponents/Teachers";
+import Secretaries from "@/components/MainComponents/officers/secretarie/Secretaries";
+import Teachers from "@/components/MainComponents/officers/teacher/Teachers";
+
 import { useRouter } from "next/router";
 import React from "react";
 

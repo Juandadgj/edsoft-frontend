@@ -2,6 +2,7 @@ import Table from "@/components/Table";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useGetStudentsLazyQuery, GetStudentsQuery } from "@/generated/graphql";
+import { ContainerComponents } from "@/components/ContainerComponents";
 const columns = [
   {
     Header: "Apellido y Nombre",
@@ -41,10 +42,13 @@ export const SearchStudent = () => {
     if (!data.students) return [];
     return data.students?.map((student: any, index: any) => ({
       id_student: student?.id_course,
-      name: `${student.name} ${student.last_name}` ?? "",
+      name: `${student.name} ${student.last_name}`,
       certified: "",
       info: (
-        <button className="btn bg-transparent border-none p-0 hover:bg-transparent" onClick={()=> router.push(`estudiante/${student.id_student}`)}>
+        <button
+          className="btn bg-transparent border-none p-0 hover:bg-transparent"
+          onClick={() => router.push(`estudiante/${student.id_student}`)}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"
@@ -103,15 +107,15 @@ export const SearchStudent = () => {
   };
 
   return (
-    <div className="h-full">
-      <div className="h-[6%]">
-        <div>
+    <ContainerComponents>
+      <div className="w-full flex items-center justify-between my-3">
+        <h3 className="">
           <strong className="text-xl text-black ps-8">
             Busqueda de Estudiantes
           </strong>
-        </div>
+        </h3>
       </div>
-      <div className="bg-white border-none border-2 shadow-2xl rounded-[2rem] h-[94%] p-4">
+      <div className="w-full h-full">
         <div
           className="w-full h-full overflow-auto"
           style={{
@@ -182,13 +186,13 @@ export const SearchStudent = () => {
             {errorStudentsData && (
               <div className="text-sm font-semibold text-red-500 w-full flex justify-center items-center mt-5">
                 <div className="w-full">
-                  <h1 className="text-center">Hubo un error: </h1>
+                  <h1 className="text-center">Hubo un error </h1>
                 </div>
               </div>
             )}
           </div>
         </div>
       </div>
-    </div>
+    </ContainerComponents>
   );
 };

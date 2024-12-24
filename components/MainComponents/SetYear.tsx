@@ -10,6 +10,10 @@ import DynamicModal from "../DynamicModal";
 import Swal from "sweetalert2";
 import { Input } from "../Input";
 import useSchoolYear from "@/hooks/useSchoolYear";
+import { Table } from "@mui/material";
+import TableComponent from "../Table";
+import CustomModal from "../CustomModal";
+import SetYearForm from "./forms/SetYearForm";
 
 const columns = [
   {
@@ -39,7 +43,7 @@ function SetYear() {
   const [AddSetYear] = useCreateSetYearMutation();
   const [UpdateSchoolarYear] = useUpdateScholarYearMutation();
   const [open, setOpen] = useState(false);
-  const [typeAdd, setTypeAdd] = useState(false);
+  const [openComment, setOpenComment] = useState(false);
   const [comment, setComment] = useState<ScholarYear>();
   const modalComment = useRef<any>();
   const modal = document.getElementById("modal") as HTMLDialogElement;
@@ -54,123 +58,9 @@ function SetYear() {
     comment: "",
   });
 
-  // Obj to manage every input error
-  const [errors, setErrors] = useState<any>({
-    id_year: "",
-    rector: "",
-    secretary: "",
-    comment: "",
-  });
   const { data, loading, error, refetch } = useGetSchoolarYearsQuery({
     fetchPolicy: "network-only",
   });
-
-  const validationEvent = () => {
-    if (formValues.id_year && formValues.rector && formValues.secretary) {
-      if (typeAdd) {
-        const year_repeated = data?.scholarYears.filter(
-          (schoYear) => schoYear?.id_year === formValues.id_year
-        );
-        if (year_repeated!.length > 0) {
-          setOpen(false);
-          modal.close();
-          Swal.fire({
-            icon: "error",
-            title: "Año establecido ya existe...",
-            showConfirmButton: false,
-            timer: 1700,
-          });
-          cleaningStates();
-          return false;
-        }
-      }
-      return true;
-    } else {
-      for (const item in formValues) {
-        if (!formValues[item]) {
-          setErrors((err: any) => ({ ...err, [item]: "Campo Requerido!" }));
-        } else {
-          setErrors((err: any) => ({ ...err, [item]: "" }));
-        }
-      }
-      return false;
-    }
-  };
-
-  const cleaningStates = () => {
-    for (const item in errors) {
-      setErrors((err: any) => ({ ...err, [item]: "" }));
-    }
-    for (const i in formValues) {
-      setFormValues((val: any) => ({ ...val, [i]: "" }));
-    }
-  };
-
-  const arrayInputs: Array<any> = [
-    {
-      html: (
-        <Input
-          required
-          disabled={!typeAdd}
-          name="id_year"
-          type="number"
-          value={formValues.id_year}
-          onChange={({ target }: any) => {
-            const val = parseInt(target.value);
-            setFormValues({ ...formValues, [target.name]: val });
-          }}
-          label="Año escolar"
-          errorText={errors.id_year}
-        />
-      ),
-    },
-    {
-      html: (
-        <Input
-          required
-          name="rector"
-          type="text"
-          value={formValues.rector}
-          onChange={({ target }: any) => {
-            setFormValues({ ...formValues, [target.name]: target.value });
-          }}
-          placeholder="Rector"
-          label="Nombres y Apellidos del rector"
-          errorText={errors.rector}
-        />
-      ),
-    },
-    {
-      html: (
-        <Input
-          required
-          name="secretary"
-          type="text"
-          value={formValues.secretary}
-          onChange={({ target }: any) => {
-            setFormValues({ ...formValues, [target.name]: target.value });
-          }}
-          label="Nombres y Apellidos del secretario"
-          errorText={errors.secretary}
-        />
-      ),
-    },
-    {
-      html: (
-        <Input
-          required
-          name="comment"
-          type="text"
-          value={formValues.comment}
-          onChange={({ target }: any) => {
-            setFormValues({ ...formValues, [target.name]: target.value });
-          }}
-          label="Comentarios"
-          errorText={errors.comment}
-        />
-      ),
-    },
-  ];
 
   const processedScholarYears = () => {
     if (!data?.scholarYears) return [];
@@ -194,7 +84,7 @@ function SetYear() {
               secretary: schoYear?.secretary,
               comment: schoYear?.comment,
             });
-            modalComment.current.showModal();
+            setOpenComment(true);
           }}
         >
           <svg
@@ -231,7 +121,6 @@ function SetYear() {
         <button
           className="border-0"
           onClick={() => {
-            setTypeAdd(false);
             setFormValues((t: any) => ({
               ...t,
               id_year: schoYear?.id_year,
@@ -239,7 +128,7 @@ function SetYear() {
               rector: schoYear?.rector,
               comment: schoYear?.comment,
             }));
-            modal?.showModal();
+            setOpen(true);
           }}
         >
           <svg
@@ -264,18 +153,6 @@ function SetYear() {
       ),
     }));
   };
-
-  const handlerCreateSetYear = async () => {
-    return await AddSetYear({
-      variables: { createScholarYearInput: formValues },
-    });
-  };
-  const handlerUpdateSetYear = async () => {
-    return await UpdateSchoolarYear({
-      variables: { updateScholarYearInput: formValues },
-    });
-  };
-
   const handlerSelectScholarYear = async (year: number | undefined) => {
     if (year) {
       modalLoading?.current.click();
@@ -284,108 +161,73 @@ function SetYear() {
       });
     }
   };
-
+  const hanclerCloseModal = () => {
+    setOpen(false);
+    setFormValues({
+      id_year: "",
+      rector: "",
+      secretary: "",
+      comment: "",
+    });
+  };
   return (
-    <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1 p-10 pb-3">
-      <div className="h-[6%] flex justify-between">
-        <div>
-          <strong className="text-xl text-black ps-8 pb-4">
-            Elegir Año Académico {year}
-          </strong>
-        </div>
-        <div className="text-end pr-6">
-          <button
-            type="button"
-            className="btn bg-main-blue btn-primary w-[16rem] mb-0 pb-0 !h-full btn-sm rounded-t-[40px] hover:bg-[#0b5ed7] hover:scale-105"
-            onClick={() => {
-              setTypeAdd(true);
-              modal?.showModal();
-            }}
-          >
-            <h4 className="text-white text-xs">+ Nuevo Año</h4>
-          </button>
-        </div>
-      </div>
-      <div className="mx-auto  bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]">
-        <div className="text-black h-full">
-          {loading && (
-            <div className="w-full h-full flex justify-center items-center">
-              <span className="loading loading-dots loading-lg bg-main-blue"></span>
-            </div>
-          )}
-          {error && <div>¡Ocurrio un error!</div>}
-          {data?.scholarYears && !loading && (
-            <div className="border-white py-4 h-full">
-              <div
-                className={`w-full px-3 overflow-x-auto animate-fade-left h-full`}
-                style={{
-                  scrollbarWidth: "thin",
-                  scrollbarColor: "#25429e #F3F4F6",
-                  scrollbarGutter: "20px",
-                }}
+    <div className=" w-full overflow-hidden h-full">
+      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[10px] h-full py-4 px-2">
+        <div className="w-full flex items-center justify-between my-3">
+          <h3>
+            <strong className="text-xl text-black ps-8">
+              Elegir Año Académico {year}
+            </strong>
+          </h3>
+          <div className="flex items-center gap-2">
+            <label className="input input-bordered input-sm h-9 py-5 flex items-center gap-2 focus-within:outline-none focus-within:border-2 focus-within:border-main-blue text-black transition">
+              <input type="text" className="grow" placeholder="Buscar" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                className="h-4 w-4 opacity-70"
               >
-                <table className="table text-black">
-                  <thead className="flex items-center justify-center">
-                    <tr className="flex w-full justify-center border-main-blue border-b-4 text-base font-semibold">
-                      {columns.map((key: any, index: any) => (
-                        <th
-                          key={index}
-                          className={`text-center text-main-blue whitespace-normal flex items-center justify-center ${
-                            index == 0 ? "w-[20%]" : "w-full"
-                          }`}
-                        >
-                          <p className="w-full">{key.Header}</p>
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className="w-full py-2">
-                    {processedScholarYears().map((item: any, index: number) => (
-                      <div style={{ textDecoration: "none", width: "100%" }} key={index}>
-                        <tr className="flex w-full p-1 my-4 bg-gray1 border-none rounded-[20px] text-sm font-semibold">
-                          <td className="flex w-[20%] justify-center items-center text-center">
-                            {item.selected ? (
-                              <div className="w-full flex justify-center items-center">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="25"
-                                  height="25"
-                                  viewBox="0 0 36 36"
-                                >
-                                  <path
-                                    fill="#0055A6"
-                                    d="m28.89 20.91l-5-2.91l4.87-2.86a3.11 3.11 0 0 0 1.14-1.08a3 3 0 0 0-4.09-4.15L21 12.76V7a3 3 0 0 0-6 0v5.76l-4.85-2.85a3 3 0 1 0-3 5.18l5 2.91l-4.95 2.86a3.11 3.11 0 0 0-1.14 1.08a3 3 0 0 0 4.09 4.14L15 23.24v5.66a3 3 0 0 0 2 2.94A3 3 0 0 0 21 29v-5.76l4.85 2.85a3 3 0 1 0 3-5.18Z"
-                                    className="clr-i-solid clr-i-solid-path-1"
-                                  />
-                                  <path fill="none" d="M0 0h36v36H0z" />
-                                </svg>
-                              </div>
-                            ) : (
-                              ""
-                            )}
-                          </td>
-                          <td className="flex w-full justify-center items-center text-center">
-                            <p className="w-full">{item.year}</p>
-                          </td>
-                          <td className="flex w-full justify-center items-center text-center">
-                            <p className="w-full">{item.rector}</p>
-                          </td>
-                          <td className="flex w-full justify-center items-center text-center">
-                            {item.details}
-                          </td>
-                          <td className="flex w-full justify-center items-center text-center">
-                            {item.edit}
-                          </td>
-                        </tr>
-                      </div>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
+                <path
+                  fillRule="evenodd"
+                  d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </label>
+            <button
+              type="button"
+              className="btn btn-sm bg-main-blue mb-0 px-10 h-9 rounded-[10px] transition border-none hover:bg-[#0b5ed7] text-white text-xs"
+              onClick={() => {
+                setFormValues({
+                  id_year: "",
+                  rector: "",
+                  secretary: "",
+                  comment: "",
+                });
+                setOpen(true);
+              }}
+            >
+              <h4 className="text-white text-xs">+ Nuevo Año</h4>
+            </button>
+          </div>
         </div>
       </div>
+
+      <div className="text-black h-full">
+        {loading && (
+          <div className="w-full h-full flex justify-center items-center">
+            <span className="loading loading-dots loading-lg bg-main-blue"></span>
+          </div>
+        )}
+        {error && <div>¡Ocurrio un error!</div>}
+        {data?.scholarYears && !loading && (
+          <div className="border-white py-4 h-full">
+            <TableComponent column={columns} data={processedScholarYears()} />
+          </div>
+        )}
+      </div>
+
       {/**Modal loading mutatio select year */}
       <input
         type="checkbox"
@@ -404,13 +246,16 @@ function SetYear() {
         </div>
       </div>
       {/**Modal year comments */}
-      <dialog ref={modalComment} className="modal">
-        <div className="modal-box text-black">
-          <form method="dialog">
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 text-red-500">
-              ✕
-            </button>
-          </form>
+      <CustomModal open={openComment}>
+        <div className="text-black">
+          <button
+            onClick={() => {
+              setOpenComment(false);
+            }}
+            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 text-red-500"
+          >
+            ✕
+          </button>
           <h3 className="text-center font-bold text-md">
             Datos del año academico
           </h3>
@@ -428,21 +273,14 @@ function SetYear() {
             </div>
           </div>
         </div>
-      </dialog>
-      <DynamicModal
-        arrayInputs={arrayInputs}
-        typeAdd={typeAdd}
-        open={open}
-        setOpen={setOpen}
-        addSuccessMsg={"Calificacion Creada!"}
-        updateSuccessMsg={"Calificacion Actualizada!"}
-        formValues={formValues}
-        addMutation={handlerCreateSetYear}
-        updateMutation={handlerUpdateSetYear}
-        cleaningStates={cleaningStates}
-        validationEvent={validationEvent}
-        refetch={refetch}
-      />
+      </CustomModal>
+      <CustomModal open={open}>
+        <SetYearForm
+          year={formValues}
+          years={data?.scholarYears}
+          onClose={hanclerCloseModal}
+        />
+      </CustomModal>
     </div>
   );
 }

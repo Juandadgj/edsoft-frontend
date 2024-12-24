@@ -10,6 +10,7 @@ import Table from "@/components/Table";
 import { useRouter } from "next/router";
 import DescriptionIcon from "@mui/icons-material/Description";
 import useSchoolYear from "@/hooks/useSchoolYear";
+import { ContainerComponents } from "@/components/ContainerComponents";
 
 const columns = [
   {
@@ -85,7 +86,7 @@ const GlobalGradesDetermined = () => {
   const processedGroups = useMemo(() => {
     if (!data?.groups) return [];
     return data.groups.map((group, index) => ({
-      name: `${group?.level}-${group?.sublevel}` ?? "",
+      name: `${group?.level}-${group?.sublevel}`,
       working_time: group?.working_time ?? "",
       group_teacher: group?.representative ?? "",
       editar: (
@@ -104,8 +105,8 @@ const GlobalGradesDetermined = () => {
     return data.map((courses: any, index: any) => ({
       id_course: courses?.id_course,
       id_group: courses?.id_group,
-      name: `${courses?.name}` ?? "",
-      teacher: `${courses?.teacher.name}` ?? "-",
+      name: `${courses?.name}`,
+      teacher: `${courses?.teacher.name}`,
       editar: (
         <button
           className="btn btn-ghost border-0"
@@ -132,16 +133,17 @@ const GlobalGradesDetermined = () => {
   }, [courses]);
 
   return (
-    <div className="h-full">
-      <div className="h-[6%]">
-        <div className="pb-4">
+    <ContainerComponents>
+      <div className="w-full flex items-center justify-between my-3">
+        <h3>
           <strong className="text-xl text-black ps-8 pb-4">
             Cursos Creados para el año {year} para la planilla de nota por
             asignatura
           </strong>
-        </div>
+        </h3>
       </div>
-      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]">
+
+      <div className="h-full">
         {g && (
           <div className="text-black h-full">
             {loadingCourses ? (
@@ -173,7 +175,10 @@ const GlobalGradesDetermined = () => {
                     </thead>
                     <tbody className="w-full py-2">
                       {selectedCourses.map((item: any, index: number) => (
-                        <div style={{ textDecoration: "none", width: "100%" }} key={index}>
+                        <div
+                          style={{ textDecoration: "none", width: "100%" }}
+                          key={index}
+                        >
                           <tr className="flex w-full p-1 my-4 bg-gray1 border-none rounded-[20px] text-sm font-semibold">
                             <td className="flex w-full justify-center items-center text-center py-0">
                               {item.name}
@@ -196,7 +201,6 @@ const GlobalGradesDetermined = () => {
             )}
           </div>
         )}
-
         {!g && (
           <div className="h-full">
             {loading ? (
@@ -217,7 +221,7 @@ const GlobalGradesDetermined = () => {
           </div>
         )}
       </div>
-    </div>
+    </ContainerComponents>
   );
 };
 

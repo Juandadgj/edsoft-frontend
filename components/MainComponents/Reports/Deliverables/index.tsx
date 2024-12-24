@@ -6,6 +6,7 @@ import CancelPresentationIcon from "@mui/icons-material/CancelPresentation";
 import { useRouter } from "next/router";
 import NavigationComponent from "./NavigationComponent";
 import Link from "next/link";
+import { ContainerComponents } from "@/components/ContainerComponents";
 
 const cardsSpreadsheet: any[] = [
   {
@@ -73,49 +74,36 @@ const Deliverables = () => {
   const router = useRouter();
   const { opcion } = router.query;
   return (
-    <div className="rounded-tl-[20px] w-full bg-gray1 p-10 pb-3 h-full">
+    <div className="h-full w-full overflow-hidden">
       {opcion ? (
         ""
       ) : (
-        <div className="h-[6%] flex justify-between">
-          <div>
-            <strong className="text-xl text-black ps-8">
-              Crear entregable de
-            </strong>
-          </div>
+        <div className="w-full flex items-center justify-between pb-6">
+          <strong className="text-xl text-black ps-8">
+            Crear entregable de
+          </strong>
         </div>
       )}
       {opcion ? (
-        <NavigationComponent />
+       <div className="h-full w-full">
+         <NavigationComponent />
+       </div>
       ) : (
-        <div
-          className="h-[94%] overflow-y-auto"
-          style={{
-            scrollbarWidth: "thin",
-            scrollbarColor: "#25429e #F3F4F6",
-            scrollbarGutter: "20px",
-          }}
-        >
-          <div className="grid grid-cols-3 ps-8 pe-8 place-content-start gap-6 max-w-4xl">
-            {cardsSpreadsheet.map((item: any, i: any) => (
-              <div
-                key={i}
-                className="h-52 w-52 flex justify-center items-center"
-              >
-                <div
-                  style={{ borderRadius: "30px" }}
-                  className="w-full h-full cursor-pointer shadow-2xl bg-white hover:bg-[#ededed89] hover:scale-105 transition duration-500 text-center p-4 flex justify-center items-center"
-                >
-                  <Link
-                    href={`reportes?componente=entregables&opcion=${item.id}`}
-                  >
-                    <div className="text-4xl mb-2">{item.icon}</div>
-                    <h3 className="text-sm text-black">{item.title}</h3>
-                  </Link>
-                </div>
+        <div className="grid grid-cols-3 place-content-start gap-5 max-w-4xl">
+          {cardsSpreadsheet.map((item: any, i: any) => (
+            <Link
+              href={`reportes?componente=entregables&opcion=${item.id}`}
+              className="card bg-base-100 px-5 py-5"
+              key={i}
+            >
+              <figure>
+                <div className="text-4xl">{item.icon}</div>
+              </figure>
+              <div className="card-body justify-center items-center py-0">
+                <div className="card-title text-center text-base">{item.title}</div>
               </div>
-            ))}
-          </div>
+            </Link>
+          ))}
         </div>
       )}
     </div>

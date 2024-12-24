@@ -1,98 +1,97 @@
-import { useMemo } from "react";
+import DynamicModal from "@/components/DynamicModal";
+import { Input } from "@/components/Input";
+import TableComponent from "@/components/Table";
 import {
-  useCreateQualificationTypeMutation,
-  useDeleteQualificationTypeMutation,
-  useGetQualificationQuery,
-  useUpdateQualificationsMutation,
-} from "../../generated/graphql";
+  useCreateTeacherMutation,
+  useDeleteTeacherMutation,
+  useTeachersQuery,
+  useUpdateTeacherMutation,
+} from "@/generated/graphql";
+import { useMemo } from "react";
+
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import DynamicModal from "../DynamicModal";
-
-import Table from "../Table";
-import { Input } from "../Input";
-import CustomModal from "../CustomModal";
-import { QualificationTypeForm } from "./forms/QualificationTypeForm";
+import { SecretarieForm } from "../../forms/SecretarieForm";
+import CustomModal from "@/components/CustomModal";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { Button, Space } from "antd";
 
 const columns = [
   {
-    title: "Nombre Calificacion",
-    dataIndex: "qualificationName",
-    key: "qualificationName",
+    title: "Nombre",
+    dataIndex: "name",
+    key: "name",
   },
   {
-    title: "Piso",
-    dataIndex: "floor",
-    key: "floor",
+    title: "Apellido",
+    dataIndex: "last_name",
+    key: "last_name",
   },
   {
-    title: "Ceiling",
-    dataIndex: "ceiling",
-    key: "ceiling",
+    title: "Grado",
+    dataIndex: "degree",
+    key: "degree",
   },
   {
-    title: "Año",
-    dataIndex: "year",
-    key: "year",
-  },
-  {
-    title: "Notas",
-    dataIndex: "notes",
-    key: "notes",
-  },
-  {
-    title: "Editar",
-    dataIndex: "edit",
-    key: "edit",
-  },
-  {
-    title: "Borrar",
-    dataIndex: "borrar",
-    key: "borrar",
+    title: "Acciones",
+    key: "actions",
+    render: (text: any, record: any) => (
+      <Space size="middle">
+        <Button shape="round" size="small" icon={<EditOutlined />} />
+        <Button
+          type="primary"
+          danger
+          shape="round"
+          size="small"
+          icon={<DeleteOutlined />}
+        />
+      </Space>
+    ),
   },
 ];
 
-function QualificationType() {
-  const [DeleteQualificationType] = useDeleteQualificationTypeMutation();
-  const [AddQualificationType] = useCreateQualificationTypeMutation();
-  const [UpdateQualificationType] = useUpdateQualificationsMutation();
+function Secretaries() {
+  const [DeleteDocente] = useDeleteTeacherMutation();
   const [open, setOpen] = useState(false);
-  const [typeAdd, setTypeAdd] = useState(false);
 
-  const { data, loading, error, refetch } = useGetQualificationQuery();
-
-  // Form to manage inputs values
-  const [formValues, setFormValues] = useState<any>({
-    ceiling_score: "",
-    floor_score: "",
-    name: "",
-    year: "",
+  const { data, loading, refetch } = useTeachersQuery({
+    fetchPolicy: "network-only",
   });
 
-  const porcessedQualificationType = useMemo(() => {
-    if (!data?.typeQualifications) return [];
-    return data.typeQualifications.map((quty, index) => ({
-      qualificationName: quty?.name ?? "",
-      floor: quty?.floor_score ?? "",
-      ceiling: quty?.ceiling_score ?? "",
-      year: quty?.year ?? "",
-      notes: <button className="border-0 ">imagen notitas</button>,
-      edit: (
+  // Form to manage inputs values
+  const [secretarie, setSecretary] = useState<any>({
+    name: "",
+    last_name: "",
+    type_id: 2,
+    identification: "",
+    direction: "",
+    phone: "",
+    email: "",
+    degree: "",
+  });
+
+  // Obj to manage every input error
+  const [errors, setErrors] = useState<any>({
+    name: "",
+    last_name: "",
+    identification: "",
+    direction: "",
+    phone: "",
+    email: "",
+    degree: "",
+  });
+
+  const processedTeachers = useMemo(() => {
+    if (!data?.teachers) return [];
+
+    return data.teachers.map((teacher: any, index: any) => ({
+      name: teacher?.name ?? "",
+      lastName: teacher?.last_name ?? "",
+      degree: teacher?.degree ?? "",
+      editar: (
         <button
           className="border-0"
-          onClick={() => {
-            setTypeAdd(false);
-            // We set the values selected to our inputs
-            setFormValues((t: any) => ({
-              ...t,
-              id_type_qual: quty?.id_type_qual,
-              ceiling_score: quty?.ceiling_score,
-              floor_score: quty?.floor_score,
-              name: quty?.name,
-              year: quty?.year,
-            }));
-            setOpen(true);
-          }}
+          onClick={() => handlerUpdateTeacher(teacher)}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -111,7 +110,7 @@ function QualificationType() {
               className="clr-i-outline clr-i-outline-path-2"
             />
             <path fill="none" d="M0 0h36v36H0z" />
-          </svg>
+          </svg>{" "}
         </button>
       ),
       borrar: (
@@ -128,14 +127,14 @@ function QualificationType() {
               confirmButtonText: "Eliminar",
             }).then((result) => {
               // If there is an id selected we delete that teacher
-              if (result.isConfirmed && quty?.id_type_qual) {
-                DeleteQualificationType({
-                  variables: { idQualificationType: quty?.id_type_qual },
+              if (result.isConfirmed && teacher?.id_teacher) {
+                DeleteDocente({
+                  variables: { idDocente: teacher.id_teacher },
                 }).then((res) => {
-                  if (res.data?.deleteTypeQualification) {
+                  if (res.data?.deleteTeacher) {
                     Swal.fire({
                       title: "Eliminado",
-                      text: "Tipo Calificacion Eliminada!",
+                      text: "Docente Eliminado!",
                       icon: "success",
                       showConfirmButton: false,
                       timer: 1500,
@@ -168,23 +167,55 @@ function QualificationType() {
         </button>
       ),
     }));
-  }, [data, DeleteQualificationType]);
-  const hanclerCloseModal = () => {
-    setOpen(false);
-    setFormValues({
-      ceiling_score: "",
-      floor_score: "",
+  }, [data, DeleteDocente]);
+
+  const handlerCreateTeacher = async () => {
+    setOpen(true);
+    setSecretary({
       name: "",
-      year: "",
+      last_name: "",
+      type_id: 1,
+      identification: "",
+      direction: "",
+      phone: "",
+      email: "",
+      degree: "",
     });
   };
+  const handlerUpdateTeacher = async (teacher: any) => {
+    setOpen(true);
+    setSecretary({
+      name: teacher.name,
+      last_name: teacher.last_name,
+      type_id: teacher.type_id,
+      identification: teacher.identification,
+      direction: teacher.direction,
+      phone: teacher.phone,
+      email: teacher.email,
+      degree: teacher.degree,
+    });
+  };
+  const hanclerCloseModal = () => {
+    setOpen(false);
+    setSecretary({
+      name: "",
+      last_name: "",
+      type_id: 1,
+      identification: "",
+      direction: "",
+      phone: "",
+      email: "",
+      degree: "",
+    });
+  };
+
   return (
-    <div className="w-full overflow-hidden h-full">
+    <div className=" w-full overflow-hidden h-full">
       <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[10px] h-full py-4 px-2">
         <div className="w-full flex items-center justify-between my-3">
           <h3>
             <strong className="text-xl text-black ps-8">
-              Tipo de calificacion
+              Lista de Docentes
             </strong>
           </h3>
           <div className="flex items-center gap-2">
@@ -204,19 +235,10 @@ function QualificationType() {
               </svg>
             </label>
             <button
-              type="button"
+              onClick={handlerCreateTeacher}
               className="btn btn-sm bg-main-blue mb-0 px-10 h-9 rounded-[10px] transition border-none hover:bg-[#0b5ed7] text-white text-xs"
-              onClick={() => {
-                setFormValues({
-                  ceiling_score: "",
-                  floor_score: "",
-                  name: "",
-                  year: "",
-                });
-                setOpen(true);
-              }}
             >
-              <h4 className="text-white text-xs">+ Nueva calificacion</h4>
+              Crear docente
             </button>
           </div>
         </div>
@@ -225,28 +247,24 @@ function QualificationType() {
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
-          ) : data?.typeQualifications ? (
-            <div className="d-flex border-white py-4 h-full">
-              <Table
-                column={columns}
-                data={porcessedQualificationType}
-                type={"qualificationType"}
-              />
+          ) : data?.teachers ? (
+            <div className=" border-white py-4 h-full">
+              <TableComponent column={columns} data={processedTeachers} />
+              {/* Componente para paginacion */}
+              <div className="w-full flex justify-end items-center"></div>
             </div>
           ) : (
             <h3>¡Ocurrio un error!</h3>
           )}
         </div>
       </div>
+
       {/* Modal */}
       <CustomModal open={open}>
-        <QualificationTypeForm
-          qualification={formValues}
-          onClose={hanclerCloseModal}
-        />
+        <SecretarieForm secretarie={secretarie} onClose={hanclerCloseModal} />
       </CustomModal>
     </div>
   );
 }
 
-export default QualificationType;
+export default Secretaries;
