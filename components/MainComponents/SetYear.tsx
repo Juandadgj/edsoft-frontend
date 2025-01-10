@@ -16,26 +16,15 @@ import CustomModal from "../CustomModal";
 import SetYearForm from "./forms/SetYearForm";
 
 const columns = [
+  { title: "", dataIndex: "selected", key: "selected" },
+  { title: "Año", dataIndex: "year", key: "year" },
+  { title: "Rector", dataIndex: "rector", key: "rector" },
   {
-    Header: "",
-    accessor: "selected",
+    title: "Detalle",
+    dataIndex: "details",
+    key: "details",
   },
-  {
-    Header: "Año",
-    accessor: "year",
-  },
-  {
-    Header: "Rector",
-    accessor: "rector",
-  },
-  {
-    Header: "Detalle",
-    accessor: "details",
-  },
-  {
-    Header: "Editar",
-    accessor: "edit",
-  },
+  { title: "Editar", dataIndex: "edit", key: "edit" },
 ];
 
 function SetYear() {
@@ -227,8 +216,6 @@ function SetYear() {
           </div>
         )}
       </div>
-
-      {/**Modal loading mutatio select year */}
       <input
         type="checkbox"
         ref={modalLoading}

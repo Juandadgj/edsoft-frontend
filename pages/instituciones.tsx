@@ -2,17 +2,28 @@ import Nav from "../components/Nav";
 import { useMemo } from "react";
 import { useGetInstitutionsQuery } from "../generated/graphql";
 import { useEffect } from "react";
-
-import Table from "@/components/Table";
-
+import TableComponent from "@/components/Table";
+import { Table } from "antd";
+const { Column, ColumnGroup } = Table;
+import Link from "next/link";
+import { EyeOutlined } from "@ant-design/icons";
+import { data } from "autoprefixer";
 const columns = [
   {
-    Header: "Nombre",
-    accessor: "name",
+    title: "Nombre",
+    dataIndex: "name",
+    key: "name",
+    render: (text: string) => <h4 className="text-center">{text}</h4>,
   },
   {
-    Header: "Dirección",
-    accessor: "address",
+    title: "Dirección",
+    dataIndex: "address",
+    key: "address",
+  },
+  {
+    title: "Acciones",
+    dataIndex: "actions",
+    key: "actions",
   },
 ];
 
@@ -36,7 +47,7 @@ function Institutions() {
   return (
     <div className="w-full bg-gray1 h-full pb-3">
       <Nav actualPage="Instituciones" withNavigation />
-      <div className='mt-4 md:mt-8'>
+      <div className="mt-4 md:mt-8">
         <div className="lg:mx-24 sm:mx-10 bg-white shadow-2xl rounded-[2rem] p-9">
           <div className="flex justify-center items-center font-bold text-black text-xl my-5">
             <h4>Lista de instituciones Educativas</h4>
@@ -44,10 +55,33 @@ function Institutions() {
           {error && <div>¡Ocurrio un error!</div>}
           {data?.institutions && !loading && (
             <Table
-              data={processedInstitutions}
-              column={columns}
-              type={"institution"}
-            />
+              dataSource={processedInstitutions}
+              style={{ width: "100%", background: "transparent" }}
+              pagination={false}
+            >
+              <Link href={`/login`}>
+                <ColumnGroup>
+                  <Column
+                    title="Nombre"
+                    dataIndex="name"
+                    key="name"
+                    align="center"
+                  />
+                  <Column title="Dirección" dataIndex="address" key="address" />
+                  <Column
+                    key="actions"
+                    align="center"
+                    render={(text: string, record: any) => (
+                      <div className="flex flex-row justify-center">
+                        <Link href={`/login?id=${record.id}&colegio=${record.name}`}>
+                          <EyeOutlined />
+                        </Link>
+                      </div>
+                    )}
+                  />
+                </ColumnGroup>
+              </Link>
+            </Table>
           )}
           {loading}
         </div>

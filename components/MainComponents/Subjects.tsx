@@ -20,6 +20,7 @@ import TableComponent from "../Table";
 import { ContainerComponents } from "../ContainerComponents";
 import CustomModal from "../CustomModal";
 import { SubjectForm } from "./forms/SubjectForm";
+import { title } from "process";
 
 const columnsGroup = [
   {
@@ -38,37 +39,21 @@ const columnsGroup = [
 
 const columnsSubjects = [
   {
-    Header: "Asignatura",
-    accessor: "name",
+    title: "Asignatura",
+    dataIndex: "name",
+    key: "name",
   },
   {
-    Header: "Area",
-    accessor: "area",
+    title: "Area",
+    dataIndex: "area",
+    key: "area",
   },
-  {
-    Header: "Profesor",
-    accessor: "professor",
-  },
-  {
-    Header: "IHC",
-    accesor: "ihc",
-  },
-  {
-    Header: "Valor %",
-    accesor: "percentage",
-  },
-  {
-    Header: "Promediar",
-    accesor: "ihc",
-  },
-  {
-    Header: "Editar",
-    accessor: "edit",
-  },
-  {
-    Header: "Borrar",
-    accessor: "delete",
-  },
+  { title: "Profesor", dataIndex: "professor", key: "professor" },  
+  { title: "IHC", dataIndex: "ihc", key: "ihc" },
+  { title: "Valor %", dataIndex: "valor", key: "valor" },
+  { title: "Promediar", dataIndex: "average", key: "average" },
+  { title: "Editar", dataIndex: "edit", key: "edit" },
+  { title: "Borrar", dataIndex: "delete", key: "delete" },
 ];
 
 function Subjects() {
@@ -255,7 +240,6 @@ function Subjects() {
             Asignaturas creadas para el año {year}
           </strong>
         </div>
-
         {c && (
           <div className="text-end pr-6">
             <button
@@ -300,11 +284,6 @@ function Subjects() {
             </div>
           ) : courses?.courses ? (
             <div className=" border-white py-4 h-full">
-              <Table
-                column={columnsSubjects}
-                data={selectedGroup}
-                type={"subject"}
-              />
               <TableComponent column={columnsSubjects} data={selectedGroup} />
             </div>
           ) : (

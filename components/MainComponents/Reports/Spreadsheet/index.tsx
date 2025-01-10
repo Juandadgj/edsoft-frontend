@@ -84,6 +84,7 @@ const Spreadsheet = () => {
         <div className="grid grid-cols-3 ps-8 place-content-start gap-6 max-w-4xl">
           {cardsSpreadsheet.map((item: any, i: any) => (
             <Link
+              key={i}
               href={`reportes?componente=planillas&opcion=${item.id}`}
               className="card bg-base-100  px-5 py-5"
             >

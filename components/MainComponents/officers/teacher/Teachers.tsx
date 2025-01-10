@@ -74,9 +74,8 @@ function Teachers() {
     fetchPolicy: "network-only",
   });
   const processedTeachers = useMemo(() => {
-    if (!teachers) return [];
-
-    return teachers.map((teacher, index) => ({
+    if (!data) return [];
+    return data.teachers.map((teacher, index) => ({
       name: teacher?.name ?? "",
       lastName: teacher?.last_name ?? "",
       degree: teacher?.degree ?? "",
@@ -237,7 +236,7 @@ function Teachers() {
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
-          ) : teachers ? (
+          ) : data?.teachers ? (
             <div className="border-white py-4 h-full">
               <TableComponent
                 column={columns}
