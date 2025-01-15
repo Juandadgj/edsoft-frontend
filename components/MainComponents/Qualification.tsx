@@ -11,10 +11,6 @@ import { useRouter } from "next/router";
 import useSchoolYear from "@/hooks/useSchoolYear";
 import TableComponent from "../Table";
 import { ContainerComponents } from "../ContainerComponents";
-import { title } from "process";
-import { data } from "autoprefixer";
-import { render } from "react-dom";
-import { Input } from "../Input";
 
 const columnsGroup = [
   {

@@ -6,14 +6,11 @@ import {
   useGenerateStudentsListDeterminatedLazyQuery,
   useGroupsQuery,
 } from "@/generated/graphql";
-import Table from "@/components/Table";
 import { useRouter } from "next/router";
 import DescriptionIcon from "@mui/icons-material/Description";
 import useSchoolYear from "@/hooks/useSchoolYear";
 import { ContainerComponents } from "@/components/ContainerComponents";
 import TableComponent from "@/components/Table";
-import teachers from "@/shared/teachers";
-import { render } from "react-dom";
 
 const columns = [
   {
