@@ -1,9 +1,46 @@
 import Layaout from "@/components/Layaout";
 import { useStudentByIdQuery } from "@/generated/graphql";
-
+import { UserOutlined } from "@ant-design/icons";
+import { Table } from "antd";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 
+const columns = [
+  {
+    title: "Materia",
+    dataIndex: "name",
+    key: "name",
+  },
+  {
+    title: "Docente",
+    dataIndex: "teacher",
+    key: "teacher",
+  },
+  {
+    title: "Pr1",
+    dataIndex: "definitives",
+    key: "definitives",
+    render: (_: any, record: any) => <div>{record?.definitives?.score1}</div>,
+  },
+  {
+    title: "Pr2",
+    dataIndex: "definitives",
+    key: "definitives",
+    render: (_: any, record: any) => <div>{record?.definitives?.score2}</div>,
+  },
+  {
+    title: "Pr3",
+    dataIndex: "definitives",
+    key: "definitives",
+    render: (_: any, record: any) => <div>{record?.definitives?.score3}</div>,
+  },
+  {
+    title: "Pr4",
+    dataIndex: "definitives",
+    key: "definitives",
+    render: (_: any, record: any) => <div>{record?.definitives?.score4}</div>,
+  },
+];
 const Student = ({ data }: any) => {
   const router = useRouter();
   const { id } = router.query;
@@ -15,17 +52,14 @@ const Student = ({ data }: any) => {
   return (
     <Layaout textpage="Estudiante">
       <div
-        className="rounded-tl-[20px] w-full h-[100vh] overflow-auto bg-gray1 p-9"
         style={{
           scrollbarWidth: "thin",
           scrollbarColor: "#25429e #F3F4F6",
           scrollbarGutter: "20px",
         }}
       >
-        <div className="">
-          <div>
-            <strong className="text-xl text-black ps-8">General</strong>
-          </div>
+        <div>
+          <strong className="text-xl text-black ps-8">General</strong>
         </div>
         {loadingStudent && (
           <div className="w-full h-full flex justify-center items-center">
@@ -38,9 +72,9 @@ const Student = ({ data }: any) => {
               <div className="flex justify-between gap-5 text-sm">
                 <div className="flex items-center gap-3 w-1/3">
                   <div className="avatar">
-                    <div className="w-24 rounded-[100%]">
-                      <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-                    </div>
+                    <UserOutlined
+                      style={{ fontSize: "40px", color: "black" }}
+                    />
                   </div>
                   <div>
                     <h1>
@@ -117,56 +151,27 @@ const Student = ({ data }: any) => {
                 </div>
               </div>
             </div>
-
             <div className="pt-8 w-full grid grid-cols-1 lg:grid-cols-2 gap-10 text-[12px]">
               {dataStudent.studentByID.groups?.map((group) => (
                 <div className="" key={group?.id_group}>
                   <strong className="text-black ps-8 text-xl">
                     {group?.level} {group?.sublevel}
                   </strong>
-                  <div className="bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 px-2 text-black w-full">
-                    <table className=" w-full">
-                      <thead className="border-b-2 border-gray6">
-                        <div className="w-full flex justify-center text-center text-main-blue underline underline-offset-8 font-semibold pb-3">
-                          <tr className="w-full justify-center flex px-2 ">
-                            <td className="w-[38%] ">Materia</td>
-                            <td className="w-[38%]">Docente</td>
-                            <td className="w-[6%]">Pr1</td>
-                            <td className="w-[6%]">Pr2</td>
-                            <td className="w-[6%]">Pr3</td>
-                            <td className="w-[6%]">Pr4</td>
-                          </tr>
-                        </div>
-                      </thead>
-                      <tbody className="">
-                        {group?.courses?.map((course) => (
-                          <div
-                            key={course?.id_course}
-                            className="flex justify-center items-center pt-3 text-center"
-                          >
-                            <tr className="w-full flex justify-center items-center bg-gray1 rounded-[2rem] px-2">
-                              <td className="w-[38%]   py-2">{course?.name}</td>
-                              <td className="w-[38%] h-full py-2">
-                                {course?.teacher}
-                              </td>
-
-                              <td className="w-[6%]   py-2">
-                                {course?.definitives?.score1}
-                              </td>
-                              <td className="w-[6%]   py-2">
-                                {course?.definitives?.score2}
-                              </td>
-                              <td className="w-[6%]   py-2">
-                                {course?.definitives?.score3}
-                              </td>
-                              <td className="w-[6%]   py-2">
-                                {course?.definitives?.score4}
-                              </td>
-                            </tr>
-                          </div>
-                        ))}
-                      </tbody>
-                    </table>
+                  <div className="bg-white w-full h-full rounded-[2rem] p-5 px-2 text-black">
+                    <Table
+                      className="h-full"
+                      dataSource={group?.courses?.map((c) => c)}
+                      columns={columns}
+                      scroll={{ x: 600 }}
+                      style={{
+                        scrollbarWidth: "thin",
+                        scrollbarColor: "#25429e #F3F4F6",
+                        scrollbarGutter: "20px",
+                      }}
+                      pagination={{
+                        pageSize: 5,
+                      }}
+                    />
                   </div>
                 </div>
               ))}

@@ -201,35 +201,18 @@ function SetYear() {
             </button>
           </div>
         </div>
-      </div>
-
-      <div className="text-black h-full">
-        {loading && (
-          <div className="w-full h-full flex justify-center items-center">
-            <span className="loading loading-dots loading-lg bg-main-blue"></span>
-          </div>
-        )}
-        {error && <div>¡Ocurrio un error!</div>}
-        {data?.scholarYears && !loading && (
-          <div className="border-white py-4 h-full">
-            <TableComponent column={columns} data={processedScholarYears()} />
-          </div>
-        )}
-      </div>
-      <input
-        type="checkbox"
-        ref={modalLoading}
-        id="modalLoading"
-        className="modal-toggle"
-      />
-      <div className="modal" role="dialog">
-        <div className="modal-box h-14 w-14 rounded-[100%] p-0">
-          <div className="w-full h-full flex justify-center items-center">
-            <span className="loading loading-dots loading-lg bg-main-blue"></span>
-          </div>
-          <label ref={modalClose} className="hidden" htmlFor="modalLoading">
-            Close Modal
-          </label>
+        <div className="text-black h-full">
+          {loading && (
+            <div className="w-full h-full flex justify-center items-center">
+              <span className="loading loading-dots loading-lg bg-main-blue"></span>
+            </div>
+          )}
+          {error && <div>¡Ocurrio un error!</div>}
+          {data?.scholarYears && (
+            <div className="border-white py-4 h-full">
+              <TableComponent column={columns} data={processedScholarYears()} />
+            </div>
+          )}
         </div>
       </div>
       {/**Modal year comments */}

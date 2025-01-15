@@ -10,19 +10,23 @@ import { useRouter } from "next/router";
 import DescriptionIcon from "@mui/icons-material/Description";
 import useSchoolYear from "@/hooks/useSchoolYear";
 import { ContainerComponents } from "@/components/ContainerComponents";
+import TableComponent from "@/components/Table";
 
 const columns = [
   {
-    Header: "Curso",
-    accessor: "name",
+    title: "Curso",
+    dataIndex: "name",
+    key: "name",
   },
   {
-    Header: "Profesor del Grupo",
-    accessor: "group_teacher",
+    title: "Profesor del Grupo",
+    dataIndex: "group_teacher",
+    key: "group_teacher",
   },
   {
-    Header: "Planillar",
-    accessor: "editar",
+    title: "Planillar",
+    dataIndex: "editar",
+    key: "editar",
   },
 ];
 
@@ -102,16 +106,13 @@ const GlobalGradesUndetermined = () => {
         </h3>
       </div>
       <div className="h-full">
-        {loading ? (
+        {loading && (
           <div className="w-full h-full flex justify-center items-center">
             <span className="loading loading-dots loading-lg bg-main-blue"></span>
           </div>
-        ) : data?.groups ? (
-          <div className="d-flex border-white py-4 h-full">
-            <Table column={columns} data={processedGroups} type={"groups"} />
-          </div>
-        ) : (
-          <h3>¡Ocurrio un error!</h3>
+        )}
+        {data?.groups && (
+            <TableComponent column={columns} data={processedGroups} />
         )}
       </div>
       {g && pdfBase64 && (

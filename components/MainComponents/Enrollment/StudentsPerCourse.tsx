@@ -10,34 +10,51 @@ import useSchoolYear from "@/hooks/useSchoolYear";
 import { ContainerComponents } from "@/components/ContainerComponents";
 import TableComponent from "@/components/Table";
 
-const columns = [
+const columnsGroup = [
   {
-    Header: "Curso",
-    accessor: "subjectName",
+    title: "Curso",
+    dataIndex: "name",
+    key: "name",
   },
   {
-    Header: " Id del profesor",
-    accessor: "teacherId",
+    title: "Profesor del Grupo",
+    dataIndex: "group_teacher",
+    key: "group_teacher",
   },
   {
-    Header: "Alumnos",
-    accessor: "students",
+    title: "Alumnos",
+    dataIndex: "students",
+    key: "students",
   },
-  { Header: "Ver", accessor: "see" },
+  { title: "Ver", dataIndex: "see", key: "see" },
 ];
 
 const columnsStudent = [
   {
-    Header: "Apellido y Nombre",
-    accessor: "name",
+    title: "Apellido y Nombre",
+    dataIndex: "name",
+    key: "name",
   },
   {
-    Header: "Certi. Matri.",
-    accessor: "certi",
+    title: "Certi. Matri.",
+    dataIndex: "certi",
+    key: "certi",
   },
-  { Header: "Info", accessor: "info" },
-  { Header: "Editar", accessor: "edit" },
-  { Header: "Sacar", accessor: "leave" },
+  {
+    title: "Info",
+    dataIndex: "info",
+    key: "info",
+  },
+  {
+    title: "Editar",
+    dataIndex: "edit",
+    key: "edit",
+  },
+  {
+    title: "Sacar",
+    dataIndex: "leave",
+    key: "leave",
+  },
 ];
 
 export const StudentsPerCourse = () => {
@@ -49,9 +66,7 @@ export const StudentsPerCourse = () => {
     data: dataGroups,
     loading: loadingGroups,
     error: errorGroups,
-  } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: year } },
-  });
+  } = useGroupsQuery();
 
   const [
     getStudentsByGroup,
@@ -65,7 +80,7 @@ export const StudentsPerCourse = () => {
   const processedGroups = useMemo(() => {
     if (!dataGroups?.groups) return [];
     return dataGroups.groups.map((group, index) => ({
-      name: `${group?.level}-${group?.sublevel}`,
+      name: `${group?.level} - ${group?.sublevel}`,
       group_teacher: group?.representative,
       students: 30,
       see: (
@@ -202,7 +217,7 @@ export const StudentsPerCourse = () => {
           )}
           {dataGroups?.groups && (
             <div className="h-full border-white py-4">
-              <TableComponent column={columns} data={processedGroups} />
+              <TableComponent column={columnsGroup} data={processedGroups} />
             </div>
           )}
           {errorGroups && <h3>¡Ocurrio un error!</h3>}
@@ -222,6 +237,7 @@ export const StudentsPerCourse = () => {
                 data={studentsByGroup}
                 type={"studentsByGroup"}
               />
+              <TableComponent column={columnsStudent} data={studentsByGroup} />
             </div>
           )}
           {errorStudentsByGroup && <h3>¡Ocurrio un error!</h3>}

@@ -22,11 +22,6 @@ const columns = [
     key: "name",
   },
   {
-    title: "Apellido",
-    dataIndex: "last_name",
-    key: "last_name",
-  },
-  {
     title: "Grado",
     dataIndex: "degree",
     key: "degree",
@@ -199,8 +194,8 @@ function Teachers() {
     });
   };
   return (
-    <div className=" w-full overflow-hidden h-full">
-      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[10px] h-full py-4 px-2">
+    <div className="w-full overflow-hidden h-full">
+      <div className="bg-white border-none border-2 shadow-2xl rounded-[10px] h-full py-4 px-2">
         <div className="w-full flex items-center justify-between my-3">
           <h3>
             <strong className="text-xl text-black ps-8">
@@ -232,21 +227,13 @@ function Teachers() {
           </div>
         </div>
         <div className="text-black h-full">
-          {loading ? (
+          {loading && (
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
-          ) : data?.teachers ? (
-            <div className="border-white py-4 h-full">
-              <TableComponent
-                column={columns}
-                data={processedTeachers}
-              />
-              {/* Componente para paginacion */}
-              <div className="w-full flex justify-end items-center"></div>
-            </div>
-          ) : (
-            <h3>¡Ocurrio un error!</h3>
+          )}
+          {data?.teachers && (
+              <TableComponent column={columns} data={processedTeachers} />
           )}
         </div>
       </div>

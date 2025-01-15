@@ -17,44 +17,48 @@ import useSchoolYear from "@/hooks/useSchoolYear";
 import { ContainerComponents } from "../ContainerComponents";
 import CustomModal from "../CustomModal";
 import { AchievementsForm } from "./forms/AchievementsForm";
-
-const columsCourses = [
-  {
-    Header: "Asignatura",
-    accessor: "name",
-  },
-  {
-    Header: "Profesor",
-    accessor: "teacher",
-  },
-  {
-    Header: "1 Per.",
-    accessor: "perido",
-  },
-  {
-    Header: "2 Per.",
-    accessor: "perido",
-  },
-  {
-    Header: "3 Per.",
-    accessor: "perido",
-  },
-  {
-    Header: "4 Per.",
-    accessor: "perido",
-  },
-];
+import TableComponent from "../Table";
 
 const columnsGroup = [
   {
-    Header: "Curso",
-    accessor: "name",
+    title: "Curso",
+    dataIndex: "name",
+    key: "name",
   },
   {
-    Header: "Profesor del Grupo",
-    accessor: "group_teacher",
+    title: "Profesor del Grupo",
+    dataIndex: "group_teacher",
+    key: "group_teacher",
   },
-  { Header: "Asignaturas", accessor: "subjects" },
+  {
+    title: "Asignaturas",
+    dataIndex: "courses_count",
+    key: "courses_count",
+  },
+  { title: "Ver", dataIndex: "select", key: "select" },
+];
+
+const columnsAchievements = [
+  {
+    title: "Descripcion",
+    dataIndex: "description",
+    key: "description",
+  },
+  {
+    title: "Editar",
+    dataIndex: "editar",
+    key: "editar",
+  },
+  {
+    title: "Agregar indicador",
+    dataIndex: "agregar_indicador",
+    key: "agregar_indicador",
+  },
+  {
+    title: "Eliminar",
+    dataIndex: "borrar",
+    key: "borrar",
+  },
 ];
 
 function Achievements() {
@@ -80,13 +84,18 @@ function Achievements() {
     { data: courses, loading: loadingCourses, error: errorCourses },
   ] = useCoursesLazyQuery();
 
-  const { data: groups, loading: loadingGroups } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: year } },
-  });
+  const { data: groups, loading: loadingGroups } = useGroupsQuery();
   const handlerSelectedCourse = (id: number | undefined) => {
     router.push(`/dashboard/programacion-anual?componente=logros&g=${id}`);
   };
-
+  const handlerSelectedAchievement = (
+    id: number | undefined,
+    per: number | undefined,
+    route: any,
+    id_group: any
+  ) => {
+    router.push(`/dashboard/${route}&g=${id_group}&a=${id}&per=${per}`);
+  };
   const processedAchievements = (data: any) => {
     if (!data?.achievements) return [];
     return data.achievements.map((achievements: any, index: any) => ({
@@ -202,8 +211,12 @@ function Achievements() {
     return groups?.groups.map((group, index) => ({
       name: `${group?.level}-${group?.sublevel}`,
       group_teacher: group?.representative ?? "",
-      asignaturas: group?.coursesCount,
-      click: () => handlerSelectedCourse(group?.id_group),
+      courses_count: group?.coursesCount,
+      select: (
+        <button onClick={() => handlerSelectedCourse(group?.id_group)}>
+          Seleccionar curso
+        </button>
+      ),
     }));
   }, [groups]);
 
@@ -221,6 +234,94 @@ function Achievements() {
       route: "programacion-anual?componente=logros",
     }));
   };
+  const columsCourses = [
+    {
+      title: "Asignatura",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Profesor",
+      dataIndex: "teacher",
+      key: "teacher",
+    },
+    {
+      title: "1 Per.",
+      dataIndex: "periodo1",
+      key: "periodo1",
+      render: (text: any, record: any) => (
+        <button
+          onClick={() =>
+            handlerSelectedAchievement(
+              record?.id_course,
+              1,
+              record?.route,
+              record?.id_group
+            )
+          }
+        >
+          -
+        </button>
+      ),
+    },
+    {
+      title: "2 Per.",
+      dataIndex: "periodo2",
+      key: "periodo2",
+      render: (text: any, record: any) => (
+        <button
+          onClick={() =>
+            handlerSelectedAchievement(
+              record?.id_achievement,
+              2,
+              record?.route,
+              record?.id_group
+            )
+          }
+        >
+          -
+        </button>
+      ),
+    },
+    {
+      title: "3 Per.",
+      dataIndex: "periodo3",
+      key: "periodo3",
+      render: (text: any, record: any) => (
+        <button
+          onClick={() =>
+            handlerSelectedAchievement(
+              record?.id_achievement,
+              3,
+              record?.route,
+              record?.id_group
+            )
+          }
+        >
+          -
+        </button>
+      ),
+    },
+    {
+      title: "4 Per.",
+      dataIndex: "periodo4",
+      key: "periodo4",
+      render: (text: any, record: any) => (
+        <button
+          onClick={() =>
+            handlerSelectedAchievement(
+              record?.id_achievement,
+              4,
+              record?.route,
+              record?.id_group
+            )
+          }
+        >
+          -
+        </button>
+      ),
+    },
+  ];
 
   useEffect(() => {
     if (g) {
@@ -271,11 +372,7 @@ function Achievements() {
             </div>
           ) : groups?.groups ? (
             <div className="d-flex border-white py-4 h-full">
-              <Table
-                column={columnsGroup}
-                data={processedGroups}
-                type={"groups"}
-              />
+              <TableComponent column={columnsGroup} data={processedGroups} />
             </div>
           ) : (
             <h3>¡Ocurrio un error!</h3>
@@ -308,27 +405,11 @@ function Achievements() {
               <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
           ) : achievements?.achievements ? (
-            <div className="overflow-x-auto h-full">
-              <table className="table">
-                <thead>
-                  <tr className="border-none text-lg font-semibold text-main-blue">
-                    <th>Descripcion</th>
-                    <th>Editar</th>
-                    <th>Agregar indicador</th>
-                    <th className="text-[#e11d48]">Eliminar</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {selectedAchievements.map((a: any, i: number) => (
-                    <tr key={a.id_achievement} className="border-none">
-                      <th>{a?.description}</th>
-                      <th>{a?.editar}</th>
-                      <th>{a?.indicator}</th>
-                      <th className="flex justify-center">{a?.borrar}</th>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div>
+              <TableComponent
+                column={columnsAchievements}
+                data={selectedAchievements}
+              />
             </div>
           ) : (
             <h3>Ocurrio un error</h3>

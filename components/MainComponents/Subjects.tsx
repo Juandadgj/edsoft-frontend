@@ -24,17 +24,21 @@ import { title } from "process";
 
 const columnsGroup = [
   {
-    Header: "Curso",
-    accessor: "name",
+    title: "Curso",
+    dataIndex: "name",
+    key: "name",
   },
   {
-    Header: "Profesor del Grupo",
-    accessor: "group_teacher",
+    title: "Profesor del Grupo",
+    dataIndex: "group_teacher",
+    key: "group_teacher",
   },
   {
-    Header: "Asignaturas",
-    accessor: "courses",
+    title: "Asignaturas",
+    dataIndex: "courses_count",
+    key: "courses_count",
   },
+  { title: "Ver", dataIndex: "select", key: "select" },
 ];
 
 const columnsSubjects = [
@@ -48,9 +52,9 @@ const columnsSubjects = [
     dataIndex: "area",
     key: "area",
   },
-  { title: "Profesor", dataIndex: "professor", key: "professor" },  
-  { title: "IHC", dataIndex: "ihc", key: "ihc" },
-  { title: "Valor %", dataIndex: "valor", key: "valor" },
+  { title: "Profesor", dataIndex: "teacher", key: "teacher" },
+  { title: "IHC", dataIndex: "hour", key: "hour" },
+  { title: "Valor %", dataIndex: "percentage", key: "percentage" },
   { title: "Promediar", dataIndex: "average", key: "average" },
   { title: "Editar", dataIndex: "edit", key: "edit" },
   { title: "Borrar", dataIndex: "delete", key: "delete" },
@@ -66,10 +70,7 @@ function Subjects() {
     getCourses,
     { data: courses, loading: loadingCourses, error: errorCourses, refetch },
   ] = useCoursesLazyQuery({ fetchPolicy: "network-only" });
-
-  const { data: groups, loading: loadingGroups } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: year } },
-  });
+  const { data: groups, loading: loadingGroups } = useGroupsQuery();
   const { data: teachers } = useTeachersQuery();
   const { data: areas } = useGetAreasQuery();
   const [DeleteCourse] = useDeleteCourseMutation({});
@@ -84,8 +85,6 @@ function Subjects() {
     hour: "",
     percentage: "",
   });
-  const modal = document.getElementById("modal") as HTMLDialogElement;
-
   const processedSubjects = (data: any) => {
     return data.map((courses: any, index: number) => ({
       name: courses?.name ?? "",
@@ -94,7 +93,7 @@ function Subjects() {
       hour: courses?.hour ?? "",
       percentage: courses.percentage,
       average: courses.average,
-      editar: (
+      edit: (
         <button
           className="border-0"
           onClick={() => {
@@ -129,7 +128,7 @@ function Subjects() {
           </svg>{" "}
         </button>
       ),
-      borrar: (
+      delete: (
         <button onClick={() => handlerDeleteCourse(courses.id_course)}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -151,10 +150,14 @@ function Subjects() {
     if (!groups?.groups) return [];
     return groups.groups.map((group, index) => ({
       id: group?.id_group,
-      name: `${group?.level}-${group?.sublevel}`,
+      name: `${group?.level} - ${group?.sublevel}`,
       group_teacher: group?.representative ?? "",
-      course_count: group?.coursesCount ?? 0,
-      click: () => handlerSelectedCourse(group?.id_group),
+      courses_count: group?.coursesCount ?? 0,
+      select: (
+        <button onClick={() => handlerSelectedCourse(group?.id_group)}>
+          Seleccionar curso
+        </button>
+      ),
     }));
   }, [groups]);
 

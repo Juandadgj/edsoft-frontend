@@ -23,11 +23,6 @@ const columns = [
     key: "name",
   },
   {
-    title: "Apellido",
-    dataIndex: "last_name",
-    key: "last_name",
-  },
-  {
     title: "Grado",
     dataIndex: "degree",
     key: "degree",
@@ -248,11 +243,7 @@ function Secretaries() {
               <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
           ) : data?.teachers ? (
-            <div className=" border-white py-4 h-full">
-              <TableComponent column={columns} data={processedTeachers} />
-              {/* Componente para paginacion */}
-              <div className="w-full flex justify-end items-center"></div>
-            </div>
+            <TableComponent column={columns} data={processedTeachers} />
           ) : (
             <h3>¡Ocurrio un error!</h3>
           )}

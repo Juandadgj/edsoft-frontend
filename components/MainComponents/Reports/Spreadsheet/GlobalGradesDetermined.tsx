@@ -11,34 +11,43 @@ import { useRouter } from "next/router";
 import DescriptionIcon from "@mui/icons-material/Description";
 import useSchoolYear from "@/hooks/useSchoolYear";
 import { ContainerComponents } from "@/components/ContainerComponents";
+import TableComponent from "@/components/Table";
+import teachers from "@/shared/teachers";
+import { render } from "react-dom";
 
 const columns = [
   {
-    Header: "Curso",
-    accessor: "name",
+    title: "Curso",
+    dataIndex: "name",
+    key: "name",
   },
   {
-    Header: "Profesor del Grupo",
-    accessor: "group_teacher",
+    title: "Profesor del Grupo",
+    dataIndex: "group_teacher",
+    key: "group_teacher",
   },
   {
-    Header: "Asignaturas",
-    accessor: "editar",
+    title: "Planillar",
+    dataIndex: "editar",
+    key: "editar",
   },
 ];
 
 const columsCourses = [
   {
-    Header: "Asignatura",
-    accessor: "name",
+    title: "Asignatura",
+    dataIndex: "name",
+    key: "name",
   },
   {
-    Header: "Profesor",
-    accessor: "teacher",
+    title: "Profesor",
+    dataIndex: "teacher",
+    key: "teacher",
   },
   {
-    Header: "Planilla",
-    accessor: "editar",
+    title: "Planilla",
+    dataIndex: "editar",
+    key: "editar",
   },
 ];
 
@@ -117,7 +126,6 @@ const GlobalGradesDetermined = () => {
       ),
     }));
   };
-
   useEffect(() => {
     if (g) {
       getCourses({
@@ -125,13 +133,11 @@ const GlobalGradesDetermined = () => {
       });
     }
   }, [router]);
-
   useEffect(() => {
     if (courses) {
       setSelectedCourses(processedCourses(courses.courses));
     }
   }, [courses]);
-
   return (
     <ContainerComponents>
       <div className="w-full flex items-center justify-between my-3">
@@ -142,82 +148,31 @@ const GlobalGradesDetermined = () => {
           </strong>
         </h3>
       </div>
-
       <div className="h-full">
         {g && (
           <div className="text-black h-full">
-            {loadingCourses ? (
+            {loadingCourses && (
               <div className="w-full h-full flex justify-center items-center">
                 <span className="loading loading-dots loading-lg bg-main-blue"></span>
               </div>
-            ) : courses?.courses ? (
-              <div className=" border-white py-4 h-full">
-                <div
-                  className={`w-full px-3 overflow-x-auto animate-fade-left h-full `}
-                  style={{
-                    scrollbarWidth: "thin",
-                    scrollbarColor: "#25429e #F3F4F6",
-                    scrollbarGutter: "20px",
-                  }}
-                >
-                  <table className="table text-black">
-                    <thead className="flex items-center justify-center">
-                      <tr className="flex w-full justify-center border-main-blue border-b-4 text-base font-semibold">
-                        {columsCourses.map((key: any, index: any) => (
-                          <th
-                            key={index}
-                            className="w-full text-center text-main-blue whitespace-normal flex items-center justify-center"
-                          >
-                            <p className="w-full">{key.Header}</p>
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody className="w-full py-2">
-                      {selectedCourses.map((item: any, index: number) => (
-                        <div
-                          style={{ textDecoration: "none", width: "100%" }}
-                          key={index}
-                        >
-                          <tr className="flex w-full p-1 my-4 bg-gray1 border-none rounded-[20px] text-sm font-semibold">
-                            <td className="flex w-full justify-center items-center text-center py-0">
-                              {item.name}
-                            </td>
-                            <td className="flex w-full justify-center items-center text-center py-0">
-                              {item.teacher}
-                            </td>
-                            <td className="flex w-full justify-center items-center text-center py-0">
-                              {item.editar}
-                            </td>
-                          </tr>
-                        </div>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            ) : (
-              errorCourses && <h3>Ocurrio un error: {errorCourses?.message}</h3>
+            )}
+            {courses?.courses && (
+                <TableComponent column={columsCourses} data={selectedCourses} />
             )}
           </div>
         )}
         {!g && (
           <div className="h-full">
-            {loading ? (
-              <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-main-blue"></span>
-              </div>
-            ) : data?.groups ? (
-              <div className="d-flex border-white py-4 h-full">
-                <Table
-                  column={columns}
-                  data={processedGroups}
-                  type={"groups"}
-                />
-              </div>
-            ) : (
-              <h3>¡Ocurrio un error!</h3>
-            )}
+            <div className="h-full">
+              {loading && (
+                <div className="w-full h-full flex justify-center items-center">
+                  <span className="loading loading-dots loading-lg bg-main-blue"></span>
+                </div>
+              )}
+              {data?.groups && (
+                  <TableComponent column={columns} data={processedGroups} />
+              )}
+            </div>
           </div>
         )}
       </div>

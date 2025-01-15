@@ -1,7 +1,8 @@
-import { useSelectScholarYearMutation } from "@/generated/graphql";
+import { useScholearYearSelectedQuery, useSelectScholarYearMutation } from "@/generated/graphql";
 import { useEffect, useState } from "react";
 
 const useSchoolYear = () => {
+  const { data: scholarYear } = useScholearYearSelectedQuery({ fetchPolicy: "network-only" });
   const [
     selectScholarYear,
     { data: scholarYearData },
@@ -14,6 +15,8 @@ const useSchoolYear = () => {
     const storedYear = sessionStorage.getItem("year");
     if (storedYear) {
       setYear(parseInt(storedYear, 10));
+    } else {
+      setYear(scholarYear?.scholearYearSelected?.id_year);
     }
   }, []); // Se ejecuta solo una vez al montar el componente
   useEffect(() => {
@@ -25,7 +28,6 @@ const useSchoolYear = () => {
       setYear(scholarYearData.selectScholarYear?.id_year);
     }
   }, [scholarYearData]); // Se ejecuta para actualizar el año escolar
-  
   return {
     year: year,
     selectScholarYear: selectScholarYear,

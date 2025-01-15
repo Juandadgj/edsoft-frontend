@@ -5,6 +5,7 @@ import {
   useUpdateGroupMutation,
   useDeleteGroupMutation,
   useTeachersQuery,
+  useScholearYearSelectedQuery,
 } from "../../generated/graphql";
 import { useState } from "react";
 import DynamicModal from "../DynamicModal";
@@ -43,7 +44,9 @@ const columns = [
 ];
 
 function CreateCourses() {
-  const { year } = useSchoolYear();
+  const { data: year } = useScholearYearSelectedQuery({
+    fetchPolicy: "network-only",
+  });
   const [open, setOpen] = useState(false);
   const [typeAdd, setTypeAdd] = useState(false);
   const { data: teachers } = useTeachersQuery();
@@ -55,7 +58,9 @@ function CreateCourses() {
   const [teacher, setTeacher] = useState<any>("");
 
   const { data, loading, refetch } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: year } },
+    variables: {
+      filterGroupInput: { id_year: year?.scholearYearSelected?.id_year },
+    },
   });
 
   const courses = [
@@ -213,8 +218,6 @@ function CreateCourses() {
       ),
     }));
   }, [data]);
-
-  const modal = document.getElementById("modal") as HTMLDialogElement;
   const hanclerCloseModal = () => {
     setOpen(false);
     setCourse({
@@ -227,12 +230,13 @@ function CreateCourses() {
       working_time: "",
     });
   };
+  console.log(year);
   return (
     <div className=" w-full overflow-hidden h-full">
       <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[10px] h-full py-4 px-2">
         <div className="w-full flex items-center justify-between my-3">
           <strong className="text-xl text-black ps-8 pb-4">
-            Cursos Creados para el año {year}
+            Cursos Creados para el año {year?.scholearYearSelected?.id_year}
           </strong>
           <div className="flex items-center gap-2">
             <button
@@ -256,20 +260,17 @@ function CreateCourses() {
             </button>
           </div>
         </div>
-      </div>
-      <div className="text-black h-full">
-        <div className="h-full">
-          {loading ? (
-            <div className="w-full h-full flex justify-center items-center">
-              <span className="loading loading-dots loading-lg bg-main-blue"></span>
-            </div>
-          ) : data?.groups ? (
-            <div className="border-white py-4 h-full">
+        <div className="text-black h-full">
+          <div className="h-full">
+            {loading && (
+              <div className="w-full h-full flex justify-center items-center">
+                <span className="loading loading-dots loading-lg bg-main-blue"></span>
+              </div>
+            )}
+            {data?.groups && (
               <TableComponent column={columns} data={processedCourses} />
-            </div>
-          ) : (
-            <h3>¡Ocurrio un error!</h3>
-          )}
+            )}
+          </div>
         </div>
       </div>
       <CustomModal open={open}>

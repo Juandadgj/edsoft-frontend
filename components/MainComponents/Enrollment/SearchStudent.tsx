@@ -3,18 +3,35 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useGetStudentsLazyQuery, GetStudentsQuery } from "@/generated/graphql";
 import { ContainerComponents } from "@/components/ContainerComponents";
+import TableComponent from "@/components/Table";
+import { title } from "process";
+import { data } from "autoprefixer";
 const columns = [
   {
-    Header: "Apellido y Nombre",
-    accessor: "name",
+    title: "Apellido y Nombre",
+    dataIndex: "name",
+    key: "name",
   },
   {
-    Header: "Certi. Matri.",
-    accessor: "certi",
+    title: "Certi. Matri.",
+    dataIndex: "certi",
+    key: "certi",
   },
-  { Header: "Info", accessor: "info" },
-  { Header: "Editar", accessor: "edit" },
-  { Header: "Sacar", accessor: "leave" },
+  {
+    title: "Info",
+    dataIndex: "info",
+    key: "info",
+  },
+  {
+    title: "Editar",
+    dataIndex: "edit",
+    key: "edit",
+  },
+  {
+    title: "Sacar",
+    dataIndex: "leave",
+    key: "leave",
+  },
 ];
 
 export const SearchStudent = () => {
@@ -170,15 +187,11 @@ export const SearchStudent = () => {
               </div>
             </div>
             {studentsData && (
-              <div className="text-black text-sm w-full flex justify-center items-center mt-5">
+              <div className="text-black text-sm w-full flex justify-center items-center my-5">
                 <div className="w-full">
                   <h1 className="text-center">Resultados de busqueda</h1>
                   <div>
-                    <Table
-                      column={columns}
-                      data={students}
-                      type={"studentsByGroup"}
-                    />
+                    <TableComponent column={columns} data={students} />
                   </div>
                 </div>
               </div>
@@ -186,7 +199,7 @@ export const SearchStudent = () => {
             {errorStudentsData && (
               <div className="text-sm font-semibold text-red-500 w-full flex justify-center items-center mt-5">
                 <div className="w-full">
-                  <h1 className="text-center">Hubo un error </h1>
+                  <h1 className="text-center">{errorStudentsData.message} </h1>
                 </div>
               </div>
             )}

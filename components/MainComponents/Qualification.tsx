@@ -7,22 +7,46 @@ import {
   useUpdateQualificationsMutation,
 } from "../../generated/graphql";
 import { useEffect, useState } from "react";
-import Table from "../Table";
 import { useRouter } from "next/router";
 import useSchoolYear from "@/hooks/useSchoolYear";
 import TableComponent from "../Table";
-import { data } from "autoprefixer";
 import { ContainerComponents } from "../ContainerComponents";
+import { title } from "process";
+import { data } from "autoprefixer";
+import { render } from "react-dom";
+import { Input } from "../Input";
+
+const columnsGroup = [
+  {
+    title: "Curso",
+    dataIndex: "name",
+    key: "name",
+  },
+  {
+    title: "Profesor del Grupo",
+    dataIndex: "group_teacher",
+    key: "group_teacher",
+  },
+  {
+    title: "Profesor del Grupo",
+    dataIndex: "group_teacher",
+    key: "group_teacher",
+  },
+  {
+    title: "Asignaturas",
+    dataIndex: "subjects",
+    key: "subjects",
+  },
+];
 
 const Qualification = () => {
   const { year } = useSchoolYear();
-  const router = useRouter();
-  const { g, a, per, qualify } = router.query;
+  const { query, replace, push, back, pathname, asPath } = useRouter();
+  const { g, a, per, qualify } = query;
   const [selectedCourses, setSelectedCourses] = useState<any>([]);
   const [selectedAchievements, setSelectedAchievements] = useState<any>([]);
   const [studentQualifications, setStudentQualifications] = useState<any[]>([]);
   const [newQualifications, setNewQualifications] = useState<any[]>([]);
-
   const [
     getAchievements,
     {
@@ -35,7 +59,11 @@ const Qualification = () => {
     getCourses,
     { data: courses, loading: loadingCourses, error: errorCourses, refetch },
   ] = useCoursesLazyQuery();
-  const { data: groups, loading: loadingGroups } = useGroupsQuery({
+  const {
+    data: groups,
+    loading: loadingGroups,
+    error: errorGroups,
+  } = useGroupsQuery({
     variables: { filterGroupInput: { id_year: year } },
   });
   const [
@@ -53,12 +81,17 @@ const Qualification = () => {
     { data: dataUpdate, loading: loadingUpdate, error: errorUpdate },
   ] = useUpdateQualificationsMutation();
 
-  const handlerSelectedCourse = (id: number | undefined) => {
-    router.push(`/dashboard/proceso-anual?componente=calificacion&g=${id}`);
+  const handlerSelectedGroup = (id: number | undefined) => {
+    push(`/dashboard/proceso-anual?componente=calificacion&g=${id}`);
   };
-
+  const handlerSelectedCourse = (id_course: any, per: string) => {
+    const params = new URLSearchParams();
+    params.append("a", id_course);
+    params.append("per", per);
+    replace(`${asPath}&${params.toString()}`);
+  };
   const handlerToogleUpdate = () => {
-    router.push(
+    push(
       `/dashboard/proceso-anual?componente=calificacion&g=${g}&a=${a}&per=${per}&qualify=true`
     );
   };
@@ -73,72 +106,116 @@ const Qualification = () => {
 
   const columsCourses = [
     {
-      name: "Asignatura",
+      title: "Asignatura",
       dataIndex: "name",
       key: "name",
     },
     {
-      name: "Profesor",
+      title: "Profesor",
       dataIndex: "teacher",
       key: "teacher",
     },
     {
-      name: "1 Per.",
-      dataIndex: "perido",
-      key: "perido",
+      title: "1 Per.",
+      dataIndex: "periodo1",
+      key: "periodo1",
+      render: (_: any, record: any) => (
+        <button onClick={() => handlerSelectedCourse(record.id_course, "1")}>
+          -
+        </button>
+      ),
     },
     {
-      name: "2 Per.",
-      dataIndex: "perido",
-      key: "perido",
+      title: "2 Per.",
+      dataIndex: "periodo2",
+      key: "periodo2",
+      render: (_: any, record: any) => (
+        <button onClick={() => handlerSelectedCourse(record.id_course, "2")}>
+          -
+        </button>
+      ),
     },
     {
-      name: "3 Per.",
-      dataIndex: "perido",
-      key: "perido",
+      title: "3 Per.",
+      dataIndex: "periodo3",
+      key: "periodo3",
+      render: (_: any, record: any) => (
+        <button onClick={() => handlerSelectedCourse(record.id_course, "3")}>
+          -
+        </button>
+      ),
     },
     {
-      name: "4 Per.",
-      dataIndex: "perido",
-      key: "perido",
-    },
-  ];
-
-  const columnsGroup = [
-    {
-      name: "Curso",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      name: "Jornada",
-      dataIndex: "group_teacher",
-      key: "group_teacher",
-    },
-    {
-      name: "Profesor del Grupo",
-      dataIndex: "group_teacher",
-      key: "group_teacher",
-    },
-    {
-      name: "Asignaturas",
-      dataIndex: "courses",
-      key: "courses",
+      title: "4 Per.",
+      dataIndex: "periodo4",
+      key: "periodo4",
+      render: (_: any, record: any) => (
+        <button onClick={() => handlerSelectedCourse(record.id_course, "4")}>
+          -
+        </button>
+      ),
     },
   ];
 
   const columnsQualification = [
     {
-      Header: "Estudiante",
-      accessor: "name",
+      title: "Estudiante",
+      dataIndex: "student",
+      key: "student",
     },
   ].concat(
     achievements &&
       selectedAchievements.map((logro: any, i: number) => {
-        return { Header: (i + 1).toString(), accessor: "achivement" };
+        return {
+          title: (i + 1).toString(),
+          dataIndex: `qualification_${logro.id_achievement}`,
+          key: `qualification_${logro.id_achievement}`,
+          render: (_: any, record: any) => (
+            <div>
+              {qualify && (
+                <>
+                  {record[`qualification_${logro.id_achievement}`] ? (
+                    <input
+                      className="input border-gray5 w-full max-w-[50px] h-8 bg-transparent text-sm p-1 "
+                      placeholder={
+                        record[`qualification_${logro.id_achievement}`]
+                      }
+                      onChange={({ target }) =>
+                        updateScore(
+                          record[`qualification_${logro.id_achievement}`],
+                          target.value
+                        )
+                      }
+                    />
+                  ) : (
+                    <div className="text-red-500">
+                      <p>?</p>
+                    </div>
+                  )}
+                </>
+              )}
+              <>
+                {!qualify && (
+                  <>
+                    {record[`qualification_${logro.id_achievement}`] ? (
+                      record[`qualification_${logro.id_achievement}`]
+                    ) : (
+                      <input
+                        type="text"
+                        className="input border-gray5 w-full max-w-[50px] h-8 bg-transparent text-sm p-1 "
+                        onChange={({ target }) =>
+                          updateScore(record[`qualification_${logro.id_achievement}`], target.value)
+                        }
+                      />
+                    )}
+                  </>
+                )}
+              </>
+            </div>
+          ),
+        };
       })
   );
-
   const processedCourses = (data: any) => {
     if (!data) return [];
     return data.map((courses: any, index: any) => ({
@@ -149,22 +226,21 @@ const Qualification = () => {
       route: "proceso-anual?componente=calificacion",
     }));
   };
-
   const processedGroups = useMemo(() => {
     if (!groups?.groups) return [];
     return groups.groups.map((group, index) => ({
       name: `${group?.level}-${group?.sublevel}`,
       jornada: group?.working_time,
       group_teacher: group?.representative ?? "",
-      asignaturas: (
+      subjects: (
         <button
           className="btn bg-transparent border-none p-0 hover:bg-transparent"
-          onClick={() => handlerSelectedCourse(group?.id_group)}
+          onClick={() => handlerSelectedGroup(group?.id_group)}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="35"
-            height="35"
+            width="25"
+            height="25"
             viewBox="0 0 32 32"
           >
             <path
@@ -176,7 +252,6 @@ const Qualification = () => {
       ),
     }));
   }, [groups]);
-
   const proceedQualifications = (data: any) => {
     // Iterar sobre cada estudiante en el array de calificaciones
     if (dataStudentQualifications) {
@@ -211,10 +286,17 @@ const Qualification = () => {
               ...student.qualifications,
               ...missingAchievements,
             ];
-            // Devolver el estudiante actualizado
+            const qualificationsObject = updatedQualifications.reduce(
+              (acc: any, qualification: any) => {
+                acc[`qualification_${qualification.id_achievement}`] =
+                  qualification.score ?? null;
+                return acc;
+              },
+              {}
+            );
             return {
-              ...student,
-              qualifications: updatedQualifications,
+              student: student.student,
+              ...qualificationsObject,
             };
           }
         }
@@ -248,16 +330,17 @@ const Qualification = () => {
             period: Number(per),
           },
         },
-      });
+      })
+        .then((res) => {
+          const { data } = res;
+          const qualifications = proceedQualifications(data);
+          setStudentQualifications(qualifications);
+        })
+        .catch((err) => {
+          console.log(err, "err");
+        });
     }
-  }, [router]);
-
-  useEffect(() => {
-    if (dataStudentQualifications) {
-      const qualifications = proceedQualifications(dataStudentQualifications);
-      setStudentQualifications(qualifications);
-    }
-  }, [dataStudentQualifications]);
+  }, [g, a, per]);
 
   const updateScore = (qualification: any, score: any) => {
     const find = newQualifications.find(
@@ -288,7 +371,7 @@ const Qualification = () => {
       ]);
     }
   };
-
+  console.log(studentQualifications, "studentQualifications");
   return (
     <ContainerComponents>
       <div className="w-full flex items-center justify-between my-3">
@@ -301,36 +384,32 @@ const Qualification = () => {
       </div>
       {!g && (
         <div className="h-full">
-          {loadingGroups ? (
+          {loadingGroups && (
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
-          ) : groups?.groups ? (
+          )}
+          {groups?.groups && (
             <div className="d-flex border-white py-4 h-full">
               <TableComponent column={columnsGroup} data={processedGroups} />
             </div>
-          ) : (
-            <h3>¡Ocurrio un error!</h3>
           )}
+          {errorGroups && <h3>¡Ocurrio un error!</h3>}
         </div>
       )}
       {g && !a && !per && (
         <div className="text-black h-full">
-          {loadingCourses ? (
+          {loadingCourses && (
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
-          ) : courses?.courses ? (
-            <div className=" border-white py-4 h-full">
-              <Table
-                column={columsCourses}
-                data={selectedCourses}
-                type={"courses"}
-              />
-            </div>
-          ) : (
-            errorCourses && <h3>Ocurrio un error: {errorCourses?.message}</h3>
           )}
+          {courses?.courses && (
+            <div className=" border-white py-4 h-full">
+              <TableComponent column={columsCourses} data={selectedCourses} />
+            </div>
+          )}
+          {errorCourses && <h3>Ocurrio un error: {errorCourses?.message}</h3>}
         </div>
       )}
       {a && per && (
@@ -341,9 +420,7 @@ const Qualification = () => {
             </div>
           )}
           <div className="border-white h-full w-full ">
-            <div
-              className={`w-full h-[80%] px-3 overflow-x-auto animate-fade-left `}
-            >
+            <div className={`w-full h-full animate-fade-left pb-28`}>
               {achievements && (
                 <div className="w-full text-black flex flex-col gap-2 my-2 text-sm">
                   {selectedAchievements.map(
@@ -385,84 +462,17 @@ const Qualification = () => {
                   ) : (
                     <div className="w-full text-black flex items-center justify-end">
                       <button
-                        onClick={() => router.back()}
+                        onClick={() => back()}
                         className="btn btn-sm h-[35px] bg-transparent border-none text-main-gray hover:text-white hover:bg-[#0055A6] group text-xs"
                       >
                         <p>Volver</p>
                       </button>
                     </div>
                   )}
-                  <table className="table text-black ">
-                    <thead className="w-full">
-                      <tr className="border-main-blue border-b-4 text-xl font-semibold">
-                        {columnsQualification.map((header: any, index: any) => (
-                          <td
-                            key={index}
-                            className="items-center justify-center text-center text-main-blue text-sm"
-                          >
-                            {header.Header}
-                          </td>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody className="w-full py-4 ">
-                      {studentQualifications.map((item: any, key: any) => (
-                        <tr key={item.id} className="border-none p-3 bg-gray1">
-                          <td className="text-center text-xs">
-                            {item.student}
-                          </td>
-                          {item.qualifications &&
-                            item.qualifications.map(
-                              (qualification: any, index: number) => (
-                                <td
-                                  key={index}
-                                  className="text-center max-w-[50px] p-1"
-                                >
-                                  {qualify && (
-                                    <>
-                                      {qualification.score ? (
-                                        <input
-                                          className="input border-gray5 w-full max-w-[50px] h-8 bg-transparent text-sm p-1 "
-                                          placeholder={qualification.score}
-                                          onChange={({ target }) =>
-                                            updateScore(
-                                              qualification,
-                                              target.value
-                                            )
-                                          }
-                                        />
-                                      ) : (
-                                        <div className="w-full text-[red]">
-                                          <p>?</p>
-                                        </div>
-                                      )}{" "}
-                                    </>
-                                  )}
-                                  {!qualify && (
-                                    <>
-                                      {qualification.score ? (
-                                        qualification.score
-                                      ) : (
-                                        <input
-                                          type="text"
-                                          className="input border-gray5 w-full max-w-[50px] h-8 bg-transparent text-sm p-1 "
-                                          onChange={({ target }) =>
-                                            updateScore(
-                                              qualification,
-                                              target.value
-                                            )
-                                          }
-                                        />
-                                      )}
-                                    </>
-                                  )}
-                                </td>
-                              )
-                            )}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                  <TableComponent
+                    column={columnsQualification}
+                    data={studentQualifications}
+                  />
                 </>
               )}
               {errorStudentQualifications && (
@@ -472,7 +482,7 @@ const Qualification = () => {
               )}
             </div>
             {dataStudentQualifications && (
-              <div className="w-full flex justify-center items-center h-[20%]">
+              <div className="w-full flex justify-center items-center">
                 {!loadingUpdate && (
                   <button
                     disabled={loadingUpdate}

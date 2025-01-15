@@ -7,34 +7,45 @@ import useSchoolYear from "@/hooks/useSchoolYear";
 import { Container } from "postcss";
 import { ContainerComponents } from "@/components/ContainerComponents";
 import TableComponent from "@/components/Table";
+import { title } from "process";
 
 const columns = [
   {
-    Header: "Curso",
-    accessor: "subjectName",
+    title: "Curso",
+    dataIndex: "name",
+    key: "name",
   },
   {
-    Header: " Id del profesor",
-    accessor: "teacherId",
+    title: " Id del profesor",
+    dataIndex: "group_teacher",
+    key: "group_teacher",
   },
   {
-    Header: "Asignaturas",
-    accessor: "subjects",
+    title: "Estudiantes",
+    dataIndex: "students",
+    key: "students",
+  },
+  {
+    title: "Acciones",
+    dataIndex: "select",
+    key: "select",
   },
 ];
 
 export const StudentsLastYear = () => {
   const { year } = useSchoolYear();
-  const router = useRouter();
-  const { g } = router.query;
-  const [studentsByGroup, setStudentsByGroup] = useState<any[]>([]);
+  const { query, replace, push, back, pathname, asPath } = useRouter();
   const {
     data: dataGroups,
     loading: loadingGroups,
     error: errorGroups,
-  } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: year } },
-  });
+  } = useGroupsQuery();
+
+  const handlerSelectedGroup = (id: any) => {
+    const params = new URLSearchParams();
+    params.append("g", id);
+    replace(`${asPath}&${params.toString()}`);
+  };
 
   const processedGroups = useMemo(() => {
     if (!dataGroups?.groups) return [];
@@ -42,14 +53,10 @@ export const StudentsLastYear = () => {
       name: `${group?.level}-${group?.sublevel}`,
       group_teacher: group?.representative ?? "",
       students: 30,
-      see: (
+      select: (
         <button
           className="btn bg-transparent border-none p-0 hover:bg-transparent"
-          onClick={() =>
-            router.push(
-              `programacion-anual?componente=matriculas&opcion=3&g=${group?.id_group}`
-            )
-          }
+          onClick={() => handlerSelectedGroup(group?.id_group)}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
