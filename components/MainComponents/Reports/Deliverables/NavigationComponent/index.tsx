@@ -140,7 +140,35 @@ const NavigationComponent = () => {
     if (!students?.studentsByGroup) return [];
     return students.studentsByGroup.map((student: any) => ({
       id_student: student?.id_student,
-      name: `${student?.name} ${student?.last_name}`,
+      student: `${student?.name} ${student?.last_name}`,
+      periodo1: (
+        <button
+          onClick={() => handlerSpreadsheet(Number(g), student?.id_student)}
+        >
+          -
+        </button>
+      ),
+      periodo2: (
+        <button
+          onClick={() => handlerSpreadsheet(Number(g), student?.id_student)}
+        >
+          -
+        </button>
+      ),
+      periodo3: (
+        <button
+          onClick={() => handlerSpreadsheet(Number(g), student?.id_student)}
+        >
+          -
+        </button>
+      ),
+      periodo4: (
+        <button
+          onClick={() => handlerSpreadsheet(Number(g), student?.id_student)}
+        >
+          -
+        </button>
+      ),
       select: () => handlerSpreadsheet(Number(g), student?.id_student),
     }));
   }, [students]);

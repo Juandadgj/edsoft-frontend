@@ -133,14 +133,7 @@ export const SearchStudent = () => {
         </h3>
       </div>
       <div className="w-full h-full">
-        <div
-          className="w-full h-full overflow-auto"
-          style={{
-            scrollbarWidth: "thin",
-            scrollbarColor: "#25429e #F3F4F6",
-            scrollbarGutter: "20px",
-          }}
-        >
+        <div className="w-full h-full">
           <div className="flex flex-col justify-start items-center w-full p-8 h-full">
             <div className="w-full max-w-3xl border-2 border-gray5 shadow-gray5 rounded-[10px] p-10">
               <h1 className="text-black text-sm">

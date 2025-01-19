@@ -15,6 +15,7 @@ import { SecretarieForm } from "../../forms/SecretarieForm";
 import CustomModal from "@/components/CustomModal";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Button, Space } from "antd";
+import { ContainerComponents } from "@/components/ContainerComponents";
 
 const columns = [
   {
@@ -205,9 +206,8 @@ function Secretaries() {
   };
 
   return (
-    <div className=" w-full overflow-hidden h-full">
-      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[10px] h-full py-4 px-2">
-        <div className="w-full flex items-center justify-between my-3">
+    <ContainerComponents>
+      <div className="w-full flex items-center justify-between my-3">
           <h3>
             <strong className="text-xl text-black ps-8">
               Lista de Docentes
@@ -248,13 +248,11 @@ function Secretaries() {
             <h3>¡Ocurrio un error!</h3>
           )}
         </div>
-      </div>
-
       {/* Modal */}
       <CustomModal open={open}>
         <SecretarieForm secretarie={secretarie} onClose={hanclerCloseModal} />
       </CustomModal>
-    </div>
+    </ContainerComponents>
   );
 }
 

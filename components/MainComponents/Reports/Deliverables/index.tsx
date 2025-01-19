@@ -85,9 +85,7 @@ const Deliverables = () => {
         </div>
       )}
       {opcion ? (
-       <div className="h-full w-full">
-         <NavigationComponent />
-       </div>
+        <NavigationComponent />
       ) : (
         <div className="grid grid-cols-3 place-content-start gap-5 max-w-4xl">
           {cardsSpreadsheet.map((item: any, i: any) => (
@@ -100,7 +98,9 @@ const Deliverables = () => {
                 <div className="text-4xl">{item.icon}</div>
               </figure>
               <div className="card-body justify-center items-center py-0">
-                <div className="card-title text-center text-base">{item.title}</div>
+                <div className="card-title text-center text-base">
+                  {item.title}
+                </div>
               </div>
             </Link>
           ))}

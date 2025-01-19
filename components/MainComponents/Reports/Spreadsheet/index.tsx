@@ -59,14 +59,7 @@ const Spreadsheet = () => {
   );
 
   return (
-    <div
-      className="h-full w-full overflow-hidden"
-      style={{
-        scrollbarWidth: "thin",
-        scrollbarColor: "#25429e #F3F4F6",
-        scrollbarGutter: "20px",
-      }}
-    >
+    <div className="h-full w-full">
       {opcion ? (
         ""
       ) : (

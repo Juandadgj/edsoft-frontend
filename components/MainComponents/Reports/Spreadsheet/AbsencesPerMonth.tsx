@@ -1,26 +1,30 @@
 import { useMemo } from "react";
-import { useEffect, useState } from "react";
 import { useGroupsQuery } from "@/generated/graphql";
-import Table from "@/components/Table";
 import DescriptionIcon from "@mui/icons-material/Description";
 import useSchoolYear from "@/hooks/useSchoolYear";
+import { ContainerComponents } from "@/components/ContainerComponents";
+import TableComponent from "@/components/Table";
 
 const columns = [
   {
-    Header: "Curso",
-    accessor: "name",
+    title: "Curso",
+    dataIndex: "name",
+    key: "name",
   },
   {
-    Header: "Jornada",
-    accessor: "working_time",
+    title: "Jornada",
+    dataIndex: "working_time",
+    key: "working_time",
   },
   {
-    Header: "Profesor del Grupo",
-    accessor: "group_teacher",
+    title: "Profesor del Grupo",
+    dataIndex: "group_teacher",
+    key: "group_teacher",
   },
   {
-    Header: "Planillar",
-    accessor: "editar",
+    title: "Planillar",
+    dataIndex: "editar",
+    key: "editar",
   },
 ];
 const AbsencesPerMonth = () => {
@@ -32,7 +36,7 @@ const AbsencesPerMonth = () => {
   const processedGroups = useMemo(() => {
     if (!data?.groups) return [];
     return data.groups.map((group, index) => ({
-      name: `${group?.level}-${group?.sublevel}` ?? "",
+      name: `${group?.level}-${group?.sublevel}`,
       working_time: group?.working_time ?? "",
       group_teacher: group?.representative ?? "",
       editar: (
@@ -44,31 +48,27 @@ const AbsencesPerMonth = () => {
   }, [data]);
 
   return (
-    <div className="rounded-tl-[20px] w-full h-[100vh] overflow-hidden bg-gray1">
-      <div>
-        <div className="pb-4">
+    <ContainerComponents>
+      <div className="w-full flex items-center justify-between my-3">
+        <h3 className="">
           <strong className="text-2xl text-black ps-8">
             Cursos Creados para el año {year} para la planilla de inasistencia
             por mes
           </strong>
-        </div>
+        </h3>
       </div>
-      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-full">
-        <div className="h-full">
-          {loading ? (
-            <div className="w-full h-full flex justify-center items-center">
-              <span className="loading loading-dots loading-lg bg-main-blue"></span>
-            </div>
-          ) : data?.groups ? (
-            <div className="d-flex border-white py-4 h-full">
-              <Table column={columns} data={processedGroups} type={"groups"} />
-            </div>
-          ) : (
-            <h3>¡Ocurrio un error!</h3>
-          )}
-        </div>
+      <div className="h-full">
+        {loading ? (
+          <div className="w-full h-full flex justify-center items-center">
+            <span className="loading loading-dots loading-lg bg-main-blue"></span>
+          </div>
+        ) : data?.groups ? (
+          <TableComponent column={columns} data={processedGroups} />
+        ) : (
+          <h3>¡Ocurrio un error!</h3>
+        )}
       </div>
-    </div>
+    </ContainerComponents>
   );
 };
 

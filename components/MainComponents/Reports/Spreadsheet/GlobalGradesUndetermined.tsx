@@ -112,7 +112,7 @@ const GlobalGradesUndetermined = () => {
           </div>
         )}
         {data?.groups && (
-            <TableComponent column={columns} data={processedGroups} />
+          <TableComponent column={columns} data={processedGroups} />
         )}
       </div>
       {g && pdfBase64 && (

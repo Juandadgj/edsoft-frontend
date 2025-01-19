@@ -33,10 +33,13 @@ const Layaout = ({ children, textpage }: ILayaout) => {
         }}
       >
         <Sider
+          style={{
+            backgroundColor: "#efefef",
+          }}
           trigger={null}
           collapsible
           collapsed={collapsed}
-          className="bg-gray1 py-4 h-full"
+          className=" py-4 h-full"
           width={250}
         >
           <div className="flex items-center justify-center gap-2 mb-3 h-[10%]">

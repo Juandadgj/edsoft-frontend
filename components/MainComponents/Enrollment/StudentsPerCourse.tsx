@@ -216,9 +216,7 @@ export const StudentsPerCourse = () => {
             </div>
           )}
           {dataGroups?.groups && (
-            <div className="h-full border-white py-4">
-              <TableComponent column={columnsGroup} data={processedGroups} />
-            </div>
+            <TableComponent column={columnsGroup} data={processedGroups} />
           )}
           {errorGroups && <h3>¡Ocurrio un error!</h3>}
         </div>
@@ -231,14 +229,7 @@ export const StudentsPerCourse = () => {
             </div>
           )}
           {dataStudentsByGroup?.studentsByGroup && (
-            <div className="h-full">
-              <Table
-                column={columnsStudent}
-                data={studentsByGroup}
-                type={"studentsByGroup"}
-              />
-              <TableComponent column={columnsStudent} data={studentsByGroup} />
-            </div>
+            <TableComponent column={columnsStudent} data={studentsByGroup} />
           )}
           {errorStudentsByGroup && <h3>¡Ocurrio un error!</h3>}
         </div>

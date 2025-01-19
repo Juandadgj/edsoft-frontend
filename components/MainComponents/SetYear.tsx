@@ -14,6 +14,7 @@ import { Table } from "@mui/material";
 import TableComponent from "../Table";
 import CustomModal from "../CustomModal";
 import SetYearForm from "./forms/SetYearForm";
+import { ContainerComponents } from "../ContainerComponents";
 
 const columns = [
   { title: "", dataIndex: "selected", key: "selected" },
@@ -160,8 +161,7 @@ function SetYear() {
     });
   };
   return (
-    <div className=" w-full overflow-hidden h-full">
-      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[10px] h-full py-4 px-2">
+    <ContainerComponents>
         <div className="w-full flex items-center justify-between my-3">
           <h3>
             <strong className="text-xl text-black ps-8">
@@ -214,7 +214,6 @@ function SetYear() {
             </div>
           )}
         </div>
-      </div>
       {/**Modal year comments */}
       <CustomModal open={openComment}>
         <div className="text-black">
@@ -251,7 +250,7 @@ function SetYear() {
           onClose={hanclerCloseModal}
         />
       </CustomModal>
-    </div>
+    </ContainerComponents>
   );
 }
 

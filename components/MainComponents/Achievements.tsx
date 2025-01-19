@@ -272,7 +272,7 @@ function Achievements() {
         <button
           onClick={() =>
             handlerSelectedAchievement(
-              record?.id_achievement,
+              record?.id_course,
               2,
               record?.route,
               record?.id_group
@@ -291,7 +291,7 @@ function Achievements() {
         <button
           onClick={() =>
             handlerSelectedAchievement(
-              record?.id_achievement,
+              record?.id_course,
               3,
               record?.route,
               record?.id_group
@@ -310,7 +310,7 @@ function Achievements() {
         <button
           onClick={() =>
             handlerSelectedAchievement(
-              record?.id_achievement,
+              record?.id_course,
               4,
               record?.route,
               record?.id_group

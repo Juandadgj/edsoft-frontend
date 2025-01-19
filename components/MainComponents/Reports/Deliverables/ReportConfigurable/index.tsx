@@ -79,14 +79,7 @@ const ReportConfigurable = () => {
   };
 
   return (
-    <div
-      className="w-full h-full overflow-auto"
-      style={{
-        scrollbarWidth: "thin",
-        scrollbarColor: "#25429e #F3F4F6",
-        scrollbarGutter: "20px",
-      }}
-    >
+    <div className="w-full h-full">
       <div className="grid grid-cols-2 p-5">
         <div className="text-black">
           <div className="text-black text-sm">

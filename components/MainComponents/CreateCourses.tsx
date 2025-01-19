@@ -14,6 +14,7 @@ import useSchoolYear from "@/hooks/useSchoolYear";
 import TableComponent from "../Table";
 import CustomModal from "../CustomModal";
 import { CourseForm } from "./forms/CourseForm";
+import { ContainerComponents } from "../ContainerComponents";
 
 const columns = [
   {
@@ -230,10 +231,8 @@ function CreateCourses() {
       working_time: "",
     });
   };
-  console.log(year);
   return (
-    <div className=" w-full overflow-hidden h-full">
-      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[10px] h-full py-4 px-2">
+    <ContainerComponents>
         <div className="w-full flex items-center justify-between my-3">
           <strong className="text-xl text-black ps-8 pb-4">
             Cursos Creados para el año {year?.scholearYearSelected?.id_year}
@@ -272,7 +271,6 @@ function CreateCourses() {
             )}
           </div>
         </div>
-      </div>
       <CustomModal open={open}>
         <CourseForm
           course={course}
@@ -284,7 +282,7 @@ function CreateCourses() {
           teachers={teachers?.teachers}
         />
       </CustomModal>
-    </div>
+    </ContainerComponents>
   );
 }
 

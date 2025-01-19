@@ -13,17 +13,11 @@ const TableComponent = ({
   type?: string;
 }) => {
   return (
-    <div className="h-full pb-14">
+    <div className="h-full">
       <Table
-        className="overflow-y-auto h-full"
         columns={column}
         dataSource={data}
         scroll={{ x: "max-content" }}
-        style={{
-          scrollbarWidth: "thin",
-          scrollbarColor: "#25429e #F3F4F6",
-          scrollbarGutter: "100px",
-        }}
         pagination={{
           pageSize: 10,
           showSizeChanger: false,

@@ -17,48 +17,59 @@ import Image from "next/image";
 import Swal from "sweetalert2";
 import { Input } from "@/components/Input";
 import useSchoolYear from "@/hooks/useSchoolYear";
+import { ContainerComponents } from "@/components/ContainerComponents";
+import TableComponent from "../../../Table";
 
 const columsCourses = [
   {
-    Header: "Asignatura",
-    accessor: "name",
+    title: "Asignatura",
+    dataIndex: "name",
+    key: "name",
   },
   {
-    Header: "Profesor",
-    accessor: "teacher",
+    title: "Profesor",
+    dataIndex: "teacher",
+    key: "teacher",
   },
   {
-    Header: "1 Per.",
-    accessor: "perido",
+    title: "1 Per.",
+    dataIndex: "periodo1",
+    key: "periodo1",
   },
   {
-    Header: "2 Per.",
-    accessor: "perido",
+    title: "2 Per.",
+    dataIndex: "periodo2",
+    key: "periodo2",
   },
   {
-    Header: "3 Per.",
-    accessor: "perido",
+    title: "3 Per.",
+    dataIndex: "periodo3",
+    key: "periodo3",
   },
   {
-    Header: "4 Per.",
-    accessor: "perido",
+    title: "4 Per.",
+    dataIndex: "periodo4",
+    key: "periodo4",
   },
 ];
 
 const columnsGroup = [
   {
-    Header: "Curso",
-    accessor: "name",
+    title: "Curso",
+    dataIndex: "name",
+    key: "name",
   },
   {
-    Header: "Jornada",
-    accessor: "working_time",
+    title: "Jornada",
+    dataIndex: "working_time",
+    key: "working_time",
   },
   {
-    Header: "Profesor del Grupo",
-    accessor: "group_teacher",
+    title: "Profesor del Grupo",
+    dataIndex: "group_teacher",
+    key: "group_teacher",
   },
-  { Header: "Asignaturas", accessor: "subjects" },
+  { title: "Asignaturas", dataIndex: "subjects", key: "subjects" },
 ];
 
 const AchievementsAndIndicators = () => {
@@ -84,10 +95,10 @@ const AchievementsAndIndicators = () => {
   const processedGroups = useMemo(() => {
     if (!groups?.groups) return [];
     return groups?.groups.map((group: any) => ({
-      name: `${group?.level}-${group?.sublevel}` ?? "",
+      name: `${group?.level} - ${group?.sublevel}`,
       group_teacher: group?.representative ?? "",
-      jornada: group?.working_time,
-      asignaturas: (
+      working_time: group?.working_time,
+      subjects: (
         <button onClick={() => handlerSelectedCourse(group.id_group)}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -118,12 +129,68 @@ const AchievementsAndIndicators = () => {
     return data.map((courses: any, index: any) => ({
       id_course: courses?.id_course,
       id_group: courses?.id_group,
-      name: `${courses?.name}` ?? "",
-      teacher: `${courses?.teacher.name}` ?? "-",
-      periodo1: "-",
-      periodo2: "-",
-      periodo3: "-",
-      periodo4: "-",
+      name: `${courses?.name}`,
+      teacher: `${courses?.teacher.name}`,
+      periodo1: (
+        <button onClick={() => handlerSelectAchievement(courses.id_course, 1)}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30px"
+            height="30px"
+            viewBox="0 0 2048 2048"
+          >
+            <path
+              fill="#0055A6"
+              d="M1664 512h256v1536H256V512h256V384h128v128h896V384h128v128zm128 128h-128v128h128V640zm-256 0H640v128h896V640zm-1024 0H384v128h128V640zM384 1920h1408V896H384v1024zM256 384V256H128v1408H0V128h256V0h128v128h896V0h128v128h256v128h-256v128h-128V256H384v128H256zm384 1024v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128zm-768 256v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm-256-512v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128z"
+            />
+          </svg>
+        </button>
+      ),
+      periodo2: (
+        <button onClick={() => handlerSelectAchievement(courses.id_course, 2)}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30px"
+            height="30px"
+            viewBox="0 0 2048 2048"
+          >
+            <path
+              fill="#0055A6"
+              d="M1664 512h256v1536H256V512h256V384h128v128h896V384h128v128zm128 128h-128v128h128V640zm-256 0H640v128h896V640zm-1024 0H384v128h128V640zM384 1920h1408V896H384v1024zM256 384V256H128v1408H0V128h256V0h128v128h896V0h128v128h256v128h-256v128h-128V256H384v128H256zm384 1024v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128zm-768 256v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm-256-512v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128z"
+            />
+          </svg>
+        </button>
+      ),
+      periodo3: (
+        <button onClick={() => handlerSelectAchievement(courses.id_course, 3)}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30px"
+            height="30px"
+            viewBox="0 0 2048 2048"
+          >
+            <path
+              fill="#0055A6"
+              d="M1664 512h256v1536H256V512h256V384h128v128h896V384h128v128zm128 128h-128v128h128V640zm-256 0H640v128h896V640zm-1024 0H384v128h128V640zM384 1920h1408V896H384v1024zM256 384V256H128v1408H0V128h256V0h128v128h896V0h128v128h256v128h-256v128h-128V256H384v128H256zm384 1024v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128zm-768 256v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm-256-512v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128z"
+            />
+          </svg>
+        </button>
+      ),
+      periodo4: (
+        <button onClick={() => handlerSelectAchievement(courses.id_course, 4)}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30px"
+            height="30px"
+            viewBox="0 0 2048 2048"
+          >
+            <path
+              fill="#0055A6"
+              d="M1664 512h256v1536H256V512h256V384h128v128h896V384h128v128zm128 128h-128v128h128V640zm-256 0H640v128h896V640zm-1024 0H384v128h128V640zM384 1920h1408V896H384v1024zM256 384V256H128v1408H0V128h256V0h128v128h896V0h128v128h256v128h-256v128h-128V256H384v128H256zm384 1024v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128zm-768 256v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm-256-512v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128z"
+            />
+          </svg>
+        </button>
+      ),
       route: "reportes?componente=planillas&opcion=3",
     }));
   };
@@ -158,15 +225,15 @@ const AchievementsAndIndicators = () => {
     window.open()?.document.write(htmlString);
   };
   return (
-    <div className="h-full">
-      <div className="h-[6%]">
-        <div>
+    <ContainerComponents>
+      <div className="w-full flex items-center justify-between my-3">
+        <h3>
           <strong className="text-xl text-black ps-8 pb-4">
             Logros por curso para el año {year}
           </strong>
-        </div>
+        </h3>
       </div>
-      <div className="mx-auto bg-white border-none border-2 shadow-2xl rounded-[2rem] p-5 h-[94%]">
+      <div className="h-full">
         {!g && (
           <div className="h-full">
             {loadingGroups ? (
@@ -174,151 +241,149 @@ const AchievementsAndIndicators = () => {
                 <span className="loading loading-dots loading-lg bg-main-blue"></span>
               </div>
             ) : groups?.groups ? (
-              <div className="d-flex border-white py-4 h-full">
-                <Table
-                  column={columnsGroup}
-                  data={processedGroups}
-                  type={"groups"}
-                />
-              </div>
+              <TableComponent column={columnsGroup} data={processedGroups} />
             ) : (
               <h3>¡Ocurrio un error!</h3>
             )}
           </div>
         )}
         {g && !a && !per && (
-          <div className="text-black h-full">
-            {loadingCourses ? (
-              <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-main-blue"></span>
-              </div>
-            ) : courses?.courses ? (
-              <div className=" border-white py-4 h-full">
-                <div
-                  className={`w-full px-3 overflow-x-auto animate-fade-left h-full`}
-                  style={{
-                    scrollbarWidth: "thin",
-                    scrollbarColor: "#25429e #F3F4F6",
-                    scrollbarGutter: "20px",
-                  }}
-                >
-                  <table className="table text-black">
-                    <thead className="flex items-center justify-center">
-                      <tr className="flex w-full justify-center border-main-blue border-b-4 text-base font-semibold">
-                        {columsCourses.map((key: any, index: any) => (
-                          <th
-                            key={index}
-                            className="w-full text-center text-main-blue whitespace-normal flex items-center justify-center"
-                          >
-                            <p className="w-full">{key.Header}</p>
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody className="w-full py-2">
-                      {selectedCourses.map((item: any, index: number) => (
-                        <div style={{ textDecoration: "none", width: "100%" }} key={index}>
-                          <tr className="flex w-full p-1 my-4 bg-gray1 border-none rounded-[20px] text-sm font-semibold">
-                            <td className="flex w-full justify-center items-center text-center">
-                              {item.name}
-                            </td>
-                            <td className="flex w-full justify-center items-center text-center">
-                              {item.teacher.name}
-                            </td>
-                            <td className="flex w-full justify-center items-center text-center">
-                              <p
-                                className="cursor-pointer"
-                                onClick={() =>
-                                  handlerSelectAchievement(item.id_course, 1)
-                                }
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="30px"
-                                  height="30px"
-                                  viewBox="0 0 2048 2048"
-                                >
-                                  <path
-                                    fill="#0055A6"
-                                    d="M1664 512h256v1536H256V512h256V384h128v128h896V384h128v128zm128 128h-128v128h128V640zm-256 0H640v128h896V640zm-1024 0H384v128h128V640zM384 1920h1408V896H384v1024zM256 384V256H128v1408H0V128h256V0h128v128h896V0h128v128h256v128h-256v128h-128V256H384v128H256zm384 1024v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128zm-768 256v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm-256-512v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128z"
-                                  />
-                                </svg>
-                              </p>
-                            </td>
-                            <td className="flex w-full justify-center items-center text-center">
-                              <p
-                                className="cursor-pointer"
-                                onClick={() =>
-                                  handlerSelectAchievement(item.id_course, 2)
-                                }
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="30px"
-                                  height="30px"
-                                  viewBox="0 0 2048 2048"
-                                >
-                                  <path
-                                    fill="#0055A6"
-                                    d="M1664 512h256v1536H256V512h256V384h128v128h896V384h128v128zm128 128h-128v128h128V640zm-256 0H640v128h896V640zm-1024 0H384v128h128V640zM384 1920h1408V896H384v1024zM256 384V256H128v1408H0V128h256V0h128v128h896V0h128v128h256v128h-256v128h-128V256H384v128H256zm384 1024v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128zm-768 256v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm-256-512v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128z"
-                                  />
-                                </svg>
-                              </p>
-                            </td>
-                            <td className="flex w-full justify-center items-center text-center">
-                              <p
-                                className="cursor-pointer"
-                                onClick={() =>
-                                  handlerSelectAchievement(item.id_course, 3)
-                                }
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="30px"
-                                  height="30px"
-                                  viewBox="0 0 2048 2048"
-                                >
-                                  <path
-                                    fill="#0055A6"
-                                    d="M1664 512h256v1536H256V512h256V384h128v128h896V384h128v128zm128 128h-128v128h128V640zm-256 0H640v128h896V640zm-1024 0H384v128h128V640zM384 1920h1408V896H384v1024zM256 384V256H128v1408H0V128h256V0h128v128h896V0h128v128h256v128h-256v128h-128V256H384v128H256zm384 1024v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128zm-768 256v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm-256-512v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128z"
-                                  />
-                                </svg>
-                              </p>
-                            </td>
-                            <td className="flex w-full justify-center items-center text-center">
-                              <p
-                                className="cursor-pointer"
-                                onClick={() =>
-                                  handlerSelectAchievement(item.id_course, 4)
-                                }
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="30px"
-                                  height="30px"
-                                  viewBox="0 0 2048 2048"
-                                >
-                                  <path
-                                    fill="#0055A6"
-                                    d="M1664 512h256v1536H256V512h256V384h128v128h896V384h128v128zm128 128h-128v128h128V640zm-256 0H640v128h896V640zm-1024 0H384v128h128V640zM384 1920h1408V896H384v1024zM256 384V256H128v1408H0V128h256V0h128v128h896V0h128v128h256v128h-256v128h-128V256H384v128H256zm384 1024v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128zm-768 256v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm-256-512v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128z"
-                                  />
-                                </svg>
-                              </p>
-                            </td>
-                          </tr>
-                        </div>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            ) : (
-              errorCourses && <h3>Ocurrio un error: {errorCourses?.message}</h3>
-            )}
-          </div>
+          // <div className="text-black h-full">
+          //   {loadingCourses ? (
+          //     <div className="w-full h-full flex justify-center items-center">
+          //       <span className="loading loading-dots loading-lg bg-main-blue"></span>
+          //     </div>
+          //   ) : courses?.courses ? (
+          //     <div className=" border-white py-4 h-full">
+          //       <div
+          //         className={`w-full px-3 overflow-x-auto animate-fade-left h-full`}
+          //         style={{
+          //           scrollbarWidth: "thin",
+          //           scrollbarColor: "#25429e #F3F4F6",
+          //           scrollbarGutter: "20px",
+          //         }}
+          //       >
+          //         <table className="table text-black">
+          //           <thead className="flex items-center justify-center">
+          //             <tr className="flex w-full justify-center border-main-blue border-b-4 text-base font-semibold">
+          //               {columsCourses.map((key: any, index: any) => (
+          //                 <th
+          //                   key={index}
+          //                   className="w-full text-center text-main-blue whitespace-normal flex items-center justify-center"
+          //                 >
+          //                   <p className="w-full">{key.Header}</p>
+          //                 </th>
+          //               ))}
+          //             </tr>
+          //           </thead>
+          //           <tbody className="w-full py-2">
+          //             {selectedCourses.map((item: any, index: number) => (
+          //               <div
+          //                 style={{ textDecoration: "none", width: "100%" }}
+          //                 key={index}
+          //               >
+          //                 <tr className="flex w-full p-1 my-4 bg-gray1 border-none rounded-[20px] text-sm font-semibold">
+          //                   <td className="flex w-full justify-center items-center text-center">
+          //                     {item.name}
+          //                   </td>
+          //                   <td className="flex w-full justify-center items-center text-center">
+          //                     {item.teacher.name}
+          //                   </td>
+          //                   <td className="flex w-full justify-center items-center text-center">
+          //                     <p
+          //                       className="cursor-pointer"
+          //                       onClick={() =>
+          //                         handlerSelectAchievement(item.id_course, 1)
+          //                       }
+          //                     >
+          //                       <svg
+          //                         xmlns="http://www.w3.org/2000/svg"
+          //                         width="30px"
+          //                         height="30px"
+          //                         viewBox="0 0 2048 2048"
+          //                       >
+          //                         <path
+          //                           fill="#0055A6"
+          //                           d="M1664 512h256v1536H256V512h256V384h128v128h896V384h128v128zm128 128h-128v128h128V640zm-256 0H640v128h896V640zm-1024 0H384v128h128V640zM384 1920h1408V896H384v1024zM256 384V256H128v1408H0V128h256V0h128v128h896V0h128v128h256v128h-256v128h-128V256H384v128H256zm384 1024v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128zm-768 256v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm-256-512v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128z"
+          //                         />
+          //                       </svg>
+          //                     </p>
+          //                   </td>
+          //                   <td className="flex w-full justify-center items-center text-center">
+          //                     <p
+          //                       className="cursor-pointer"
+          //                       onClick={() =>
+          //                         handlerSelectAchievement(item.id_course, 2)
+          //                       }
+          //                     >
+          //                       <svg
+          //                         xmlns="http://www.w3.org/2000/svg"
+          //                         width="30px"
+          //                         height="30px"
+          //                         viewBox="0 0 2048 2048"
+          //                       >
+          //                         <path
+          //                           fill="#0055A6"
+          //                           d="M1664 512h256v1536H256V512h256V384h128v128h896V384h128v128zm128 128h-128v128h128V640zm-256 0H640v128h896V640zm-1024 0H384v128h128V640zM384 1920h1408V896H384v1024zM256 384V256H128v1408H0V128h256V0h128v128h896V0h128v128h256v128h-256v128h-128V256H384v128H256zm384 1024v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128zm-768 256v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm-256-512v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128z"
+          //                         />
+          //                       </svg>
+          //                     </p>
+          //                   </td>
+          //                   <td className="flex w-full justify-center items-center text-center">
+          //                     <p
+          //                       className="cursor-pointer"
+          //                       onClick={() =>
+          //                         handlerSelectAchievement(item.id_course, 3)
+          //                       }
+          //                     >
+          //                       <svg
+          //                         xmlns="http://www.w3.org/2000/svg"
+          //                         width="30px"
+          //                         height="30px"
+          //                         viewBox="0 0 2048 2048"
+          //                       >
+          //                         <path
+          //                           fill="#0055A6"
+          //                           d="M1664 512h256v1536H256V512h256V384h128v128h896V384h128v128zm128 128h-128v128h128V640zm-256 0H640v128h896V640zm-1024 0H384v128h128V640zM384 1920h1408V896H384v1024zM256 384V256H128v1408H0V128h256V0h128v128h896V0h128v128h256v128h-256v128h-128V256H384v128H256zm384 1024v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128zm-768 256v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm-256-512v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128z"
+          //                         />
+          //                       </svg>
+          //                     </p>
+          //                   </td>
+          //                   <td className="flex w-full justify-center items-center text-center">
+          //                     <p
+          //                       className="cursor-pointer"
+          //                       onClick={() =>
+          //                         handlerSelectAchievement(item.id_course, 4)
+          //                       }
+          //                     >
+          //                       <svg
+          //                         xmlns="http://www.w3.org/2000/svg"
+          //                         width="30px"
+          //                         height="30px"
+          //                         viewBox="0 0 2048 2048"
+          //                       >
+          //                         <path
+          //                           fill="#0055A6"
+          //                           d="M1664 512h256v1536H256V512h256V384h128v128h896V384h128v128zm128 128h-128v128h128V640zm-256 0H640v128h896V640zm-1024 0H384v128h128V640zM384 1920h1408V896H384v1024zM256 384V256H128v1408H0V128h256V0h128v128h896V0h128v128h256v128h-256v128h-128V256H384v128H256zm384 1024v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128zm-768 256v-128h128v128H640zm256 0v-128h128v128H896zm256 0v-128h128v128h-128zm-256-512v-128h128v128H896zm256 0v-128h128v128h-128zm256 0v-128h128v128h-128z"
+          //                         />
+          //                       </svg>
+          //                     </p>
+          //                   </td>
+          //                 </tr>
+          //               </div>
+          //             ))}
+          //           </tbody>
+          //         </table>
+          //       </div>
+          //     </div>
+          //   ) : (
+          //     errorCourses && <h3>Ocurrio un error: {errorCourses?.message}</h3>
+          //   )}
+          // </div>
+          <TableComponent column={columsCourses} data={selectedCourses} />
         )}
       </div>
-    </div>
+    </ContainerComponents>
   );
 };
 

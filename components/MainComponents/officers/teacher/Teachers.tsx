@@ -14,6 +14,7 @@ import TableComponent from "@/components/Table";
 import DynamicModal from "@/components/DynamicModal";
 import CustomModal from "@/components/CustomModal";
 import { TeacherForm } from "../../forms/TeacherForm";
+import { ContainerComponents } from "@/components/ContainerComponents";
 
 const columns = [
   {
@@ -194,53 +195,49 @@ function Teachers() {
     });
   };
   return (
-    <div className="w-full overflow-hidden h-full">
-      <div className="bg-white border-none border-2 shadow-2xl rounded-[10px] h-full py-4 px-2">
-        <div className="w-full flex items-center justify-between my-3">
-          <h3>
-            <strong className="text-xl text-black ps-8">
-              Lista de Docentes
-            </strong>
-          </h3>
-          <div className="flex items-center gap-2">
-            <label className="input input-bordered input-sm h-9 py-5 flex items-center gap-2 focus-within:outline-none focus-within:border-2 focus-within:border-main-blue text-black transition">
-              <input type="text" className="grow" placeholder="Buscar" />
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 16 16"
-                fill="currentColor"
-                className="h-4 w-4 opacity-70"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </label>
-            <button
-              onClick={handlerCreateTeacher}
-              className="btn btn-sm bg-main-blue mb-0 px-10 h-9 rounded-[10px] transition border-none hover:bg-[#0b5ed7] text-white text-xs"
+    <ContainerComponents>
+      <div className="w-full flex items-center justify-between my-3">
+        <h3>
+          <strong className="text-xl text-black ps-8">Lista de Docentes</strong>
+        </h3>
+        <div className="flex items-center gap-2">
+          <label className="input input-bordered input-sm h-9 py-5 flex items-center gap-2 focus-within:outline-none focus-within:border-2 focus-within:border-main-blue text-black transition">
+            <input type="text" className="grow" placeholder="Buscar" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              className="h-4 w-4 opacity-70"
             >
-              Crear docente
-            </button>
+              <path
+                fillRule="evenodd"
+                d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </label>
+          <button
+            onClick={handlerCreateTeacher}
+            className="btn btn-sm bg-main-blue mb-0 px-10 h-9 rounded-[10px] transition border-none hover:bg-[#0b5ed7] text-white text-xs"
+          >
+            Crear docente
+          </button>
+        </div>
+      </div>
+      <div className="text-black h-full">
+        {loading && (
+          <div className="w-full h-full flex justify-center items-center">
+            <span className="loading loading-dots loading-lg bg-main-blue"></span>
           </div>
-        </div>
-        <div className="text-black h-full">
-          {loading && (
-            <div className="w-full h-full flex justify-center items-center">
-              <span className="loading loading-dots loading-lg bg-main-blue"></span>
-            </div>
-          )}
-          {data?.teachers && (
-              <TableComponent column={columns} data={processedTeachers} />
-          )}
-        </div>
+        )}
+        {data?.teachers && (
+          <TableComponent column={columns} data={processedTeachers} />
+        )}
       </div>
       <CustomModal open={open}>
         <TeacherForm teacher={teacher} onClose={hanclerCloseModal} />
       </CustomModal>
-    </div>
+    </ContainerComponents>
   );
 }
 

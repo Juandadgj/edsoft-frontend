@@ -249,12 +249,8 @@ const NewStudent = () => {
       )}
       {!enrollment && (
         <div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-5 h-full overflow-auto"
-          style={{
-            scrollbarWidth: "thin",
-            scrollbarColor: "#25429e #F3F4F6",
-            scrollbarGutter: "20px",
-          }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-5 h-full"
+     
         >
           <div className="flex items-center">
             <div className="w-full">
