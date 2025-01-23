@@ -13,99 +13,50 @@ import TableComponent from "../Table";
 import { ContainerComponents } from "../ContainerComponents";
 import CustomModal from "../CustomModal";
 import { AreaForm } from "./forms/AreaForm";
+import { Space } from "antd";
 
 const columns: {
   key: string;
   title: string;
   dataIndex: string;
+  render?: any;
 }[] = [
   {
     title: "Nombre",
     dataIndex: "name",
     key: "name",
   },
-
   {
-    title: "Editar",
-    dataIndex: "edit",
-    key: "edit",
-  },
-  {
-    title: "Borrar",
-    dataIndex: "delete",
-    key: "delete",
+    title: "Acciones",
+    dataIndex: "actions",
+    key: "actions",
+    render: (_: any, record: any) => (
+      <Space size="middle">
+        {record.edit}
+        {record.delete}
+      </Space>
+    ),
   },
 ];
 
-function Areas() {
-  const [UpdateArea] = useUpdateAreaMutation();
-  const [CreateArea] = useCreateAreaMutation();
+const  Areas = () => {
+
   const [DeleteArea] = useDeleteAreaMutation();
   const [active, setActive] = useState(false);
   const [open, setOpen] = useState(false);
-  const [areaAdd, setAreaAdd] = useState(false);
 
   const [getArea, { data, loading, error, refetch }] = useGetAreasLazyQuery();
 
   // Form to manage inputs values
-  const [formValue, setFormValue] = useState<any>({
+  const [area, setArea] = useState<any>({
     name: "",
     status: "",
-  });
-  // Obj to manage every input error
-  const [errors, setErrors] = useState<any>({
-    name: "",
   });
 
   useEffect(() => {
     setActive(true);
     getArea();
   }, []);
-
-  // Here we validate if every item is filled and if it is we return true
-  const validationEvent = () => {
-    if (formValue.name && formValue.status) {
-      return true;
-    } else {
-      for (const item in formValue) {
-        if (!formValue[item]) {
-          setErrors((err: any) => ({ ...err, [item]: "Campo Requerido!" }));
-        } else {
-          setErrors((err: any) => ({ ...err, [item]: "" }));
-        }
-      }
-      return false;
-    }
-  };
-
-  // Me are using formvalue for add and update, so once the user finishes a proccess it is necessary to clean this state
-  const cleaningStates = () => {
-    for (const item in errors) {
-      setErrors((err: any) => ({ ...err, [item]: "" }));
-    }
-    for (const i in formValue) {
-      setFormValue((val: any) => ({ ...val, [i]: "" }));
-    }
-    getArea();
-  };
-
-  const arrayInputs: Array<any> = [
-    {
-      html: (
-        <Input
-          required
-          name="name"
-          type="text"
-          value={formValue.name}
-          onChange={({ target }: any) =>
-            setFormValue({ ...formValue, [target.name]: target.value })
-          }
-          label="Nombre del area"
-          errorText={errors.name}
-        />
-      ),
-    },
-  ];
 
   const processedAreas = useMemo(() => {
     if (!data?.areas) return [];
@@ -115,13 +66,12 @@ function Areas() {
         <button
           className="border-0"
           onClick={() => {
-            setFormValue((a: any) => ({
-              ...a,
+            setArea({
               name: area?.name,
               status: area?.status,
               id_area: area?.id_area,
-            }));
-           setOpen(true);
+            });
+            setOpen(true);
           }}
         >
           <svg
@@ -144,7 +94,7 @@ function Areas() {
           </svg>
         </button>
       ),
-      borrar: (
+      delete: (
         <button
           className="border-0 "
           onClick={() =>
@@ -202,7 +152,7 @@ function Areas() {
 
   const hanclerCloseModal = () => {
     setOpen(false);
-    setFormValue({
+    setArea({
       name: "",
       status: "",
       id_area: "",
@@ -221,7 +171,7 @@ function Areas() {
             type="button"
             className="btn btn-sm bg-main-blue mb-0 px-10 h-9 rounded-[10px] transition border-none hover:bg-[#0b5ed7] text-white text-xs"
             onClick={() => {
-              setFormValue({
+              setArea({
                 name: "",
                 status: "",
                 id_area: "",
@@ -246,8 +196,8 @@ function Areas() {
           <h3>¡Ocurrio un error!</h3>
         )}
       </div>
-      <CustomModal open={open}>
-        <AreaForm area={formValue} onClose={hanclerCloseModal} />
+      <CustomModal open={open} title={area.id_area ? 'Editar area': 'Crear area'}>
+        <AreaForm area={area} onClose={hanclerCloseModal} setArea={setArea} />
       </CustomModal>
     </ContainerComponents>
   );

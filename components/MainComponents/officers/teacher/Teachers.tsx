@@ -32,14 +32,8 @@ const columns = [
     key: "actions",
     render: (text: any, record: any) => (
       <Space size="middle">
-        <Button shape="round" size="small" icon={<EditOutlined />} />
-        <Button
-          type="primary"
-          danger
-          shape="round"
-          size="small"
-          icon={<DeleteOutlined />}
-        />
+        {record.update}
+        {record.delete}
       </Space>
     ),
   },
@@ -48,18 +42,10 @@ function Teachers() {
   const [DeleteDocente] = useDeleteTeacherMutation();
   const [open, setOpen] = useState(false);
   const [teacher, setTeacher] = useState<any>({
+    id_teacher: 0,
     name: "",
     last_name: "",
     type_id: 1,
-    identification: "",
-    direction: "",
-    phone: "",
-    email: "",
-    degree: "",
-  });
-  const [errors, setErrors] = useState<any>({
-    name: "",
-    last_name: "",
     identification: "",
     direction: "",
     phone: "",
@@ -72,10 +58,9 @@ function Teachers() {
   const processedTeachers = useMemo(() => {
     if (!data) return [];
     return data.teachers.map((teacher, index) => ({
-      name: teacher?.name ?? "",
-      lastName: teacher?.last_name ?? "",
-      degree: teacher?.degree ?? "",
-      editar: (
+      name: `${teacher?.name} ${teacher?.last_name}`,
+      degree: teacher?.degree,
+      update: (
         <button
           className="border-0"
           onClick={() => handlerUpdateTeacher(teacher)}
@@ -100,7 +85,7 @@ function Teachers() {
           </svg>
         </button>
       ),
-      borrar: (
+      delete: (
         <button
           className="border-0"
           onClick={() =>
@@ -168,9 +153,10 @@ function Teachers() {
       degree: "",
     });
   };
-  const handlerUpdateTeacher = async (teacher: any) => {
+  const handlerUpdateTeacher = (teacher: any) => {
     setOpen(true);
     setTeacher({
+      id_teacher: teacher.id_teacher,
       name: teacher.name,
       last_name: teacher.last_name,
       type_id: teacher.type_id,
@@ -184,6 +170,7 @@ function Teachers() {
   const hanclerCloseModal = () => {
     setOpen(false);
     setTeacher({
+      id_teacher: 0,
       name: "",
       last_name: "",
       type_id: 1,
@@ -234,8 +221,13 @@ function Teachers() {
           <TableComponent column={columns} data={processedTeachers} />
         )}
       </div>
-      <CustomModal open={open}>
-        <TeacherForm teacher={teacher} onClose={hanclerCloseModal} />
+      <CustomModal open={open} title={teacher.id_teacher ? "Editar Docente" : "Crear Docente"}>
+        <TeacherForm
+          teacher={teacher}
+          onClose={hanclerCloseModal}
+          setTeacher={setTeacher}
+          setOpen={setOpen}
+        />
       </CustomModal>
     </ContainerComponents>
   );

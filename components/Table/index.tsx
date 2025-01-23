@@ -13,7 +13,7 @@ const TableComponent = ({
   type?: string;
 }) => {
   return (
-    <div className="h-full">
+    <div className="">
       <Table
         columns={column}
         dataSource={data}

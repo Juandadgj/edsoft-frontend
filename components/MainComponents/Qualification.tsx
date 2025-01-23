@@ -174,7 +174,7 @@ const Qualification = () => {
                     <input
                       className="input border-gray5 w-full max-w-[50px] h-8 bg-transparent text-sm p-1 "
                       placeholder={
-                        record[`qualification_${logro.id_achievement}`]
+                        record[`qualification_${logro.id_achievement}`].score
                       }
                       onChange={({ target }) =>
                         updateScore(
@@ -194,13 +194,26 @@ const Qualification = () => {
                 {!qualify && (
                   <>
                     {record[`qualification_${logro.id_achievement}`] ? (
-                      record[`qualification_${logro.id_achievement}`]
+                      record[`qualification_${logro.id_achievement}`].score
                     ) : (
                       <input
                         type="text"
                         className="input border-gray5 w-full max-w-[50px] h-8 bg-transparent text-sm p-1 "
                         onChange={({ target }) =>
-                          updateScore(record[`qualification_${logro.id_achievement}`], target.value)
+                          updateScore(
+                            {
+                              id_achie_stu:
+                                record[`qualification_${logro.id_achievement}`]
+                                  .id_achie_stu,
+                              id_achiement:
+                                record[`qualification_${logro.id_achievement}`]
+                                  .id_achievement,
+                              id_student:
+                                record[`qualification_${logro.id_achievement}`]
+                                  .id_student,
+                            },
+                            target.value
+                          )
                         }
                       />
                     )}
@@ -282,10 +295,15 @@ const Qualification = () => {
               ...student.qualifications,
               ...missingAchievements,
             ];
+            console.log(updatedQualifications);
             const qualificationsObject = updatedQualifications.reduce(
               (acc: any, qualification: any) => {
-                acc[`qualification_${qualification.id_achievement}`] =
-                  qualification.score ?? null;
+                acc[`qualification_${qualification.id_achievement}`] = {
+                  id_achie_stu: qualification.id_achie_stu,
+                  id_achiement: qualification.id_achievement,
+                  id_student: qualification.id_student,
+                  score: qualification.score ?? null,
+                };
                 return acc;
               },
               {}
@@ -337,7 +355,27 @@ const Qualification = () => {
         });
     }
   }, [g, a, per]);
-
+  useEffect(() => {
+    if (dataUpdate) {
+      getStudentQualifications({
+        variables: {
+          filterQualificationInput: {
+            id_course: Number(a),
+            period: Number(per),
+          },
+        },
+      })
+        .then((res) => {
+          const { data } = res;
+          const qualifications = proceedQualifications(data);
+          setStudentQualifications(qualifications);
+        })
+        .catch((err) => {
+          console.log(err, "err");
+        });
+    }
+  }, [dataUpdate]);
+  
   const updateScore = (qualification: any, score: any) => {
     const find = newQualifications.find(
       (q) => q.id_achie_stu == qualification.id_achie_stu
@@ -367,7 +405,6 @@ const Qualification = () => {
       ]);
     }
   };
-  console.log(studentQualifications, "studentQualifications");
   return (
     <ContainerComponents>
       <div className="w-full flex items-center justify-between my-3">
@@ -469,6 +506,15 @@ const Qualification = () => {
                     column={columnsQualification}
                     data={studentQualifications}
                   />
+                  <div className="w-full flex justify-center items-center">
+                    <button
+                      disabled={loadingUpdate}
+                      onClick={handlerUpdateQualifications}
+                      className="btn btn-sm border-none text-white bg-[#0b5ed7] hover:bg-[#0b5ed7] text-xs"
+                    >
+                      Guardar notas
+                    </button>
+                  </div>
                 </>
               )}
               {errorStudentQualifications && (
@@ -477,22 +523,6 @@ const Qualification = () => {
                 </h3>
               )}
             </div>
-            {dataStudentQualifications && (
-              <div className="w-full flex justify-center items-center">
-                {!loadingUpdate && (
-                  <button
-                    disabled={loadingUpdate}
-                    onClick={handlerUpdateQualifications}
-                    className="btn btn-sm border-none text-white bg-[#0b5ed7] hover:bg-[#0b5ed7] text-xs"
-                  >
-                    Guardar notas
-                  </button>
-                )}
-                {loadingUpdate && (
-                  <span className="loading loading-dots loading-lg bg-main-blue h-4"></span>
-                )}
-              </div>
-            )}
           </div>
         </div>
       )}

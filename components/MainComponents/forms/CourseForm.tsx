@@ -1,11 +1,13 @@
 import {
   useCreateGroupMutation,
+  useGroupsQuery,
   useUpdateGroupMutation,
 } from "@/generated/graphql";
 import React, { useState } from "react";
 
 export const CourseForm = ({
   course,
+  setCourse,
   onClose,
   courses,
   groups,
@@ -14,6 +16,7 @@ export const CourseForm = ({
   teachers,
 }: {
   course?: any;
+  setCourse: any;
   onClose: any;
   courses?: any[];
   groups?: any[];
@@ -21,13 +24,14 @@ export const CourseForm = ({
   year?: any;
   teachers?: any[];
 }) => {
+  const { refetch } = useGroupsQuery({
+    variables: {
+      filterGroupInput: { id_year: year },
+    },
+  });
+
   const [createGroup] = useCreateGroupMutation();
   const [updateGroup] = useUpdateGroupMutation();
-  const [formValues, setFormValues] = useState<any>({
-    id_group: "",
-    workingTime: "",
-    id_teacher: "",
-  });
   const [errors, setErrors] = useState<any>({
     course: "",
     group: "",
@@ -35,13 +39,18 @@ export const CourseForm = ({
     teacher: "",
   });
   const validationEvent = () => {
-    if (course && course.id_group && course.workingTime && course.id_teacher) {
+    if (
+      course.level &&
+      course.sublevel &&
+      course.workingTime &&
+      course.representative
+    ) {
       return true;
     } else {
       !course
         ? setErrors((err: any) => ({ ...err, course: "Curso Requerido!" }))
         : setErrors((err: any) => ({ ...err, course: "" }));
-      !course.id_group
+      !course.sublevel
         ? setErrors((err: any) => ({
             ...err,
             group: "Grupo Requerido!",
@@ -53,39 +62,51 @@ export const CourseForm = ({
             working_time: "Jornada Requerido!",
           }))
         : setErrors((err: any) => ({ ...err, working_time: "" }));
-      !course.id_teacher
+      !course.representative
         ? setErrors((err: any) => ({ ...err, teacher: "Profesor Requerido!" }))
         : setErrors((err: any) => ({ ...err, teacher: "" }));
       return false;
     }
   };
-
   const handlerCreateGroup = async () => {
     if (validationEvent()) {
       await createGroup({
         variables: {
           createGroupInput: {
             id_year: year ? year : 0,
-            level: Number(course),
-            sublevel: formValues.id_group,
-            representative: formValues.id_teacher.toString(),
-            working_time: formValues.workingTime,
+            level: Number(course.level),
+            sublevel: course.sublevel,
+            representative: course.representative.toString(),
+            working_time: course.workingTime,
           },
         },
-      });
+      })
+        .then((res) => {
+          if (res.data?.createGroup) {
+            refetch();
+            onClose();
+          }
+        })
+        .catch((err) => {
+          console.log(err, "err");
+        });
     }
   };
-
   const handlerUpdateGroup = async () => {
     if (validationEvent()) {
       await updateGroup({
         variables: {
           updateGroupInput: {
-            id_group: formValues.id_group,
-            representative: formValues.id_teacher.toString(),
-            working_time: formValues.workingTime,
+            id_group: course.id_group,
+            representative: course.representative.toString(),
+            working_time: course.workingTime,
           },
         },
+      }).then((res) => {
+        if (res.data?.updateGroup) {
+          refetch();
+          onClose();
+        }
       });
     }
   };
@@ -97,10 +118,10 @@ export const CourseForm = ({
         </div>
         <div className="w-full">
           <select
-            name="course"
-            value={course ? course : "Selecciona un curso"}
+            name="level"
+            value={course.level ? course.level : "Selecciona un curso"}
             onChange={({ target }: any) => {
-              setFormValues((t: any) => ({
+              setCourse((t: any) => ({
                 ...t,
                 [target.name]: target.value,
               }));
@@ -127,10 +148,10 @@ export const CourseForm = ({
         </div>
         <div className="w-full">
           <select
-            name="group"
-            value={course.id_group ? course.id_group : "Selecciona un grupo"}
+            name="sublevel"
+            value={course.sublevel ? course.sublevel : "Selecciona un grupo"}
             onChange={({ target }: any) => {
-              setFormValues((t: any) => ({
+              setCourse((t: any) => ({
                 ...t,
                 [target.name]: target.value,
               }));
@@ -157,13 +178,12 @@ export const CourseForm = ({
         </div>
         <div className="w-full">
           <select
-            id="working"
-            name="working"
+            name="workingTime"
             value={
               course.workingTime ? course.workingTime : "Selecciona una jornada"
             }
             onChange={({ target }: any) => {
-              setFormValues((t: any) => ({
+              setCourse((t: any) => ({
                 ...t,
                 [target.name]: target.value,
               }));
@@ -192,12 +212,14 @@ export const CourseForm = ({
         </div>
         <div className="w-full">
           <select
-            name="teacher"
+            name="representative"
             value={
-              course.id_teacher ? course.id_teacher : "Selecciona un profesor"
+              course.representative
+                ? course.representative
+                : "Selecciona un profesor"
             }
             onChange={({ target }: any) => {
-              setFormValues((t: any) => ({
+              setCourse((t: any) => ({
                 ...t,
                 [target.name]: target.value,
               }));
@@ -220,7 +242,7 @@ export const CourseForm = ({
       </div>
       <div className="flex justify-center items-center gap-3 col-span-2">
         <div>
-          {!formValues?.id ? (
+          {!course.id_group ? (
             <button
               onClick={handlerCreateGroup}
               className="btn bg-main-blue border-none text-white hover:bg-[#0b5ed7] transition duration-500"

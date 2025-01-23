@@ -1,38 +1,59 @@
 import { Input } from "@/components/Input";
 import {
   useCreateAreaMutation,
+  useGetAreasQuery,
   useUpdateAreaMutation,
 } from "@/generated/graphql";
 import React, { useState } from "react";
 
-export const AreaForm = ({ area, onClose }: { area?: any; onClose: any }) => {
+export const AreaForm = ({
+  area,
+  onClose,
+  setArea,
+}: {
+  area?: any;
+  onClose: any;
+  setArea: any;
+}) => {
+    const {refetch} = useGetAreasQuery();
+  
   const [UpdateArea] = useUpdateAreaMutation();
   const [CreateArea] = useCreateAreaMutation();
-  const [formValue, setFormValue] = useState<any>({
-    name: "",
-    status: "",
-  });
+
   const [errors, setErrors] = useState<any>({
     name: "",
   });
   const handlerCreateArea = async () => {
     if (validationEvent()) {
-      await CreateArea({ variables: { createAreaInput: formValue } });
+      await CreateArea({ variables: { createAreaInput: {
+        name: area.name,
+        status: area.status,
+      } } }).then((res) => {
+        if (res.data) {
+          refetch()
+          cleaningStates();
+          onClose();
+        }
+      });
     }
-    cleaningStates();
   };
   const handlerUpdateArea = async () => {
     if (validationEvent()) {
-      await UpdateArea({ variables: { updateAreaInput: formValue } });
+      await UpdateArea({ variables: { updateAreaInput: area } }).then((res) => {
+        if (res.data) {
+          refetch()
+          onClose();
+          cleaningStates();
+        }
+      });
     }
-    cleaningStates();
   };
   const validationEvent = () => {
-    if (formValue.name && formValue.status) {
+    if (area.name) {
       return true;
     } else {
-      for (const item in formValue) {
-        if (!formValue[item]) {
+      for (const item in area) {
+        if (!area[item]) {
           setErrors((err: any) => ({ ...err, [item]: "Campo Requerido!" }));
         } else {
           setErrors((err: any) => ({ ...err, [item]: "" }));
@@ -41,32 +62,16 @@ export const AreaForm = ({ area, onClose }: { area?: any; onClose: any }) => {
       return false;
     }
   };
-  // Me are using formvalue for add and update, so once the user finishes a proccess it is necessary to clean this state
+  // Me are using area for add and update, so once the user finishes a proccess it is necessary to clean this state
   const cleaningStates = () => {
     for (const item in errors) {
       setErrors((err: any) => ({ ...err, [item]: "" }));
     }
-    for (const i in formValue) {
-      setFormValue((val: any) => ({ ...val, [i]: "" }));
+    for (const i in area) {
+      setArea((val: any) => ({ ...val, [i]: "" }));
     }
   };
-  const arrayInputs: Array<any> = [
-    {
-      html: (
-        <Input
-          required
-          name="name"
-          type="text"
-          value={formValue.name}
-          onChange={({ target }: any) =>
-            setFormValue({ ...formValue, [target.name]: target.value })
-          }
-          label="Nombre del area"
-          errorText={errors.name}
-        />
-      ),
-    },
-  ];
+
   return (
     <div className="grid grid-cols-2 gap-4 w-full">
       <div className="form-control text-black">
@@ -78,7 +83,7 @@ export const AreaForm = ({ area, onClose }: { area?: any; onClose: any }) => {
             name="name"
             value={area ? area.name : ""}
             onChange={({ target }: any) =>
-              setFormValue((t: any) => ({
+              setArea((t: any) => ({
                 ...t,
                 [target.name]: target.value,
               }))
@@ -92,7 +97,7 @@ export const AreaForm = ({ area, onClose }: { area?: any; onClose: any }) => {
       </div>
       <div className="flex justify-center items-center gap-3 col-span-2">
         <div>
-          {!formValue?.id ? (
+          {!area?.id_area ? (
             <button
               onClick={handlerCreateArea}
               className="btn bg-main-blue border-none text-white hover:bg-[#0b5ed7] transition duration-500"

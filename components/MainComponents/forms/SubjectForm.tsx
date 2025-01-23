@@ -7,6 +7,7 @@ import React, { useState } from "react";
 
 export const SubjectForm = ({
   subject,
+  setSubject,
   onClose,
   areas,
   courses,
@@ -15,6 +16,7 @@ export const SubjectForm = ({
   teachers,
 }: {
   subject?: any;
+  setSubject: any;
   onClose: any;
   areas?: any[];
   courses?: any[];
@@ -24,15 +26,7 @@ export const SubjectForm = ({
 }) => {
   const [addCourse] = useCreateCourseMutation();
   const [updateCourse] = useUpdateCourseMutation();
-  const [formValues, setFormValues] = useState<any>({
-    name: "",
-    id_course: "",
-    id_group: "",
-    id_teacher: "",
-    average: "",
-    hour: "",
-    percentage: "",
-  });
+
   const [errors, setErrors] = useState<any>({
     name: "",
     id_area: "",
@@ -59,33 +53,46 @@ export const SubjectForm = ({
   }
   const validationEvent = () => {
     if (
-      formValues.name &&
-      formValues.id_teacher &&
-      formValues.id_area &&
-      formValues.average &&
-      formValues.hour
+      subject.name &&
+      subject.id_teacher &&
+      subject.id_area &&
+      subject.average &&
+      subject.hour
     ) {
       return true;
     } else {
-      !formValues.name
+      !subject.name
         ? setErrors((err: any) => ({ ...err, name: "Nombre Requerido!" }))
         : setErrors((err: any) => ({ ...err, name: "" }));
-      !formValues.id_teacher
+      !subject.id_teacher
         ? setErrors((err: any) => ({
             ...err,
             id_teacher: "Profesor Requerido!",
           }))
         : setErrors((err: any) => ({ ...err, id_teacher: "" }));
-      !formValues.id_area
+      !subject.id_area
         ? setErrors((err: any) => ({ ...err, id_area: "Area Requerido!" }))
         : setErrors((err: any) => ({ ...err, id_area: "" }));
-      !formValues.average
+      !subject.average
         ? setErrors((err: any) => ({ ...err, average: "Promedio Requerido!" }))
         : setErrors((err: any) => ({ ...err, average: "" }));
-      !formValues.hour
+      !subject.hour
         ? setErrors((err: any) => ({ ...err, hour: "Horario Requerido!" }))
         : setErrors((err: any) => ({ ...err, hour: "" }));
       return false;
+    }
+  };
+
+  const cleaningStates = () => {
+    for (const item in errors) {
+      setErrors((err: any) => ({ ...err, [item]: "" }));
+    }
+    for (const i in subject) {
+      if (i === "id_teacher") {
+        setSubject((val: any) => ({ ...val, [i]: undefined }));
+      } else {
+        setSubject((val: any) => ({ ...val, [i]: "" }));
+      }
     }
   };
 
@@ -94,15 +101,20 @@ export const SubjectForm = ({
       await addCourse({
         variables: {
           createCourseInput: {
-            name: formValues.name,
-            id_area: formValues.id_area,
-            id_teacher: formValues.id_teacher,
-            average: formValues.average,
-            hour: formValues.hour,
-            percentage: formValues.percentage,
-            id_group: formValues.id_group,
+            name: subject.name,
+            id_area: Number(subject.id_area),
+            id_teacher: Number(subject.id_teacher),
+            average:  subject.average,
+            hour:  Number(subject.hour),
+            percentage: Number(subject.percentage),
+            id_group:  Number(subject.id_group),
           },
         },
+      }).then((res) => {
+        if (res.data) {
+          onClose();
+          cleaningStates();
+        }
       });
     }
   };
@@ -112,16 +124,21 @@ export const SubjectForm = ({
       await updateCourse({
         variables: {
           updateCourseInput: {
-            id_course: formValues.id_course,
-            name: formValues.name,
-            id_area: formValues.id_area,
-            id_teacher: formValues.id_teacher,
-            average: formValues.average,
-            hour: formValues.hour,
-            percentage: formValues.percentage,
-            id_group: formValues.id_group,
+            id_course: subject.id_course,
+            name: subject.name,
+            id_area: Number(subject.id_area),
+            id_teacher: Number(subject.id_teacher) ,
+            average: subject.average,
+            hour:  Number(subject.hour),
+            percentage: Number(subject.percentage), 
+            id_group:  Number(subject.id_group),
           },
         },
+      }).then((res) => {
+        if (res.data) {
+          onClose();
+          cleaningStates();
+        }
       });
     }
   };
@@ -129,11 +146,11 @@ export const SubjectForm = ({
     <div className="grid grid-cols-2 gap-4 w-full">
       <Input
         type="text"
-        value={formValues.name}
+        value={subject.name}
         name="name"
         label="Nombre de la asignatura"
         onChange={({ target }: any) =>
-          setFormValues((t: any) => ({ ...t, name: target.value }))
+          setSubject((t: any) => ({ ...t, name: target.value }))
         }
       />
       <div className="form-control text-black">
@@ -145,12 +162,10 @@ export const SubjectForm = ({
             id="teacher"
             name="teacher"
             value={
-              formValues.id_teacher
-                ? formValues.id_teacher
-                : "Selecciona un profesor"
+              subject.id_teacher ? subject.id_teacher : "Selecciona un profesor"
             }
             onChange={({ target }: any) => {
-              setFormValues((t: any) => ({
+              setSubject((t: any) => ({
                 ...t,
                 id_teacher: target.value,
               }));
@@ -184,11 +199,9 @@ export const SubjectForm = ({
           <select
             id="area"
             name="id_area"
-            value={
-              formValues.id_area ? formValues.id_area : "Selecciona un area"
-            }
+            value={subject.id_area ? subject.id_area : "Selecciona un area"}
             onChange={({ target }: any) => {
-              setFormValues((t: any) => ({
+              setSubject((t: any) => ({
                 ...t,
                 id_area: target.value,
               }));
@@ -219,9 +232,9 @@ export const SubjectForm = ({
           <select
             id="area"
             name="id_area"
-            value={formValues.average ? formValues.average : "Promediar"}
+            value={subject.average ? subject.average : "Promediar"}
             onChange={({ target }: any) => {
-              setFormValues((t: any) => ({
+              setSubject((t: any) => ({
                 ...t,
                 average: target.value,
               }));
@@ -245,9 +258,9 @@ export const SubjectForm = ({
         </div>
         <div className="w-full">
           <select
-            value={formValues.hour ? formValues.hour : "Intensidad Horaria"}
+            value={subject.hour ? subject.hour : "Intensidad Horaria"}
             onChange={({ target }: any) => {
-              setFormValues((t: any) => ({
+              setSubject((t: any) => ({
                 ...t,
                 hour: target.value,
               }));
@@ -272,12 +285,10 @@ export const SubjectForm = ({
           <select
             name="percentage"
             value={
-              formValues.percentage
-                ? formValues.percentage
-                : "Selecciona porcentaje"
+              subject.percentage ? subject.percentage : "Selecciona porcentaje"
             }
             onChange={({ target }: any) =>
-              setFormValues((t: any) => ({ ...t, percentage: target.value }))
+              setSubject((t: any) => ({ ...t, percentage: target.value }))
             }
             className="border rounded-btn border-gray5 w-full h-12 bg-transparent text-sm px-2"
           >
@@ -291,6 +302,33 @@ export const SubjectForm = ({
           <label className="label-text-alt text-[red]">
             {errors.percentage}
           </label>
+        </div>
+      </div>
+      <div className="flex justify-center items-center gap-3 col-span-2">
+        <div>
+          {!subject?.id_course ? (
+            <button
+              onClick={handlerCreateCourse}
+              className="btn bg-main-blue border-none text-white hover:bg-[#0b5ed7] transition duration-500"
+            >
+              Agregar
+            </button>
+          ) : (
+            <button
+              onClick={handlerUpdateCourse}
+              className="btn bg-main-blue border-none text-white hover:bg-[#0b5ed7] transition duration-500"
+            >
+              Editar
+            </button>
+          )}
+        </div>
+        <div>
+          <button
+            onClick={onClose}
+            className="btn bg-red-500 hover:bg-red-600 text-white border-none transition duration-500"
+          >
+            Cancelar
+          </button>
         </div>
       </div>
     </div>

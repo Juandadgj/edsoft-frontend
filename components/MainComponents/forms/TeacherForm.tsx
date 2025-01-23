@@ -4,24 +4,36 @@ import {
   useTeachersQuery,
   useUpdateTeacherMutation,
 } from "@/generated/graphql";
+import { notification } from "antd";
 import React from "react";
 
-export const TeacherForm = ({ teacher, onClose }: { teacher?: any; onClose: any }) => {
+export const TeacherForm = ({
+  teacher,
+  setTeacher,
+  onClose,
+  setOpen,
+}: {
+  teacher?: any;
+  setTeacher: any;
+  onClose: any;
+  setOpen: any;
+}) => {
   const { refetch } = useTeachersQuery({
     fetchPolicy: "network-only",
   });
-  const [AddTeacher] = useCreateTeacherMutation();
-  const [UpdateTeacher] = useUpdateTeacherMutation();
-  const [formValues, setFormValues] = React.useState<any>({
-    name: "",
-    last_name: "",
-    type_id: 1,
-    identification: "",
-    direction: "",
-    phone: "",
-    email: "",
-    degree: "",
-  });
+  const [AddTeacher, { loading, data, error }] = useCreateTeacherMutation();
+  const [
+    UpdateTeacher,
+    { loading: loadingUpdate, data: dataUpdate, error: errorUpdate },
+  ] = useUpdateTeacherMutation();
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (message: string) => {
+    api.info({
+      message: message,
+      placement: "topRight",
+    });
+  };
   // Obj to manage every input error
   const [errors, setErrors] = React.useState<any>({
     name: "",
@@ -32,22 +44,21 @@ export const TeacherForm = ({ teacher, onClose }: { teacher?: any; onClose: any 
     email: "",
     degree: "",
   });
-
   // Here we validate if every item is filled and if it is we return true
   const validationEvent = () => {
     if (
-      formValues.name &&
-      formValues.last_name &&
-      formValues.identification &&
-      formValues.direction &&
-      formValues.phone &&
-      formValues.email &&
-      formValues.degree
+      teacher.name &&
+      teacher.last_name &&
+      teacher.identification &&
+      teacher.direction &&
+      teacher.phone &&
+      teacher.email &&
+      teacher.degree
     ) {
       return true;
     } else {
-      for (const item in formValues) {
-        if (!formValues[item]) {
+      for (const item in teacher) {
+        if (!teacher[item]) {
           setErrors((err: any) => ({ ...err, [item]: "Campo Requerido!" }));
         } else {
           setErrors((err: any) => ({ ...err, [item]: "" }));
@@ -56,54 +67,58 @@ export const TeacherForm = ({ teacher, onClose }: { teacher?: any; onClose: any 
       return false;
     }
   };
-
-  // We are using formvalues for add and update, so once the user finishes a proccess it is necessary to clean this state
+  // We are using teacher for add and update, so once the user finishes a proccess it is necessary to clean this state
   const cleaningStates = () => {
     for (const item in errors) {
       setErrors((err: any) => ({ ...err, [item]: "" }));
     }
-    for (const i in formValues) {
+    for (const i in teacher) {
       if (i === "id_teacher") {
-        setFormValues((val: any) => ({ ...val, [i]: undefined }));
+        setTeacher((val: any) => ({ ...val, [i]: undefined }));
       } else if (i === "type_id") {
-        setFormValues((val: any) => ({ ...val, [i]: 1 }));
+        setTeacher((val: any) => ({ ...val, [i]: 1 }));
       } else {
-        setFormValues((val: any) => ({ ...val, [i]: "" }));
+        setTeacher((val: any) => ({ ...val, [i]: "" }));
       }
     }
   };
 
   const handlerCreateTeacher = async () => {
     if (validationEvent()) {
-      await AddTeacher({ variables: { createTeacherInput: formValues } }).then(
-        (res) => {
-          if (res.data) {
+      await AddTeacher({ variables: { createTeacherInput: teacher } }).then(
+        (res: any) => {
+          if (res.data?.createTeacher) {
             cleaningStates();
             refetch();
+            openNotification("Docente creado exitosamente");
+            setOpen(false);
           }
         }
       );
     }
   };
-  const handlerUpdateTeacher = async (form: any) => {
+  const handlerUpdateTeacher = async () => {
     if (validationEvent()) {
       await UpdateTeacher({
-        variables: { updateTeacherInput: formValues },
-      }).then((res) => {
-        if (res.data) {
+        variables: { updateTeacherInput: teacher },
+      }).then((res: any) => {
+        if (res.data?.updateTeacher) {
           cleaningStates();
           refetch();
+          openNotification("Docente actualizado exitosamente");
+          setOpen(false);
         }
       });
     }
   };
   return (
     <div className="grid grid-cols-2 gap-4 w-full">
+      {contextHolder}
       <Input
         name="name"
-        value={formValues.name}
+        value={teacher.name}
         onChange={({ target }: any) =>
-          setFormValues({ ...formValues, [target.name]: target.value })
+          setTeacher({ ...teacher, [target.name]: target.value })
         }
         type="text"
         label="Nombres"
@@ -111,9 +126,9 @@ export const TeacherForm = ({ teacher, onClose }: { teacher?: any; onClose: any 
       />
       <Input
         name="last_name"
-        value={formValues.last_name}
+        value={teacher.last_name}
         onChange={({ target }: any) =>
-          setFormValues({ ...formValues, [target.name]: target.value })
+          setTeacher({ ...teacher, [target.name]: target.value })
         }
         type="text"
         label="Apellidos"
@@ -121,9 +136,9 @@ export const TeacherForm = ({ teacher, onClose }: { teacher?: any; onClose: any 
       />
       <Input
         name="identification"
-        value={formValues.identification}
+        value={teacher.identification}
         onChange={({ target }: any) =>
-          setFormValues({ ...formValues, [target.name]: target.value })
+          setTeacher({ ...teacher, [target.name]: target.value })
         }
         type="text"
         label="Numero de Identificacion"
@@ -132,9 +147,9 @@ export const TeacherForm = ({ teacher, onClose }: { teacher?: any; onClose: any 
       <Input
         required
         name="direction"
-        value={formValues.direction}
+        value={teacher.direction}
         onChange={({ target }: any) =>
-          setFormValues({ ...formValues, [target.name]: target.value })
+          setTeacher({ ...teacher, [target.name]: target.value })
         }
         type="text"
         label="Direccion"
@@ -143,9 +158,9 @@ export const TeacherForm = ({ teacher, onClose }: { teacher?: any; onClose: any 
       <Input
         required
         name="phone"
-        value={formValues.phone}
+        value={teacher.phone}
         onChange={({ target }: any) =>
-          setFormValues({ ...formValues, [target.name]: target.value })
+          setTeacher({ ...teacher, [target.name]: target.value })
         }
         label="Telefono"
         type="text"
@@ -154,9 +169,9 @@ export const TeacherForm = ({ teacher, onClose }: { teacher?: any; onClose: any 
       <Input
         required
         name="email"
-        value={formValues.email}
+        value={teacher.email}
         onChange={({ target }: any) =>
-          setFormValues({ ...formValues, [target.name]: target.value })
+          setTeacher({ ...teacher, [target.name]: target.value })
         }
         type="email"
         placeholder="example@correo.com"
@@ -166,9 +181,9 @@ export const TeacherForm = ({ teacher, onClose }: { teacher?: any; onClose: any 
       <Input
         required
         name="degree"
-        value={formValues.degree}
+        value={teacher.degree}
         onChange={({ target }: any) =>
-          setFormValues({ ...formValues, [target.name]: target.value })
+          setTeacher({ ...teacher, [target.name]: target.value })
         }
         type="text"
         label="Titulo"
@@ -176,7 +191,7 @@ export const TeacherForm = ({ teacher, onClose }: { teacher?: any; onClose: any 
       />
       <div className="flex justify-center items-center gap-3 col-span-2">
         <div>
-          {!formValues?.id ? (
+          {!teacher?.id_teacher ? (
             <button
               onClick={handlerCreateTeacher}
               className="btn bg-main-blue border-none text-white hover:bg-[#0b5ed7] transition duration-500"
@@ -193,7 +208,10 @@ export const TeacherForm = ({ teacher, onClose }: { teacher?: any; onClose: any 
           )}
         </div>
         <div>
-          <button onClick={onClose} className="btn bg-red-500 hover:bg-red-600 text-white border-none transition duration-500">
+          <button
+            onClick={onClose}
+            className="btn bg-red-500 hover:bg-red-600 text-white border-none transition duration-500"
+          >
             Cancelar
           </button>
         </div>

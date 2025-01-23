@@ -33,14 +33,8 @@ const columns = [
     key: "actions",
     render: (text: any, record: any) => (
       <Space size="middle">
-        <Button shape="round" size="small" icon={<EditOutlined />} />
-        <Button
-          type="primary"
-          danger
-          shape="round"
-          size="small"
-          icon={<DeleteOutlined />}
-        />
+        {record.update}
+        {record.delete}
       </Space>
     ),
   },
@@ -56,6 +50,7 @@ function Secretaries() {
 
   // Form to manage inputs values
   const [secretarie, setSecretary] = useState<any>({
+    id_teacher: 0,
     name: "",
     last_name: "",
     type_id: 2,
@@ -81,10 +76,9 @@ function Secretaries() {
     if (!data?.teachers) return [];
 
     return data.teachers.map((teacher: any, index: any) => ({
-      name: teacher?.name ?? "",
-      lastName: teacher?.last_name ?? "",
+      name: `${teacher?.name} ${teacher?.last_name}`,
       degree: teacher?.degree ?? "",
-      editar: (
+      update: (
         <button
           className="border-0"
           onClick={() => handlerUpdateTeacher(teacher)}
@@ -109,7 +103,7 @@ function Secretaries() {
           </svg>{" "}
         </button>
       ),
-      borrar: (
+      delete: (
         <button
           className="border-0"
           onClick={() =>
@@ -181,6 +175,7 @@ function Secretaries() {
   const handlerUpdateTeacher = async (teacher: any) => {
     setOpen(true);
     setSecretary({
+      id_teacher: teacher.id_teacher,
       name: teacher.name,
       last_name: teacher.last_name,
       type_id: teacher.type_id,
@@ -194,6 +189,7 @@ function Secretaries() {
   const hanclerCloseModal = () => {
     setOpen(false);
     setSecretary({
+      id_teacher: 0,
       name: "",
       last_name: "",
       type_id: 1,
@@ -210,7 +206,7 @@ function Secretaries() {
       <div className="w-full flex items-center justify-between my-3">
           <h3>
             <strong className="text-xl text-black ps-8">
-              Lista de Docentes
+              Lista de secretarios
             </strong>
           </h3>
           <div className="flex items-center gap-2">
@@ -233,7 +229,7 @@ function Secretaries() {
               onClick={handlerCreateTeacher}
               className="btn btn-sm bg-main-blue mb-0 px-10 h-9 rounded-[10px] transition border-none hover:bg-[#0b5ed7] text-white text-xs"
             >
-              Crear docente
+              Crear secretario
             </button>
           </div>
         </div>
@@ -249,8 +245,8 @@ function Secretaries() {
           )}
         </div>
       {/* Modal */}
-      <CustomModal open={open}>
-        <SecretarieForm secretarie={secretarie} onClose={hanclerCloseModal} />
+      <CustomModal open={open} title={secretarie.id_teacher ? "Editar secretario" : "Crear secretario"}>
+        <SecretarieForm secretarie={secretarie} onClose={hanclerCloseModal} setSecretarie={setSecretary} setOpen={setOpen} />
       </CustomModal>
     </ContainerComponents>
   );

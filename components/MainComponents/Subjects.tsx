@@ -20,7 +20,6 @@ import TableComponent from "../Table";
 import { ContainerComponents } from "../ContainerComponents";
 import CustomModal from "../CustomModal";
 import { SubjectForm } from "./forms/SubjectForm";
-import { title } from "process";
 
 const columnsGroup = [
   {
@@ -77,7 +76,7 @@ function Subjects() {
   const handlerSelectedCourse = (id: number | undefined) => {
     router.push(`/dashboard/programacion-anual?componente=asignaturas&c=${id}`);
   };
-  const [formValues, setFormValues] = useState<any>({
+  const [subject, setSubject] = useState<any>({
     name: "",
     id_teacher: "",
     id_area: "",
@@ -97,13 +96,15 @@ function Subjects() {
         <button
           className="border-0"
           onClick={() => {
-            setFormValues({
+            setSubject({
+              id_course: courses.id_course,
               name: courses.name,
               id_teacher: courses.id_teacher,
               id_area: courses.id_area,
               average: courses.average,
               hour: courses.hour,
               percentage: courses.percentage,
+              id_group: courses.id_group,
             });
             setOpen(true);
           }}
@@ -162,16 +163,6 @@ function Subjects() {
   }, [groups]);
 
   useEffect(() => {
-    const { c, ...rest } = router.query; // Elimina 'opcion' de la URL
-    if (c) {
-      router.replace({
-        pathname: router.pathname,
-        query: rest,
-      });
-    }
-  }, []);
-
-  useEffect(() => {
     if (c) {
       getCourses({
         variables: { filterCourseInput: { id_group: Number(c) } },
@@ -221,19 +212,19 @@ function Subjects() {
       }
     });
   };
-  const handlerRefetchCourse = () => {
-    refetch();
-  };
+
   const handlerCloseModal = () => {
     setOpen(false);
-    setFormValues({
+    setSubject({
       name: "",
       id_teacher: "",
       id_area: "",
       average: "",
       hour: "",
       percentage: "",
+      id_group: "",
     });
+    refetch();
   };
   return (
     <ContainerComponents>
@@ -249,13 +240,14 @@ function Subjects() {
               type="button"
               className="btn btn-sm bg-main-blue mb-0 px-10 h-9 rounded-[10px] transition border-none hover:bg-[#0b5ed7] text-white text-xs"
               onClick={() => {
-                setFormValues({
+                setSubject({
                   name: "",
                   id_teacher: "",
                   id_area: "",
                   average: "",
                   hour: "",
                   percentage: "",
+                  id_group: c,
                 });
                 setOpen(true);
               }}
@@ -295,9 +287,13 @@ function Subjects() {
         </div>
       )}
       {/* Modal */}
-      <CustomModal open={open}>
+      <CustomModal
+        open={open}
+        title={subject?.id_course ? "Editar Curso" : "Agregar Curso"}
+      >
         <SubjectForm
-          subject={formValues}
+          subject={subject}
+          setSubject={setSubject}
           onClose={handlerCloseModal}
           areas={areas?.areas}
           courses={courses?.courses}

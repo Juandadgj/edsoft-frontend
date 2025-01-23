@@ -49,15 +49,9 @@ function CreateCourses() {
     fetchPolicy: "network-only",
   });
   const [open, setOpen] = useState(false);
-  const [typeAdd, setTypeAdd] = useState(false);
   const { data: teachers } = useTeachersQuery();
   const [deleteGroup] = useDeleteGroupMutation();
-  const [idGroup, setIdGroup] = useState<any>(0);
   const [course, setCourse] = useState<any>(0);
-  const [group, setGroup] = useState<any>("");
-  const [workingTime, setWorkingTime] = useState<any>("");
-  const [teacher, setTeacher] = useState<any>("");
-
   const { data, loading, refetch } = useGroupsQuery({
     variables: {
       filterGroupInput: { id_year: year?.scholearYearSelected?.id_year },
@@ -168,13 +162,11 @@ function CreateCourses() {
           className="border-0"
           onClick={() => {
             setCourse({
-              name: group?.level,
-              level: group?.level,
               id_group: group?.id_group,
-              teacher: group?.representative,
-              subject: group?.sublevel,
-              period: group?.working_time,
-              working_time: group?.working_time,
+              level: group?.level,
+              sublevel: group?.sublevel,
+              representative: group?.representative,
+              workingTime: group?.working_time,
             });
             setOpen(true);
           }}
@@ -224,61 +216,63 @@ function CreateCourses() {
     setCourse({
       name: "",
       level: "",
-      id_group: "",
-      teacher: "",
-      subject: "",
-      period: "",
+      sublevel: "",
+      representative: "",
       working_time: "",
     });
   };
   return (
     <ContainerComponents>
-        <div className="w-full flex items-center justify-between my-3">
-          <strong className="text-xl text-black ps-8 pb-4">
-            Cursos Creados para el año {year?.scholearYearSelected?.id_year}
-          </strong>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              className="btn btn-sm bg-main-blue mb-0 px-10 h-9 rounded-[10px] transition border-none hover:bg-[#0b5ed7] text-white text-xs"
-              onClick={() => {
-                setCourse({
-                  name: "",
-                  level: "",
-                  id_group: "",
-                  id_year: "",
-                  teacher: "",
-                  subject: "",
-                  period: "",
-                  working_time: "",
-                });
-                setOpen(true);
-              }}
-            >
-              <h4 className="text-white text-xs">+ Nuevo Curso</h4>
-            </button>
-          </div>
+      <div className="w-full flex items-center justify-between my-3">
+        <strong className="text-xl text-black ps-8 pb-4">
+          Cursos Creados para el año {year?.scholearYearSelected?.id_year}
+        </strong>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="btn btn-sm bg-main-blue mb-0 px-10 h-9 rounded-[10px] transition border-none hover:bg-[#0b5ed7] text-white text-xs"
+            onClick={() => {
+              setCourse({
+                name: "",
+                level: "",
+                id_group: "",
+                id_year: "",
+                teacher: "",
+                subject: "",
+                period: "",
+                working_time: "",
+              });
+              setOpen(true);
+            }}
+          >
+            <h4 className="text-white text-xs">+ Nuevo Curso</h4>
+          </button>
         </div>
-        <div className="text-black h-full">
-          <div className="h-full">
-            {loading && (
-              <div className="w-full h-full flex justify-center items-center">
-                <span className="loading loading-dots loading-lg bg-main-blue"></span>
-              </div>
-            )}
-            {data?.groups && (
-              <TableComponent column={columns} data={processedCourses} />
-            )}
-          </div>
+      </div>
+      <div className="text-black h-full">
+        <div className="h-full">
+          {loading && (
+            <div className="w-full h-full flex justify-center items-center">
+              <span className="loading loading-dots loading-lg bg-main-blue"></span>
+            </div>
+          )}
+          {data?.groups && (
+            <TableComponent column={columns} data={processedCourses} />
+          )}
         </div>
-      <CustomModal open={open}>
+      </div>
+      <CustomModal
+        open={open}
+        title={course.id_group ? "Editar curso" : "Crear curso"}
+      >
         <CourseForm
           course={course}
+          setCourse={setCourse}
           onClose={hanclerCloseModal}
           courses={courses}
           groups={groups}
           working_time={working_time}
-          year={year}
+          year={year?.scholearYearSelected.id_year}
           teachers={teachers?.teachers}
         />
       </CustomModal>

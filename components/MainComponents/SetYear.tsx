@@ -30,25 +30,21 @@ const columns = [
 
 function SetYear() {
   const { year, selectScholarYear } = useSchoolYear();
-  const [AddSetYear] = useCreateSetYearMutation();
-  const [UpdateSchoolarYear] = useUpdateScholarYearMutation();
   const [open, setOpen] = useState(false);
   const [openComment, setOpenComment] = useState(false);
   const [comment, setComment] = useState<ScholarYear>();
-  const modalComment = useRef<any>();
-  const modal = document.getElementById("modal") as HTMLDialogElement;
   const modalLoading = useRef<any>();
   const modalClose = useRef<any>();
-
+  const [type, setType] = useState<boolean>(false);
   // Form to manage inputs values
-  const [formValues, setFormValues] = useState<any>({
+  const [schoolYear, setSchoolYear] = useState<any>({ 
     id_year: "",
     rector: "",
     secretary: "",
     comment: "",
   });
 
-  const { data, loading, error, refetch } = useGetSchoolarYearsQuery({
+  const { data, loading, error } = useGetSchoolarYearsQuery({
     fetchPolicy: "network-only",
   });
 
@@ -111,13 +107,13 @@ function SetYear() {
         <button
           className="border-0"
           onClick={() => {
-            setFormValues((t: any) => ({
-              ...t,
+            setType(true);
+            setSchoolYear({
               id_year: schoYear?.id_year,
               secretary: schoYear?.secretary,
               rector: schoYear?.rector,
               comment: schoYear?.comment,
-            }));
+            })
             setOpen(true);
           }}
         >
@@ -153,7 +149,7 @@ function SetYear() {
   };
   const hanclerCloseModal = () => {
     setOpen(false);
-    setFormValues({
+    setSchoolYear({
       id_year: "",
       rector: "",
       secretary: "",
@@ -188,7 +184,8 @@ function SetYear() {
               type="button"
               className="btn btn-sm bg-main-blue mb-0 px-10 h-9 rounded-[10px] transition border-none hover:bg-[#0b5ed7] text-white text-xs"
               onClick={() => {
-                setFormValues({
+                setType(false);
+                setSchoolYear({
                   id_year: "",
                   rector: "",
                   secretary: "",
@@ -243,11 +240,13 @@ function SetYear() {
           </div>
         </div>
       </CustomModal>
-      <CustomModal open={open}>
+      <CustomModal open={open} title="Crear año escolar">
         <SetYearForm
-          year={formValues}
+          year={schoolYear}
           years={data?.scholarYears}
           onClose={hanclerCloseModal}
+          setSchoolYear={setSchoolYear}
+          type={type}
         />
       </CustomModal>
     </ContainerComponents>

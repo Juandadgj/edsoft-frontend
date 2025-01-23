@@ -1,6 +1,7 @@
 import { Input } from "@/components/Input";
 import {
   useCreateSetYearMutation,
+  useGetSchoolarYearsQuery,
   useUpdateScholarYearMutation,
 } from "@/generated/graphql";
 import React from "react";
@@ -9,19 +10,20 @@ const SetYearForm = ({
   year,
   years,
   onClose,
+  setSchoolYear,
+  type,
 }: {
-  year: number;
+  year: any;
   years: any;
   onClose: any;
+  setSchoolYear: any;
+  type: boolean;
 }) => {
+  const { refetch } = useGetSchoolarYearsQuery({
+    fetchPolicy: "network-only",
+  });
   const [AddSetYear] = useCreateSetYearMutation();
   const [UpdateSchoolarYear] = useUpdateScholarYearMutation();
-  const [formValues, setFormValues] = React.useState<any>({
-    id_year: "",
-    rector: "",
-    secretary: "",
-    comment: "",
-  });
   const [errors, setErrors] = React.useState<any>({
     id_year: "",
     rector: "",
@@ -29,10 +31,10 @@ const SetYearForm = ({
     comment: "",
   });
   const validationEvent = () => {
-    if (formValues.id_year && formValues.rector && formValues.secretary) {
-      if (formValues.id_year) {
-        const year_repeated = years?.scholarYears.filter(
-          (schoYear: any) => schoYear?.id_year === formValues.id_year
+    if (year.id_year && year.rector && year.secretary) {
+      if (year.id_year) {
+        const year_repeated = years?.filter(
+          (schoYear: any) => schoYear?.id_year === year.id_year
         );
         if (year_repeated!.length > 0) {
           setErrors((err: any) => ({
@@ -44,8 +46,8 @@ const SetYearForm = ({
       }
       return true;
     } else {
-      for (const item in formValues) {
-        if (!formValues[item]) {
+      for (const item in year) {
+        if (!year[item]) {
           setErrors((err: any) => ({ ...err, [item]: "Campo Requerido!" }));
         } else {
           setErrors((err: any) => ({ ...err, [item]: "" }));
@@ -59,21 +61,33 @@ const SetYearForm = ({
     for (const item in errors) {
       setErrors((err: any) => ({ ...err, [item]: "" }));
     }
-    for (const i in formValues) {
-      setFormValues((val: any) => ({ ...val, [i]: "" }));
+    for (const i in year) {
+      setSchoolYear((val: any) => ({ ...val, [i]: "" }));
     }
   };
   const handlerCreateYear = async () => {
     if (validationEvent()) {
       await AddSetYear({
-        variables: { createScholarYearInput: formValues },
+        variables: { createScholarYearInput: year },
+      }).then((res) => {
+        if (res.data?.createScholarYear) {
+          cleaningStates();
+          onClose();
+          refetch();
+        }
       });
     }
   };
   const handlerUpdateYear = async () => {
     if (validationEvent()) {
       await UpdateSchoolarYear({
-        variables: { updateScholarYearInput: formValues },
+        variables: { updateScholarYearInput: year },
+      }).then((res) => {
+        if (res.data?.updateScholarYear) {
+          cleaningStates();
+          onClose();
+          refetch();
+        }
       });
     }
   };
@@ -83,10 +97,10 @@ const SetYearForm = ({
         required
         name="id_year"
         type="number"
-        value={formValues.id_year}
+        value={year.id_year}
         onChange={({ target }: any) => {
           const val = parseInt(target.value);
-          setFormValues({ ...formValues, [target.name]: val });
+          setSchoolYear({ ...year, [target.name]: val });
         }}
         label="Año escolar"
         errorText={errors.id_year}
@@ -95,9 +109,9 @@ const SetYearForm = ({
         required
         name="rector"
         type="text"
-        value={formValues.rector}
+        value={year.rector}
         onChange={({ target }: any) => {
-          setFormValues({ ...formValues, [target.name]: target.value });
+          setSchoolYear({ ...year, [target.name]: target.value });
         }}
         label="Nombres y Apellidos del rector"
         errorText={errors.rector}
@@ -106,9 +120,9 @@ const SetYearForm = ({
         required
         name="secretary"
         type="text"
-        value={formValues.secretary}
+        value={year.secretary}
         onChange={({ target }: any) => {
-          setFormValues({ ...formValues, [target.name]: target.value });
+          setSchoolYear({ ...year, [target.name]: target.value });
         }}
         label="Nombres y Apellidos del secretario"
         errorText={errors.secretary}
@@ -117,28 +131,28 @@ const SetYearForm = ({
         required
         name="comment"
         type="text"
-        value={formValues.comment}
+        value={year.comment}
         onChange={({ target }: any) => {
-          setFormValues({ ...formValues, [target.name]: target.value });
+          setSchoolYear({ ...year, [target.name]: target.value });
         }}
         label="Comentarios"
         errorText={errors.comment}
       />
       <div className="flex justify-center items-center gap-3 col-span-2">
         <div>
-          {!formValues?.id_year ? (
-            <button
-              onClick={handlerCreateYear}
-              className="btn bg-main-blue border-none text-white hover:bg-[#0b5ed7] transition duration-500"
-            >
-              Agregar
-            </button>
-          ) : (
+          {type ? (
             <button
               onClick={handlerUpdateYear}
               className="btn bg-main-blue border-none text-white hover:bg-[#0b5ed7] transition duration-500"
             >
-              Editar
+              Editar año
+            </button>
+          ) : (
+            <button
+              onClick={handlerCreateYear}
+              className="btn bg-main-blue border-none text-white hover:bg-[#0b5ed7] transition duration-500"
+            >
+              Guardar año
             </button>
           )}
         </div>

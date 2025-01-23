@@ -62,7 +62,7 @@ const columnsAchievements = [
 ];
 
 function Achievements() {
-  const [formValues, setFormValues] = useState<any>({
+  const [achivement, setAchivement] = useState<any>({
     description: "",
     id_course: 0,
     period: 0,
@@ -74,7 +74,6 @@ function Achievements() {
   const [selectedCourses, setSelectedCourses] = useState<any>([]);
   const [selectedAchievements, setSelectedAchievements] = useState<any>([]);
   const [open, setOpen] = useState(false);
-  const [typeAdd, setTypeAdd] = useState(false);
   const [
     getAchievements,
     { data: achievements, loading: loadingAchievements, error, refetch },
@@ -105,7 +104,7 @@ function Achievements() {
         <button
           className="border-0"
           onClick={() => {
-            setFormValues((t: any) => ({
+            setAchivement((t: any) => ({
               ...t,
               description: achievements?.description,
               id_course: achievements?.id_course,
@@ -348,11 +347,11 @@ function Achievements() {
   }, [achievements]);
 
   const handlerCloseModal = () => {
+    refetch();
     setOpen(false);
-    setFormValues({
+    setAchivement({
+      ...achivement,
       description: "",
-      id_course: 0,
-      period: 0,
     });
   };
   return (
@@ -363,6 +362,22 @@ function Achievements() {
             Logros por curso para el año {year}
           </strong>
         </h3>
+        <div className="text-end pr-6">
+          <button
+            type="button"
+            className="btn btn-sm bg-main-blue mb-0 px-10 h-9 rounded-[10px] transition border-none hover:bg-[#0b5ed7] text-white text-xs"
+            onClick={() => {
+              setAchivement({
+                description: "",
+                id_course: a,
+                period: per,
+              });
+              setOpen(true);
+            }}
+          >
+            <h4 className="text-white">+ Nueva Área</h4>
+          </button>
+        </div>
       </div>
       {!g && (
         <div className="h-full">
@@ -416,9 +431,13 @@ function Achievements() {
           )}
         </div>
       )}
-      <CustomModal open={open}>
+      <CustomModal
+        open={open}
+        title={achivement.id_achivement ? "Editar logro" : "Crear logro"}
+      >
         <AchievementsForm
-          achievement={formValues}
+          achievement={achivement}
+          setAchievement={setAchivement}
           onClose={handlerCloseModal}
         />
       </CustomModal>

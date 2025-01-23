@@ -8,26 +8,20 @@ import React, { useState } from "react";
 
 export const SecretarieForm = ({
   secretarie,
+  setSecretarie,
   onClose,
+  setOpen
 }: {
   secretarie?: any;
+  setSecretarie: any;
   onClose: any;
+  setOpen: any;
 }) => {
   const { refetch } = useTeachersQuery({
     fetchPolicy: "network-only",
   });
   const [AddTeacher] = useCreateTeacherMutation();
   const [UpdateTeacher] = useUpdateTeacherMutation();
-  const [formValues, setFormValues] = useState<any>({
-    name: "",
-    last_name: "",
-    type_id: 2,
-    identification: "",
-    direction: "",
-    phone: "",
-    email: "",
-    degree: "",
-  });
   // Obj to manage every input error
   const [errors, setErrors] = useState<any>({
     name: "",
@@ -41,18 +35,18 @@ export const SecretarieForm = ({
   // Here we validate if every item is filled and if it is we return true
   const validationEvent = () => {
     if (
-      formValues.name &&
-      formValues.last_name &&
-      formValues.identification &&
-      formValues.direction &&
-      formValues.phone &&
-      formValues.email &&
-      formValues.degree
+      secretarie.name &&
+      secretarie.last_name &&
+      secretarie.identification &&
+      secretarie.direction &&
+      secretarie.phone &&
+      secretarie.email &&
+      secretarie.degree
     ) {
       return true;
     } else {
-      for (const item in formValues) {
-        if (!formValues[item]) {
+      for (const item in secretarie) {
+        if (!secretarie[item]) {
           setErrors((err: any) => ({ ...err, [item]: "Campo Requerido!" }));
         } else {
           setErrors((err: any) => ({ ...err, [item]: "" }));
@@ -62,29 +56,30 @@ export const SecretarieForm = ({
     }
   };
 
-  // Me are using formvalues for add and update, so once the user finishes a proccess it is necessary to clean this state
+  // Me are using secretarie for add and update, so once the user finishes a proccess it is necessary to clean this state
   const cleaningStates = () => {
     for (const item in errors) {
       setErrors((err: any) => ({ ...err, [item]: "" }));
     }
 
-    for (const i in formValues) {
+    for (const i in secretarie) {
       if (i === "id_teacher") {
-        setFormValues((val: any) => ({ ...val, [i]: undefined }));
+        setSecretarie((val: any) => ({ ...val, [i]: undefined }));
       } else if (i === "type_id") {
-        setFormValues((val: any) => ({ ...val, [i]: 2 }));
+        setSecretarie((val: any) => ({ ...val, [i]: 2 }));
       } else {
-        setFormValues((val: any) => ({ ...val, [i]: "" }));
+        setSecretarie((val: any) => ({ ...val, [i]: "" }));
       }
     }
   };
   const handlerCreateTeacher = async () => {
     if (validationEvent()) {
-      await AddTeacher({ variables: { createTeacherInput: formValues } }).then(
+      await AddTeacher({ variables: { createTeacherInput: secretarie } }).then(
         (res) => {
           if (res.data) {
             cleaningStates();
             refetch();
+            setOpen(false);
           }
         }
       );
@@ -93,11 +88,12 @@ export const SecretarieForm = ({
   const handlerUpdateTeacher = async (form: any) => {
     if (validationEvent()) {
       await UpdateTeacher({
-        variables: { updateTeacherInput: formValues },
+        variables: { updateTeacherInput: secretarie },
       }).then((res) => {
         if (res.data) {
           cleaningStates();
           refetch();
+          setOpen(false);
         }
       });
     }
@@ -106,9 +102,9 @@ export const SecretarieForm = ({
     <div className="grid grid-cols-2 gap-4 w-full">
       <Input
         name="name"
-        value={formValues.name}
+        value={secretarie.name}
         onChange={({ target }: any) =>
-          setFormValues({ ...formValues, [target.name]: target.value })
+          setSecretarie({ ...secretarie, [target.name]: target.value })
         }
         type="text"
         label="Nombres"
@@ -116,9 +112,9 @@ export const SecretarieForm = ({
       />
       <Input
         name="last_name"
-        value={formValues.last_name}
+        value={secretarie.last_name}
         onChange={({ target }: any) =>
-          setFormValues({ ...formValues, [target.name]: target.value })
+          setSecretarie({ ...secretarie, [target.name]: target.value })
         }
         type="text"
         label="Apellidos"
@@ -126,9 +122,9 @@ export const SecretarieForm = ({
       />
       <Input
         name="identification"
-        value={formValues.identification}
+        value={secretarie.identification}
         onChange={({ target }: any) =>
-          setFormValues({ ...formValues, [target.name]: target.value })
+          setSecretarie({ ...secretarie, [target.name]: target.value })
         }
         type="text"
         label="Numero de Identificacion"
@@ -137,9 +133,9 @@ export const SecretarieForm = ({
       <Input
         required
         name="direction"
-        value={formValues.direction}
+        value={secretarie.direction}
         onChange={({ target }: any) =>
-          setFormValues({ ...formValues, [target.name]: target.value })
+          setSecretarie({ ...secretarie, [target.name]: target.value })
         }
         type="text"
         label="Direccion"
@@ -148,9 +144,9 @@ export const SecretarieForm = ({
       <Input
         required
         name="phone"
-        value={formValues.phone}
+        value={secretarie.phone}
         onChange={({ target }: any) =>
-          setFormValues({ ...formValues, [target.name]: target.value })
+          setSecretarie({ ...secretarie, [target.name]: target.value })
         }
         label="Telefono"
         type="text"
@@ -159,9 +155,9 @@ export const SecretarieForm = ({
       <Input
         required
         name="email"
-        value={formValues.email}
+        value={secretarie.email}
         onChange={({ target }: any) =>
-          setFormValues({ ...formValues, [target.name]: target.value })
+          setSecretarie({ ...secretarie, [target.name]: target.value })
         }
         type="email"
         placeholder="example@correo.com"
@@ -171,9 +167,9 @@ export const SecretarieForm = ({
       <Input
         required
         name="degree"
-        value={formValues.degree}
+        value={secretarie.degree}
         onChange={({ target }: any) =>
-          setFormValues({ ...formValues, [target.name]: target.value })
+          setSecretarie({ ...secretarie, [target.name]: target.value })
         }
         type="text"
         label="Titulo"
@@ -181,7 +177,7 @@ export const SecretarieForm = ({
       />
       <div className="flex justify-center items-center gap-3 col-span-2">
         <div>
-          {!formValues?.id ? (
+          {!secretarie?.id_teacher ? (
             <button
               onClick={handlerCreateTeacher}
               className="btn bg-main-blue border-none text-white hover:bg-[#0b5ed7] transition duration-500"

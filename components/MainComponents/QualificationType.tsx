@@ -55,15 +55,13 @@ const columns = [
 
 function QualificationType() {
   const [DeleteQualificationType] = useDeleteQualificationTypeMutation();
-  const [AddQualificationType] = useCreateQualificationTypeMutation();
-  const [UpdateQualificationType] = useUpdateQualificationsMutation();
   const [open, setOpen] = useState(false);
   const [typeAdd, setTypeAdd] = useState(false);
 
   const { data, loading, error, refetch } = useGetQualificationQuery();
 
   // Form to manage inputs values
-  const [formValues, setFormValues] = useState<any>({
+  const [qualification, setQualification] = useState<any>({
     ceiling_score: "",
     floor_score: "",
     name: "",
@@ -83,16 +81,14 @@ function QualificationType() {
           className="border-0"
           onClick={() => {
             setTypeAdd(false);
-            // We set the values selected to our inputs
-            setFormValues((t: any) => ({
-              ...t,
+            setOpen(true);
+            setQualification({
               id_type_qual: quty?.id_type_qual,
               ceiling_score: quty?.ceiling_score,
               floor_score: quty?.floor_score,
               name: quty?.name,
               year: quty?.year,
-            }));
-            setOpen(true);
+            });
           }}
         >
           <svg
@@ -172,7 +168,7 @@ function QualificationType() {
   }, [data, DeleteQualificationType]);
   const hanclerCloseModal = () => {
     setOpen(false);
-    setFormValues({
+    setQualification({
       ceiling_score: "",
       floor_score: "",
       name: "",
@@ -207,7 +203,7 @@ function QualificationType() {
             type="button"
             className="btn btn-sm bg-main-blue mb-0 px-10 h-9 rounded-[10px] transition border-none hover:bg-[#0b5ed7] text-white text-xs"
             onClick={() => {
-              setFormValues({
+              setQualification({
                 ceiling_score: "",
                 floor_score: "",
                 name: "",
@@ -238,10 +234,12 @@ function QualificationType() {
         )}
       </div>
       {/* Modal */}
-      <CustomModal open={open}>
+      <CustomModal open={open} title={qualification.id_type_qual ? "Editar tipo calificacion" : "Crear tipo calificacion"}>
         <QualificationTypeForm
-          qualification={formValues}
+          qualification={qualification}
+          setQualification={setQualification}
           onClose={hanclerCloseModal}
+          setOpen={setOpen}
         />
       </CustomModal>
     </ContainerComponents>
