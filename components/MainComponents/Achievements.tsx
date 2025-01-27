@@ -83,7 +83,9 @@ function Achievements() {
     { data: courses, loading: loadingCourses, error: errorCourses },
   ] = useCoursesLazyQuery();
 
-  const { data: groups, loading: loadingGroups } = useGroupsQuery();
+  const { data: groups, loading: loadingGroups } = useGroupsQuery({
+    variables: {filterGroupInput: {id_year: year}},
+  });
   const handlerSelectedCourse = (id: number | undefined) => {
     router.push(`/dashboard/programacion-anual?componente=logros&g=${id}`);
   };

@@ -1,32 +1,42 @@
 import { ContainerComponents } from "@/components/ContainerComponents";
+import CustomModal from "@/components/CustomModal";
 import { Input } from "@/components/Input";
+import TableComponent from "@/components/Table";
 import {
   CreateStudentInput,
   Group,
   GroupsQuery,
+  useCreateEnrollmentMutation,
   useCreateStudentMutation,
   useGroupsLazyQuery,
+  useScholearYearSelectedQuery,
 } from "@/generated/graphql";
 import useSchoolYear from "@/hooks/useSchoolYear";
+import { notification, Table } from "antd";
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
+export type NotificationType = "success" | "info" | "warning" | "error";
 
 const columns = [
   {
-    Header: "Curso",
-    accessor: "name",
+    title: "Curso",
+    dataIndex: "name",
+    key: "name",
   },
   {
-    Header: "Profesor del Grupo",
-    accessor: "group_teacher",
+    title: "Profesor del Grupo",
+    dataIndex: "representative",
+    key: "representative",
   },
   {
-    Header: "Horario",
-    accessor: "editar",
+    title: "Horario",
+    dataIndex: "working_time",
+    key: "working_time",
   },
   {
-    Header: "Matricular",
-    accessor: "borrar",
+    title: "Matricular",
+    dataIndex: "enrollment",
+    key: "enrollment",
   },
 ];
 interface TStudent extends CreateStudentInput {
@@ -46,17 +56,25 @@ interface TStudent extends CreateStudentInput {
 }
 
 const NewStudent = () => {
-  const modalComment = useRef<HTMLDialogElement>(null);
-  const { year } = useSchoolYear();
+  const [open, setOpen] = useState(false);
+  const { data: year } = useScholearYearSelectedQuery();
   const router = useRouter();
-  const { groups } = router.query;
+  const { g } = router.query;
   const [
     getGroups,
     { data: groupsData, loading: groupsLoading, error: groupsError },
   ] = useGroupsLazyQuery({
-    variables: { filterGroupInput: { id_year: year } },
+    variables: { filterGroupInput: { id_year: year?.scholearYearSelected.id_year } },
   });
   const [createStudent, { data, loading, error }] = useCreateStudentMutation();
+  const [
+    createEnrollment,
+    {
+      data: enrollmentData,
+      loading: enrollmentLoading,
+      error: enrollmentError,
+    },
+  ] = useCreateEnrollmentMutation();
   const [groupsList, setGroupsList] = useState<Group[]>();
   const [group, setGroup] = useState<{
     id_group: number;
@@ -90,6 +108,15 @@ const NewStudent = () => {
     phone: "",
   });
 
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (message: string, type: NotificationType) => {
+    api[type]({
+      message: `${message}`,
+      description: "",
+    });
+  };
+
   const validationEvent = () => {
     if (
       student.name &&
@@ -111,14 +138,21 @@ const NewStudent = () => {
       return false;
     }
   };
-  const handlerCreateStudent = () => {
+  const handlerCreateStudent = async () => {
     createStudent({
       variables: { createStudentInput: student, idGroup: group?.id_group ?? 0 },
-    }).then(() => {
-      setEnrollment(false);
-      setTimeout(() => {
-        modalComment.current?.close();
-      }, 3000);
+    }).then((res) => {
+      if (res.data) {
+        createEnrollment({
+          variables: {
+            createEnrollmentInput: {
+              id_student: res.data.createStudent.id_student,
+              id_group: group?.id_group ?? 0,
+              year: year?.scholearYearSelected.id_year,
+            },
+          },
+        });
+      }
     });
   };
 
@@ -130,23 +164,22 @@ const NewStudent = () => {
       setEnrollment(true);
     }
   };
-  const handlerOpenModal = (group: {
-    id_group: number;
-    level: number | undefined | null;
-    sublevel: string | undefined | null;
-  }) => {
+  const handlerOpenModal = (group: any) => {
     setGroup(group);
-    modalComment.current?.showModal();
+    setOpen(true);
   };
   const processedGroups = (groups: Group[] | null | undefined) => {
     if (!groups) return [];
     return groups.map((group) => ({
       id_group: group?.id_group,
-      level: group?.level,
-      sublevel: group?.sublevel,
+      name: `${group?.level}-${group?.sublevel}`,
       representative: group?.representative ?? "",
       working_time: group.working_time,
-      asignaturas: group?.coursesCount,
+      enrollment: (
+        <button onClick={() => handlerOpenModal(group)}>
+          Selecionar grupo
+        </button>
+      ),
     }));
   };
 
@@ -161,9 +194,19 @@ const NewStudent = () => {
       setGroupsList(processedGroups(groupsData.groups as Group[]));
     }
   }, [groupsData]);
-  console.log(enrollment);
+  useEffect(() => {
+    if (enrollmentData) {
+      openNotification("Estudiante matriculado con éxito", "success");
+      setOpen(false);
+      setEnrollment(false);
+    }
+    if (enrollmentError) {
+      openNotification("Error al matricular estudiante", "error");
+    }
+  }, [enrollmentData]);
   return (
     <ContainerComponents>
+      {contextHolder}
       <div className="w-full flex items-center justify-between my-3">
         <h3>
           <strong className="text-xl text-black ps-8">
@@ -178,68 +221,7 @@ const NewStudent = () => {
               <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
           )}
-          {groupsData && (
-            <table className="table text-black">
-              <thead className="flex items-center justify-center">
-                <tr className="flex w-full justify-center border-main-blue border-b-4 text-base font-semibold">
-                  {columns.map((key: any, index: any) => (
-                    <th
-                      key={index}
-                      className="w-full text-center text-main-blue whitespace-normal flex items-center justify-center"
-                    >
-                      <p className="w-full">{key.Header}</p>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="w-full py-2">
-                {groupsList?.map((item, index) => (
-                  <div
-                    key={index}
-                    style={{ textDecoration: "none", width: "100%" }}
-                  >
-                    <tr
-                      className={`flex w-full p-1 my-4 bg-gray1 border-none rounded-[20px] text-sm font-semibold `}
-                    >
-                      <td className="flex w-full justify-center items-center text-center py-2">
-                        {item.level}-{item.sublevel}
-                      </td>
-                      <td className="flex w-full justify-center items-center text-center py-2">
-                        {item.representative}
-                      </td>
-                      <td className="flex w-full justify-center items-center text-center py-2">
-                        {item.working_time}
-                      </td>
-                      <td className="flex w-full justify-center items-center text-center py-2">
-                        <button
-                          className="btn bg-transparent border-none shadow-none hover:bg-gray5"
-                          onClick={() =>
-                            handlerOpenModal({
-                              id_group: item.id_group,
-                              level: item.level,
-                              sublevel: item.sublevel,
-                            })
-                          }
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="25"
-                            height="25"
-                            viewBox="0 0 2048 2048"
-                          >
-                            <path
-                              fill="#25429e"
-                              d="M1848 896q42 0 78 15t64 42t42 63t16 78q0 39-15 76t-43 65l-717 719l-377 94l94-377l717-718q28-28 65-42t76-15m51 249q21-21 21-51q0-31-20-50t-52-20q-14 0-27 4t-23 15l-692 694l-34 135l135-34zM640 896H512V768h128zm896 0H768V768h768zM512 1152h128v128H512zm128-640H512V384h128zm896 0H768V384h768zM384 1664h443l-32 128H256V0h1536v743q-67 10-128 44V128H384zm384-512h514l-128 128H768z"
-                            />
-                          </svg>
-                        </button>
-                      </td>
-                    </tr>
-                  </div>
-                ))}
-              </tbody>
-            </table>
-          )}
+          {groupsData && <TableComponent column={columns} data={groupsList} />}
           {groupsError && (
             <div className="w-full h-full flex justify-center items-center">
               <h1 className="text-md text-red-500">{groupsError.message}</h1>
@@ -248,10 +230,7 @@ const NewStudent = () => {
         </div>
       )}
       {!enrollment && (
-        <div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-5 h-full"
-     
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-5 h-full">
           <div className="flex items-center">
             <div className="w-full">
               <label className="label">
@@ -695,7 +674,6 @@ const NewStudent = () => {
               />
             </div>
           </div>
-
           <div className="items-center">
             <label className="label">
               <span>Beneficiario Veterano Fuerza Pública</span>
@@ -1176,41 +1154,33 @@ const NewStudent = () => {
           </div>
         </div>
       )}
-      <dialog ref={modalComment} className="modal">
-        <div className="modal-box text-black">
-          {!data && !loading && !error && (
-            <>
-              <h1 className="text-center text-2xl font-medium text-main-blue">
-                Advertencia
-              </h1>
-              <div className="my-3">
-                <h3>
-                  ¿Estas seguro de que quieres matricular al estudiante{" "}
-                  {student.name} {student.last_name} en el curso {group?.level}{" "}
-                  {group?.sublevel}?
-                </h3>
-              </div>
-              <div className="w-full flex justify-center items-center gap-2">
-                <button
-                  onClick={handlerCreateStudent}
-                  className="btn bg-main-blue border-none text-white hover:bg-[#0b5ed7] transition duration-500"
-                >
-                  Matricular
-                </button>
-                <button
-                  onClick={() => modalComment.current?.close()}
-                  className="btn bg-red-500 hover:bg-red-600 text-white border-none transition duration-500"
-                >
-                  Cancelar
-                </button>
-              </div>
-            </>
-          )}
-          {data && (
-            <div className="w-full flex justify-center items-center">
-              <h3>Estudiante matriculado satisfactoriamente!</h3>
-            </div>
-          )}
+      <CustomModal open={open}>
+        <div>
+          <h1 className="text-center text-2xl font-medium text-main-blue">
+            Advertencia
+          </h1>
+          <div className="my-3">
+            <h3>
+              ¿Estas seguro de que quieres matricular al estudiante{" "}
+              {student.name} {student.last_name} en el curso {group?.level}{" "}
+              {group?.sublevel}?
+            </h3>
+          </div>
+          <div className="w-full flex justify-center items-center gap-2">
+            <button
+              disabled={enrollmentLoading}
+              onClick={handlerCreateStudent}
+              className="btn bg-main-blue border-none text-white hover:bg-[#0b5ed7] transition duration-500"
+            >
+              Matricular
+            </button>
+            <button
+              onClick={() => setOpen(false)}
+              className="btn bg-red-500 hover:bg-red-600 text-white border-none transition duration-500"
+            >
+              Cancelar
+            </button>
+          </div>
           {loading && (
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-main-blue"></span>
@@ -1222,7 +1192,7 @@ const NewStudent = () => {
               <h3 className="text-md text-red-500">{error.message}</h3>
               <div className="w-full flex justify-center items-center gap-2">
                 <button
-                  onClick={() => modalComment.current?.close()}
+                  onClick={() => setOpen(false)}
                   className="btn bg-red-500 hover:bg-red-600 text-white border-none transition duration-500"
                 >
                   Cerrar
@@ -1231,7 +1201,7 @@ const NewStudent = () => {
             </div>
           )}
         </div>
-      </dialog>
+      </CustomModal>
     </ContainerComponents>
   );
 };

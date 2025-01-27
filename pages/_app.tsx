@@ -50,6 +50,7 @@ export default function App({ Component, pageProps }: AppProps) {
               itemSelectedBg: "#fff",
               itemSelectedColor: "#0055a6",
               itemActiveBg: "#0055a6",
+              itemHeight: 30,
             },
           },
         }}

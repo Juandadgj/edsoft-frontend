@@ -1,5 +1,5 @@
 overwrite: true
-schema: 'http://0.0.0.0:3001/graphql'
+schema: 'https://bwhwbidpg4.us-east-1.awsapprunner.com/graphql'
 documents: 'graphql/**/*.(graphql|gql)'
 generates:
   generated/graphql.tsx:

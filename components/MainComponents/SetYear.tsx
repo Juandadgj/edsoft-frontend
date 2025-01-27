@@ -6,11 +6,7 @@ import {
   useUpdateScholarYearMutation,
   ScholarYear,
 } from "../../generated/graphql";
-import DynamicModal from "../DynamicModal";
-import Swal from "sweetalert2";
-import { Input } from "../Input";
 import useSchoolYear from "@/hooks/useSchoolYear";
-import { Table } from "@mui/material";
 import TableComponent from "../Table";
 import CustomModal from "../CustomModal";
 import SetYearForm from "./forms/SetYearForm";

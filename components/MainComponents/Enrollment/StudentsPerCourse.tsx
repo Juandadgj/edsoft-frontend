@@ -4,6 +4,7 @@ import Table from "@/components/Table";
 import {
   useGroupsQuery,
   useGetStudentsByGroupLazyQuery,
+  useScholearYearSelectedQuery,
 } from "@/generated/graphql";
 import { useRouter } from "next/router";
 import useSchoolYear from "@/hooks/useSchoolYear";
@@ -66,7 +67,9 @@ export const StudentsPerCourse = () => {
     data: dataGroups,
     loading: loadingGroups,
     error: errorGroups,
-  } = useGroupsQuery();
+  } = useGroupsQuery({
+    variables: {filterGroupInput: {id_year: year}},
+  });
 
   const [
     getStudentsByGroup,

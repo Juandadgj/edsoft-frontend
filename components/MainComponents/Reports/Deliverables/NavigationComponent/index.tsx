@@ -5,13 +5,13 @@ import {
   useAchievementsLazyQuery,
   useGetStudentsByGroupLazyQuery,
   useGenerateReportAreaLazyQuery,
+  useScholearYearSelectedQuery,
 } from "../../../../../generated/graphql";
-import Table from "@/components/Table";
 import { useRouter } from "next/router";
 import ReportConfigurable from "../ReportConfigurable";
-import useSchoolYear from "@/hooks/useSchoolYear";
 import { ContainerComponents } from "@/components/ContainerComponents";
 import TableComponent from "@/components/Table";
+import useSchoolYear from "@/hooks/useSchoolYear";
 
 const columnsDeliverable = [
   {
@@ -63,7 +63,6 @@ const NavigationComponent = () => {
   const { year } = useSchoolYear();
   const { query, replace, push, back, pathname, asPath } = useRouter();
   const { g, per, opcion, s } = query;
-
   const { data: groups, loading: loadingGroups } = useGroupsQuery({
     variables: { filterGroupInput: { id_year: year } },
   });

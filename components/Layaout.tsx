@@ -1,11 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { SchoolAvatar } from "./SchoolAvatar";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Select } from "antd";
 import Image from "next/image";
 import Logo from "../public/assets/logo@2x.png";
 import { BreadCrumbs } from "./BreadCrumbs";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import {
+  useGetSchoolarYearsQuery,
+  useScholearYearSelectedQuery,
+  useSelectScholarYearMutation,
+} from "@/generated/graphql";
 
 interface ILayaout {
   children: React.ReactNode;
@@ -14,13 +19,23 @@ interface ILayaout {
 const { Header, Sider, Content } = Layout;
 
 const Layaout = ({ children, textpage }: ILayaout) => {
+  const { data: schoolYears } = useGetSchoolarYearsQuery();
+  const { data: scholarYear } = useScholearYearSelectedQuery();
+  const [
+    selectScholarYear,
+    { data: scholarYearData },
+  ] = useSelectScholarYearMutation({ fetchPolicy: "network-only" });
+  const handlerSelectYear = async (year: number) => {
+    await selectScholarYear({ variables: { idYear: year } });
+    window.location.reload();
+  };
   const router = useRouter();
-  // useEffect(() => {
-  //   const token = sessionStorage.getItem("userToken");
-  //   if (!token) {
-  //     router.push("/instituciones");
-  //   }
-  // }, []);
+  useEffect(() => {
+    const token = sessionStorage.getItem("userToken");
+    if (!token) {
+      router.push("/instituciones");
+    }
+  }, []);
   const [collapsed, setCollapsed] = useState(false);
   return (
     <Layout className="h-screen">
@@ -40,9 +55,9 @@ const Layaout = ({ children, textpage }: ILayaout) => {
           collapsible
           collapsed={collapsed}
           className=" py-4 h-full"
-          width={250}
+          width={260}
         >
-          <div className="flex items-center justify-center gap-2 mb-3 h-[10%]">
+          <div className="flex items-center justify-center gap-2 mb-1 h-[10%]">
             <Image src={Logo} alt="Inicio" className={`h-10 w-10`} />
             {!collapsed && (
               <h1 className="font-bold text-2xl text-black">EdSoft</h1>
@@ -220,7 +235,21 @@ const Layaout = ({ children, textpage }: ILayaout) => {
               <BreadCrumbs page={textpage} />
             </div>
           </div>
-          <SchoolAvatar />
+          <div className="flex items-center">
+            <Select
+              onChange={handlerSelectYear}
+              placeholder="Seleccione año"
+              defaultValue={scholarYear?.scholearYearSelected.id_year}
+              value={scholarYear?.scholearYearSelected.id_year}
+              options={schoolYears?.scholarYears.map((year: any) => {
+                return {
+                  value: year.id_year,
+                  label: year.id_year,
+                };
+              })}
+            ></Select>
+            <SchoolAvatar />
+          </div>
         </Header>
         <Content className="p-10 py-5 h-full overflow-auto">{children}</Content>
       </Layout>

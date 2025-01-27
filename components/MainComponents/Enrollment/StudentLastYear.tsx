@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { useEffect, useState } from "react";
 import Table from "@/components/Table";
 import { useRouter } from "next/router";
-import { useGroupsQuery } from "@/generated/graphql";
+import { useGroupsQuery, useScholearYearSelectedQuery } from "@/generated/graphql";
 import useSchoolYear from "@/hooks/useSchoolYear";
 import { Container } from "postcss";
 import { ContainerComponents } from "@/components/ContainerComponents";
@@ -39,7 +39,9 @@ export const StudentsLastYear = () => {
     data: dataGroups,
     loading: loadingGroups,
     error: errorGroups,
-  } = useGroupsQuery();
+  } = useGroupsQuery({
+    variables: {filterGroupInput: {id_year: year}},
+  });
 
   const handlerSelectedGroup = (id: any) => {
     const params = new URLSearchParams();

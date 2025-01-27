@@ -5,6 +5,7 @@ import {
   useAchievementsLazyQuery,
   useGetStudentQualificationsLazyQuery,
   useUpdateQualificationsMutation,
+  useScholearYearSelectedQuery,
 } from "../../generated/graphql";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -60,7 +61,7 @@ const Qualification = () => {
     loading: loadingGroups,
     error: errorGroups,
   } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: year } },
+    variables: { filterGroupInput: { id_year: year} },
   });
   const [
     getStudentQualifications,

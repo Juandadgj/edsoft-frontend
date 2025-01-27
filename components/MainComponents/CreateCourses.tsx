@@ -45,16 +45,15 @@ const columns = [
 ];
 
 function CreateCourses() {
-  const { data: year } = useScholearYearSelectedQuery({
-    fetchPolicy: "network-only",
-  });
+  const { year } = useSchoolYear();
+
   const [open, setOpen] = useState(false);
   const { data: teachers } = useTeachersQuery();
   const [deleteGroup] = useDeleteGroupMutation();
   const [course, setCourse] = useState<any>(0);
   const { data, loading, refetch } = useGroupsQuery({
     variables: {
-      filterGroupInput: { id_year: year?.scholearYearSelected?.id_year },
+      filterGroupInput: { id_year: year },
     },
   });
 
@@ -225,7 +224,7 @@ function CreateCourses() {
     <ContainerComponents>
       <div className="w-full flex items-center justify-between my-3">
         <strong className="text-xl text-black ps-8 pb-4">
-          Cursos Creados para el año {year?.scholearYearSelected?.id_year}
+          Cursos Creados para el año {year}
         </strong>
         <div className="flex items-center gap-2">
           <button
@@ -272,7 +271,7 @@ function CreateCourses() {
           courses={courses}
           groups={groups}
           working_time={working_time}
-          year={year?.scholearYearSelected.id_year}
+          year={year}
           teachers={teachers?.teachers}
         />
       </CustomModal>

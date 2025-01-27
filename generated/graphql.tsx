@@ -986,6 +986,13 @@ export type CreateCourseMutationVariables = Exact<{
 
 export type CreateCourseMutation = { __typename?: 'Mutation', createCourse: { __typename?: 'Course', id_course: number, id_group: number, id_teacher: number, name: string, position?: number | null, dim_codigo?: number | null, asi_dimension?: string | null, id_area: number, hour: number, average?: string | null, percentage?: number | null } };
 
+export type CreateEnrollmentMutationVariables = Exact<{
+  createEnrollmentInput: CreateEnrollmentInput;
+}>;
+
+
+export type CreateEnrollmentMutation = { __typename?: 'Mutation', createEnrollment: { __typename?: 'Enrollment', id_enrollment: number, id_student?: number | null, id_group?: number | null, year?: number | null, status?: string | null, reason_desertion?: string | null, date_desertion?: string | null } };
+
 export type CreateGroupMutationVariables = Exact<{
   createGroupInput: CreateGroupInput;
 }>;
@@ -1013,7 +1020,7 @@ export type CreateStudentMutationVariables = Exact<{
 }>;
 
 
-export type CreateStudentMutation = { __typename?: 'Mutation', createStudent: { __typename?: 'Student', email?: string | null, last_name?: string | null, name?: string | null } };
+export type CreateStudentMutation = { __typename?: 'Mutation', createStudent: { __typename?: 'Student', id_student: number, email?: string | null, last_name?: string | null, name?: string | null } };
 
 export type CreateTeacherMutationVariables = Exact<{
   createTeacherInput: CreateTeacherInput;
@@ -1445,6 +1452,45 @@ export function useCreateCourseMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateCourseMutationHookResult = ReturnType<typeof useCreateCourseMutation>;
 export type CreateCourseMutationResult = Apollo.MutationResult<CreateCourseMutation>;
 export type CreateCourseMutationOptions = Apollo.BaseMutationOptions<CreateCourseMutation, CreateCourseMutationVariables>;
+export const CreateEnrollmentDocument = gql`
+    mutation CreateEnrollment($createEnrollmentInput: CreateEnrollmentInput!) {
+  createEnrollment(createEnrollmentInput: $createEnrollmentInput) {
+    id_enrollment
+    id_student
+    id_group
+    year
+    status
+    reason_desertion
+    date_desertion
+  }
+}
+    `;
+export type CreateEnrollmentMutationFn = Apollo.MutationFunction<CreateEnrollmentMutation, CreateEnrollmentMutationVariables>;
+
+/**
+ * __useCreateEnrollmentMutation__
+ *
+ * To run a mutation, you first call `useCreateEnrollmentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateEnrollmentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createEnrollmentMutation, { data, loading, error }] = useCreateEnrollmentMutation({
+ *   variables: {
+ *      createEnrollmentInput: // value for 'createEnrollmentInput'
+ *   },
+ * });
+ */
+export function useCreateEnrollmentMutation(baseOptions?: Apollo.MutationHookOptions<CreateEnrollmentMutation, CreateEnrollmentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateEnrollmentMutation, CreateEnrollmentMutationVariables>(CreateEnrollmentDocument, options);
+      }
+export type CreateEnrollmentMutationHookResult = ReturnType<typeof useCreateEnrollmentMutation>;
+export type CreateEnrollmentMutationResult = Apollo.MutationResult<CreateEnrollmentMutation>;
+export type CreateEnrollmentMutationOptions = Apollo.BaseMutationOptions<CreateEnrollmentMutation, CreateEnrollmentMutationVariables>;
 export const CreateGroupDocument = gql`
     mutation CreateGroup($createGroupInput: CreateGroupInput!) {
   createGroup(createGroupInput: $createGroupInput) {
@@ -1558,6 +1604,7 @@ export type CreateSetYearMutationOptions = Apollo.BaseMutationOptions<CreateSetY
 export const CreateStudentDocument = gql`
     mutation CreateStudent($createStudentInput: CreateStudentInput!, $idGroup: Int!) {
   createStudent(createStudentInput: $createStudentInput, id_group: $idGroup) {
+    id_student
     email
     last_name
     name

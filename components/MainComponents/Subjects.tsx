@@ -7,6 +7,7 @@ import {
   useGetAreasQuery,
   useUpdateCourseMutation,
   useDeleteCourseMutation,
+  useScholearYearSelectedQuery,
 } from "../../generated/graphql";
 import { useEffect, useState } from "react";
 import Table from "../Table";
@@ -69,7 +70,9 @@ function Subjects() {
     getCourses,
     { data: courses, loading: loadingCourses, error: errorCourses, refetch },
   ] = useCoursesLazyQuery({ fetchPolicy: "network-only" });
-  const { data: groups, loading: loadingGroups } = useGroupsQuery();
+  const { data: groups, loading: loadingGroups } = useGroupsQuery({
+    variables: {filterGroupInput: {id_year: year}},
+  });
   const { data: teachers } = useTeachersQuery();
   const { data: areas } = useGetAreasQuery();
   const [DeleteCourse] = useDeleteCourseMutation({});
