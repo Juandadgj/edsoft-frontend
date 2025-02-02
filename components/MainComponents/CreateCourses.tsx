@@ -6,6 +6,7 @@ import {
   useDeleteGroupMutation,
   useTeachersQuery,
   useScholearYearSelectedQuery,
+  Group,
 } from "../../generated/graphql";
 import { useState } from "react";
 import DynamicModal from "../DynamicModal";
@@ -15,6 +16,7 @@ import TableComponent from "../Table";
 import CustomModal from "../CustomModal";
 import { CourseForm } from "./forms/CourseForm";
 import { ContainerComponents } from "../ContainerComponents";
+import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
 
 const columns = [
   {
@@ -78,10 +80,10 @@ function CreateCourses() {
     { value: 14, text: "Ciclo II" },
     { value: 15, text: "Ciclo III" },
     { value: 16, text: "Ciclo IV" },
-    { value: 20, text: "Ciclo VI (Sem. 2)" },
     { value: 17, text: "Ciclo V (Sem. 1)" },
     { value: 18, text: "Ciclo VI (Sem. 1)" },
     { value: 19, text: "Ciclo V (Sem. 2)" },
+    { value: 20, text: "Ciclo VI (Sem. 2)" },
   ];
   const groups = [
     { value: "A", text: "A" },
@@ -153,7 +155,7 @@ function CreateCourses() {
   const processedCourses = useMemo(() => {
     if (!data?.groups) return [];
     return data.groups.map((group, index) => ({
-      name: `${group?.level}-${group?.sublevel}`,
+      name: `${getCourseLevel(group?.level)} - ${group?.sublevel}`,
       jornada: group?.working_time ?? "",
       group_teacher: group?.representative ?? "",
       editar: (

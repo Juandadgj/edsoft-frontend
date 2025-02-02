@@ -19,6 +19,7 @@ import { Input } from "@/components/Input";
 import useSchoolYear from "@/hooks/useSchoolYear";
 import { ContainerComponents } from "@/components/ContainerComponents";
 import TableComponent from "../../../Table";
+import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
 
 const columsCourses = [
   {
@@ -95,7 +96,7 @@ const AchievementsAndIndicators = () => {
   const processedGroups = useMemo(() => {
     if (!groups?.groups) return [];
     return groups?.groups.map((group: any) => ({
-      name: `${group?.level} - ${group?.sublevel}`,
+      name: `${getCourseLevel(group?.level)} - ${group?.sublevel}`,
       group_teacher: group?.representative ?? "",
       working_time: group?.working_time,
       subjects: (

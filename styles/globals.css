@@ -50,3 +50,15 @@ details > summary::-webkit-details-marker {
   color: #0055a6 !important;
   background-color: #fff !important;
 }
+.custom-select {
+  border: none !important;
+
+}
+
+.custom-select .ant-select-selector {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+ }

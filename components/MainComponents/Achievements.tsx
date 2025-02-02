@@ -18,6 +18,7 @@ import { ContainerComponents } from "../ContainerComponents";
 import CustomModal from "../CustomModal";
 import { AchievementsForm } from "./forms/AchievementsForm";
 import TableComponent from "../Table";
+import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
 
 const columnsGroup = [
   {
@@ -210,7 +211,7 @@ function Achievements() {
   const processedGroups = useMemo(() => {
     if (!groups?.groups) return [];
     return groups?.groups.map((group, index) => ({
-      name: `${group?.level}-${group?.sublevel}`,
+      name: `${getCourseLevel(group?.level)} - ${group?.sublevel}`,
       group_teacher: group?.representative ?? "",
       courses_count: group?.coursesCount,
       select: (

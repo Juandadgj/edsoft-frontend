@@ -12,6 +12,7 @@ import {
   useScholearYearSelectedQuery,
 } from "@/generated/graphql";
 import useSchoolYear from "@/hooks/useSchoolYear";
+import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
 import { notification, Table } from "antd";
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
@@ -172,7 +173,7 @@ const NewStudent = () => {
     if (!groups) return [];
     return groups.map((group) => ({
       id_group: group?.id_group,
-      name: `${group?.level}-${group?.sublevel}`,
+      name: `${getCourseLevel(group?.level)} - ${group?.sublevel}`,
       representative: group?.representative ?? "",
       working_time: group.working_time,
       enrollment: (

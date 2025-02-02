@@ -21,6 +21,7 @@ import TableComponent from "../Table";
 import { ContainerComponents } from "../ContainerComponents";
 import CustomModal from "../CustomModal";
 import { SubjectForm } from "./forms/SubjectForm";
+import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
 
 const columnsGroup = [
   {
@@ -154,7 +155,7 @@ function Subjects() {
     if (!groups?.groups) return [];
     return groups.groups.map((group, index) => ({
       id: group?.id_group,
-      name: `${group?.level} - ${group?.sublevel}`,
+      name: `${getCourseLevel(group?.level)} - ${group?.sublevel}`,
       group_teacher: group?.representative ?? "",
       courses_count: group?.coursesCount ?? 0,
       select: (

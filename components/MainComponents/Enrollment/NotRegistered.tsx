@@ -3,9 +3,8 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_STUDENTS } from "@/graphql/queries/GetStudents";
 import useSchoolYear from "@/hooks/useSchoolYear";
-import { title } from "process";
-import { data } from "autoprefixer";
 import TableComponent from "@/components/Table";
+import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
 
 const columns = [
   {
@@ -31,7 +30,7 @@ export const NotRegistered = () => {
   const processedCourses = useMemo(() => {
     if (!data?.groups) return [];
     return data.groups.map((group: any, index: any) => ({
-      name: `${group?.level}-${group?.sublevel}`,
+      name: `${getCourseLevel(group?.level)} - ${group?.sublevel}`,
       jornada: group?.working_time ?? "",
       group_teacher: group?.representative ?? "",
     }));

@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import useSchoolYear from "@/hooks/useSchoolYear";
 import TableComponent from "../Table";
 import { ContainerComponents } from "../ContainerComponents";
+import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
 
 const columnsGroup = [
   {
@@ -239,7 +240,7 @@ const Qualification = () => {
   const processedGroups = useMemo(() => {
     if (!groups?.groups) return [];
     return groups.groups.map((group, index) => ({
-      name: `${group?.level}-${group?.sublevel}`,
+      name: `${getCourseLevel(group?.level)} - ${group?.sublevel}`,
       jornada: group?.working_time,
       group_teacher: group?.representative ?? "",
       subjects: (

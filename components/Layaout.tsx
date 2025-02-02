@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { SchoolAvatar } from "./SchoolAvatar";
-import { Layout, Menu, Select } from "antd";
+import { Layout, Menu, Select, theme } from "antd";
 import Image from "next/image";
 import Logo from "../public/assets/logo@2x.png";
 import { BreadCrumbs } from "./BreadCrumbs";
@@ -11,11 +11,20 @@ import {
   useScholearYearSelectedQuery,
   useSelectScholarYearMutation,
 } from "@/generated/graphql";
+import {
+  AcademicProcessIcon,
+  AnualProgramingIcon,
+  FuncionariesIcon,
+  ReportsIcon,
+  SettingsIcon,
+} from "@/shared/icons";
 
 interface ILayaout {
   children: React.ReactNode;
   textpage: string;
 }
+const { useToken } = theme;
+
 const { Header, Sider, Content } = Layout;
 
 const Layaout = ({ children, textpage }: ILayaout) => {
@@ -30,12 +39,19 @@ const Layaout = ({ children, textpage }: ILayaout) => {
     window.location.reload();
   };
   const router = useRouter();
+  const { token } = useToken();
+
+  const contentStyle: React.CSSProperties = {
+    borderRadius: token.borderRadiusLG,
+    boxShadow: token.boxShadowSecondary,
+  };
   useEffect(() => {
     const token = sessionStorage.getItem("userToken");
     if (!token) {
       router.push("/instituciones");
     }
   }, []);
+
   const [collapsed, setCollapsed] = useState(false);
   return (
     <Layout className="h-screen">
@@ -57,18 +73,18 @@ const Layaout = ({ children, textpage }: ILayaout) => {
           className=" py-4 h-full"
           width={260}
         >
-          <div className="flex items-center justify-center gap-2 mb-1 h-[10%]">
+          <div className="flex items-center justify-center gap-2 mb-1 h-[7%]">
             <Image src={Logo} alt="Inicio" className={`h-10 w-10`} />
             {!collapsed && (
               <h1 className="font-bold text-2xl text-black">EdSoft</h1>
             )}
           </div>
           <Menu
-            getPopupContainer={(node) => node.parentNode as HTMLElement}
-            className="bg-gray1 h-[90%] overflow-auto"
+            className="bg-gray1 h-[93%] overflow-auto"
             mode="inline"
             items={[
               {
+                icon: <FuncionariesIcon color="white"  />,
                 key: "1",
                 label: "Funcionarios",
                 children: [
@@ -91,6 +107,7 @@ const Layaout = ({ children, textpage }: ILayaout) => {
                 ],
               },
               {
+                icon: <AnualProgramingIcon />,
                 key: "2",
                 label: "Programacion Anual",
                 children: [
@@ -161,6 +178,7 @@ const Layaout = ({ children, textpage }: ILayaout) => {
                 ],
               },
               {
+                icon: <AcademicProcessIcon />,
                 key: "3",
                 label: "Proceso Academico",
                 children: [
@@ -175,6 +193,7 @@ const Layaout = ({ children, textpage }: ILayaout) => {
                 ],
               },
               {
+                icon: <ReportsIcon />,
                 key: "4",
                 label: "Reportes",
                 children: [
@@ -205,6 +224,7 @@ const Layaout = ({ children, textpage }: ILayaout) => {
                 ],
               },
               {
+                icon: <SettingsIcon />,
                 key: "5",
                 label: "Ajustes",
                 children: [
@@ -237,6 +257,8 @@ const Layaout = ({ children, textpage }: ILayaout) => {
           </div>
           <div className="flex items-center">
             <Select
+              className="custom-select"
+              style={{ width: "80px" }}
               onChange={handlerSelectYear}
               placeholder="Seleccione año"
               defaultValue={scholarYear?.scholearYearSelected.id_year}
@@ -247,7 +269,23 @@ const Layaout = ({ children, textpage }: ILayaout) => {
                   label: year.id_year,
                 };
               })}
-            ></Select>
+              suffixIcon={
+                <svg
+                  width="12"
+                  height="7"
+                  viewBox="0 0 12 7"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M10.8276 1.48228L6.40232 5.93505C6.13077 6.20829 5.69049 6.20829 5.41893 5.93505L0.993671 1.48228C0.722115 1.20903 0.722115 0.766019 0.993671 0.492775C1.26523 0.21953 1.70551 0.21953 1.97706 0.492775L5.91063 4.45079L9.84419 0.492775C10.1157 0.219531 10.556 0.219531 10.8276 0.492775C11.0991 0.766019 11.0991 1.20904 10.8276 1.48228Z"
+                    fill="black"
+                  />
+                </svg>
+              }
+            />
             <SchoolAvatar />
           </div>
         </Header>

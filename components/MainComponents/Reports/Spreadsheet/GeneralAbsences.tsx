@@ -4,6 +4,7 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import useSchoolYear from "@/hooks/useSchoolYear";
 import TableComponent from "@/components/Table";
 import { ContainerComponents } from "@/components/ContainerComponents";
+import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
 
 const columns = [
   {
@@ -37,7 +38,7 @@ const GeneralAbsences = () => {
   const processedGroups = useMemo(() => {
     if (!data?.groups) return [];
     return data.groups.map((group, index) => ({
-      name: `${group?.level}-${group?.sublevel}`,
+      name: `${getCourseLevel(group?.level)} - ${group?.sublevel}`,
       working_time: group?.working_time ?? "",
       group_teacher: group?.representative ?? "",
       editar: (

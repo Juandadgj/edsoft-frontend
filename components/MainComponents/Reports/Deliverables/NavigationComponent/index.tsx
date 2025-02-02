@@ -12,6 +12,7 @@ import ReportConfigurable from "../ReportConfigurable";
 import { ContainerComponents } from "@/components/ContainerComponents";
 import TableComponent from "@/components/Table";
 import useSchoolYear from "@/hooks/useSchoolYear";
+import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
 
 const columnsDeliverable = [
   {
@@ -125,7 +126,7 @@ const NavigationComponent = () => {
     if (!groups?.groups) return [];
     return groups.groups.map((group, index) => ({
       id: group?.id_group,
-      name: `${group?.level} - ${group?.sublevel}`,
+      name: `${getCourseLevel(group?.level)} - ${group?.sublevel}`,
       group_teacher: group?.representative,
       select: (
         <button onClick={() => handlerSelectedGroup(group?.id_group)}>

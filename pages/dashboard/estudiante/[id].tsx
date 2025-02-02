@@ -1,5 +1,7 @@
 import Layaout from "@/components/Layaout";
 import { useStudentByIdQuery } from "@/generated/graphql";
+import { CourseLevelEnum } from "@/shared/enums/CourseLevelEnum";
+import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
 import { UserOutlined } from "@ant-design/icons";
 import { Table } from "antd";
 import { useRouter } from "next/router";
@@ -155,23 +157,51 @@ const Student = ({ data }: any) => {
               {dataStudent.studentByID.groups?.map((group) => (
                 <div className="" key={group?.id_group}>
                   <strong className="text-black ps-8 text-xl">
-                    {group?.level} {group?.sublevel}
+                    {getCourseLevel(group?.level)} {group?.sublevel}
                   </strong>
                   <div className="bg-white w-full h-full rounded-[2rem] p-5 px-2 text-black">
-                    <Table
-                      className="h-full"
-                      dataSource={group?.courses?.map((c) => c)}
-                      columns={columns}
-                      scroll={{ x: 600 }}
-                      style={{
-                        scrollbarWidth: "thin",
-                        scrollbarColor: "#25429e #F3F4F6",
-                        scrollbarGutter: "20px",
-                      }}
-                      pagination={{
-                        pageSize: 5,
-                      }}
-                    />
+                    <table className=" w-full">
+                      <thead className="">
+                        <div className="w-full flex justify-center text-center text-main-blue underline underline-offset-8 font-semibold pb-3">
+                          <tr className="w-full justify-center flex px-2 ">
+                            <td className="w-[38%] ">Materia</td>
+                            <td className="w-[38%]">Docente</td>
+                            <td className="w-[6%]">Pr1</td>
+                            <td className="w-[6%]">Pr2</td>
+                            <td className="w-[6%]">Pr3</td>
+                            <td className="w-[6%]">Pr4</td>
+                          </tr>
+                        </div>
+                      </thead>
+                      <tbody className="">
+                        {group?.courses?.map((course) => (
+                          <div
+                            key={course?.id_course}
+                            className="flex justify-center items-center pt-3 text-center"
+                          >
+                            <tr className="w-full flex justify-center items-center bg-gray1 rounded-[2rem] px-2">
+                              <td className="w-[38%]   py-2">{course?.name}</td>
+                              <td className="w-[38%] h-full py-2">
+                                {course?.teacher}
+                              </td>
+
+                              <td className="w-[6%]   py-2">
+                                {course?.definitives?.score1}
+                              </td>
+                              <td className="w-[6%]   py-2">
+                                {course?.definitives?.score2}
+                              </td>
+                              <td className="w-[6%]   py-2">
+                                {course?.definitives?.score3}
+                              </td>
+                              <td className="w-[6%]   py-2">
+                                {course?.definitives?.score4}
+                              </td>
+                            </tr>
+                          </div>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               ))}
