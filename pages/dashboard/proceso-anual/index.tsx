@@ -7,7 +7,6 @@ import React from "react";
 export default function Anual() {
   const router = useRouter();
   const { componente } = router.query;
-  console.log(router.query)
   return (
     <Layaout textpage="Proceso anual">
       {componente == "calificacion" && <Qualification />}

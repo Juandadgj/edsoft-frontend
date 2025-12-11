@@ -33,6 +33,9 @@ module.exports = {
       "gray7":"#323232",
       "red-500": "rgb(239 68 68)",
       "red-600" : "rgb(220 38 38)",
+      "green-600": "rgb(22 163 74)",
+      "green-800": "rgb(20 83 45)",
+      "green-900": "rgb(16 62 38)",
     },
     borderRadius:{
       "custom": "19px 81px 93px 17px / 60px 0px 0px 50px;"

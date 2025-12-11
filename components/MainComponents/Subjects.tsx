@@ -22,6 +22,7 @@ import { ContainerComponents } from "../ContainerComponents";
 import CustomModal from "../CustomModal";
 import { SubjectForm } from "./forms/SubjectForm";
 import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
+import { CourseComponent } from "./CourseComponent";
 
 const columnsGroup = [
   {
@@ -64,7 +65,7 @@ const columnsSubjects = [
 function Subjects() {
   const { year } = useSchoolYear();
   const router = useRouter();
-  const { c } = router.query;
+  const { g } = router.query;
   const [selectedGroup, setSelectedGroup] = useState<any>([]);
   const [open, setOpen] = useState(false);
   const [
@@ -72,14 +73,11 @@ function Subjects() {
     { data: courses, loading: loadingCourses, error: errorCourses, refetch },
   ] = useCoursesLazyQuery({ fetchPolicy: "network-only" });
   const { data: groups, loading: loadingGroups } = useGroupsQuery({
-    variables: {filterGroupInput: {id_year: year}},
+    variables: { filterGroupInput: { id_year: year } },
   });
   const { data: teachers } = useTeachersQuery();
   const { data: areas } = useGetAreasQuery();
   const [DeleteCourse] = useDeleteCourseMutation({});
-  const handlerSelectedCourse = (id: number | undefined) => {
-    router.push(`/dashboard/programacion-anual?componente=asignaturas&c=${id}`);
-  };
   const [subject, setSubject] = useState<any>({
     name: "",
     id_teacher: "",
@@ -151,25 +149,10 @@ function Subjects() {
     }));
   };
 
-  const processedGroups = useMemo(() => {
-    if (!groups?.groups) return [];
-    return groups.groups.map((group, index) => ({
-      id: group?.id_group,
-      name: `${getCourseLevel(group?.level)} - ${group?.sublevel}`,
-      group_teacher: group?.representative ?? "",
-      courses_count: group?.coursesCount ?? 0,
-      select: (
-        <button onClick={() => handlerSelectedCourse(group?.id_group)}>
-          Seleccionar curso
-        </button>
-      ),
-    }));
-  }, [groups]);
-
   useEffect(() => {
-    if (c) {
+    if (g) {
       getCourses({
-        variables: { filterCourseInput: { id_group: Number(c) } },
+        variables: { filterCourseInput: { id_group: Number(g) } },
       });
     }
   }, [router]);
@@ -238,7 +221,7 @@ function Subjects() {
             Asignaturas creadas para el año {year}
           </strong>
         </div>
-        {c && (
+        {g && (
           <div className="text-end pr-6">
             <button
               type="button"
@@ -251,7 +234,7 @@ function Subjects() {
                   average: "",
                   hour: "",
                   percentage: "",
-                  id_group: c,
+                  id_group: g,
                 });
                 setOpen(true);
               }}
@@ -261,20 +244,8 @@ function Subjects() {
           </div>
         )}
       </div>
-      {!c ? (
-        <div className="text-black h-full">
-          {loadingGroups ? (
-            <div className="w-full h-full flex justify-center items-center">
-              <span className="loading loading-dots loading-lg bg-main-blue"></span>
-            </div>
-          ) : groups?.groups ? (
-            <div className=" border-white py-4 h-full">
-              <TableComponent column={columnsGroup} data={processedGroups} />
-            </div>
-          ) : (
-            <h3>¡Ocurrio un error!</h3>
-          )}
-        </div>
+      {!g ? (
+        <CourseComponent isCreate={false} showSubjects={true} />
       ) : (
         <div className="text-black h-full">
           {loadingCourses ? (

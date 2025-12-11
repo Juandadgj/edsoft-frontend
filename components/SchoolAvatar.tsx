@@ -18,29 +18,26 @@ export const SchoolAvatar = () => {
         </button>
         <ul
           tabIndex={0}
-          className="dropdown-content z-[1] menu p-2 shadow bg-white text-black rounded-box w-52 mt-2"
+          className="dropdown-content z-1 menu shadow bg-white text-black rounded-box w-52 p-2 mt-2"
         >
           <li>
-            <button
-              className="dropdown-item"
+            <div
               id="Teachers"
               onClick={() => router.push("/dashboard")}
             >
               Inicio
-            </button>
+            </div>
           </li>
           <li>
-            <button
-              className="dropdown-item"
+            <div
               id="Teachers"
               onClick={() => router.push("/dashboard/ajustes")}
             >
               Cambiar contraseña
-            </button>
+            </div>
           </li>
           <li>
             <button
-              className="dropdown-item"
               id="Teachers"
               onClick={() => router.push("/instituciones")}
             >

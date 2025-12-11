@@ -17,7 +17,7 @@ export const Input = ({
   return (
     <div className={`form-control relative ${errorText ? `border-red-500 after:absolute after:left-0 after:-bottom-4 after:content-['Campo_requerido!'] after:ml-0.5 after:text-red-500 after:text-xs after:italic` : ''} `}>
       {label && (
-        <div className="label text-gray5 p-1">
+        <div className="label text-gray-300 p-1">
           <label className="text-xs">{label}</label>
         </div>
       )}
@@ -26,7 +26,7 @@ export const Input = ({
         value={value}
         name={name}
         placeholder={placeholder}
-        className={`input border-gray5 w-full h-9 bg-transparent text-sm text-black focus:outline-none ${errorText ? `border-red-500 focus:border-red-500 hover:border-red-500` : 'focus:border-main-blue hover:border-main-blue '}  transition duration-300 appearance-none`}
+        className={`border border-gray-300 rounded-md pl-3.5 w-full h-9 bg-transparent text-sm text-black focus:outline-none ${errorText ? `border-red-500 focus:border-red-500 hover:border-red-500` : 'focus:border-main-blue hover:border-main-blue '}  transition duration-300 appearance-none`}
         onChange={onChange}
       />
       {/* {errorText && (

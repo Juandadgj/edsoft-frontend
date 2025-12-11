@@ -15,12 +15,12 @@ function Test() {
   const [getUser, { data }] = useSignInLazyQuery();
   useEffect(() => {
     if (!id || !colegio) {
-      router.push("/instituciones");
+      // router.push("/instituciones");
       return;
     }
     if (data) {
       console.log(data.signIn.token);
-      const token = data.signIn.token
+      const token = data.signIn.token;
       console.log(token);
       if (token) {
         sessionStorage.setItem("userToken", token);
@@ -106,7 +106,7 @@ function Test() {
                   signInInput: {
                     password: password,
                     user: username,
-                    id_institution: 1059,
+                    id_institution: 1000,
                   },
                 },
               });

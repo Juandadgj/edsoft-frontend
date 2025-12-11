@@ -1,26 +1,16 @@
 import React from "react";
-import { useRouter } from "next/router";
-import teachers from "@/shared/teachers";
-import { Table, Button, Space } from "antd";
+import { Table } from "antd";
 
-const TableComponent = ({
-  data,
-  column,
-  type,
-}: {
-  data: any;
-  column: any;
-  type?: string;
-}) => {
+const TableComponent = ({ data, column }: { data: any; column: any }) => {
   return (
     <div className="">
       <Table
+        rowKey={"id"}
         columns={column}
         dataSource={data}
         scroll={{ x: "max-content" }}
         pagination={{
           pageSize: 10,
-          showSizeChanger: false,
         }}
       />
     </div>

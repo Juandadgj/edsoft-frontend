@@ -13,6 +13,7 @@ import { ContainerComponents } from "@/components/ContainerComponents";
 import TableComponent from "@/components/Table";
 import useSchoolYear from "@/hooks/useSchoolYear";
 import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
+import { CourseComponent } from "@/components/MainComponents/CourseComponent";
 
 const columnsDeliverable = [
   {
@@ -190,21 +191,7 @@ const NavigationComponent = () => {
           </strong>
         </h3>
       </div>
-      {!g && (
-        <div className="h-full">
-          {loadingGroups && (
-            <div className="w-full h-full flex justify-center items-center">
-              <span className="loading loading-dots loading-lg bg-main-blue"></span>
-            </div>
-          )}
-          {groups?.groups && (
-            <TableComponent
-              column={columnsDeliverable}
-              data={processedGroups}
-            />
-          )}
-        </div>
-      )}
+      {!g && <CourseComponent isCreate={false} showSubjects={true} />}
       {g && opcion && !s && (
         <div className="h-full">
           {loadingStudents && (

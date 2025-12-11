@@ -85,16 +85,27 @@ export const TeacherForm = ({
 
   const handlerCreateTeacher = async () => {
     if (validationEvent()) {
-      await AddTeacher({ variables: { createTeacherInput: teacher } }).then(
-        (res: any) => {
-          if (res.data?.createTeacher) {
-            cleaningStates();
-            refetch();
-            openNotification("Docente creado exitosamente");
-            setOpen(false);
-          }
+      await AddTeacher({
+        variables: {
+          createTeacherInput: {
+            name: teacher.name,
+            last_name: teacher.last_name,
+            identification: teacher.identification,
+            direction: teacher.direction,
+            phone: teacher.phone,
+            email: teacher.email,
+            degree: teacher.degree,
+            type_id: 3,
+          },
+        },
+      }).then((res: any) => {
+        if (res.data?.createTeacher) {
+          cleaningStates();
+          refetch();
+          openNotification("Docente creado exitosamente");
+          setOpen(false);
         }
-      );
+      });
     }
   };
   const handlerUpdateTeacher = async () => {

@@ -4,8 +4,6 @@ import { useRouter } from "next/router";
 import { useGetStudentsLazyQuery, GetStudentsQuery } from "@/generated/graphql";
 import { ContainerComponents } from "@/components/ContainerComponents";
 import TableComponent from "@/components/Table";
-import { title } from "process";
-import { data } from "autoprefixer";
 const columns = [
   {
     title: "Apellido y Nombre",

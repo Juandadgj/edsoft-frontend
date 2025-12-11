@@ -43,6 +43,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <ConfigProvider
         theme={{
           components: {
+          
             Menu: {
               /* here is your component tokens */
               itemHoverColor: "#fff",

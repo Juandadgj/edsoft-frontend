@@ -1,46 +1,21 @@
-import { useMemo } from "react";
 import {
   useCoursesLazyQuery,
-  useGroupsQuery,
   useAchievementsLazyQuery,
   useGetStudentQualificationsLazyQuery,
   useUpdateQualificationsMutation,
-  useScholearYearSelectedQuery,
 } from "../../generated/graphql";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import useSchoolYear from "@/hooks/useSchoolYear";
 import TableComponent from "../Table";
 import { ContainerComponents } from "../ContainerComponents";
-import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
-
-const columnsGroup = [
-  {
-    title: "Curso",
-    dataIndex: "name",
-    key: "name",
-  },
-  {
-    title: "Profesor del Grupo",
-    dataIndex: "group_teacher",
-    key: "group_teacher",
-  },
-  {
-    title: "Profesor del Grupo",
-    dataIndex: "group_teacher",
-    key: "group_teacher",
-  },
-  {
-    title: "Asignaturas",
-    dataIndex: "subjects",
-    key: "subjects",
-  },
-];
+import { CourseComponent } from "./CourseComponent";
 
 const Qualification = () => {
   const { year } = useSchoolYear();
-  const { query, replace, push, back, pathname, asPath } = useRouter();
-  const { g, a, per, qualify } = query;
+  const { query, replace, push, back, asPath } = useRouter();
+  const { g, a, per } = query;
+  const [qualify, setQualify] = useState<boolean>(false);
   const [selectedCourses, setSelectedCourses] = useState<any>([]);
   const [selectedAchievements, setSelectedAchievements] = useState<any>([]);
   const [studentQualifications, setStudentQualifications] = useState<any[]>([]);
@@ -55,33 +30,21 @@ const Qualification = () => {
   ] = useAchievementsLazyQuery();
   const [
     getCourses,
-    { data: courses, loading: loadingCourses, error: errorCourses, refetch },
+    { data: courses, loading: loadingCourses, error: errorCourses },
   ] = useCoursesLazyQuery();
-  const {
-    data: groups,
-    loading: loadingGroups,
-    error: errorGroups,
-  } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: year} },
-  });
   const [
     getStudentQualifications,
     {
       data: dataStudentQualifications,
       loading: loadingStudentQualifications,
       error: errorStudentQualifications,
-      refetch: refetchStudentQualifications,
+      refetch,
     },
   ] = useGetStudentQualificationsLazyQuery({ fetchPolicy: "network-only" });
-
   const [
     updateQualifications,
     { data: dataUpdate, loading: loadingUpdate, error: errorUpdate },
   ] = useUpdateQualificationsMutation();
-
-  const handlerSelectedGroup = (id: number | undefined) => {
-    push(`/dashboard/proceso-anual?componente=calificacion&g=${id}`);
-  };
   const handlerSelectedCourse = (id_course: any, per: string) => {
     const params = new URLSearchParams();
     params.append("a", id_course);
@@ -89,9 +52,7 @@ const Qualification = () => {
     replace(`${asPath}&${params.toString()}`);
   };
   const handlerToogleUpdate = () => {
-    push(
-      `/dashboard/proceso-anual?componente=calificacion&g=${g}&a=${a}&per=${per}&qualify=true`
-    );
+    setQualify(!qualify);
   };
 
   const handlerUpdateQualifications = () => {
@@ -99,7 +60,7 @@ const Qualification = () => {
       variables: {
         updateQualificationsInput: { qualifications: newQualifications },
       },
-    }).then(() => refetchStudentQualifications());
+    }).then(() => refetch());
   };
 
   const columsCourses = [
@@ -169,7 +130,7 @@ const Qualification = () => {
           dataIndex: `qualification_${logro.id_achievement}`,
           key: `qualification_${logro.id_achievement}`,
           render: (_: any, record: any) => (
-            <div>
+            <div key={logro.id_achievement}>
               {qualify && (
                 <>
                   {record[`qualification_${logro.id_achievement}`] ? (
@@ -196,7 +157,11 @@ const Qualification = () => {
                 {!qualify && (
                   <>
                     {record[`qualification_${logro.id_achievement}`] ? (
-                      record[`qualification_${logro.id_achievement}`].score
+                      record[`qualification_${logro.id_achievement}`].score ? (
+                        record[`qualification_${logro.id_achievement}`].score
+                      ) : (
+                        "0"
+                      )
                     ) : (
                       <input
                         type="text"
@@ -237,36 +202,10 @@ const Qualification = () => {
       route: "proceso-anual?componente=calificacion",
     }));
   };
-  const processedGroups = useMemo(() => {
-    if (!groups?.groups) return [];
-    return groups.groups.map((group, index) => ({
-      name: `${getCourseLevel(group?.level)} - ${group?.sublevel}`,
-      jornada: group?.working_time,
-      group_teacher: group?.representative ?? "",
-      subjects: (
-        <button
-          className="btn bg-transparent border-none p-0 hover:bg-transparent"
-          onClick={() => handlerSelectedGroup(group?.id_group)}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="25"
-            height="25"
-            viewBox="0 0 32 32"
-          >
-            <path
-              fill="#0055a6"
-              d="M24.875 1.375H8a1.995 1.995 0 0 0-1.98 1.792h1.605c1.102 0 2 .898 2 2c0 1.102-.898 2-2 2H6v1h1.625c1.104 0 2.002.897 2.002 2a2.004 2.004 0 0 1-2.002 2.002H6v.996h1.625c1.102 0 2 .898 2 2a2.005 2.005 0 0 1-2 2.004H6v.994h1.625c1.102 0 2 .898 2 2.002s-.898 2.002-2 2.002H6v.997h1.624c1.104 0 2.002.897 2.002 2a2.004 2.004 0 0 1-2.002 2.003h-1.62A1.998 1.998 0 0 0 8 29.124h16.875a2 2 0 0 0 2-2V3.375a2 2 0 0 0-2-2zm.375 7a1 1 0 0 1-1 1H14a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10.25a1 1 0 0 1 1 1v4.375zM8.625 25.165c0-.553-.45-1-1-1h-3.25a1 1 0 1 0 0 2h3.25c.55 0 1-.447 1-1zm-4.25-19h3.25a1 1 0 1 0 0-1.998h-3.25a1.001 1.001 0 0 0 0 2zm0 5.002h3.25a1 1 0 1 0 0-2h-3.25a1 1 0 1 0 0 2zm0 5h3.25a1 1 0 0 0 0-2h-3.25c-.553 0-1 .446-1 1s.447 1 1 1zm-1 3.998a1 1 0 0 0 1 1.002h3.25a1 1 0 0 0 0-2.002h-3.25a1 1 0 0 0-1 1z"
-            />
-          </svg>
-        </button>
-      ),
-    }));
-  }, [groups]);
-  const proceedQualifications = (data: any) => {
+  const proceedQualifications = (q: any, a: any) => {
     // Iterar sobre cada estudiante en el array de calificaciones
-    if (dataStudentQualifications) {
-      const updatedStudentQualifications = data.studentQualifications.map(
+    if (q) {
+      const updatedStudentQualifications = q.studentQualifications.map(
         (student: any) => {
           // Obtener la lista de id_achievement asociados al estudiante
           const studentAchievementIds = student.qualifications.map(
@@ -274,19 +213,20 @@ const Qualification = () => {
           );
 
           // Obtener la lista de id_achievement que faltan para el estudiante
-          if (achievements) {
-            const missingAchievementIds = achievements.achievements
+          console.log("a to proceed", a);
+          if (a) {
+            const missingAchievementIds = a
               .filter(
-                (achievement) =>
+                (achievement: any) =>
                   !studentAchievementIds.includes(achievement?.id_achievement)
               )
-              .map((achievement) => achievement?.id_achievement);
+              .map((achievement: any) => achievement?.id_achievement);
 
-            const missingAchievements = achievements.achievements
-              .filter((achievement) =>
+            const missingAchievements = a
+              .filter((achievement: any) =>
                 missingAchievementIds.includes(achievement?.id_achievement)
               )
-              .map((achievement) => ({
+              .map((achievement: any) => ({
                 score: null, // O algún valor por defecto para la calificación
                 id_achievement: achievement?.id_achievement,
                 id_student: student.qualifications[0].id_student, // Utilizar el id_student del estudiante actual
@@ -297,7 +237,6 @@ const Qualification = () => {
               ...student.qualifications,
               ...missingAchievements,
             ];
-            console.log(updatedQualifications);
             const qualificationsObject = updatedQualifications.reduce(
               (acc: any, qualification: any) => {
                 acc[`qualification_${qualification.id_achievement}`] = {
@@ -349,14 +288,20 @@ const Qualification = () => {
       })
         .then((res) => {
           const { data } = res;
-          const qualifications = proceedQualifications(data);
-          setStudentQualifications(qualifications);
+          if (data) {
+            const qualifications = proceedQualifications(
+              data,
+              selectedAchievements
+            );
+            setStudentQualifications(qualifications);
+          }
         })
         .catch((err) => {
           console.log(err, "err");
         });
     }
   }, [g, a, per]);
+
   useEffect(() => {
     if (dataUpdate) {
       getStudentQualifications({
@@ -369,7 +314,10 @@ const Qualification = () => {
       })
         .then((res) => {
           const { data } = res;
-          const qualifications = proceedQualifications(data);
+          const qualifications = proceedQualifications(
+            data,
+            selectedAchievements
+          );
           setStudentQualifications(qualifications);
         })
         .catch((err) => {
@@ -377,7 +325,7 @@ const Qualification = () => {
         });
     }
   }, [dataUpdate]);
-  
+
   const updateScore = (qualification: any, score: any) => {
     const find = newQualifications.find(
       (q) => q.id_achie_stu == qualification.id_achie_stu
@@ -417,21 +365,7 @@ const Qualification = () => {
           </strong>
         </div>
       </div>
-      {!g && (
-        <div className="h-full">
-          {loadingGroups && (
-            <div className="w-full h-full flex justify-center items-center">
-              <span className="loading loading-dots loading-lg bg-main-blue"></span>
-            </div>
-          )}
-          {groups?.groups && (
-            <div className="d-flex border-white py-4 h-full">
-              <TableComponent column={columnsGroup} data={processedGroups} />
-            </div>
-          )}
-          {errorGroups && <h3>¡Ocurrio un error!</h3>}
-        </div>
-      )}
+      {!g && <CourseComponent isCreate={false} showSubjects={false} />}
       {g && !a && !per && (
         <div className="text-black h-full">
           {loadingCourses && (
@@ -460,7 +394,7 @@ const Qualification = () => {
                 <div className="w-full text-black flex flex-col gap-2 my-2 text-sm">
                   {selectedAchievements.map(
                     (achievement: any, index: number) => (
-                      <div key={achievement.id_achievement}>
+                      <div key={index}>
                         {index + 1}.{achievement.description}
                       </div>
                     )
@@ -497,7 +431,7 @@ const Qualification = () => {
                   ) : (
                     <div className="w-full text-black flex items-center justify-end">
                       <button
-                        onClick={() => back()}
+                        onClick={handlerToogleUpdate}
                         className="btn btn-sm h-[35px] bg-transparent border-none text-main-gray hover:text-white hover:bg-[#0055A6] group text-xs"
                       >
                         <p>Volver</p>
@@ -508,15 +442,17 @@ const Qualification = () => {
                     column={columnsQualification}
                     data={studentQualifications}
                   />
-                  <div className="w-full flex justify-center items-center">
-                    <button
-                      disabled={loadingUpdate}
-                      onClick={handlerUpdateQualifications}
-                      className="btn btn-sm border-none text-white bg-[#0b5ed7] hover:bg-[#0b5ed7] text-xs"
-                    >
-                      Guardar notas
-                    </button>
-                  </div>
+                  {qualify && (
+                    <div className="w-full flex justify-center items-center">
+                      <button
+                        disabled={loadingUpdate}
+                        onClick={handlerUpdateQualifications}
+                        className="btn btn-sm border-none text-white bg-[#0b5ed7] hover:bg-[#0b5ed7] text-xs"
+                      >
+                        Guardar notas
+                      </button>
+                    </div>
+                  )}
                 </>
               )}
               {errorStudentQualifications && (

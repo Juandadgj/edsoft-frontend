@@ -17,47 +17,13 @@ import CustomModal from "../CustomModal";
 import { CourseForm } from "./forms/CourseForm";
 import { ContainerComponents } from "../ContainerComponents";
 import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
-
-const columns = [
-  {
-    title: "Curso",
-    dataIndex: "name",
-    key: "name",
-  },
-  {
-    title: "Jornada",
-    dataIndex: "jornada",
-    key: "jornada",
-  },
-  {
-    title: "Profesor del Grupo",
-    dataIndex: "group_teacher",
-    key: "group_teacher",
-  },
-  {
-    title: "Editar",
-    dataIndex: "editar",
-    key: "editar",
-  },
-  {
-    title: "Borrar",
-    dataIndex: "borrar",
-    key: "borrar",
-  },
-];
+import { CourseComponent } from "./CourseComponent";
 
 function CreateCourses() {
   const { year } = useSchoolYear();
-
   const [open, setOpen] = useState(false);
   const { data: teachers } = useTeachersQuery();
-  const [deleteGroup] = useDeleteGroupMutation();
   const [course, setCourse] = useState<any>(0);
-  const { data, loading, refetch } = useGroupsQuery({
-    variables: {
-      filterGroupInput: { id_year: year },
-    },
-  });
 
   const courses = [
     { value: -3, text: "Parvulo" },
@@ -114,104 +80,6 @@ function CreateCourses() {
     { value: "N", text: "Noche" },
     { value: "S", text: "Sabatina" },
   ];
-
-  const handlerDeleteCourse = async (id_group: number | undefined) => {
-    Swal.fire({
-      title: "¿Estás seguro?",
-      text: "No podrás revertir esta acción!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#0055a6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Eliminar",
-    }).then((result) => {
-      // If there is an id selected we delete that teacher
-      if (result.isConfirmed && id_group) {
-        deleteGroup({
-          variables: { idGroup: id_group },
-        }).then((res) => {
-          if (res.data?.deleteGroup) {
-            Swal.fire({
-              title: "Eliminado",
-              text: "Curso Eliminado!",
-              icon: "success",
-              showConfirmButton: false,
-              timer: 1500,
-            });
-            refetch();
-          } else {
-            Swal.fire({
-              icon: "error",
-              title: "Ha habido un error...",
-              showConfirmButton: false,
-              timer: 1500,
-            });
-          }
-        });
-      }
-    });
-  };
-
-  const processedCourses = useMemo(() => {
-    if (!data?.groups) return [];
-    return data.groups.map((group, index) => ({
-      name: `${getCourseLevel(group?.level)} - ${group?.sublevel}`,
-      jornada: group?.working_time ?? "",
-      group_teacher: group?.representative ?? "",
-      editar: (
-        <button
-          className="border-0"
-          onClick={() => {
-            setCourse({
-              id_group: group?.id_group,
-              level: group?.level,
-              sublevel: group?.sublevel,
-              representative: group?.representative,
-              workingTime: group?.working_time,
-            });
-            setOpen(true);
-          }}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="30"
-            height="30"
-            viewBox="0 0 36 36"
-          >
-            <path
-              fill="#0055A6"
-              d="M28 30H6V8h13.22l2-2H6a2 2 0 0 0-2 2v22a2 2 0 0 0 2 2h22a2 2 0 0 0 2-2V15l-2 2Z"
-              className="clr-i-outline clr-i-outline-path-1"
-            />
-            <path
-              fill="#0055A6"
-              d="m33.53 5.84l-3.37-3.37a1.61 1.61 0 0 0-2.28 0L14.17 16.26l-1.11 4.81A1.61 1.61 0 0 0 14.63 23a1.69 1.69 0 0 0 .37 0l4.85-1.07L33.53 8.12a1.61 1.61 0 0 0 0-2.28M18.81 20.08l-3.66.81l.85-3.63L26.32 6.87l2.82 2.82ZM30.27 8.56l-2.82-2.82L29 4.16L31.84 7Z"
-              className="clr-i-outline clr-i-outline-path-2"
-            />
-            <path fill="none" d="M0 0h36v36H0z" />
-          </svg>
-        </button>
-      ),
-      borrar: (
-        <button
-          className="border-0"
-          onClick={() => handlerDeleteCourse(group?.id_group)}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="30"
-            height="30"
-            viewBox="0 0 256 256"
-          >
-            <path
-              fill="#e11d48"
-              d="M216 50h-42V40a22 22 0 0 0-22-22h-48a22 22 0 0 0-22 22v10H40a6 6 0 0 0 0 12h10v146a14 14 0 0 0 14 14h128a14 14 0 0 0 14-14V62h10a6 6 0 0 0 0-12ZM94 40a10 10 0 0 1 10-10h48a10 10 0 0 1 10 10v10H94Zm100 168a2 2 0 0 1-2 2H64a2 2 0 0 1-2-2V62h132Zm-84-104v64a6 6 0 0 1-12 0v-64a6 6 0 0 1 12 0Zm48 0v64a6 6 0 0 1-12 0v-64a6 6 0 0 1 12 0Z"
-            />
-          </svg>
-        </button>
-      ),
-    }));
-  }, [data]);
   const hanclerCloseModal = () => {
     setOpen(false);
     setCourse({
@@ -220,6 +88,17 @@ function CreateCourses() {
       sublevel: "",
       representative: "",
       working_time: "",
+    });
+  };
+  const handlerEditCourse = async (course: any) => {
+    setOpen(true);
+    setCourse({
+      id_group: course.id_group,
+      name: course.name,
+      level: course.level,
+      sublevel: course.sublevel,
+      representative: course.representative,
+      working_time: course.working_time,
     });
   };
   return (
@@ -251,16 +130,11 @@ function CreateCourses() {
         </div>
       </div>
       <div className="text-black h-full">
-        <div className="h-full">
-          {loading && (
-            <div className="w-full h-full flex justify-center items-center">
-              <span className="loading loading-dots loading-lg bg-main-blue"></span>
-            </div>
-          )}
-          {data?.groups && (
-            <TableComponent column={columns} data={processedCourses} />
-          )}
-        </div>
+        <CourseComponent
+          isCreate={true}
+          showSubjects={false}
+          setCourse={handlerEditCourse}
+        />
       </div>
       <CustomModal
         open={open}

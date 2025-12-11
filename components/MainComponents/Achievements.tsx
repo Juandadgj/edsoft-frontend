@@ -1,43 +1,19 @@
-import { useMemo } from "react";
 import { useEffect, useState } from "react";
 import {
   useCoursesLazyQuery,
-  useGroupsQuery,
   useAchievementsLazyQuery,
   useDeleteAchievementMutation,
-  useUpdateAchievementMutation,
-  useCreateAchievementMutation,
 } from "../../generated/graphql";
 import { useRouter } from "next/router";
 import Table from "../Table";
-import DynamicModal from "../DynamicModal";
 import Swal from "sweetalert2";
-import { Input } from "../Input";
 import useSchoolYear from "@/hooks/useSchoolYear";
 import { ContainerComponents } from "../ContainerComponents";
 import CustomModal from "../CustomModal";
 import { AchievementsForm } from "./forms/AchievementsForm";
 import TableComponent from "../Table";
-import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
+import { CourseComponent } from "./CourseComponent";
 
-const columnsGroup = [
-  {
-    title: "Curso",
-    dataIndex: "name",
-    key: "name",
-  },
-  {
-    title: "Profesor del Grupo",
-    dataIndex: "group_teacher",
-    key: "group_teacher",
-  },
-  {
-    title: "Asignaturas",
-    dataIndex: "courses_count",
-    key: "courses_count",
-  },
-  { title: "Ver", dataIndex: "select", key: "select" },
-];
 
 const columnsAchievements = [
   {
@@ -84,12 +60,6 @@ function Achievements() {
     { data: courses, loading: loadingCourses, error: errorCourses },
   ] = useCoursesLazyQuery();
 
-  const { data: groups, loading: loadingGroups } = useGroupsQuery({
-    variables: {filterGroupInput: {id_year: year}},
-  });
-  const handlerSelectedCourse = (id: number | undefined) => {
-    router.push(`/dashboard/programacion-anual?componente=logros&g=${id}`);
-  };
   const handlerSelectedAchievement = (
     id: number | undefined,
     per: number | undefined,
@@ -207,20 +177,6 @@ function Achievements() {
       ),
     }));
   };
-
-  const processedGroups = useMemo(() => {
-    if (!groups?.groups) return [];
-    return groups?.groups.map((group, index) => ({
-      name: `${getCourseLevel(group?.level)} - ${group?.sublevel}`,
-      group_teacher: group?.representative ?? "",
-      courses_count: group?.coursesCount,
-      select: (
-        <button onClick={() => handlerSelectedCourse(group?.id_group)}>
-          Seleccionar curso
-        </button>
-      ),
-    }));
-  }, [groups]);
 
   const processedCourses = (data: any) => {
     if (!data) return [];
@@ -365,38 +321,27 @@ function Achievements() {
             Logros por curso para el año {year}
           </strong>
         </h3>
-        <div className="text-end pr-6">
-          <button
-            type="button"
-            className="btn btn-sm bg-main-blue mb-0 px-10 h-9 rounded-[10px] transition border-none hover:bg-[#0b5ed7] text-white text-xs"
-            onClick={() => {
-              setAchivement({
-                description: "",
-                id_course: a,
-                period: per,
-              });
-              setOpen(true);
-            }}
-          >
-            <h4 className="text-white">+ Nueva Área</h4>
-          </button>
-        </div>
+
+        {g && a && per && (
+          <div className="text-end pr-6">
+            <button
+              type="button"
+              className="btn btn-sm bg-main-blue mb-0 px-10 h-9 rounded-[10px] transition border-none hover:bg-[#0b5ed7] text-white text-xs"
+              onClick={() => {
+                setAchivement({
+                  description: "",
+                  id_course: a,
+                  period: per,
+                });
+                setOpen(true);
+              }}
+            >
+              <h4 className="text-white">+ Nuevo logro</h4>
+            </button>
+          </div>
+        )}
       </div>
-      {!g && (
-        <div className="h-full">
-          {loadingGroups ? (
-            <div className="w-full h-full flex justify-center items-center">
-              <span className="loading loading-dots loading-lg bg-main-blue"></span>
-            </div>
-          ) : groups?.groups ? (
-            <div className="d-flex border-white py-4 h-full">
-              <TableComponent column={columnsGroup} data={processedGroups} />
-            </div>
-          ) : (
-            <h3>¡Ocurrio un error!</h3>
-          )}
-        </div>
-      )}
+      {!g && <CourseComponent isCreate={false} showSubjects={false} />}
       {g && !a && !per && (
         <div className="text-black h-full">
           {loadingCourses ? (
@@ -405,11 +350,7 @@ function Achievements() {
             </div>
           ) : courses?.courses ? (
             <div className=" border-white py-4 h-full">
-              <Table
-                column={columsCourses}
-                data={selectedCourses}
-                type={"courses"}
-              />
+              <Table column={columsCourses} data={selectedCourses} />
             </div>
           ) : (
             errorCourses && <h3>Ocurrio un error: {errorCourses?.message}</h3>

@@ -39,16 +39,10 @@ const Layaout = ({ children, textpage }: ILayaout) => {
     window.location.reload();
   };
   const router = useRouter();
-  const { token } = useToken();
-
-  const contentStyle: React.CSSProperties = {
-    borderRadius: token.borderRadiusLG,
-    boxShadow: token.boxShadowSecondary,
-  };
   useEffect(() => {
     const token = sessionStorage.getItem("userToken");
     if (!token) {
-      router.push("/instituciones");
+      // router.push("/instituciones");
     }
   }, []);
 
@@ -56,7 +50,7 @@ const Layaout = ({ children, textpage }: ILayaout) => {
   return (
     <Layout className="h-screen">
       <div
-        className="h-full"
+        className="h-full bg-white"
         style={{
           scrollbarWidth: "thin",
           scrollbarColor: "#25429e #F3F4F6",
@@ -64,13 +58,13 @@ const Layaout = ({ children, textpage }: ILayaout) => {
         }}
       >
         <Sider
-          style={{
-            backgroundColor: "#efefef",
-          }}
           trigger={null}
           collapsible
           collapsed={collapsed}
-          className=" py-4 h-full"
+          style={{
+            background: "white",
+          }}
+          className=" py-4 h-full bg-white"
           width={260}
         >
           <div className="flex items-center justify-center gap-2 mb-1 h-[7%]">
@@ -80,11 +74,11 @@ const Layaout = ({ children, textpage }: ILayaout) => {
             )}
           </div>
           <Menu
-            className="bg-gray1 h-[93%] overflow-auto"
+            className="h-[93%] overflow-auto bg-white dark:bg-gray7"
             mode="inline"
             items={[
               {
-                icon: <FuncionariesIcon color="white"  />,
+                icon: <FuncionariesIcon color="white" />,
                 key: "1",
                 label: "Funcionarios",
                 children: [
@@ -228,7 +222,7 @@ const Layaout = ({ children, textpage }: ILayaout) => {
                 key: "5",
                 label: "Ajustes",
                 children: [
-                  { key: "5-1", label: "Cambiar contraseña" },
+                  { key: "5-1", label: "Panel principal" },
                   { key: "5-2", label: "Cerrar sesion" },
                 ],
               },
@@ -237,7 +231,12 @@ const Layaout = ({ children, textpage }: ILayaout) => {
         </Sider>
       </div>
       <Layout>
-        <Header className="bg-gray2 flex justify-between items-center w-full relative gap-2">
+        <Header
+          style={{
+            background: "white",
+          }}
+          className="bg-white flex justify-between items-center w-full relative gap-2"
+        >
           <div className="flex items-center gap-2">
             <button
               onClick={() => setCollapsed(!collapsed)}

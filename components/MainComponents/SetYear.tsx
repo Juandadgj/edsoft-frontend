@@ -200,7 +200,7 @@ function SetYear() {
               <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
           )}
-          {error && <div>¡Ocurrio un error!</div>}
+          {error && <div>¡Ocurrio un error! {error.message}</div>}
           {data?.scholarYears && (
             <div className="border-white py-4 h-full">
               <TableComponent column={columns} data={processedScholarYears()} />
