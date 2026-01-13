@@ -15,6 +15,7 @@ import DynamicModal from "@/components/DynamicModal";
 import CustomModal from "@/components/CustomModal";
 import { TeacherForm } from "../../forms/TeacherForm";
 import { ContainerComponents } from "@/components/ContainerComponents";
+import { Input } from "@/components/Input";
 
 const columns = [
   {
@@ -52,7 +53,7 @@ function Teachers() {
     email: "",
     degree: "",
   });
-  const { data, loading, refetch } = useTeachersQuery({
+  const { data, loading, refetch, error } = useTeachersQuery({
     fetchPolicy: "network-only",
   });
   const processedTeachers = useMemo(() => {
@@ -188,21 +189,7 @@ function Teachers() {
           <strong className="text-xl text-black ps-8">Lista de Docentes</strong>
         </h3>
         <div className="flex items-center gap-2">
-          <label className="input input-bordered input-sm h-9 py-5 flex items-center gap-2 focus-within:outline-none focus-within:border-2 focus-within:border-main-blue text-black transition">
-            <input type="text" className="grow" placeholder="Buscar" />
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 16 16"
-              fill="currentColor"
-              className="h-4 w-4 opacity-70"
-            >
-              <path
-                fillRule="evenodd"
-                d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </label>
+          <Input type="text" className="grow" placeholder="Buscar" />
           <button
             onClick={handlerCreateTeacher}
             className="btn btn-sm bg-main-blue mb-0 px-10 h-9 rounded-[10px] transition border-none hover:bg-[#0b5ed7] text-white text-xs"
@@ -220,8 +207,12 @@ function Teachers() {
         {data?.teachers && (
           <TableComponent column={columns} data={processedTeachers} />
         )}
+        {error && <h3>¡Ocurrio un error!</h3>}
       </div>
-      <CustomModal open={open} title={teacher.id_teacher ? "Editar Docente" : "Crear Docente"}>
+      <CustomModal
+        open={open}
+        title={teacher.id_teacher ? "Editar Docente" : "Crear Docente"}
+      >
         <TeacherForm
           teacher={teacher}
           onClose={hanclerCloseModal}

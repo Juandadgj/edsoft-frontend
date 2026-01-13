@@ -24,6 +24,15 @@ const columns = [
     title: "Acciones",
     dataIndex: "actions",
     key: "actions",
+    render: (_: any, record: any) => (
+      <div className="flex flex-row justify-center">
+        <Link href={`/login?id=${record.id}&colegio=${record.name}`}>
+          <button className="border-0">
+            <EyeOutlined />
+          </button>
+        </Link>
+      </div>
+    ),
   },
 ];
 
@@ -45,43 +54,21 @@ function Institutions() {
   }, [data]);
 
   return (
-    <div className="w-full bg-gray1 h-full pb-3">
+    <div className="w-full h-full pb-3">
       <Nav actualPage="Instituciones" withNavigation />
       <div className="mt-4 md:mt-8">
-        <div className="lg:mx-24 sm:mx-10 bg-white shadow-2xl rounded-[2rem] p-9">
+        <div className="lg:mx-24 sm:mx-10 bg-white shadow-2xl rounded-4xl p-9">
           <div className="flex justify-center items-center font-bold text-black text-xl my-5">
             <h4>Lista de instituciones Educativas</h4>
           </div>
           {error && <div>¡Ocurrio un error!</div>}
           {data?.institutions && !loading && (
             <Table
+              rowKey={"id"}
+              columns={columns}
               dataSource={processedInstitutions}
-              style={{ width: "100%", background: "transparent" }}
               pagination={false}
-            >
-              <Link href={`/login`}>
-                <ColumnGroup>
-                  <Column
-                    title="Nombre"
-                    dataIndex="name"
-                    key="name"
-                    align="center"
-                  />
-                  <Column title="Dirección" dataIndex="address" key="address" />
-                  <Column
-                    key="actions"
-                    align="center"
-                    render={(text: string, record: any) => (
-                      <div className="flex flex-row justify-center">
-                        <Link href={`/login?id=${record.id}&colegio=${record.name}`}>
-                          <EyeOutlined />
-                        </Link>
-                      </div>
-                    )}
-                  />
-                </ColumnGroup>
-              </Link>
-            </Table>
+            />
           )}
           {loading}
         </div>

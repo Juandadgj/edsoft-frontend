@@ -12,7 +12,6 @@ interface NavProps {
 
 function Nav({ actualPage }: NavProps) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setToggle(!toggle);
@@ -74,7 +73,7 @@ function Nav({ actualPage }: NavProps) {
           </summary>
 
           <ul
-            className="dropdown-content  z-[1] menu p-2 shadow  bg-white text-black rounded-box w-52"
+            className="dropdown-content  z-1 menu p-2 shadow  bg-white text-black rounded-box w-52"
             tabIndex={0}
           >
             <div className="p-3">
@@ -119,7 +118,7 @@ function Nav({ actualPage }: NavProps) {
                 ${actualPage === "Contact" ? "text-[white]" : "text-black"}
                   ${
                     actualPage === "Inicio"
-                      ? " bg-main-blue !text-white rounded-b-[30px] h-[80px]"
+                      ? " bg-main-blue text-white rounded-b-[30px] h-20"
                       : "text-gray6"
                   } `}
             >
@@ -138,7 +137,7 @@ function Nav({ actualPage }: NavProps) {
                 ${actualPage === "Contact" ? "text-[white]" : "text-black"}
                   ${
                     actualPage === "Instituciones"
-                      ? " bg-main-blue !text-white rounded-b-[30px] h-[80px]"
+                      ? " bg-main-blue text-white rounded-b-[30px] h-20"
                       : "text-gray6"
                   }  `}
             >
@@ -159,8 +158,8 @@ function Nav({ actualPage }: NavProps) {
                   duration-500
                   ${
                     actualPage === "Contact"
-                      ? " bg-main-blue !text-white rounded-b-[30px] h-[80px]"
-                      : "text-gray6"
+                      ? " bg-main-blue text-white rounded-b-[30px] h-20"
+                      : "text-black"
                   }  ${actualPage == "Contact" ? "text-white" : false}`}
             >
               <Link

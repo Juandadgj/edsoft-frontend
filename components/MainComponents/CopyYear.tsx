@@ -14,31 +14,19 @@ function CopyYear() {
             <div className="form-control w-full">
               <label className="label cursor-pointer flex justify-between gap-10">
                 <span className="label-text text-black">Asignaturas</span>
-                <input
-                  type="checkbox"
-                  className="toggle [--tglbg:#efefef]  border-none bg-main-blue"
-                  defaultChecked
-                />
+                <input type="checkbox" defaultChecked />
               </label>
             </div>
             <div className="form-control w-full">
               <label className="label cursor-pointer flex justify-between gap-10">
                 <span className="label-text text-black">Recomendaciones</span>
-                <input
-                  type="checkbox"
-                  className="toggle [--tglbg:#efefef] border-none bg-main-blue"
-                  defaultChecked
-                />
+                <input type="checkbox" defaultChecked />
               </label>
             </div>
             <div className="form-control w-full">
               <label className="label cursor-pointer flex justify-between gap-10">
                 <span className="label-text text-black">Logros</span>
-                <input
-                  type="checkbox"
-                  className="toggle [--tglbg:#efefef] border-none bg-main-blue"
-                  defaultChecked
-                />
+                <input type="checkbox" defaultChecked />
               </label>
             </div>
             <div className="form-control w-full">
@@ -46,18 +34,14 @@ function CopyYear() {
                 <span className="label-text text-black">
                   Indicadores de Logros
                 </span>
-                <input
-                  type="checkbox"
-                  className="toggle [--tglbg:#efefef] border-none bg-main-blue"
-                  defaultChecked
-                />
+                <input type="checkbox" defaultChecked />
               </label>
             </div>
           </div>
         </div>
-        <div className="mx-auto bg-white border-2 shadow-2xl rounded-[2rem] p-5 flex justify-center flex-col">
+        <div className="mx-auto bg-white border-2 shadow-2xl rounded-4xl p-5 flex justify-center flex-col">
           <div className="flex justify-center items-center my-2">
-            <button className="btn btn-sm h-10 border-none rounded-[24px] text-white text-xs bg-[#0b5ed7] hover:bg-[#0b5ed7]">
+            <button className="btn btn-sm h-10 border-none rounded-3xl text-white text-xs bg-[#0b5ed7] hover:bg-[#0b5ed7]">
               Generar copia
             </button>
           </div>

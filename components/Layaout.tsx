@@ -42,7 +42,7 @@ const Layaout = ({ children, textpage }: ILayaout) => {
   useEffect(() => {
     const token = sessionStorage.getItem("userToken");
     if (!token) {
-      // router.push("/instituciones");
+       router.push("/instituciones");
     }
   }, []);
 
@@ -222,7 +222,7 @@ const Layaout = ({ children, textpage }: ILayaout) => {
                 key: "5",
                 label: "Ajustes",
                 children: [
-                  { key: "5-1", label: "Panel principal" },
+                  { key: "5-1", label: "Panel principal", onClick: () => router.push("/dashboard/ajustes") },
                   { key: "5-2", label: "Cerrar sesion" },
                 ],
               },

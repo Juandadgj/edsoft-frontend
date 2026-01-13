@@ -87,22 +87,21 @@ const Deliverables = () => {
       {opcion ? (
         <NavigationComponent />
       ) : (
-        <div className="grid grid-cols-3 place-content-start gap-5 max-w-4xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {cardsSpreadsheet.map((item: any, i: any) => (
-            <Link
-              href={`reportes?componente=entregables&opcion=${item.id}`}
-              className="card bg-base-100 px-5 py-5"
-              key={i}
-            >
-              <figure>
-                <div className="text-4xl">{item.icon}</div>
-              </figure>
-              <div className="card-body justify-center items-center py-0">
-                <div className="card-title text-center text-base">
-                  {item.title}
-                </div>
-              </div>
-            </Link>
+            <div className="flex items-start gap-2 flex-wrap font-semibold card bg-white" key={i}>
+              <Link
+                href={`reportes?componente=entregables&opcion=${item.id}`}
+                key={i}
+              >
+                <div className="card-body w-full">
+                    <div className="card-title">
+                      {item.icon}
+                      <div className="text-black">{item.title}</div>
+                    </div>
+                  </div>
+              </Link>
+            </div>
           ))}
         </div>
       )}

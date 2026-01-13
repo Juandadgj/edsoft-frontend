@@ -1,9 +1,7 @@
 import { ContainerComponents } from "@/components/ContainerComponents";
-import { Check, Upload } from "@mui/icons-material";
 import React, { useRef, useState } from "react";
 import { Button } from "../../ui/button";
-import TextArea from "antd/es/input/TextArea";
-import { X } from "lucide-react";
+import { Check, Upload, X } from "lucide-react";
 
 interface InstitutionSettings {
   logo: string | null;
@@ -131,13 +129,11 @@ export const LogoBanner = () => {
             <label className="block text-sm font-medium">
               Banner Descriptivo
             </label>
-            <TextArea
-              rows={4}
-              placeholder="maxLength is 6"
+            <textarea
               maxLength={500}
               value={tempBanner}
               onChange={(e) => setTempBanner(e.target.value)}
-              className="min-h-24 resize-none"
+              className="min-h-24 resize-none w-full"
             />
             <p className="text-xs text-muted-foreground">
               {tempBanner.length}/500 caracteres

@@ -1,6 +1,6 @@
+import { WhatsAppOutlined } from "@ant-design/icons";
+import { MailIcon } from "lucide-react";
 import React from "react";
-import WhatsAppIcon from "@mui/icons-material/WhatsApp";
-import MailOutlineIcon from "@mui/icons-material/MailOutline";
 
 export const SchoolHome = ({ textComponent, manage }: any) => {
   return (
@@ -18,15 +18,15 @@ export const SchoolHome = ({ textComponent, manage }: any) => {
         La mejor forma de gestionar su colegio
       </h6>
 
-      <div className="block absolute end-3 mr-7">
-        <div className="bg-btn text-white mb-4 p-4 rounded-[100%]">
+      <div className="block absolute end-3 mr-7 gap-2 pr-4">
+        <div className="mb-1">
           <a href="#!" role="button">
-            <WhatsAppIcon color="success" />
+            <WhatsAppOutlined style={{ fontSize: "20px", color: "#00bc7d" }} />
           </a>
         </div>
-        <div className="bg-btn  text-white p-4 rounded-[100%]">
+        <div className="">
           <a href="#!" role="button">
-            <MailOutlineIcon color="error" />
+            <MailIcon size={20} />
           </a>
         </div>
       </div>

@@ -1,14 +1,11 @@
 import {
   CloudUploadOutlined,
+  FileImageOutlined,
+  LockOutlined,
   SecurityScanOutlined,
   StarOutlined,
 } from "@ant-design/icons";
-import {
-  ImageOutlined,
-  Password,
-  PasswordOutlined,
-  PasswordSharp,
-} from "@mui/icons-material";
+
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
@@ -27,7 +24,7 @@ export const SettingsList = () => {
           <Link href={`${router.pathname}/logo-banner`} className="w-full">
             <div className="card-body w-full">
               <div className="card-title">
-                <ImageOutlined />
+                <FileImageOutlined />
                 Logo y banner
               </div>
             </div>
@@ -67,7 +64,7 @@ export const SettingsList = () => {
           <Link href={`${router.pathname}/password`} className="w-full">
             <div className="card-body">
               <div className="card-title">
-                <PasswordOutlined />
+                <LockOutlined />
                 Cambiar contraseña
               </div>
             </div>

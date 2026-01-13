@@ -1,25 +1,29 @@
 import { useSignInLazyQuery } from "@/generated/graphql";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Logo from "../public/assets/logo@2x.png";
 import LogoInst from "../public/assets/institucionLogo@2x.png";
-import BackArrow from "../public/assets/backArrow.png";
+import { Input } from "@/components/Input";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 function Test() {
   const router = useRouter();
   const { id, colegio } = router.query;
   const [username, setUsername] = useState("gilberto");
   const [password, setPassword] = useState("barco");
-  const [getUser, { data }] = useSignInLazyQuery();
+  const [getUser, { data, loading, error }] = useSignInLazyQuery();
   useEffect(() => {
     if (!id || !colegio) {
-      // router.push("/instituciones");
+      router.push("/instituciones");
       return;
     }
+  }, [data, router]);
+  useEffect(() => {
     if (data) {
-      console.log(data.signIn.token);
+      console.log(data);
       const token = data.signIn.token;
       console.log(token);
       if (token) {
@@ -27,8 +31,7 @@ function Test() {
       }
       router.push("/dashboard");
     }
-  }, [data, router]);
-
+  }, [data]);
   return (
     <div className="h-screen bg-[#EFEFEF]">
       <div className="flex items-center justify-start px-5 py-2">
@@ -40,7 +43,7 @@ function Test() {
             alignItems: "center",
           }}
         >
-          <Image src={BackArrow} alt="Back Arrow" className="block mx-0 my-0" />
+          <ArrowLeft size={30} color="#000000" />
         </Link>
         <Link
           href={"/instituciones"}
@@ -77,16 +80,14 @@ function Test() {
           </span>
         </p>
         <div className=" flex flex-col gap-2 w-full">
-          <input
-            className="input w-full bg-gray2 text-black"
+          <Input
             name="user"
             type="text"
             placeholder="Usuario"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
-          <input
-            className="input w-full bg-gray2 text-black"
+          <Input
             name="password"
             type="password"
             placeholder="Contraseña"
@@ -95,25 +96,27 @@ function Test() {
           />
         </div>
         <div className="flex flex-col justify-center">
-          <span className="text-blue2 my-3">
+          <span className="text-main-blue my-3">
             <p>¿Olvidaste tu contraseña?</p>
           </span>
-          <button
-            className="btn bg-main-blue pl-4 h-15 mb-5 hover:bg-[#0b5ed7] text-white border-none"
+          {error && <div className="text-red-500">¡Ocurrio un error! {error.message}</div>}
+          <Button
+            className="btn bg-main-blue pl-4 mb-5 hover:bg-[#0b5ed7] text-white border-none"
             onClick={(e) => {
+              console.log("login");
               getUser({
                 variables: {
                   signInInput: {
                     password: password,
                     user: username,
-                    id_institution: 1000,
+                    id_institution: 1059,
                   },
                 },
               });
             }}
           >
-            Iniciar sesion
-          </button>
+            Iniciar sesion {loading && "..."}
+          </Button>
         </div>
       </div>
     </div>

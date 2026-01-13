@@ -74,22 +74,21 @@ const Spreadsheet = () => {
       {opcion ? (
         <div className="h-full w-full">{opcionelegida?.component}</div>
       ) : (
-        <div className="grid grid-cols-3 ps-8 place-content-start gap-6 max-w-4xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {cardsSpreadsheet.map((item: any, i: any) => (
-            <Link
-              key={i}
-              href={`reportes?componente=planillas&opcion=${item.id}`}
-              className="card bg-base-100  px-5 py-5"
-            >
-              <figure>
-                <div className="text-4xl mb-2">{item.icon}</div>
-              </figure>
-              <div className="card-body justify-center items-center py-0">
-                <div className="card-title text-center text-base">
-                  {item.title}
+            <div className="flex items-start gap-2 flex-wrap font-semibold card bg-white" key={i}>
+              <Link
+                key={i}
+                href={`reportes?componente=planillas&opcion=${item.id}`}
+              >
+                <div className="card-body w-full">
+                  <div className="card-title">
+                    {item.icon}
+                    <div className="text-black">{item.title}</div>
+                  </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+            </div>
           ))}
         </div>
       )}

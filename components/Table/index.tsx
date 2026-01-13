@@ -9,9 +9,8 @@ const TableComponent = ({ data, column }: { data: any; column: any }) => {
         columns={column}
         dataSource={data}
         scroll={{ x: "max-content" }}
-        pagination={{
-          pageSize: 10,
-        }}
+        pagination={false}
+        size="small"
       />
     </div>
   );

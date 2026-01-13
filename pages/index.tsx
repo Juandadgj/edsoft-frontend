@@ -17,7 +17,7 @@ function Home() {
         <Nav actualPage="Inicio" withNavigation />
         <div className="h-full w-full block relative">
           <div className="my-2 animate-fade-right animate-duration-1000 px-6 pt-6 md:px-16 md:pt-9">
-            <h5 className="text-gray3 text-xl flex">
+            <h5 className="text-gray-3 text-xl flex">
               <Ellipse className="mr-5" width={40} height={40} />
               ¡Bienvenido!
             </h5>
@@ -31,13 +31,13 @@ function Home() {
               >
                 <div className="w-full text-3xl lg:text-4xl md:text-3xl">
                   <span className={"text-main-blue"}>Crea | </span>
-                  <span className="text-gray3">
+                  <span className="text-gray-3">
                     gestiona
                     <br /> y publica calificaciones
                   </span>
                 </div>
               </h2>
-              <p className={`text-gray3 text-xl md:text-xl lg:text-2xl ms-2`}>
+              <p className={`text-gray-3 text-xl md:text-xl lg:text-2xl ms-2`}>
                 Acceder a <span className="text-black">toda</span> la
                 información institucional, académica, administrativa, financiera
                 y cultural de la Institución educativa sobre asignaturas,

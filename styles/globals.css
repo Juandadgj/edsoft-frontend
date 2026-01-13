@@ -48,6 +48,7 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
   --main-blue: #0055a6;
+  --gray-3: #4d4d4d;
 }
 
 .dark {
@@ -72,7 +73,7 @@
   --input: oklch(0.269 0 0);
   --ring: oklch(0.439 0 0);
   --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-2: #00bc7d;
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
@@ -84,6 +85,7 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.439 0 0);
+  --gray-3: #4d4d4d;
 }
 
 @theme inline {
@@ -126,6 +128,7 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-main-blue: var(--main-blue);
+  --color-gray-3: var(--gray-3);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -143,7 +146,6 @@ body {
   font-family: 'Scada', sans-serif;
   color: rgb(var(--foreground-rgb));
   background: #fff !important;
-  height: 100vh;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
