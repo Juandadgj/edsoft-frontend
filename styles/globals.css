@@ -146,6 +146,7 @@ body {
   font-family: 'Scada', sans-serif;
   color: rgb(var(--foreground-rgb));
   background: #fff !important;
+  height: 100%;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {

@@ -129,7 +129,7 @@ function CreateCourses() {
           </button>
         </div>
       </div>
-      <div className="text-black h-full">
+      <div className="text-black">
         <CourseComponent
           isCreate={true}
           showSubjects={false}

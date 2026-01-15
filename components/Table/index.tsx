@@ -3,7 +3,7 @@ import { Table } from "antd";
 
 const TableComponent = ({ data, column }: { data: any; column: any }) => {
   return (
-    <div className="">
+    <div className="w-full">
       <Table
         rowKey={"id"}
         columns={column}

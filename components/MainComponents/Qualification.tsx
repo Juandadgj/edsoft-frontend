@@ -367,7 +367,7 @@ const Qualification = () => {
       </div>
       {!g && <CourseComponent isCreate={false} showSubjects={false} />}
       {g && !a && !per && (
-        <div className="text-black h-full">
+        <div className="text-black">
           {loadingCourses && (
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-main-blue"></span>

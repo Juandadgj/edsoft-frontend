@@ -156,7 +156,7 @@ export const CourseComponent = ({
     return column;
   });
   return (
-    <div className="h-full">
+    <div className="">
       {loadingGroups && (
         <div className="w-full h-full flex justify-center items-center">
           <span className="loading loading-dots loading-lg bg-main-blue"></span>

@@ -181,7 +181,7 @@ function SetYear() {
             </button>
           </div>
         </div>
-        <div className="text-black h-full">
+        <div className="text-black">
           {loading && (
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-main-blue"></span>
