@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useGetStudentsLazyQuery, GetStudentsQuery } from "@/generated/graphql";
 import { ContainerComponents } from "@/components/ContainerComponents";
 import TableComponent from "@/components/Table";
+import { Input } from "@/components/Input";
 const columns = [
   {
     title: "Apellido y Nombre",
@@ -133,31 +134,26 @@ export const SearchStudent = () => {
       <div className="w-full h-full">
         <div className="w-full h-full">
           <div className="flex flex-col justify-start items-center w-full p-8 h-full">
-            <div className="w-full max-w-3xl border-2 border-gray5 shadow-gray5 rounded-[10px] p-10">
-              <h1 className="text-black text-sm">
+            <div className="w-full max-w-3xl border-2 border-gray-200 shadow-gray-200 rounded-[10px] p-10">
+              <h1 className="text-black text-xl text-center">
                 Ingrese identificacion-Codigo del estudiante o parte del nombre
                 o apellido para la busqueda del estudiante.
               </h1>
               <div className="flex w-full gap-2">
                 <div className="form-control w-full">
-                  <div className="label">
-                    <span className="text-xs text-black">Nombre</span>
-                  </div>
-                  <input
+                
+                  <Input
+                    label="Nombre"
                     value={name}
                     onChange={(e: any) => setName(e.target.value)}
-                    className="input border-gray5 w-full h-12 bg-transparent text-sm text-black focus:outline-none focus:border-main-blue hover:border-main-blue  transition duration-300 appearance-none"
                     type="text"
                   />
                 </div>
                 <div className="form-control w-full">
-                  <div className="label">
-                    <span className="text-xs text-black">Indentifiacion</span>
-                  </div>
-                  <input
+                  <Input
+                    label="Indentificacion"
                     value={identification}
                     onChange={(e: any) => setIdentification(e.target.value)}
-                    className="input border-gray5 w-full h-12 bg-transparent text-sm text-black focus:outline-none focus:border-main-blue hover:border-main-blue  transition duration-300 appearance-none"
                     type="text"
                   />
                 </div>

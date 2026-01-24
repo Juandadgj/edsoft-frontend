@@ -53,9 +53,9 @@ export type Auth = {
 export type Course = {
   __typename?: 'Course';
   area?: Maybe<Area>;
-  asi_dimension?: Maybe<Scalars['String']>;
   average?: Maybe<Scalars['String']>;
-  dim_codigo?: Maybe<Scalars['Int']>;
+  dimension_code?: Maybe<Scalars['Int']>;
+  dimension_type?: Maybe<Scalars['String']>;
   hour: Scalars['Int'];
   id_area: Scalars['Int'];
   id_course: Scalars['Int'];
@@ -92,9 +92,9 @@ export type CreateAreaInput = {
 };
 
 export type CreateCourseInput = {
-  asi_dimension?: InputMaybe<Scalars['String']>;
   average?: InputMaybe<Scalars['String']>;
-  dim_codigo?: InputMaybe<Scalars['Int']>;
+  dimension_code?: InputMaybe<Scalars['Int']>;
+  dimension_type?: InputMaybe<Scalars['String']>;
   hour: Scalars['Int'];
   id_area: Scalars['Int'];
   id_group: Scalars['Int'];
@@ -221,9 +221,9 @@ export type FilterAreaInput = {
 };
 
 export type FilterCourseInput = {
-  asi_dimension?: InputMaybe<Scalars['String']>;
   average?: InputMaybe<Scalars['String']>;
-  dim_codigo?: InputMaybe<Scalars['Int']>;
+  dimension_code?: InputMaybe<Scalars['Int']>;
+  dimension_type?: InputMaybe<Scalars['String']>;
   hour?: InputMaybe<Scalars['Int']>;
   id_area?: InputMaybe<Scalars['Int']>;
   id_group?: InputMaybe<Scalars['Int']>;
@@ -332,7 +332,7 @@ export type Institution = {
   pay_inscription: Scalars['Int'];
   phone: Scalars['String'];
   register: Scalars['String'];
-  responsable: Scalars['String'];
+  responsible: Scalars['String'];
   status: Scalars['String'];
   title: Scalars['String'];
   user: Scalars['String'];
@@ -588,6 +588,8 @@ export type Query = {
   featured: Array<Maybe<Featured>>;
   generateAchievementsAndIndicators: Report;
   generateReportArea: Report;
+  generateStudentEnrollmentReportI: Report;
+  generateStudentEnrollmentReportII: Report;
   generateStudentsListDeterminated: Report;
   generateStudentsListUndeterminated: Report;
   groupByID?: Maybe<Group>;
@@ -654,6 +656,16 @@ export type QueryGenerateAchievementsAndIndicatorsArgs = {
 
 export type QueryGenerateReportAreaArgs = {
   generateReportAreaInput?: InputMaybe<GenerateReportAreaInput>;
+};
+
+
+export type QueryGenerateStudentEnrollmentReportIArgs = {
+  id_student?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type QueryGenerateStudentEnrollmentReportIiArgs = {
+  id_student?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -851,9 +863,9 @@ export type UpdateAreaInput = {
 };
 
 export type UpdateCourseInput = {
-  asi_dimension?: InputMaybe<Scalars['String']>;
   average?: InputMaybe<Scalars['String']>;
-  dim_codigo?: InputMaybe<Scalars['Int']>;
+  dimension_code?: InputMaybe<Scalars['Int']>;
+  dimension_type?: InputMaybe<Scalars['String']>;
   hour?: InputMaybe<Scalars['Int']>;
   id_area?: InputMaybe<Scalars['Int']>;
   id_course: Scalars['Int'];
@@ -984,7 +996,7 @@ export type CreateCourseMutationVariables = Exact<{
 }>;
 
 
-export type CreateCourseMutation = { __typename?: 'Mutation', createCourse: { __typename?: 'Course', id_course: number, id_group: number, id_teacher: number, name: string, position?: number | null, dim_codigo?: number | null, asi_dimension?: string | null, id_area: number, hour: number, average?: string | null, percentage?: number | null } };
+export type CreateCourseMutation = { __typename?: 'Mutation', createCourse: { __typename?: 'Course', id_course: number, id_group: number, id_teacher: number, name: string, position?: number | null, dimension_code?: number | null, dimension_type?: string | null, id_area: number, hour: number, average?: string | null, percentage?: number | null } };
 
 export type CreateEnrollmentMutationVariables = Exact<{
   createEnrollmentInput: CreateEnrollmentInput;
@@ -1048,7 +1060,7 @@ export type DeleteCourseMutationVariables = Exact<{
 }>;
 
 
-export type DeleteCourseMutation = { __typename?: 'Mutation', deleteCourse?: { __typename?: 'Course', id_course: number, id_group: number, id_teacher: number, name: string, position?: number | null, dim_codigo?: number | null, asi_dimension?: string | null, id_area: number, hour: number, average?: string | null, percentage?: number | null } | null };
+export type DeleteCourseMutation = { __typename?: 'Mutation', deleteCourse?: { __typename?: 'Course', id_course: number, id_group: number, id_teacher: number, name: string, position?: number | null, dimension_code?: number | null, dimension_type?: string | null, id_area: number, hour: number, average?: string | null, percentage?: number | null } | null };
 
 export type DeleteGroupMutationVariables = Exact<{
   idGroup: Scalars['Int'];
@@ -1104,7 +1116,7 @@ export type UpdateCourseMutationVariables = Exact<{
 }>;
 
 
-export type UpdateCourseMutation = { __typename?: 'Mutation', updateCourse: { __typename?: 'Course', id_course: number, id_group: number, id_teacher: number, name: string, position?: number | null, dim_codigo?: number | null, asi_dimension?: string | null, id_area: number, hour: number, average?: string | null, percentage?: number | null } };
+export type UpdateCourseMutation = { __typename?: 'Mutation', updateCourse: { __typename?: 'Course', id_course: number, id_group: number, id_teacher: number, name: string, position?: number | null, dimension_code?: number | null, dimension_type?: string | null, id_area: number, hour: number, average?: string | null, percentage?: number | null } };
 
 export type UpdateGroupMutationVariables = Exact<{
   updateGroupInput: UpdateGroupInput;
@@ -1148,6 +1160,20 @@ export type GenerateReportAreaQueryVariables = Exact<{
 
 export type GenerateReportAreaQuery = { __typename?: 'Query', generateReportArea: { __typename?: 'Report', report_content: string } };
 
+export type GenerateStudentEnrollmentReportIQueryVariables = Exact<{
+  idStudent?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type GenerateStudentEnrollmentReportIQuery = { __typename?: 'Query', generateStudentEnrollmentReportI: { __typename?: 'Report', report_content: string } };
+
+export type GenerateStudentEnrollmentReportIiQueryVariables = Exact<{
+  idStudent?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type GenerateStudentEnrollmentReportIiQuery = { __typename?: 'Query', generateStudentEnrollmentReportII: { __typename?: 'Report', report_content: string } };
+
 export type GenerateStudentsListDeterminatedQueryVariables = Exact<{
   generateStudentsListDeterminatedInput?: InputMaybe<GenerateStudentsListDeterminatedInput>;
 }>;
@@ -1179,7 +1205,7 @@ export type CoursesQueryVariables = Exact<{
 }>;
 
 
-export type CoursesQuery = { __typename?: 'Query', courses: Array<{ __typename?: 'Course', id_course: number, id_group: number, id_teacher: number, name: string, position?: number | null, dim_codigo?: number | null, asi_dimension?: string | null, id_area: number, hour: number, average?: string | null, percentage?: number | null, teacher?: { __typename?: 'Teacher', name?: string | null } | null } | null> };
+export type CoursesQuery = { __typename?: 'Query', courses: Array<{ __typename?: 'Course', id_course: number, id_group: number, id_area: number, id_teacher: number, name: string, position?: number | null, dimension_code?: number | null, dimension_type?: string | null, hour: number, average?: string | null, percentage?: number | null, teacher?: { __typename?: 'Teacher', name?: string | null, last_name?: string | null } | null } | null> };
 
 export type GroupsQueryVariables = Exact<{
   filterGroupInput?: InputMaybe<FilterGroupInput>;
@@ -1417,8 +1443,8 @@ export const CreateCourseDocument = gql`
     id_teacher
     name
     position
-    dim_codigo
-    asi_dimension
+    dimension_code
+    dimension_type
     id_area
     hour
     average
@@ -1745,8 +1771,8 @@ export const DeleteCourseDocument = gql`
     id_teacher
     name
     position
-    dim_codigo
-    asi_dimension
+    dimension_code
+    dimension_type
     id_area
     hour
     average
@@ -2033,8 +2059,8 @@ export const UpdateCourseDocument = gql`
     id_teacher
     name
     position
-    dim_codigo
-    asi_dimension
+    dimension_code
+    dimension_type
     id_area
     hour
     average
@@ -2284,6 +2310,76 @@ export function useGenerateReportAreaLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GenerateReportAreaQueryHookResult = ReturnType<typeof useGenerateReportAreaQuery>;
 export type GenerateReportAreaLazyQueryHookResult = ReturnType<typeof useGenerateReportAreaLazyQuery>;
 export type GenerateReportAreaQueryResult = Apollo.QueryResult<GenerateReportAreaQuery, GenerateReportAreaQueryVariables>;
+export const GenerateStudentEnrollmentReportIDocument = gql`
+    query GenerateStudentEnrollmentReportI($idStudent: Int) {
+  generateStudentEnrollmentReportI(id_student: $idStudent) {
+    report_content
+  }
+}
+    `;
+
+/**
+ * __useGenerateStudentEnrollmentReportIQuery__
+ *
+ * To run a query within a React component, call `useGenerateStudentEnrollmentReportIQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGenerateStudentEnrollmentReportIQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGenerateStudentEnrollmentReportIQuery({
+ *   variables: {
+ *      idStudent: // value for 'idStudent'
+ *   },
+ * });
+ */
+export function useGenerateStudentEnrollmentReportIQuery(baseOptions?: Apollo.QueryHookOptions<GenerateStudentEnrollmentReportIQuery, GenerateStudentEnrollmentReportIQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GenerateStudentEnrollmentReportIQuery, GenerateStudentEnrollmentReportIQueryVariables>(GenerateStudentEnrollmentReportIDocument, options);
+      }
+export function useGenerateStudentEnrollmentReportILazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GenerateStudentEnrollmentReportIQuery, GenerateStudentEnrollmentReportIQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GenerateStudentEnrollmentReportIQuery, GenerateStudentEnrollmentReportIQueryVariables>(GenerateStudentEnrollmentReportIDocument, options);
+        }
+export type GenerateStudentEnrollmentReportIQueryHookResult = ReturnType<typeof useGenerateStudentEnrollmentReportIQuery>;
+export type GenerateStudentEnrollmentReportILazyQueryHookResult = ReturnType<typeof useGenerateStudentEnrollmentReportILazyQuery>;
+export type GenerateStudentEnrollmentReportIQueryResult = Apollo.QueryResult<GenerateStudentEnrollmentReportIQuery, GenerateStudentEnrollmentReportIQueryVariables>;
+export const GenerateStudentEnrollmentReportIiDocument = gql`
+    query GenerateStudentEnrollmentReportII($idStudent: Int) {
+  generateStudentEnrollmentReportII(id_student: $idStudent) {
+    report_content
+  }
+}
+    `;
+
+/**
+ * __useGenerateStudentEnrollmentReportIiQuery__
+ *
+ * To run a query within a React component, call `useGenerateStudentEnrollmentReportIiQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGenerateStudentEnrollmentReportIiQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGenerateStudentEnrollmentReportIiQuery({
+ *   variables: {
+ *      idStudent: // value for 'idStudent'
+ *   },
+ * });
+ */
+export function useGenerateStudentEnrollmentReportIiQuery(baseOptions?: Apollo.QueryHookOptions<GenerateStudentEnrollmentReportIiQuery, GenerateStudentEnrollmentReportIiQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GenerateStudentEnrollmentReportIiQuery, GenerateStudentEnrollmentReportIiQueryVariables>(GenerateStudentEnrollmentReportIiDocument, options);
+      }
+export function useGenerateStudentEnrollmentReportIiLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GenerateStudentEnrollmentReportIiQuery, GenerateStudentEnrollmentReportIiQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GenerateStudentEnrollmentReportIiQuery, GenerateStudentEnrollmentReportIiQueryVariables>(GenerateStudentEnrollmentReportIiDocument, options);
+        }
+export type GenerateStudentEnrollmentReportIiQueryHookResult = ReturnType<typeof useGenerateStudentEnrollmentReportIiQuery>;
+export type GenerateStudentEnrollmentReportIiLazyQueryHookResult = ReturnType<typeof useGenerateStudentEnrollmentReportIiLazyQuery>;
+export type GenerateStudentEnrollmentReportIiQueryResult = Apollo.QueryResult<GenerateStudentEnrollmentReportIiQuery, GenerateStudentEnrollmentReportIiQueryVariables>;
 export const GenerateStudentsListDeterminatedDocument = gql`
     query GenerateStudentsListDeterminated($generateStudentsListDeterminatedInput: GenerateStudentsListDeterminatedInput) {
   generateStudentsListDeterminated(
@@ -2435,18 +2531,19 @@ export const CoursesDocument = gql`
   courses(filterCourseInput: $filterCourseInput) {
     id_course
     id_group
+    id_area
     id_teacher
+    teacher {
+      name
+      last_name
+    }
     name
     position
-    dim_codigo
-    asi_dimension
-    id_area
+    dimension_code
+    dimension_type
     hour
     average
     percentage
-    teacher {
-      name
-    }
   }
 }
     `;

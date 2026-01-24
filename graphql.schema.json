@@ -1,10 +1,12 @@
 {
   "__schema": {
     "queryType": {
-      "name": "Query"
+      "name": "Query",
+      "kind": "OBJECT"
     },
     "mutationType": {
-      "name": "Mutation"
+      "name": "Mutation",
+      "kind": "OBJECT"
     },
     "subscriptionType": null,
     "types": [
@@ -12,6 +14,7 @@
         "kind": "OBJECT",
         "name": "Absence",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "day",
@@ -147,6 +150,7 @@
         "kind": "OBJECT",
         "name": "Achievement",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "description",
@@ -210,6 +214,7 @@
         "kind": "OBJECT",
         "name": "Area",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "id_area",
@@ -261,6 +266,7 @@
         "kind": "OBJECT",
         "name": "Auth",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "role",
@@ -296,6 +302,7 @@
         "kind": "SCALAR",
         "name": "Boolean",
         "description": "The `Boolean` scalar type represents `true` or `false`.",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -306,6 +313,7 @@
         "kind": "OBJECT",
         "name": "Course",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "area",
@@ -314,18 +322,6 @@
             "type": {
               "kind": "OBJECT",
               "name": "Area",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "asi_dimension",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
               "ofType": null
             },
             "isDeprecated": false,
@@ -344,12 +340,24 @@
             "deprecationReason": null
           },
           {
-            "name": "dim_codigo",
+            "name": "dimension_code",
             "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
               "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "dimension_type",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "isDeprecated": false,
@@ -497,6 +505,7 @@
         "kind": "INPUT_OBJECT",
         "name": "CreateAbsenceInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -640,6 +649,7 @@
         "kind": "INPUT_OBJECT",
         "name": "CreateAchievementInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -699,6 +709,7 @@
         "kind": "INPUT_OBJECT",
         "name": "CreateAreaInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -738,20 +749,9 @@
         "kind": "INPUT_OBJECT",
         "name": "CreateCourseInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
-          {
-            "name": "asi_dimension",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
           {
             "name": "average",
             "description": null,
@@ -765,11 +765,23 @@
             "deprecationReason": null
           },
           {
-            "name": "dim_codigo",
+            "name": "dimension_code",
             "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "dimension_type",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null,
@@ -889,6 +901,7 @@
         "kind": "INPUT_OBJECT",
         "name": "CreateEnrollmentInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -980,6 +993,7 @@
         "kind": "INPUT_OBJECT",
         "name": "CreateFeaturedInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -1015,6 +1029,7 @@
         "kind": "INPUT_OBJECT",
         "name": "CreateGroupInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -1102,6 +1117,7 @@
         "kind": "INPUT_OBJECT",
         "name": "CreateScholarYearInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -1165,6 +1181,7 @@
         "kind": "INPUT_OBJECT",
         "name": "CreateStudentInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -1360,6 +1377,7 @@
         "kind": "INPUT_OBJECT",
         "name": "CreateTeacherInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -1487,6 +1505,7 @@
         "kind": "INPUT_OBJECT",
         "name": "CreateTypeQualificationInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -1558,6 +1577,7 @@
         "kind": "OBJECT",
         "name": "Definitives",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "id_cour_stu",
@@ -1669,6 +1689,7 @@
         "kind": "OBJECT",
         "name": "Enrollment",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "date_desertion",
@@ -1768,6 +1789,7 @@
         "kind": "OBJECT",
         "name": "Featured",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "id_featured",
@@ -1819,6 +1841,7 @@
         "kind": "INPUT_OBJECT",
         "name": "FilterAbsenceInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -1938,6 +1961,7 @@
         "kind": "INPUT_OBJECT",
         "name": "FilterAchievementInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -1985,6 +2009,7 @@
         "kind": "INPUT_OBJECT",
         "name": "FilterAreaInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -2020,20 +2045,9 @@
         "kind": "INPUT_OBJECT",
         "name": "FilterCourseInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
-          {
-            "name": "asi_dimension",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
           {
             "name": "average",
             "description": null,
@@ -2047,11 +2061,23 @@
             "deprecationReason": null
           },
           {
-            "name": "dim_codigo",
+            "name": "dimension_code",
             "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "dimension_type",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null,
@@ -2151,6 +2177,7 @@
         "kind": "INPUT_OBJECT",
         "name": "FilterDefinitivesInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -2246,6 +2273,7 @@
         "kind": "INPUT_OBJECT",
         "name": "FilterEnrollmentInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -2329,6 +2357,7 @@
         "kind": "INPUT_OBJECT",
         "name": "FilterFeaturedInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -2364,6 +2393,7 @@
         "kind": "INPUT_OBJECT",
         "name": "FilterGroupInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -2435,6 +2465,7 @@
         "kind": "INPUT_OBJECT",
         "name": "FilterQualificationInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -2478,6 +2509,7 @@
         "kind": "INPUT_OBJECT",
         "name": "FilterStudentInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -2513,6 +2545,7 @@
         "kind": "INPUT_OBJECT",
         "name": "FilterTeacherInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -2620,6 +2653,7 @@
         "kind": "SCALAR",
         "name": "Float",
         "description": "The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point).",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -2630,6 +2664,7 @@
         "kind": "INPUT_OBJECT",
         "name": "GenerateAchievementsAndIndicators",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -2689,6 +2724,7 @@
         "kind": "INPUT_OBJECT",
         "name": "GenerateReportAreaInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -2744,6 +2780,7 @@
         "kind": "INPUT_OBJECT",
         "name": "GenerateStudentsListDeterminatedInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -2787,6 +2824,7 @@
         "kind": "INPUT_OBJECT",
         "name": "GenerateStudentsListUndeterminatedInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -2814,6 +2852,7 @@
         "kind": "OBJECT",
         "name": "Group",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "coursesCount",
@@ -2913,6 +2952,7 @@
         "kind": "OBJECT",
         "name": "Institution",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "day",
@@ -3103,7 +3143,7 @@
             "deprecationReason": null
           },
           {
-            "name": "responsable",
+            "name": "responsible",
             "description": null,
             "args": [],
             "type": {
@@ -3208,6 +3248,7 @@
         "kind": "SCALAR",
         "name": "Int",
         "description": "The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -3218,6 +3259,7 @@
         "kind": "OBJECT",
         "name": "Mutation",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "createAbsence",
@@ -4360,6 +4402,7 @@
         "kind": "OBJECT",
         "name": "Qualification",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "id_achie_stu",
@@ -4423,6 +4466,7 @@
         "kind": "INPUT_OBJECT",
         "name": "QualificationInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -4482,6 +4526,7 @@
         "kind": "OBJECT",
         "name": "QualificationList",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "qualifications",
@@ -4529,6 +4574,7 @@
         "kind": "OBJECT",
         "name": "Query",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "absences",
@@ -4825,6 +4871,64 @@
                 "type": {
                   "kind": "INPUT_OBJECT",
                   "name": "GenerateReportAreaInput",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Report",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "generateStudentEnrollmentReportI",
+            "description": null,
+            "args": [
+              {
+                "name": "id_student",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Report",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "generateStudentEnrollmentReportII",
+            "description": null,
+            "args": [
+              {
+                "name": "id_student",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -5302,6 +5406,7 @@
         "kind": "OBJECT",
         "name": "Report",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "report_content",
@@ -5329,6 +5434,7 @@
         "kind": "INPUT_OBJECT",
         "name": "ReportDictionary",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -5524,6 +5630,7 @@
         "kind": "OBJECT",
         "name": "ResumeCourse",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "definitives",
@@ -5583,6 +5690,7 @@
         "kind": "OBJECT",
         "name": "ResumeDefinitive",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "score1",
@@ -5642,6 +5750,7 @@
         "kind": "OBJECT",
         "name": "ResumeGroup",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "courses",
@@ -5705,6 +5814,7 @@
         "kind": "OBJECT",
         "name": "ScholarYear",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "comment",
@@ -5768,6 +5878,7 @@
         "kind": "INPUT_OBJECT",
         "name": "SignInInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -5827,6 +5938,7 @@
         "kind": "INPUT_OBJECT",
         "name": "SignatureInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -5874,6 +5986,7 @@
         "kind": "SCALAR",
         "name": "String",
         "description": "The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -5884,6 +5997,7 @@
         "kind": "OBJECT",
         "name": "Student",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "birthday",
@@ -6083,6 +6197,7 @@
         "kind": "OBJECT",
         "name": "Teacher",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "degree",
@@ -6206,6 +6321,7 @@
         "kind": "OBJECT",
         "name": "TypeQualification",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "ceiling_score",
@@ -6281,6 +6397,7 @@
         "kind": "INPUT_OBJECT",
         "name": "UpdateAbsenceInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -6424,6 +6541,7 @@
         "kind": "INPUT_OBJECT",
         "name": "UpdateAchievementInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -6487,6 +6605,7 @@
         "kind": "INPUT_OBJECT",
         "name": "UpdateAreaInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -6538,20 +6657,9 @@
         "kind": "INPUT_OBJECT",
         "name": "UpdateCourseInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
-          {
-            "name": "asi_dimension",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
           {
             "name": "average",
             "description": null,
@@ -6565,11 +6673,23 @@
             "deprecationReason": null
           },
           {
-            "name": "dim_codigo",
+            "name": "dimension_code",
             "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "dimension_type",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null,
@@ -6685,6 +6805,7 @@
         "kind": "INPUT_OBJECT",
         "name": "UpdateDefinitivesInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -6772,6 +6893,7 @@
         "kind": "INPUT_OBJECT",
         "name": "UpdateEnrollmentInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -6835,6 +6957,7 @@
         "kind": "INPUT_OBJECT",
         "name": "UpdateGroupInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -6886,6 +7009,7 @@
         "kind": "INPUT_OBJECT",
         "name": "UpdateQualificationsInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -6917,6 +7041,7 @@
         "kind": "INPUT_OBJECT",
         "name": "UpdateScholarYearInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -6980,6 +7105,7 @@
         "kind": "INPUT_OBJECT",
         "name": "UpdateStudentInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -7163,6 +7289,7 @@
         "kind": "INPUT_OBJECT",
         "name": "UpdateTeacherInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -7286,6 +7413,7 @@
         "kind": "INPUT_OBJECT",
         "name": "UpdateUserInput",
         "description": null,
+        "isOneOf": false,
         "fields": null,
         "inputFields": [
           {
@@ -7393,6 +7521,7 @@
         "kind": "OBJECT",
         "name": "User",
         "description": null,
+        "isOneOf": null,
         "fields": [
           {
             "name": "belongs",
@@ -7500,6 +7629,7 @@
         "kind": "OBJECT",
         "name": "__Directive",
         "description": "A Directive provides a way to describe alternate runtime execution and type validation behavior in a GraphQL document.\n\nIn some cases, you need to provide options to alter GraphQL's execution behavior in ways field arguments will not suffice, such as conditionally including or skipping a field. Directives provide this by describing additional information to the executor.",
+        "isOneOf": null,
         "fields": [
           {
             "name": "name",
@@ -7616,6 +7746,7 @@
         "kind": "ENUM",
         "name": "__DirectiveLocation",
         "description": "A Directive can be adjacent to many parts of the GraphQL language, a __DirectiveLocation describes one such possible adjacencies.",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -7741,6 +7872,7 @@
         "kind": "OBJECT",
         "name": "__EnumValue",
         "description": "One possible value for a given Enum. Enum values are unique values, not a placeholder for a string or numeric value. However an Enum value is returned in a JSON response as a string.",
+        "isOneOf": null,
         "fields": [
           {
             "name": "name",
@@ -7808,6 +7940,7 @@
         "kind": "OBJECT",
         "name": "__Field",
         "description": "Object and Interface types are described by a list of Fields, each of which has a name, potentially a list of arguments, and a return type.",
+        "isOneOf": null,
         "fields": [
           {
             "name": "name",
@@ -7928,6 +8061,7 @@
         "kind": "OBJECT",
         "name": "__InputValue",
         "description": "Arguments provided to Fields or Directives and the input fields of an InputObject are represented as Input Values which describe their type and optionally a default value.",
+        "isOneOf": null,
         "fields": [
           {
             "name": "name",
@@ -8023,6 +8157,7 @@
         "kind": "OBJECT",
         "name": "__Schema",
         "description": "A GraphQL Schema defines the capabilities of a GraphQL server. It exposes all available types and directives on the server, as well as the entry points for query, mutation, and subscription operations.",
+        "isOneOf": null,
         "fields": [
           {
             "name": "description",
@@ -8134,6 +8269,7 @@
         "kind": "OBJECT",
         "name": "__Type",
         "description": "The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.\n\nDepending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name, description and optional `specifiedByURL`, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.",
+        "isOneOf": null,
         "fields": [
           {
             "name": "kind",
@@ -8337,6 +8473,18 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "isOneOf",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -8348,6 +8496,7 @@
         "kind": "ENUM",
         "name": "__TypeKind",
         "description": "An enum describing what kind of type a given `__Type` is.",
+        "isOneOf": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -8457,15 +8606,6 @@
             "deprecationReason": null
           }
         ]
-      },
-      {
-        "name": "oneOf",
-        "description": "Indicates exactly one field must be supplied and this field must not be `null`.",
-        "isRepeatable": false,
-        "locations": [
-          "INPUT_OBJECT"
-        ],
-        "args": []
       },
       {
         "name": "skip",

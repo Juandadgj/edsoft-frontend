@@ -15,10 +15,10 @@ export const Input = ({
   label,
 }: IInput) => {
   return (
-    <div className={`form-control relative ${errorText ? `border-red-500 after:absolute after:left-0 after:-bottom-4 after:content-['Campo_requerido!'] after:ml-0.5 after:text-red-500 after:text-xs after:italic` : ''} `}>
+    <div className={`form-control w-full relative ${errorText ? `border-red-500 after:absolute after:left-0 after:-bottom-4 after:content-['Campo_requerido!'] after:ml-0.5 after:text-red-500 after:text-xs after:italic` : ''} `}>
       {label && (
-        <div className="label text-gray-300 p-1">
-          <label className="text-xs">{label}</label>
+        <div className="label text-foreground p-1">
+          <label className="">{label}</label>
         </div>
       )}
       <input

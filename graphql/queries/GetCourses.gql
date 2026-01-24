@@ -2,17 +2,18 @@ query Courses($filterCourseInput: FilterCourseInput) {
   courses(filterCourseInput: $filterCourseInput) {
     id_course
     id_group
+    id_area
     id_teacher
+    teacher {
+      name
+      last_name
+    }
     name
     position
-    dim_codigo
-    asi_dimension
-    id_area
+    dimension_code
+    dimension_type
     hour
     average
     percentage
-    teacher {
-      name
-    }
   }
 }

@@ -14,6 +14,8 @@ import TableComponent from "@/components/Table";
 import useSchoolYear from "@/hooks/useSchoolYear";
 import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
 import { CourseComponent } from "@/components/MainComponents/CourseComponent";
+import { FilePenLine } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const columnsDeliverable = [
   {
@@ -143,32 +145,36 @@ const NavigationComponent = () => {
       id_student: student?.id_student,
       student: `${student?.name} ${student?.last_name}`,
       periodo1: (
-        <button
+        <Button
+          variant="outline"
           onClick={() => handlerSpreadsheet(Number(g), student?.id_student)}
         >
-          -
-        </button>
+          <FilePenLine color="#0055a6" />
+        </Button>
       ),
       periodo2: (
-        <button
+        <Button
+          variant="outline"
           onClick={() => handlerSpreadsheet(Number(g), student?.id_student)}
         >
-          -
-        </button>
+          <FilePenLine color="#0055a6" />
+        </Button>
       ),
       periodo3: (
-        <button
+        <Button
+          variant="outline"
           onClick={() => handlerSpreadsheet(Number(g), student?.id_student)}
         >
-          -
-        </button>
+          <FilePenLine color="#0055a6" />
+        </Button>
       ),
       periodo4: (
-        <button
+        <Button
+          variant="outline"
           onClick={() => handlerSpreadsheet(Number(g), student?.id_student)}
         >
-          -
-        </button>
+          <FilePenLine color="#0055a6" />
+        </Button>
       ),
       select: () => handlerSpreadsheet(Number(g), student?.id_student),
     }));

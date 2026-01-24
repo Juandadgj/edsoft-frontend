@@ -1,6 +1,5 @@
 import { ContainerComponents } from "@/components/ContainerComponents";
 import CustomModal from "@/components/CustomModal";
-import { Input } from "@/components/Input";
 import TableComponent from "@/components/Table";
 import {
   CreateStudentInput,
@@ -16,7 +15,635 @@ import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
 import { notification, Table } from "antd";
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
+import { RenderField } from "../forms/dinamyc-form/render-field";
 export type NotificationType = "success" | "info" | "warning" | "error";
+
+// config/student-registration-schema.ts
+export type FieldValue =
+  | string
+  | boolean
+  | number
+  | string[]
+  | undefined
+  | null;
+
+export interface FormOption {
+  value: string;
+  id?: string;
+  label: string;
+}
+
+export type FormFieldType =
+  | "radio"
+  | "checkbox"
+  | "select"
+  | "text" // Para inputs de texto simples
+  | "number" // Para inputs numéricos simples
+  | "heading"
+  | "group" // <-- Nuevo tipo para agrupar otros campos
+  | "checkboxGroup"
+  | "date"
+  | "file";
+
+export interface FormField {
+  id: string;
+  label: string;
+  type: FormFieldType;
+  options?: FormOption[];
+  defaultValue?: FieldValue;
+
+  subFields?: FormField[]; // Para tipos 'group' o 'checkboxGroup'
+ 
+  conditionalRender?: (formData: Record<string, FieldValue>) => boolean;
+  className?: string;
+}
+// --- Opciones Estáticas Comunes ---
+
+// Opciones para Sí/No
+const yesNoOptions: FormOption[] = [
+  { id: "yes", label: "Sí", value: "Si" },
+  { id: "no", label: "No", value: "No" },
+];
+
+// Opciones para Género
+const genderOptions: FormOption[] = [
+  { id: "masculino", label: "Masculino", value: "Masculino" },
+  { id: "femenino", label: "Femenino", value: "Femenino" },
+  { id: "otro", label: "Otro", value: "Otro" },
+];
+
+// Opciones para País (asumiendo que viene de `countries` utilidad)
+// Para el esquema, solo pondremos un placeholder. En el Select real se mapearía.
+const countryOptions: FormOption[] = [
+  { id: "colombia", label: "Colombia", value: "Colombia" },
+  // ... más opciones de país si se necesitan aquí en el esquema o se cargan dinámicamente
+];
+
+// Opciones para Departamento (asumiendo que viene de `listaDepartamentos` utilidad)
+const departmentOptions: FormOption[] = [
+  { id: "", label: "Seleccione un departamento", value: "" },
+  // ... estos se llenarían dinámicamente en el componente
+];
+
+// Opciones de tipos de documento (basado en tu docTypes array)
+const documentTypeOptions: FormOption[] = [
+  { id: "cc", label: "Cédula de Ciudadanía", value: "CC" },
+  { id: "cd", label: "Carné Diplomático", value: "CD" },
+  { id: "ce", label: "Cédula de Extranjería", value: "CE" },
+  { id: "ni", label: "Número de Identificación Tributaria", value: "NI" },
+  { id: "pa", label: "Pasaporte", value: "PA" },
+  { id: "pe", label: "Permiso Especial de Permanencia", value: "PE" },
+  { id: "rc", label: "Registro Civil", value: "RC" },
+  { id: "ti", label: "Tarjeta de Identidad", value: "TI" },
+];
+
+// Opciones para Estado Académico Anterior
+const previousAcademicStateOptions: FormOption[] = [
+  { id: "nuevo", label: "Nuevo", value: "Nuevo" },
+  { id: "promovido", label: "Promovido", value: "Promovido" },
+  { id: "repitente", label: "Repitente", value: "Repitente" },
+  // ... otras opciones
+];
+
+// Opciones para Grado Procedencia
+const gradeOptions: FormOption[] = Array.from({ length: 11 }, (_, i) => ({
+  id: `grade_${i + 1}`,
+  label: `${i + 1}`,
+  value: `${i + 1}`,
+  type: "select",
+}));
+
+// Opciones para Año Procedencia
+const currentYear = new Date().getFullYear();
+const yearOptions: FormOption[] = Array.from({ length: 10 }, (_, i) => ({
+  id: `year_${currentYear - i}`,
+  label: `${currentYear - i}`,
+  value: `${currentYear - i}`,
+  type: "select",
+}));
+
+// Opciones para Asistencia Promedio
+const attendanceOptions: FormOption[] = [
+  { id: "alta", label: "Alta (80% o más)", value: "Alta (80% o más)" },
+  { id: "media", label: "Media (50-79%)", value: "Media (50-79%)" },
+  { id: "baja", label: "Baja (menos del 50%)", value: "Baja (menos del 50%)" },
+];
+
+// --- ESQUEMA PRINCIPAL DEL FORMULARIO ---
+export const studentRegistrationSchema: FormField[] = [
+  {
+    id: "studentInfoSection",
+    label: "Estudiante nuevo en el sistema",
+    type: "heading",
+  },
+  { id: "surname", label: "Apellidos", type: "text", defaultValue: "" },
+  { id: "name", label: "Nombres", type: "text", defaultValue: "" },
+  {
+    id: "identificationType",
+    label: "Tipo de Identificación",
+    type: "select",
+    options: documentTypeOptions,
+    defaultValue: "RC",
+  },
+  {
+    id: "identificationCode",
+    label: "Identificación / Código",
+    type: "text",
+    defaultValue: "", // Este input es especial, tiene un botón "Crear Autom."
+  },
+  {
+    id: "expeditionPlace",
+    label: "Expedida en",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "gender",
+    label: "Sexo",
+    type: "select",
+    options: genderOptions,
+    defaultValue: "Masculino",
+  }, // O 'radio' si prefieres
+  {
+    id: "birthDate",
+    label: "Fecha de nacimiento",
+    type: "date",
+    defaultValue: "",
+  }, // Usaremos type='date' para Input
+  {
+    id: "birthPlace",
+    label: "Lugar de nacimiento",
+    type: "text",
+    defaultValue: "",
+  },
+  { id: "address", label: "Direccion", type: "text", defaultValue: "" },
+  { id: "phone", label: "Telefono", type: "text", defaultValue: "" },
+  {
+    id: "photo",
+    label: "Foto",
+    type: "file", // Nuevo tipo para manejar la carga de archivos
+    defaultValue: null,
+    // Este campo requerirá un componente RenderField personalizado.
+  },
+  { id: "email", label: "Correo Electrónico", type: "text", defaultValue: "" },
+  { id: "bodyType", label: "Cuerpo", type: "text", defaultValue: "" }, // "Corpo" en la imagen, asumo es "Cuerpo"
+  { id: "neighborhood", label: "Barrio", type: "text", defaultValue: "" },
+  { id: "zone", label: "Zona", type: "text", defaultValue: "" },
+  {
+    id: "healthSystem",
+    label: "Sistema salud",
+    type: "text",
+    defaultValue: "",
+  },
+  { id: "bloodType", label: "Tipo sangre", type: "text", defaultValue: "" },
+  { id: "eps", label: "EPS", type: "text", defaultValue: "" },
+  {
+    id: "exceptionalCapacity",
+    label: "Capacidad excepcional",
+    type: "text",
+    defaultValue: "",
+  },
+  { id: "code", label: "Codigo", type: "text", defaultValue: "" },
+  { id: "sisben", label: "Sisben", type: "text", defaultValue: "" },
+  { id: "stratum", label: "Estrato", type: "text", defaultValue: "" },
+
+  // --- Información del Acudiente ---
+  {
+    id: "guardianInfoSection",
+    label: "Información del Acudiente",
+    type: "heading",
+  },
+  {
+    id: "guardianIdentification",
+    label: "Identificacion del acudiente",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "guardianAddress",
+    label: "Direccion del acudiente",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "guardianMobile",
+    label: "Celular del acudiente",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "guardianBirthDate",
+    label: "Fecha nacimiento del acudiente",
+    type: "date",
+    defaultValue: "",
+  },
+
+  // --- Información de la Madre ---
+  {
+    id: "motherInfoSection",
+    label: "Información de la Madre",
+    type: "heading",
+  },
+  {
+    id: "motherFullName",
+    label: "Nombre y apellido de la madre",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "motherIdentification",
+    label: "Identificacion de la madre",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "motherAddress",
+    label: "Direccion de la madre",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "motherMobile",
+    label: "Celular de la madre",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "motherBirthDate",
+    label: "Fecha de nacimiento de la madre",
+    type: "date",
+    defaultValue: "",
+  },
+  {
+    id: "motherStudy",
+    label: "Estudio realizado madre",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "motherProfession",
+    label: "Profesion madre",
+    type: "text",
+    defaultValue: "",
+  },
+
+  // --- Información del Padre ---
+  { id: "fatherInfoSection", label: "Información del Padre", type: "heading" },
+  {
+    id: "fatherFullName",
+    label: "Nombre y apellido del padre",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "fatherIdentification",
+    label: "Identificacion del padre",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "fatherAddress",
+    label: "Direccion del padre",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "fatherMobile",
+    label: "Celular del padre",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "fatherBirthDate",
+    label: "Fecha de nacimiento del padre",
+    type: "date",
+    defaultValue: "",
+  },
+  {
+    id: "fatherStudy",
+    label: "Estudio realizado padre",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "fatherProfession",
+    label: "Profesion padre",
+    type: "text",
+    defaultValue: "",
+  },
+
+  // --- Información de Otro (Parientes) ---
+  {
+    id: "otherRelativeInfoSection",
+    label: "Otro (Parentesco):",
+    type: "heading",
+  },
+  {
+    id: "otherRelationship",
+    label: "Parentesco",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "otherFullName",
+    label: "Nombre y apellido de otro",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "otherIdentification",
+    label: "Identificacion de otro",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "otherAddress",
+    label: "Direccion de otro",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "otherMobile",
+    label: "Celular de otro",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "otherBirthDate",
+    label: "Fecha de nacimiento de otro",
+    type: "date",
+    defaultValue: "",
+  },
+
+  // --- Población Víctima del Conflicto ---
+  {
+    id: "conflictVictimSection",
+    label:
+      "Población Víctima del Conflicto (Debe presentar la certificación correspondiente)",
+    type: "heading",
+  },
+  {
+    id: "dependentChildrenBeneficiary",
+    label: "Beneficiario Hijos dependientes de Madre Cabeza de Familia",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "studentMotherHeadOfFamily",
+    label: "Alumno Madre Cabeza de Familia",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "veteranHeroBeneficiary",
+    label: "Beneficiario Veterano Fuerza Pública",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "heroNationBeneficiary",
+    label: "Beneficiario Héroe Nación",
+    type: "text",
+    defaultValue: "",
+  },
+
+  // --- En situación de desplazamiento ---
+  {
+    id: "displacementSection",
+    label: "En situación de desplazamiento",
+    type: "heading",
+  },
+  {
+    id: "expulsionDepartment",
+    label: "Departamento expulsor",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "expulsionMunicipality",
+    label: "Municipio expulsor",
+    type: "text",
+    defaultValue: "",
+  },
+
+  // --- Procedencia Académica (Instituciones anteriores) ---
+  {
+    id: "academicOriginSection",
+    label: "Procedencia Académica (Instituciones anteriores)",
+    type: "heading",
+  },
+  {
+    id: "previousState",
+    label: "Estado",
+    type: "select",
+    options: previousAcademicStateOptions,
+    defaultValue: "Nuevo",
+  },
+  {
+    id: "previousStudyValidity",
+    label: "Estudio vigencia anterior",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "previousEducationalInstitution",
+    label: "Institucion Educativa Procedencia",
+    type: "text",
+    defaultValue: "",
+  },
+  {
+    id: "previousGrade",
+    label: "Grado procedencia",
+    type: "select",
+    options: gradeOptions,
+    defaultValue: "1",
+  },
+  {
+    id: "previousYear",
+    label: "Año procedencia",
+    type: "select",
+    options: yearOptions,
+    defaultValue: currentYear.toString(),
+  },
+  {
+    id: "previousCity",
+    label: "Ciudad procedencia",
+    type: "text",
+    defaultValue: "",
+  },
+
+  // --- ETNIAS ---
+  { id: "ethnicitiesSection", label: "ETNIAS", type: "heading" },
+  {
+    id: "afrodescendant",
+    label: "Afrodescendientes",
+    type: "select",
+    options: yesNoOptions,
+    defaultValue: "No",
+  },
+  {
+    id: "negritudes",
+    label: "Negritudes",
+    type: "select",
+    options: yesNoOptions,
+    defaultValue: "No",
+  },
+  {
+    id: "rom",
+    label: "ROM",
+    type: "select",
+    options: yesNoOptions,
+    defaultValue: "No",
+  },
+  {
+    id: "zenu",
+    label: "ZENÚ",
+    type: "select",
+    options: yesNoOptions,
+    defaultValue: "No",
+  },
+
+  // --- Listado de categorías de discapacidad ---
+  {
+    id: "disabilityCategoriesSection",
+    label: "Listado de categorías de discapacidad",
+    type: "heading",
+  },
+  {
+    id: "physicalDisability",
+    label: "Discapacidad Física",
+    type: "select",
+    options: yesNoOptions,
+    defaultValue: "No",
+  },
+  {
+    id: "hearingDisability",
+    label: "Discapacidad Auditiva",
+    type: "select",
+    options: yesNoOptions,
+    defaultValue: "No",
+  },
+  {
+    id: "visualDisability",
+    label: "Discapacidad Visual",
+    type: "select",
+    options: yesNoOptions,
+    defaultValue: "No",
+  },
+  {
+    id: "deafblindness",
+    label: "Sordo ceguera",
+    type: "select",
+    options: yesNoOptions,
+    defaultValue: "No",
+  },
+  {
+    id: "intellectualDisability",
+    label: "Discapacidad Intelectual",
+    type: "select",
+    options: yesNoOptions,
+    defaultValue: "No",
+  },
+  {
+    id: "psychosocialDisability",
+    label: "Discapacidad psicosocial",
+    type: "select",
+    options: yesNoOptions,
+    defaultValue: "No",
+  },
+  {
+    id: "multipleDisability",
+    label: "Discapacidad múltiple",
+    type: "select",
+    options: yesNoOptions,
+    defaultValue: "No",
+  },
+  {
+    id: "illness",
+    label: "Enfermedad que padece el estudiante",
+    type: "text",
+    defaultValue: "",
+  },
+
+  // --- Listado de capacidades y/o talentos excepcionales ---
+  {
+    id: "exceptionalTalentsSection",
+    label: "Listado de capacidades y/o talentos excepcionales",
+    type: "heading",
+  },
+  {
+    id: "technologyTalent",
+    label: "En tecnología",
+    type: "select",
+    options: yesNoOptions,
+    defaultValue: "No",
+  },
+  {
+    id: "leadershipTalent",
+    label: "En liderazgo y emprendimiento",
+    type: "select",
+    options: yesNoOptions,
+    defaultValue: "No",
+  },
+  {
+    id: "naturalSciencesTalent",
+    label: "En ciencias naturales o básicas",
+    type: "select",
+    options: yesNoOptions,
+    defaultValue: "No",
+  },
+  {
+    id: "artsTalent",
+    label: "En artes o letras",
+    type: "select",
+    options: yesNoOptions,
+    defaultValue: "No",
+  },
+  {
+    id: "physicalActivityTalent",
+    label: "En actividad física, ejercicio y deporte",
+    type: "select",
+    options: yesNoOptions,
+    defaultValue: "No",
+  },
+  {
+    id: "socialSciencesTalent",
+    label: "En ciencias sociales o humanas",
+    type: "select",
+    options: yesNoOptions,
+    defaultValue: "No",
+  },
+
+  // --- Otros ---
+  { id: "simpade", label: "SIMPADE", type: "heading" },
+  {
+    id: "temporaryAbandonment",
+    label: "Abandono temporales (año lectivo actual)",
+    type: "text",
+    defaultValue: "0",
+  },
+  {
+    id: "repeatingCurrentYear",
+    label: "¿Esta repitiendo año actual?",
+    type: "select",
+    options: yesNoOptions,
+    defaultValue: "No",
+  },
+  {
+    id: "disciplinaryRecords",
+    label: "Antecedentes disciplinarios de la vida académica",
+    type: "select",
+    options: [{ id: "no_aplica", label: "No aplica", value: "No aplica" }],
+    defaultValue: "No aplica",
+  },
+  {
+    id: "averageAttendanceLastYear",
+    label: "Asistencia promedio del año anterior",
+    type: "select",
+    options: attendanceOptions,
+    defaultValue: "Alta (80% o más)",
+  },
+];
 
 const columns = [
   {
@@ -56,7 +683,7 @@ interface TStudent extends CreateStudentInput {
   type_id: number;
 }
 
-const NewStudent = () => {
+const NewStudent = ({ initialData = {} }: { initialData?: any }) => {
   const [open, setOpen] = useState(false);
   const { data: year } = useScholearYearSelectedQuery();
   const router = useRouter();
@@ -65,7 +692,9 @@ const NewStudent = () => {
     getGroups,
     { data: groupsData, loading: groupsLoading, error: groupsError },
   ] = useGroupsLazyQuery({
-    variables: { filterGroupInput: { id_year: year?.scholearYearSelected.id_year } },
+    variables: {
+      filterGroupInput: { id_year: year?.scholearYearSelected.id_year },
+    },
   });
   const [createStudent, { data, loading, error }] = useCreateStudentMutation();
   const [
@@ -97,6 +726,23 @@ const NewStudent = () => {
     guardian: "",
     status: "",
     type_id: 4,
+  });
+
+  const [formData, setFormData] = useState<Record<string, FieldValue>>(() => {
+    const defaultState: Record<string, FieldValue> = {};
+    studentRegistrationSchema.forEach((field) => {
+      const initializeField = (f: FormField) => {
+        if (f.type === "group" && f.subFields) {
+          f.subFields.forEach(initializeField);
+        } else if (f.type === "checkboxGroup" && f.subFields) {
+          f.subFields.forEach(initializeField);
+        } else if (f.id) {
+          defaultState[f.id] = initialData[f.id] ?? f.defaultValue ?? "";
+        }
+      };
+      initializeField(field);
+    });
+    return defaultState;
   });
 
   const [errors, setErrors] = useState<any>({
@@ -231,928 +877,16 @@ const NewStudent = () => {
         </div>
       )}
       {!enrollment && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-5 h-full">
-          <div className="flex items-center">
-            <div className="w-full">
-              <label className="label">
-                <p>Apellidos</p>
-              </label>
-              <Input
-                value={student.last_name}
-                name="last_name"
-                onChange={handlerSetStudent}
-                type="text"
-                errorText={errors.last_name}
-              />
-            </div>
-          </div>
-          <div className="flex items-center">
-            <div className="w-full">
-              <label className="label">
-                <p className="w-full">Nombres</p>
-              </label>
-              <Input
-                value={student.name}
-                name="name"
-                onChange={handlerSetStudent}
-                type="text"
-                errorText={errors.name}
-              />
-            </div>
-          </div>
-          <div className="flex items-center">
-            <div className="w-full">
-              <label className="label">
-                <p className=" w-full">Tipo de Identificación</p>
-              </label>
-              <div className="w-full">
-                <select className="border rounded-btn border-gray5 w-full h-11 bg-transparent font-normal">
-                  <option disabled selected>
-                    Who shot first?
-                  </option>
-                  <option>Han Solo</option>
-                  <option>Greedo</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div className="w-full">
-            <label className="label">
-              <p className="w-full">Identificación / Código</p>
-            </label>
-            <Input
-              value={student.identification}
-              name="identification"
-              onChange={handlerSetStudent}
-              type="text"
-              errorText={errors.identification}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-5 bg-gray-50">
+          {studentRegistrationSchema.map((field) => (
+            <RenderField
+              key={field.id}
+              field={field}
+              formData={formData}
+              handleChange={(id, value) => setFormData((prevData) => ({ ...prevData, [id]: value }))}
+              label={field.label}
             />
-          </div>
-          <div className="w-full">
-            <label className="label">
-              <p className="w-full">Sexo</p>
-            </label>
-            <select className="border rounded-btn border-gray5 w-full h-11 bg-transparent font-normal">
-              <option disabled selected>
-                Who shot first?
-              </option>
-              <option>Han Solo</option>
-              <option>Greedo</option>
-            </select>
-          </div>
-          <div className="w-full">
-            <label className="label">
-              <span>Lugar de nacimiento</span>
-            </label>
-            <input
-              type="text"
-              name=""
-              id=""
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-          <div className="w-full">
-            <label className="label">
-              <span>Direccion</span>
-            </label>
-            <Input
-              value={student.direction}
-              name="direction"
-              onChange={handlerSetStudent}
-              type="text"
-              errorText={errors.direction}
-            />
-          </div>
-
-          <div className="w-full">
-            <label className="label">
-              <span>Telefono</span>
-            </label>
-            <Input
-              value={student.phone}
-              name="phone"
-              onChange={handlerSetStudent}
-              type="text"
-              errorText={errors.phone}
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Foto</span>
-            </label>
-            <input
-              type="file"
-              className="file-input file-input-bordered border-gray5 file-input-sm w-full h-9 bg-transparent text-xs file:text-main-blue file:font-semibold file:bg-transparent file:border-0 file:border-r file:border-gray5 hover:file:bg-main-blue hover:file:text-white"
-            />
-          </div>
-          <div className="items-center">
-            <label className="label">
-              <span>Nombre y apellido del acudiente</span>
-            </label>
-            <Input type="text" />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Correo</span>
-            </label>
-            <Input
-              value={student.email}
-              name="email"
-              onChange={handlerSetStudent}
-              type="text"
-              errorText={errors.email}
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Barrio</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Sistema salud</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Tipo de sangre</span>
-            </label>
-            <input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>EPS</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Capacidad excepcional</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Código</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Código Municipio. Exp</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Sisben</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Estrato</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Discapacidad</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-          <div className="items-center">
-            <label className="label">
-              <span>Identificación acudiente</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Dirección del acudiente</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Número celular del acudiente</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-          <div className="items-center">
-            <label className="label">
-              <p className="break-words">Fecha de nacimiento del acudiente</p>
-            </label>
-            <Input
-              type="date"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-              placeholder="Select date"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Nombre y apellido de la madre</span>
-            </label>
-            <Input
-              value={student.mother}
-              name="mother"
-              onChange={handlerSetStudent}
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Identificacion de la madre</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-          <div className="items-center">
-            <label className="label">
-              <span>Dirección de la madre</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Número celular de la madre</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <p className="break-words">Fecha de nacimiento de la madre</p>
-            </label>
-            <Input
-              type="date"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-              placeholder="Select date"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Estudios de la madre</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Profesión de la madre</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Nombre y apellido del padre</span>
-            </label>
-            <Input
-              value={student.father}
-              name="father"
-              onChange={handlerSetStudent}
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-          <div className="items-center">
-            <label className="label">
-              <span>Identificacion del padre</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Dirección del padre</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Número celular del padre</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <p className="break-words">Fecha de nacimiento del padre</p>
-            </label>
-            <Input
-              type="date"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-              placeholder="Select date"
-            />
-          </div>
-          <h1
-            className="col-span-1 md:col-span-2 lg:col-span-3 text-center font-bold"
-            text-sm
-          >
-            Población Víctima del Conflicto (Debe presentar la certificación
-            correspondiente)
-          </h1>
-
-          <div className="flex items-center">
-            <div className="w-full">
-              <label className="label">
-                <span>
-                  Beneficiario Hijos dependientes de Madre Cabeza de Familia
-                </span>
-              </label>
-              <Input
-                type="text"
-                className="input border-gray5 w-full h-9 bg-transparent text-xs"
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center">
-            <div className="w-full">
-              <label className="label">
-                <span>Alumno Madre Cabeza de Familia</span>
-              </label>
-              <Input
-                type="text"
-                className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center">
-            <div className="w-full">
-              <label className="label">
-                <span>Alumno Madre Cabeza de Familia</span>
-              </label>
-              <Input
-                type="text"
-                className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-              />
-            </div>
-          </div>
-          <div className="items-center">
-            <label className="label">
-              <span>Beneficiario Veterano Fuerza Pública</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Beneficiario Héroe Nación</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <h1 className="col-span-1 md:col-span-2 lg:col-span-3 text-center font-bold">
-            En situación de desplazamiento
-          </h1>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Departamento expulsor</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Municipio expulsor</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-          <h1 className="col-span-1 md:col-span-2 lg:col-span-3 text-center font-bold text-sm">
-            Procedencia Académica (instituciones anteriores)
-          </h1>
-
-          <div className="items-center">
-            <label className="label w-1/4 justify-start text-left">
-              <p className="break-words">Estado</p>
-            </label>
-            <select className="border rounded-btn h-11 border-gray5 w-full bg-transparent font-normal">
-              <option disabled selected>
-                Nuevo
-              </option>
-              <option>Nuevo-Repitente</option>
-              <option>Antiguo</option>
-              <option>Antiguo-Repitente</option>
-            </select>
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Estudio vigencia anterior</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Institucion Educativa Procedencia</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-          <div className="items-center">
-            <label className="label">
-              <span>Grado procedencia</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Año procedencia</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Ciudad procedencia</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <h1 className="col-span-1 md:col-span-2 lg:col-span-3 text-center font-bold">
-            Etnias
-          </h1>
-          <div className="items-center">
-            <label className="label">
-              <span>Afrodesendiente</span>
-            </label>
-            <td className="flex gap-2">
-              <Input
-                type="radio"
-                name="radio-1"
-                className="radio border-gray5"
-              />
-              Sí
-              <input
-                type="radio"
-                name="radio-1"
-                className="radio border-gray5 "
-              />
-              No
-            </td>
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Negritudes</span>
-            </label>
-            <td className="flex gap-2">
-              <input
-                type="radio"
-                name="radio-2"
-                className="radio border-gray5"
-              />
-              Sí
-              <input
-                type="radio"
-                name="radio-2"
-                className="radio border-gray5 "
-              />
-              No
-            </td>
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>ROM</span>
-            </label>
-            <td className="flex gap-2">
-              <input
-                type="radio"
-                name="radio-3"
-                className="radio border-gray5"
-              />
-              Sí
-              <input
-                type="radio"
-                name="radio-3"
-                className="radio border-gray5 "
-              />
-              No
-            </td>
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>ZENÚ</span>
-            </label>
-            <td className="flex gap-2">
-              <input
-                type="radio"
-                name="radio-4"
-                className="radio border-gray5"
-              />
-              Sí
-              <input
-                type="radio"
-                name="radio-4"
-                className="radio border-gray5 "
-              />
-              No
-            </td>
-          </div>
-
-          <h1 className="col-span-1 md:col-span-2 lg:col-span-3 text-center font-bold">
-            Listado de categorías de discapacidad
-          </h1>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Discapacidad Física</span>
-            </label>
-            <td className="flex gap-2">
-              <input
-                type="radio"
-                name="radio-5"
-                className="radio border-gray5"
-              />
-              Sí
-              <input
-                type="radio"
-                name="radio-5"
-                className="radio border-gray5 "
-              />
-              No
-            </td>
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Discapacidad Auditiva</span>
-            </label>
-            <td className="flex gap-2">
-              <input
-                type="radio"
-                name="radio-6"
-                className="radio border-gray5"
-              />
-              Sí
-              <input
-                type="radio"
-                name="radio-6"
-                className="radio border-gray5 "
-              />
-              No
-            </td>
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Discapacidad Visual</span>
-            </label>
-            <td className="flex gap-2">
-              <input
-                type="radio"
-                name="radio-7"
-                className="radio border-gray5"
-              />
-              Sí
-              <input
-                type="radio"
-                name="radio-7"
-                className="radio border-gray5 "
-              />
-              No
-            </td>
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Sordo ceguera</span>
-            </label>
-            <td className="flex gap-2">
-              <input
-                type="radio"
-                name="radio-8"
-                className="radio border-gray5"
-              />
-              Sí
-              <input
-                type="radio"
-                name="radio-8"
-                className="radio border-gray5 "
-              />
-              No
-            </td>
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Discapacidad Intelectual</span>
-            </label>
-            <td className="flex gap-2">
-              <input
-                type="radio"
-                name="radio-9"
-                className="radio border-gray5"
-              />
-              Sí
-              <input
-                type="radio"
-                name="radio-9"
-                className="radio border-gray5 "
-              />
-              No
-            </td>
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Discapacidad psicosocial</span>
-            </label>
-            <td className="flex gap-2">
-              <input
-                type="radio"
-                name="radio-10"
-                className="radio border-gray5"
-              />
-              Sí
-              <input
-                type="radio"
-                name="radio-10"
-                className="radio border-gray5 "
-              />
-              No
-            </td>
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Discapacidad múltiple</span>
-            </label>
-            <td className="flex gap-2">
-              <input
-                type="radio"
-                name="radio-11"
-                className="radio border-gray5"
-              />
-              Sí
-              <input
-                type="radio"
-                name="radio-11"
-                className="radio border-gray5 "
-              />
-              No
-            </td>
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>Enfermedad que padece el estudiante</span>
-            </label>
-            <Input
-              type="text"
-              className="input border-gray5 w-full  h-9 bg-transparent text-xs"
-            />
-          </div>
-
-          <h1 className="col-span-1 md:col-span-2 lg:col-span-3 text-center font-bold">
-            Listado de capacidades y/o talentos excepcionales
-          </h1>
-
-          <div className="items-center">
-            <label className="label">
-              <span>En tecnología</span>
-            </label>
-            <td className="flex gap-2">
-              <input
-                type="radio"
-                name="radio-12"
-                className="radio border-gray5"
-              />
-              Sí
-              <input
-                type="radio"
-                name="radio-12"
-                className="radio border-gray5 "
-              />
-              No
-            </td>
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>En Liderazgo y emprendimiento</span>
-            </label>
-            <td className="flex gap-2">
-              <input
-                type="radio"
-                name="radio-13"
-                className="radio border-gray5"
-              />
-              Sí
-              <input
-                type="radio"
-                name="radio-13"
-                className="radio border-gray5 "
-              />
-              No
-            </td>
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>En ciencias naturales o básicas</span>
-            </label>
-            <td className="flex gap-2">
-              <input
-                type="radio"
-                name="radio-14"
-                className="radio border-gray5"
-              />
-              Sí
-              <input
-                type="radio"
-                name="radio-14"
-                className="radio border-gray5 "
-              />
-              No
-            </td>
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>En artes o letras</span>
-            </label>
-            <td className="flex gap-2">
-              <input
-                type="radio"
-                name="radio-15"
-                className="radio border-gray5"
-              />
-              Sí
-              <input
-                type="radio"
-                name="radio-15"
-                className="radio border-gray5 "
-              />
-              No
-            </td>
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>En Actividad física, ejercicio y deporte</span>
-            </label>
-            <td className="flex gap-2">
-              <input
-                type="radio"
-                name="radio-16"
-                className="radio border-gray5"
-              />
-              Sí
-              <input
-                type="radio"
-                name="radio-16"
-                className="radio border-gray5 "
-              />
-              No
-            </td>
-          </div>
-
-          <div className="items-center">
-            <label className="label">
-              <span>En Ciencias Sociales o humanas</span>
-            </label>
-            <td className="flex gap-2">
-              <input
-                type="radio"
-                name="radio-17"
-                className="radio border-gray5"
-              />
-              Sí
-              <input
-                type="radio"
-                name="radio-17"
-                className="radio border-gray5 "
-              />
-              No
-            </td>
-          </div>
-          <div
-            className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-center items-center p-5"
-            onClick={handlerSelectGroup}
-          >
-            <button className="btn bg-main-blue border-none text-white hover:bg-[#0b5ed7] transition duration-500">
-              Matricular Estudiante
-            </button>
-          </div>
+          ))}
         </div>
       )}
       <CustomModal open={open}>

@@ -24,15 +24,13 @@ interface ILayaout {
   children: React.ReactNode;
   textpage: string;
 }
-const { useToken } = theme;
-
-const { Header, Sider, Content } = Layout;
 
 const Layaout = ({ children, textpage }: ILayaout) => {
   const { data: schoolYears } = useGetSchoolarYearsQuery();
   const { data: scholarYear } = useScholearYearSelectedQuery();
   const [selectScholarYear, { data: scholarYearData }] =
     useSelectScholarYearMutation({ fetchPolicy: "network-only" });
+    
   const handlerSelectYear = async (year: number) => {
     await selectScholarYear({ variables: { idYear: year } });
     window.location.reload();
@@ -258,7 +256,7 @@ const Layaout = ({ children, textpage }: ILayaout) => {
                 aria-label="close sidebar"
                 className="drawer-overlay"
               ></label>
-              <ul className="menu bg-white rounded-box w-64 text-black">
+              <ul className="menu bg-white rounded-box w-64 text-black h-full">
                 <li>
                   <div className="flex items-center justify-center gap-2 mb-1">
                     <Image src={Logo} alt="Inicio" className={`h-10 w-10`} />

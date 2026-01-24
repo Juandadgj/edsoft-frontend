@@ -5,8 +5,8 @@ mutation DeleteCourse($idCourse: Int!) {
     id_teacher
     name
     position
-    dim_codigo
-    asi_dimension
+    dimension_code
+    dimension_type
     id_area
     hour
     average

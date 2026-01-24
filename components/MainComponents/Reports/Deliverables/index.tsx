@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import NavigationComponent from "./NavigationComponent";
 import Link from "next/link";
 import { ContainerComponents } from "@/components/ContainerComponents";
+import { NavigationYear } from "./NavigationYear";
 
 const cardsSpreadsheet: any[] = [
   {
@@ -84,22 +85,25 @@ const Deliverables = () => {
           </strong>
         </div>
       )}
-      {opcion ? (
-        <NavigationComponent />
-      ) : (
+      {opcion && Number(opcion) !== 7 && <NavigationComponent />}
+      {opcion && Number(opcion) === 7 && <NavigationYear />}
+      {!opcion && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {cardsSpreadsheet.map((item: any, i: any) => (
-            <div className="flex items-start gap-2 flex-wrap font-semibold card bg-white" key={i}>
+            <div
+              className="flex items-start gap-2 flex-wrap font-semibold card bg-white"
+              key={i}
+            >
               <Link
                 href={`reportes?componente=entregables&opcion=${item.id}`}
                 key={i}
               >
                 <div className="card-body w-full">
-                    <div className="card-title">
-                      {item.icon}
-                      <div className="text-black">{item.title}</div>
-                    </div>
+                  <div className="card-title">
+                    {item.icon}
+                    <div className="text-black">{item.title}</div>
                   </div>
+                </div>
               </Link>
             </div>
           ))}

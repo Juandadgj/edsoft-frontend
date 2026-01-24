@@ -5,6 +5,8 @@ import {
   useGroupsQuery,
   useGetStudentsByGroupLazyQuery,
   useScholearYearSelectedQuery,
+  useGenerateStudentEnrollmentReportILazyQuery,
+  useGenerateStudentEnrollmentReportIiLazyQuery,
 } from "@/generated/graphql";
 import { useRouter } from "next/router";
 import useSchoolYear from "@/hooks/useSchoolYear";
@@ -12,6 +14,8 @@ import { ContainerComponents } from "@/components/ContainerComponents";
 import TableComponent from "@/components/Table";
 import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
 import { CourseComponent } from "../CourseComponent";
+import { FileUser } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const columnsGroup = [
   {
@@ -39,9 +43,14 @@ const columnsStudent = [
     key: "name",
   },
   {
-    title: "Certi. Matri.",
-    dataIndex: "certi",
-    key: "certi",
+    title: "Certi. Matri. I",
+    dataIndex: "certi-1",
+    key: "certi-1",
+  },
+  {
+    title: "Certi. Matri. II",
+    dataIndex: "certi-2",
+    key: "certi-2",
   },
   {
     title: "Info",
@@ -75,15 +84,60 @@ export const StudentsPerCourse = () => {
   ] = useGetStudentsByGroupLazyQuery({
     fetchPolicy: "network-only",
   });
+  const [generateStudentEnrollmentReport, { data, loading, error }] =
+    useGenerateStudentEnrollmentReportILazyQuery({
+      fetchPolicy: "no-cache",
+    });
+
+  const [
+    generateStudentEnrollmentReportII,
+    { data: dataII, loading: loadingII, error: errorII },
+  ] = useGenerateStudentEnrollmentReportIiLazyQuery({
+    fetchPolicy: "no-cache",
+  });
+
+  const handlerSpreadsheet = (id_student: any) => {
+    generateStudentEnrollmentReport({
+      variables: {
+        idStudent: id_student,
+      },
+    }).then((res) => {
+      const { data } = res;
+      handleOpenHTML(data?.generateStudentEnrollmentReportI.report_content);
+    });
+  };
+
+  const handlerSpreadsheetII = (id_student: any) => {
+    generateStudentEnrollmentReportII({
+      variables: {
+        idStudent: id_student,
+      },
+    }).then((res) => {
+      const { data } = res;
+      handleOpenHTML(data?.generateStudentEnrollmentReportII.report_content);
+    });
+  };
+
+  const handleOpenHTML = (htmlString: any) => {
+    window.open()?.document.write(htmlString);
+  };
   const processedStudentsByGroup = (data: any) => {
     if (!data) return [];
     return data.map((student: any, index: any) => ({
       id_student: student?.id_course,
       name: `${student.name} ${student.last_name}`,
-      certified: "",
+      "certi-1": (
+        <button onClick={() => handlerSpreadsheet(student?.id_student)}>
+          <FileUser size={25} color="#0055a6" />
+        </button>
+      ),
+      "certi-2": (
+        <button onClick={() => handlerSpreadsheetII(student?.id_student)}>
+          <FileUser size={25} color="#0055a6" />
+        </button>
+      ),
       info: (
         <button
-          className="btn bg-transparent border-none p-0 hover:bg-transparent"
           onClick={() =>
             router.push(`/dashboard/estudiante/${student.id_student}`)
           }
@@ -103,7 +157,6 @@ export const StudentsPerCourse = () => {
       ),
       edit: (
         <button
-          className="btn bg-transparent border-none p-0 hover:bg-transparent"
           onClick={() =>
             router.push(`/dashboard/estudiante/${student.id_student}`)
           }
@@ -123,7 +176,6 @@ export const StudentsPerCourse = () => {
       ),
       leave: (
         <button
-          className="btn bg-transparent border-none p-0 hover:bg-transparent"
           onClick={() =>
             router.push(`/dashboard/estudiante/${student.id_student}`)
           }
@@ -156,7 +208,7 @@ export const StudentsPerCourse = () => {
   useEffect(() => {
     if (dataStudentsByGroup) {
       setStudentsByGroup(
-        processedStudentsByGroup(dataStudentsByGroup.studentsByGroup)
+        processedStudentsByGroup(dataStudentsByGroup.studentsByGroup),
       );
     }
   }, [dataStudentsByGroup]);
