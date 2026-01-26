@@ -8,3 +8,9 @@ query GenerateStudentEnrollmentReportII($idStudent: Int) {
     report_content
   }
 }
+
+query GenerateCertifiedStudentReport($generateCertifiedStudentReportInput: CertifiedStudentReportInput) {
+  generateCertifiedStudentReport(generateCertifiedStudentReportInput: $generateCertifiedStudentReportInput) {
+    report_content
+  }
+}

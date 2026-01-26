@@ -73,6 +73,8 @@ export const RenderField: React.FC<RenderFieldProps> = ({
               label={option.label}
               value={option.value}
               onChange={(e) => handleChange(field.id, e.target.value)}
+              defaultValue={field.defaultValue as string}
+              defaultChecked={field.defaultValue === option.value}
             />
           ))}
         </div>

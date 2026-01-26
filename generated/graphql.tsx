@@ -50,6 +50,31 @@ export type Auth = {
   token?: Maybe<Scalars['String']>;
 };
 
+export type CertifiedStudentDictonary = {
+  absences?: InputMaybe<Scalars['Boolean']>;
+  all_qualifications?: InputMaybe<Scalars['Boolean']>;
+  average_area?: InputMaybe<Scalars['Boolean']>;
+  average_general?: InputMaybe<Scalars['Boolean']>;
+  average_group?: InputMaybe<Scalars['Boolean']>;
+  average_per?: InputMaybe<Scalars['Boolean']>;
+  gradeDisplayConfig?: InputMaybe<GradeDisplayMode>;
+  hour?: InputMaybe<Scalars['Boolean']>;
+  position?: InputMaybe<Scalars['Boolean']>;
+  professor_course?: InputMaybe<Scalars['Boolean']>;
+  qualification_per1?: InputMaybe<Scalars['Boolean']>;
+  qualification_per2?: InputMaybe<Scalars['Boolean']>;
+  qualification_per3?: InputMaybe<Scalars['Boolean']>;
+  qualification_per4?: InputMaybe<Scalars['Boolean']>;
+  qualification_per5?: InputMaybe<Scalars['Boolean']>;
+  signature: SignatureInput;
+  username?: InputMaybe<Scalars['Boolean']>;
+};
+
+export type CertifiedStudentReportInput = {
+  id_student: Scalars['Int'];
+  report_options?: InputMaybe<CertifiedStudentDictonary>;
+};
+
 export type Course = {
   __typename?: 'Course';
   area?: Maybe<Area>;
@@ -306,6 +331,13 @@ export type GenerateStudentsListDeterminatedInput = {
 export type GenerateStudentsListUndeterminatedInput = {
   id_group: Scalars['Int'];
 };
+
+export enum GradeDisplayMode {
+  CertificadoMatricula = 'certificado_matricula',
+  NotaDesempeno = 'nota_desempeno',
+  NotaNumerica = 'nota_numerica',
+  NotaNumericaDesempeno = 'nota_numerica_desempeno'
+}
 
 export type Group = {
   __typename?: 'Group';
@@ -587,6 +619,7 @@ export type Query = {
   enrollments: Array<Maybe<Enrollment>>;
   featured: Array<Maybe<Featured>>;
   generateAchievementsAndIndicators: Report;
+  generateCertifiedStudentReport: Report;
   generateReportArea: Report;
   generateStudentEnrollmentReportI: Report;
   generateStudentEnrollmentReportII: Report;
@@ -651,6 +684,11 @@ export type QueryFeaturedArgs = {
 
 export type QueryGenerateAchievementsAndIndicatorsArgs = {
   generateAchievementsAndIndicators?: InputMaybe<GenerateAchievementsAndIndicators>;
+};
+
+
+export type QueryGenerateCertifiedStudentReportArgs = {
+  generateCertifiedStudentReportInput?: InputMaybe<CertifiedStudentReportInput>;
 };
 
 
@@ -1173,6 +1211,13 @@ export type GenerateStudentEnrollmentReportIiQueryVariables = Exact<{
 
 
 export type GenerateStudentEnrollmentReportIiQuery = { __typename?: 'Query', generateStudentEnrollmentReportII: { __typename?: 'Report', report_content: string } };
+
+export type GenerateCertifiedStudentReportQueryVariables = Exact<{
+  generateCertifiedStudentReportInput?: InputMaybe<CertifiedStudentReportInput>;
+}>;
+
+
+export type GenerateCertifiedStudentReportQuery = { __typename?: 'Query', generateCertifiedStudentReport: { __typename?: 'Report', report_content: string } };
 
 export type GenerateStudentsListDeterminatedQueryVariables = Exact<{
   generateStudentsListDeterminatedInput?: InputMaybe<GenerateStudentsListDeterminatedInput>;
@@ -2380,6 +2425,43 @@ export function useGenerateStudentEnrollmentReportIiLazyQuery(baseOptions?: Apol
 export type GenerateStudentEnrollmentReportIiQueryHookResult = ReturnType<typeof useGenerateStudentEnrollmentReportIiQuery>;
 export type GenerateStudentEnrollmentReportIiLazyQueryHookResult = ReturnType<typeof useGenerateStudentEnrollmentReportIiLazyQuery>;
 export type GenerateStudentEnrollmentReportIiQueryResult = Apollo.QueryResult<GenerateStudentEnrollmentReportIiQuery, GenerateStudentEnrollmentReportIiQueryVariables>;
+export const GenerateCertifiedStudentReportDocument = gql`
+    query GenerateCertifiedStudentReport($generateCertifiedStudentReportInput: CertifiedStudentReportInput) {
+  generateCertifiedStudentReport(
+    generateCertifiedStudentReportInput: $generateCertifiedStudentReportInput
+  ) {
+    report_content
+  }
+}
+    `;
+
+/**
+ * __useGenerateCertifiedStudentReportQuery__
+ *
+ * To run a query within a React component, call `useGenerateCertifiedStudentReportQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGenerateCertifiedStudentReportQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGenerateCertifiedStudentReportQuery({
+ *   variables: {
+ *      generateCertifiedStudentReportInput: // value for 'generateCertifiedStudentReportInput'
+ *   },
+ * });
+ */
+export function useGenerateCertifiedStudentReportQuery(baseOptions?: Apollo.QueryHookOptions<GenerateCertifiedStudentReportQuery, GenerateCertifiedStudentReportQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GenerateCertifiedStudentReportQuery, GenerateCertifiedStudentReportQueryVariables>(GenerateCertifiedStudentReportDocument, options);
+      }
+export function useGenerateCertifiedStudentReportLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GenerateCertifiedStudentReportQuery, GenerateCertifiedStudentReportQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GenerateCertifiedStudentReportQuery, GenerateCertifiedStudentReportQueryVariables>(GenerateCertifiedStudentReportDocument, options);
+        }
+export type GenerateCertifiedStudentReportQueryHookResult = ReturnType<typeof useGenerateCertifiedStudentReportQuery>;
+export type GenerateCertifiedStudentReportLazyQueryHookResult = ReturnType<typeof useGenerateCertifiedStudentReportLazyQuery>;
+export type GenerateCertifiedStudentReportQueryResult = Apollo.QueryResult<GenerateCertifiedStudentReportQuery, GenerateCertifiedStudentReportQueryVariables>;
 export const GenerateStudentsListDeterminatedDocument = gql`
     query GenerateStudentsListDeterminated($generateStudentsListDeterminatedInput: GenerateStudentsListDeterminatedInput) {
   generateStudentsListDeterminated(

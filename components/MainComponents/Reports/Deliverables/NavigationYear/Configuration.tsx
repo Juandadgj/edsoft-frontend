@@ -1,11 +1,16 @@
 import { RenderField } from "@/components/MainComponents/forms/dinamyc-form/render-field";
-import { FieldValue, FormField, FormOption } from "@/components/MainComponents/forms/dinamyc-form/types/types";
+import {
+  FieldValue,
+  FormField,
+  FormOption,
+} from "@/components/MainComponents/forms/dinamyc-form/types/types";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Radio } from "@/components/ui/radio";
 import { Select } from "@/components/ui/select";
+import { GradeDisplayMode, useGenerateCertifiedStudentReportLazyQuery } from "@/generated/graphql";
+import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
-
 
 const gradeDisplayOptions: FormOption[] = [
   { value: "nota_numerica", label: "Nota Numerica" },
@@ -28,6 +33,7 @@ export const certificateFormSchema: FormField[] = [
     label: "Si la calificacion es Numerica, Mostrar:",
     type: "radio", // Ahora es un grupo
     options: gradeDisplayOptions,
+    defaultValue: "nota_numerica",
   },
   {
     id: "signaturesSection",
@@ -53,13 +59,6 @@ export const certificateFormSchema: FormField[] = [
         defaultValue: false,
       },
     ],
-  },
-  {
-    id: "certificateTimeResult",
-    label: "Tiempo y resultado del certificado",
-    type: "radio",
-    options: certificateResultOptions,
-    defaultValue: "curso_aprobo",
   },
   {
     id: "headerTitleSize",
@@ -148,8 +147,14 @@ export const certificateFormSchema: FormField[] = [
   },
 ];
 
-
 export const Configuration = ({ initialData = {} }: { initialData?: any }) => {
+  const [generateReport, { data }] = useGenerateCertifiedStudentReportLazyQuery(
+    {
+      fetchPolicy: "network-only",
+    },
+  );
+  const router = useRouter();
+  const { s } = router.query;
   const [formData, setFormData] = useState<Record<string, FieldValue>>(() => {
     const defaultState: Record<string, FieldValue> = {};
     certificateFormSchema.forEach((field) => {
@@ -173,8 +178,40 @@ export const Configuration = ({ initialData = {} }: { initialData?: any }) => {
     }));
   }, []);
   const handleGenerateCertificate = () => {
-    console.log("formData", formData);
+    console.log(s,"query")
+    generateReport({
+      variables: {
+        generateCertifiedStudentReportInput: {
+          id_student: Number(s),
+          report_options: {
+            hour: formData.showIntensidadHoraria as boolean,
+            qualification_per1: formData.showNotesPeriodOne as boolean,
+            qualification_per2: formData.showNotesPeriodTwo as boolean,
+            qualification_per3: formData.showNotesPeriodThree as boolean,
+            qualification_per4: formData.showNotesPeriodFour as boolean,
+            qualification_per5: formData.showNotesPeriodFive as boolean,
+            average_per: formData.averagePer as boolean,
+            signature: {
+              professor_group: formData.showGroupProfessorSignature as boolean,
+              rector: formData.showRectorSignature as boolean,
+              secretary: formData.showSecretarySignature as boolean,
+            },
+            gradeDisplayConfig: formData.gradeDisplayConfig as GradeDisplayMode,
+          },
+        },
+      },
+    }).then((res) => {
+      const { data } = res;
+      console.log(data, "data");
+      handleOpenHTML(data?.generateCertifiedStudentReport.report_content);
+    }).catch((err) => {
+      console.log(err);
+    });
   };
+  const handleOpenHTML = (htmlString: string | undefined) => {
+    window.open()?.document.write(htmlString ? htmlString : "");
+  };
+  console.log(data, "certi")
   return (
     <div className="w-full h-full">
       <div className="grid grid-cols-2">
