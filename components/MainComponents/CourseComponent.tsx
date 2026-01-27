@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import TableComponent from "../Table";
-import { useDeleteGroupMutation, useGroupsQuery } from "@/generated/graphql";
+import { groupService } from "@/services/api.service";
 import useSchoolYear from "@/hooks/useSchoolYear";
 import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
 import { useRouter } from "next/router";
@@ -47,15 +47,35 @@ export const CourseComponent = ({
 }) => {
   const { asPath, replace, pathname, push } = useRouter();
   const { year } = useSchoolYear();
-  const [deleteGroup] = useDeleteGroupMutation();
-  const { data: groups, loading: loadingGroups, refetch } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: year } },
-  });
+  console.log(year)
+  const [groups, setGroups] = useState<any[]>([]);
+  const [loadingGroups, setLoadingGroups] = useState(true);
+
+  const fetchGroups = useCallback(async () => {
+    setLoadingGroups(true);
+    try {
+      console.log(year, "fetching")
+      const data = await groupService.getAll({ id_year: year });
+      setGroups(data || []);
+    } catch (error) {
+      console.error(error);
+      setGroups([]);
+    } finally {
+      setLoadingGroups(false);
+    }
+  }, [year]);
+
+  useEffect(() => {
+    if (year) {
+      fetchGroups();
+    }
+  }, [year, fetchGroups]);
 
   const handlerSelectedCourse = (id: number | undefined) => {
     push(`${asPath}&g=${id}`);
   };
-  const processedGroups = groups?.groups.map((group, index) => ({
+  
+  const processedGroups = groups.map((group, index) => ({
     id: group?.id_group,
     name: `${getCourseLevel(group?.level)} ${group?.sublevel}`,
     hour: group?.working_time ?? "",
@@ -119,30 +139,26 @@ export const CourseComponent = ({
       confirmButtonColor: "#0055a6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Eliminar",
-    }).then((result) => {
-      // If there is an id selected we delete that teacher
+    }).then(async (result) => {
       if (result.isConfirmed && id_group) {
-        deleteGroup({
-          variables: { idGroup: id_group },
-        }).then((res) => {
-          if (res.data?.deleteGroup) {
-            Swal.fire({
-              title: "Eliminado",
-              text: "Curso Eliminado!",
-              icon: "success",
-              showConfirmButton: false,
-              timer: 1500,
-            });
-            refetch();
-          } else {
-            Swal.fire({
-              icon: "error",
-              title: "Ha habido un error...",
-              showConfirmButton: false,
-              timer: 1500,
-            });
-          }
-        });
+        try {
+          await groupService.delete(id_group);
+          Swal.fire({
+            title: "Eliminado",
+            text: "Curso Eliminado!",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          fetchGroups();
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Ha habido un error...",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
       }
     });
   };
@@ -162,7 +178,7 @@ export const CourseComponent = ({
           <span className="loading loading-dots loading-lg bg-main-blue"></span>
         </div>
       )}
-      {groups?.groups && (
+      {groups && groups.length > 0 && (
         <TableComponent column={columnsMap} data={processedGroups} />
       )}
     </div>

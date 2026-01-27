@@ -1,14 +1,6 @@
-import { useMemo } from "react";
-import {
-  useCoursesLazyQuery,
-  useGroupsQuery,
-  useCreateCourseMutation,
-  useTeachersQuery,
-  useGetAreasQuery,
-  useUpdateCourseMutation,
-  useDeleteCourseMutation,
-  useScholearYearSelectedQuery,
-} from "../../generated/graphql";
+import { useMemo, useCallback } from "react";
+import { courseService, teacherService, groupService } from "@/services/api.service";
+import type { Course, Teacher, Group } from "@/types/api.types";
 import { useEffect, useState } from "react";
 import Table from "../Table";
 import { useRouter } from "next/router";
@@ -68,16 +60,12 @@ function Subjects() {
   const { g } = router.query;
   const [selectedGroup, setSelectedGroup] = useState<any>([]);
   const [open, setOpen] = useState(false);
-  const [
-    getCourses,
-    { data: courses, loading: loadingCourses, error: errorCourses, refetch },
-  ] = useCoursesLazyQuery({ fetchPolicy: "network-only" });
-  const { data: groups, loading: loadingGroups } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: year } },
-  });
-  const { data: teachers } = useTeachersQuery();
-  const { data: areas } = useGetAreasQuery();
-  const [DeleteCourse] = useDeleteCourseMutation({});
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
+  const [loadingCourses, setLoadingCourses] = useState(false);
+  const [loadingGroups, setLoadingGroups] = useState(true);
+  const [errorCourses, setErrorCourses] = useState<any>(null);
   const [subject, setSubject] = useState<any>({
     name: "",
     id_teacher: "",
@@ -86,27 +74,62 @@ function Subjects() {
     hour: "",
     percentage: "",
   });
-  const processedSubjects = (data: any) => {
-    return data.map((courses: any, index: number) => ({
-      name: courses?.name ?? "",
-      area: courses.id_area ?? "",
-      teacher: courses?.teacher.name ?? "-",
-      hour: courses?.hour ?? "",
-      percentage: courses.percentage,
-      average: courses.average,
+
+  const fetchCourses = useCallback(async (id_group: number) => {
+    setLoadingCourses(true);
+    try {
+      const data = await courseService.getAll({ id_group });
+      setCourses(data);
+      setErrorCourses(null);
+    } catch (error) {
+      console.error(error);
+      setErrorCourses(error);
+    } finally {
+      setLoadingCourses(false);
+    }
+  }, []);
+
+  const fetchGroups = useCallback(async () => {
+    setLoadingGroups(true);
+    try {
+      const data = await groupService.getAll({ id_year: year });
+      setGroups(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingGroups(false);
+    }
+  }, [year]);
+
+  const fetchTeachers = useCallback(async () => {
+    try {
+      const data = await teacherService.getAll();
+      setTeachers(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+  const processedSubjects = (data: Course[]) => {
+    return data.map((course: Course, index: number) => ({
+      name: course?.name ?? "",
+      area: course.id_area ?? "",
+      teacher: course?.teacher?.name ?? "-",
+      hour: course?.hour ?? "",
+      percentage: course.percentage,
+      average: course.average,
       edit: (
         <button
           className="border-0"
           onClick={() => {
             setSubject({
-              id_course: courses.id_course,
-              name: courses.name,
-              id_teacher: courses.id_teacher,
-              id_area: courses.id_area,
-              average: courses.average,
-              hour: courses.hour,
-              percentage: courses.percentage,
-              id_group: courses.id_group,
+              id_course: course.id_course,
+              name: course.name,
+              id_teacher: course.id_teacher,
+              id_area: course.id_area,
+              average: course.average,
+              hour: course.hour,
+              percentage: course.percentage,
+              id_group: course.id_group,
             });
             setOpen(true);
           }}
@@ -132,7 +155,7 @@ function Subjects() {
         </button>
       ),
       delete: (
-        <button onClick={() => handlerDeleteCourse(courses.id_course)}>
+        <button onClick={() => handlerDeleteCourse(course.id_course)}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="30"
@@ -150,17 +173,18 @@ function Subjects() {
   };
 
   useEffect(() => {
-    if (g) {
-      getCourses({
-        variables: { filterCourseInput: { id_group: Number(g) } },
-      });
-    }
-  }, [router]);
+    fetchGroups();
+    fetchTeachers();
+  }, [fetchGroups, fetchTeachers]);
 
   useEffect(() => {
-    if (courses) {
-      setSelectedGroup(processedSubjects(courses?.courses));
+    if (g) {
+      fetchCourses(Number(g));
     }
+  }, [g, fetchCourses]);
+
+  useEffect(() => {
+    setSelectedGroup(processedSubjects(courses));
   }, [courses]);
 
   const handlerDeleteCourse = async (id_course: number) => {
@@ -172,30 +196,28 @@ function Subjects() {
       confirmButtonColor: "#0055a6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Eliminar",
-    }).then((result) => {
-      // If there is an id selected we delete that teacher
+    }).then(async (result) => {
       if (result.isConfirmed && id_course) {
-        DeleteCourse({
-          variables: { idCourse: id_course },
-        }).then((res) => {
-          if (res.data?.deleteCourse) {
-            Swal.fire({
-              title: "Eliminado",
-              text: "Curso Eliminado!",
-              icon: "success",
-              showConfirmButton: false,
-              timer: 1500,
-            });
-            refetch();
-          } else {
-            Swal.fire({
-              icon: "error",
-              title: "Ha habido un error...",
-              showConfirmButton: false,
-              timer: 1500,
-            });
+        try {
+          await courseService.delete(id_course);
+          Swal.fire({
+            title: "Eliminado",
+            text: "Curso Eliminado!",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          if (g) {
+            fetchCourses(Number(g));
           }
-        });
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Ha habido un error...",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
       }
     });
   };
@@ -211,7 +233,9 @@ function Subjects() {
       percentage: "",
       id_group: "",
     });
-    refetch();
+    if (g) {
+      fetchCourses(Number(g));
+    }
   };
   return (
     <ContainerComponents>
@@ -252,7 +276,7 @@ function Subjects() {
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
-          ) : courses?.courses ? (
+          ) : courses.length > 0 ? (
             <div className=" border-white py-4 h-full">
               <TableComponent column={columnsSubjects} data={selectedGroup} />
             </div>
@@ -270,10 +294,10 @@ function Subjects() {
           subject={subject}
           setSubject={setSubject}
           onClose={handlerCloseModal}
-          areas={areas?.areas}
-          courses={courses?.courses}
-          groups={groups?.groups}
-          teachers={teachers?.teachers}
+          areas={[]}
+          courses={courses}
+          groups={groups}
+          teachers={teachers}
         />
       </CustomModal>
     </ContainerComponents>

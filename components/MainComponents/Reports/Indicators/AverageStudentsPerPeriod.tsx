@@ -1,20 +1,35 @@
 import { ContainerComponents } from "@/components/ContainerComponents";
 import TableComponent from "@/components/Table";
-import { useGroupsQuery } from "@/generated/graphql";
 import useSchoolYear from "@/hooks/useSchoolYear";
 import { ChartAreaIcon } from "lucide-react";
-import React from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { groupService } from "@/services/api.service";
+import type { Group } from "@/types/api.types";
 
 const AverageStudentsPerPeriod = () => {
   const { year } = useSchoolYear();
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [loadingGroups, setLoadingGroups] = useState(false);
 
-  const {
-    data: groups,
-    loading: loadingGroups,
-    refetch,
-  } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: year } },
-  });
+  const fetchGroups = useCallback(async () => {
+    try {
+      setLoadingGroups(true);
+      const response = await groupService.getAll({ id_year: year });
+      setGroups(response);
+    } catch (error) {
+      console.error("Error fetching groups:", error);
+      setGroups([]);
+    } finally {
+      setLoadingGroups(false);
+    }
+  }, [year]);
+
+  useEffect(() => {
+    if (year) {
+      fetchGroups();
+    }
+  }, [year, fetchGroups]);
+
   const columns = [
     {
       title: "Curso",
@@ -127,20 +142,25 @@ const AverageStudentsPerPeriod = () => {
       ],
     },
   ];
-  const processedGroups = groups?.groups.map((group, index) => ({
-    id: group?.id_group,
-    name: `${group?.level} - ${group?.sublevel}`,
-    hour: group?.working_time ?? "",
-    group_teacher: group?.representative ?? "",
-  }));
+
+  const processedGroups = useMemo(
+    () =>
+      groups.map((group) => ({
+        id: group?.id_group,
+        name: `${group?.level} - ${group?.sublevel}`,
+        hour: group?.working_time ?? "",
+        group_teacher: group?.representative ?? "",
+      })),
+    [groups]
+  );
   return (
     <ContainerComponents>
       <div className="w-full flex items-center justify-between my-3">
         <strong className="text-xl text-black ps-8">
           Porcenta de estudiantes por curso
         </strong>
-      </div>{" "}
-      {groups?.groups && (
+      </div>
+      {groups && groups.length > 0 && (
         <TableComponent column={columns} data={processedGroups} />
       )}
     </ContainerComponents>

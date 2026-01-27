@@ -1,10 +1,6 @@
-import { useMemo } from "react";
-import {
-  useGetAreasLazyQuery,
-  useCreateAreaMutation,
-  useUpdateAreaMutation,
-  useDeleteAreaMutation,
-} from "../../generated/graphql";
+import { useMemo, useCallback } from "react";
+import { areaService } from "@/services/api.service";
+import type { Area } from "@/types/api.types";
 import { useEffect, useState } from "react";
 import DynamicModal from "../DynamicModal";
 import Swal from "sweetalert2";
@@ -40,12 +36,10 @@ const columns: {
 ];
 
 const  Areas = () => {
-
-  const [DeleteArea] = useDeleteAreaMutation();
+  const [areas, setAreas] = useState<Area[]>([]);
+  const [loading, setLoading] = useState(true);
   const [active, setActive] = useState(false);
   const [open, setOpen] = useState(false);
-
-  const [getArea, { data, loading, error, refetch }] = useGetAreasLazyQuery();
 
   // Form to manage inputs values
   const [area, setArea] = useState<any>({
@@ -53,23 +47,56 @@ const  Areas = () => {
     status: "",
   });
 
-  useEffect(() => {
-    setActive(true);
-    getArea();
+  const fetchAreas = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await areaService.getAll();
+      setAreas(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
+  useEffect(() => {
+    setActive(true);
+    fetchAreas();
+  }, [fetchAreas]);
+
+  const handleDeleteArea = async (id_area: number) => {
+    try {
+      await areaService.delete(id_area);
+      Swal.fire({
+        title: "Eliminado",
+        text: "Area Eliminada!",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      fetchAreas();
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Ha habido un error...",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
+  };
+
   const processedAreas = useMemo(() => {
-    if (!data?.areas) return [];
-    return data.areas.map((area, index) => ({
-      name: area?.name ?? "",
+    if (!areas || areas.length === 0) return [];
+    return areas.map((areaItem) => ({
+      name: areaItem?.name ?? "",
       edit: (
         <button
           className="border-0"
           onClick={() => {
             setArea({
-              name: area?.name,
-              status: area?.status,
-              id_area: area?.id_area,
+              name: areaItem?.name,
+              status: areaItem?.status,
+              id_area: areaItem?.id_area,
             });
             setOpen(true);
           }}
@@ -107,29 +134,8 @@ const  Areas = () => {
               cancelButtonColor: "#d33",
               confirmButtonText: "Eliminar",
             }).then((result) => {
-              // If there is an id selected we delete that area
-              if (result.isConfirmed && area?.id_area) {
-                DeleteArea({
-                  variables: { idArea: area?.id_area },
-                }).then((res) => {
-                  if (res.data?.deleteArea) {
-                    Swal.fire({
-                      title: "Eliminado",
-                      text: "Area Eliminada!",
-                      icon: "success",
-                      showConfirmButton: false,
-                      timer: 1500,
-                    });
-                    refetch();
-                  } else {
-                    Swal.fire({
-                      icon: "error",
-                      title: "Ha habido un error...",
-                      showConfirmButton: false,
-                      timer: 1500,
-                    });
-                  }
-                });
+              if (result.isConfirmed && areaItem?.id_area) {
+                handleDeleteArea(areaItem.id_area);
               }
             })
           }
@@ -148,7 +154,7 @@ const  Areas = () => {
         </button>
       ),
     }));
-  }, [data, DeleteArea]);
+  }, [areas]);
 
   const hanclerCloseModal = () => {
     setOpen(false);
@@ -188,16 +194,16 @@ const  Areas = () => {
           <div className="w-full h-full flex justify-center items-center">
             <span className="loading loading-dots loading-lg bg-main-blue"></span>
           </div>
-        ) : data?.areas ? (
+        ) : areas.length > 0 ? (
           <div className="border-white py-4 h-full">
             <TableComponent column={columns} data={processedAreas} />
           </div>
         ) : (
-          <h3>¡Ocurrio un error!</h3>
+          <h3>¡No hay áreas registradas!</h3>
         )}
       </div>
       <CustomModal open={open} title={area.id_area ? 'Editar area': 'Crear area'}>
-        <AreaForm area={area} onClose={hanclerCloseModal} setArea={setArea} />
+        <AreaForm area={area} onClose={hanclerCloseModal} setArea={setArea} onSuccess={fetchAreas} />
       </CustomModal>
     </ContainerComponents>
   );

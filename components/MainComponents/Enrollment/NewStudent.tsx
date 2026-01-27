@@ -1,21 +1,17 @@
 import { ContainerComponents } from "@/components/ContainerComponents";
 import CustomModal from "@/components/CustomModal";
 import TableComponent from "@/components/Table";
-import {
-  CreateStudentInput,
+import type {
+  CreateStudentDto,
   Group,
-  GroupsQuery,
-  useCreateEnrollmentMutation,
-  useCreateStudentMutation,
-  useGroupsLazyQuery,
-  useScholearYearSelectedQuery,
-} from "@/generated/graphql";
+} from "@/types/api.types";
 import useSchoolYear from "@/hooks/useSchoolYear";
 import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
 import { notification, Table } from "antd";
 import { useRouter } from "next/router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { RenderField } from "../forms/dinamyc-form/render-field";
+import { studentService, groupService, enrollmentService, scholarYearService } from "@/services/api.service";
 export type NotificationType = "success" | "info" | "warning" | "error";
 
 // config/student-registration-schema.ts
@@ -667,7 +663,7 @@ const columns = [
     key: "enrollment",
   },
 ];
-interface TStudent extends CreateStudentInput {
+interface TStudent {
   name: string;
   last_name: string;
   email: string;
@@ -676,36 +672,31 @@ interface TStudent extends CreateStudentInput {
   birthday: null | undefined;
   direction: string;
   phone: string;
-  father: string;
-  mother: string;
-  guardian: string;
-  status: string;
+  father?: string;
+  mother?: string;
+  guardian?: string;
+  status?: string;
   type_id: number;
+  id_group?: number;
 }
 
 const NewStudent = ({ initialData = {} }: { initialData?: any }) => {
   const [open, setOpen] = useState(false);
-  const { data: year } = useScholearYearSelectedQuery();
+  const { year } = useSchoolYear();
   const router = useRouter();
   const { g } = router.query;
-  const [
-    getGroups,
-    { data: groupsData, loading: groupsLoading, error: groupsError },
-  ] = useGroupsLazyQuery({
-    variables: {
-      filterGroupInput: { id_year: year?.scholearYearSelected.id_year },
-    },
-  });
-  const [createStudent, { data, loading, error }] = useCreateStudentMutation();
-  const [
-    createEnrollment,
-    {
-      data: enrollmentData,
-      loading: enrollmentLoading,
-      error: enrollmentError,
-    },
-  ] = useCreateEnrollmentMutation();
-  const [groupsList, setGroupsList] = useState<Group[]>();
+  
+  const [groupsLoading, setGroupsLoading] = useState(false);
+  const [groupsError, setGroupsError] = useState<any>(null);
+  const [groupsData, setGroupsData] = useState<Group[] | null>(null);
+  
+  const [createLoading, setCreateLoading] = useState(false);
+  const [createError, setCreateError] = useState<any>(null);
+  
+  const [enrollmentLoading, setEnrollmentLoading] = useState(false);
+  const [enrollmentError, setEnrollmentError] = useState<any>(null);
+  
+  const [groupsList, setGroupsList] = useState<any[]>();
   const [group, setGroup] = useState<{
     id_group: number;
     level: number | undefined | null;
@@ -728,8 +719,8 @@ const NewStudent = ({ initialData = {} }: { initialData?: any }) => {
     type_id: 4,
   });
 
-  const [formData, setFormData] = useState<Record<string, FieldValue>>(() => {
-    const defaultState: Record<string, FieldValue> = {};
+  const [formData, setFormData] = useState<Record<string, any>>(() => {
+    const defaultState: Record<string, any> = {};
     studentRegistrationSchema.forEach((field) => {
       const initializeField = (f: FormField) => {
         if (f.type === "group" && f.subFields) {
@@ -757,14 +748,14 @@ const NewStudent = ({ initialData = {} }: { initialData?: any }) => {
 
   const [api, contextHolder] = notification.useNotification();
 
-  const openNotification = (message: string, type: NotificationType) => {
+  const openNotification = (message: string, type: "success" | "info" | "warning" | "error") => {
     api[type]({
       message: `${message}`,
       description: "",
     });
   };
 
-  const validationEvent = () => {
+  const validationEvent = useCallback(() => {
     if (
       student.name &&
       student.last_name &&
@@ -784,46 +775,81 @@ const NewStudent = ({ initialData = {} }: { initialData?: any }) => {
       }
       return false;
     }
-  };
-  const handlerCreateStudent = async () => {
-    createStudent({
-      variables: { createStudentInput: student, idGroup: group?.id_group ?? 0 },
-    }).then((res) => {
-      if (res.data) {
-        createEnrollment({
-          variables: {
-            createEnrollmentInput: {
-              id_student: res.data.createStudent.id_student,
-              id_group: group?.id_group ?? 0,
-              year: year?.scholearYearSelected.id_year,
-            },
-          },
-        });
-      }
-    });
-  };
+  }, [student]);
 
-  const handlerSetStudent = ({ target }: any) => {
+  const fetchGroups = useCallback(async (yearId: number) => {
+    setGroupsLoading(true);
+    setGroupsError(null);
+    try {
+      const data = await groupService.getAll({ id_year: yearId } as any);
+      setGroupsData(data);
+      const processed = processedGroups(data);
+      setGroupsList(processed);
+    } catch (error) {
+      setGroupsError(error);
+      console.error("Error fetching groups:", error);
+    } finally {
+      setGroupsLoading(false);
+    }
+  }, []);
+
+  const handlerCreateStudent = useCallback(async () => {
+    setCreateLoading(true);
+    setCreateError(null);
+    try {
+      const newStudent = await studentService.create(student as any);
+      
+      if (newStudent && group?.id_group) {
+        setEnrollmentLoading(true);
+        try {
+          await enrollmentService.create({
+            id_student: newStudent.id_student,
+            id_group: group.id_group,
+            year: year || new Date().getFullYear(),
+          } as any);
+          
+          openNotification("Estudiante matriculado con éxito", "success");
+          setOpen(false);
+          setEnrollment(false);
+        } catch (enrollError) {
+          setEnrollmentError(enrollError);
+          openNotification("Error al matricular estudiante", "error");
+        } finally {
+          setEnrollmentLoading(false);
+        }
+      }
+    } catch (error) {
+      setCreateError(error);
+      openNotification("Error al crear estudiante", "error");
+    } finally {
+      setCreateLoading(false);
+    }
+  }, [student, group, year, openNotification]);
+
+  const handlerSetStudent = useCallback(({ target }: any) => {
     setStudent({ ...student, [target.name]: target.value });
-  };
-  const handlerSelectGroup = () => {
+  }, [student]);
+
+  const handlerSelectGroup = useCallback(() => {
     if (validationEvent()) {
       setEnrollment(true);
     }
-  };
-  const handlerOpenModal = (group: any) => {
-    setGroup(group);
+  }, [validationEvent]);
+
+  const handlerOpenModal = useCallback((groupData: any) => {
+    setGroup(groupData);
     setOpen(true);
-  };
+  }, []);
+
   const processedGroups = (groups: Group[] | null | undefined) => {
     if (!groups) return [];
-    return groups.map((group) => ({
-      id_group: group?.id_group,
-      name: `${getCourseLevel(group?.level)} - ${group?.sublevel}`,
-      representative: group?.representative ?? "",
-      working_time: group.working_time,
+    return groups.map((groupData) => ({
+      id_group: groupData?.id_group,
+      name: `${getCourseLevel(groupData?.level)} - ${groupData?.sublevel}`,
+      representative: groupData?.representative ?? "",
+      working_time: groupData?.working_time,
       enrollment: (
-        <button onClick={() => handlerOpenModal(group)}>
+        <button onClick={() => handlerOpenModal(groupData)}>
           Selecionar grupo
         </button>
       ),
@@ -831,26 +857,21 @@ const NewStudent = ({ initialData = {} }: { initialData?: any }) => {
   };
 
   useEffect(() => {
-    if (enrollment) {
-      getGroups();
-    }
-  }, [enrollment]);
+    const fetchYearAndGroups = async () => {
+      try {
+        const selectedYear = await scholarYearService.getSelected();
+        if (selectedYear?.id_year) {
+          await fetchGroups(selectedYear.id_year);
+        }
+      } catch (error) {
+        console.error("Error fetching scholar year:", error);
+      }
+    };
 
-  useEffect(() => {
-    if (groupsData?.groups) {
-      setGroupsList(processedGroups(groupsData.groups as Group[]));
+    if (enrollment) {
+      fetchYearAndGroups();
     }
-  }, [groupsData]);
-  useEffect(() => {
-    if (enrollmentData) {
-      openNotification("Estudiante matriculado con éxito", "success");
-      setOpen(false);
-      setEnrollment(false);
-    }
-    if (enrollmentError) {
-      openNotification("Error al matricular estudiante", "error");
-    }
-  }, [enrollmentData]);
+  }, [enrollment, fetchGroups]);
   return (
     <ContainerComponents>
       {contextHolder}
@@ -903,7 +924,7 @@ const NewStudent = ({ initialData = {} }: { initialData?: any }) => {
           </div>
           <div className="w-full flex justify-center items-center gap-2">
             <button
-              disabled={enrollmentLoading}
+              disabled={enrollmentLoading || createLoading}
               onClick={handlerCreateStudent}
               className="btn bg-main-blue border-none text-white hover:bg-[#0b5ed7] transition duration-500"
             >
@@ -916,15 +937,15 @@ const NewStudent = ({ initialData = {} }: { initialData?: any }) => {
               Cancelar
             </button>
           </div>
-          {loading && (
+          {createLoading && (
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
           )}
-          {error && (
+          {createError && (
             <div className="w-full h-full flex flex-col justify-center items-center">
               <h1>Parece que hubo un error</h1>
-              <h3 className="text-md text-red-500">{error.message}</h3>
+              <h3 className="text-md text-red-500">{(createError as any)?.message}</h3>
               <div className="w-full flex justify-center items-center gap-2">
                 <button
                   onClick={() => setOpen(false)}

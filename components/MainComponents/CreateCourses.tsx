@@ -1,14 +1,4 @@
-import { useMemo } from "react";
-import {
-  useGroupsQuery,
-  useCreateGroupMutation,
-  useUpdateGroupMutation,
-  useDeleteGroupMutation,
-  useTeachersQuery,
-  useScholearYearSelectedQuery,
-  Group,
-} from "../../generated/graphql";
-import { useState } from "react";
+import { useMemo, useCallback, useState, useEffect } from "react";
 import DynamicModal from "../DynamicModal";
 import Swal from "sweetalert2";
 import useSchoolYear from "@/hooks/useSchoolYear";
@@ -18,12 +8,27 @@ import { CourseForm } from "./forms/CourseForm";
 import { ContainerComponents } from "../ContainerComponents";
 import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
 import { CourseComponent } from "./CourseComponent";
+import { teacherService } from "@/services/api.service";
+import type { Teacher } from "@/types/api.types";
 
 function CreateCourses() {
   const { year } = useSchoolYear();
   const [open, setOpen] = useState(false);
-  const { data: teachers } = useTeachersQuery();
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [course, setCourse] = useState<any>(0);
+
+  const fetchTeachers = useCallback(async () => {
+    try {
+      const data = await teacherService.getAll();
+      setTeachers(data || []);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchTeachers();
+  }, [fetchTeachers]);
 
   const courses = [
     { value: -3, text: "Parvulo" },
@@ -148,7 +153,7 @@ function CreateCourses() {
           groups={groups}
           working_time={working_time}
           year={year}
-          teachers={teachers?.teachers}
+          teachers={teachers}
         />
       </CustomModal>
     </ContainerComponents>

@@ -1,8 +1,5 @@
 import { Input } from "@/components/Input";
-import {
-  useCreateCourseMutation,
-  useUpdateCourseMutation,
-} from "@/generated/graphql";
+import { courseService } from "@/services/api.service";
 import React, { useState } from "react";
 
 export const SubjectForm = ({
@@ -14,6 +11,7 @@ export const SubjectForm = ({
   groups,
   hour,
   teachers,
+  onSuccess,
 }: {
   subject?: any;
   setSubject: any;
@@ -23,9 +21,9 @@ export const SubjectForm = ({
   groups?: any[];
   hour?: any[];
   teachers?: any[];
+  onSuccess?: () => void;
 }) => {
-  const [addCourse] = useCreateCourseMutation();
-  const [updateCourse] = useUpdateCourseMutation();
+  const [loading, setLoading] = useState(false);
 
   const [errors, setErrors] = useState<any>({
     name: "",
@@ -98,48 +96,52 @@ export const SubjectForm = ({
 
   const handlerCreateCourse = async () => {
     if (validationEvent()) {
-      await addCourse({
-        variables: {
-          createCourseInput: {
-            name: subject.name,
-            id_area: Number(subject.id_area),
-            id_teacher: Number(subject.id_teacher),
-            average:  subject.average,
-            hour:  Number(subject.hour),
-            percentage: Number(subject.percentage),
-            id_group:  Number(subject.id_group),
-          },
-        },
-      }).then((res) => {
-        if (res.data) {
+      setLoading(true);
+      try {
+        const createData = {
+          name: subject.name,
+          id_area: Number(subject.id_area),
+          id_teacher: Number(subject.id_teacher),
+          average: subject.average,
+          hour: Number(subject.hour),
+          percentage: Number(subject.percentage),
+          id_group: Number(subject.id_group),
+        };
+        const res = await courseService.create(createData);
+        if (res) {
+          onSuccess?.();
           onClose();
           cleaningStates();
         }
-      });
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
   const handlerUpdateCourse = async () => {
     if (validationEvent()) {
-      await updateCourse({
-        variables: {
-          updateCourseInput: {
-            id_course: subject.id_course,
-            name: subject.name,
-            id_area: Number(subject.id_area),
-            id_teacher: Number(subject.id_teacher) ,
-            average: subject.average,
-            hour:  Number(subject.hour),
-            percentage: Number(subject.percentage), 
-            id_group:  Number(subject.id_group),
-          },
-        },
-      }).then((res) => {
-        if (res.data) {
+      setLoading(true);
+      try {
+        const updateData = {
+          id_course: subject.id_course,
+          name: subject.name,
+          id_area: Number(subject.id_area),
+          id_teacher: Number(subject.id_teacher),
+          average: subject.average,
+          hour: Number(subject.hour),
+          percentage: Number(subject.percentage),
+          id_group: Number(subject.id_group),
+        };
+        const res = await courseService.update(updateData);
+        if (res) {
+          onSuccess?.();
           onClose();
           cleaningStates();
         }
-      });
+      } finally {
+        setLoading(false);
+      }
     }
   };
   return (

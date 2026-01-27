@@ -1,9 +1,5 @@
 import { Input } from "@/components/Input";
-import {
-  useCreateQualificationTypeMutation,
-  useGetQualificationQuery,
-  useUpdateQualificationsMutation,
-} from "@/generated/graphql";
+import { typeQualificationService } from "@/services/api.service";
 import React, { useState } from "react";
 
 export const QualificationTypeForm = ({
@@ -11,17 +7,15 @@ export const QualificationTypeForm = ({
   setQualification,
   onClose,
   setOpen,
+  onSuccess,
 }: {
   qualification?: any;
   setQualification: any;
   onClose: any;
   setOpen: any;
+  onSuccess?: () => void;
 }) => {
-  const { refetch } = useGetQualificationQuery({
-    fetchPolicy: "network-only",
-  });
-  const [AddQualificationType] = useCreateQualificationTypeMutation();
-  const [UpdateQualificationType] = useUpdateQualificationsMutation();
+  const [loading, setLoading] = useState(false);
 
   const [errors, setErrors] = useState<any>({
     ceiling_score: "",
@@ -63,28 +57,44 @@ export const QualificationTypeForm = ({
 
   const handlerCreateQualificationType = async () => {
     if (validationEvent()) {
-      await AddQualificationType({
-        variables: { createTypeQualificationInput: qualification },
-      }).then((res) => {
-        if (res.data?.createTypeQualification) {
+      setLoading(true);
+      try {
+        const createData = {
+          name: qualification.name,
+          floor_score: qualification.floor_score,
+          ceiling_score: qualification.ceiling_score,
+          year: qualification.year,
+        };
+        const res = await typeQualificationService.create(createData);
+        if (res) {
           cleaningStates();
+          onSuccess?.();
           setOpen(false);
-          refetch();
         }
-      });
+      } finally {
+        setLoading(false);
+      }
     }
   };
   const handlerUpdateQualificationType = async () => {
     if (validationEvent()) {
-      await UpdateQualificationType({
-        variables: { updateQualificationsInput: qualification },
-      }).then((res)=> {
-        if (res.data?.updateQualifications) {
-          cleaningStates();
-          setOpen(false);
-          refetch();
-        }
-      })
+      setLoading(true);
+      try {
+        const updateData = {
+          id: qualification.id,
+          name: qualification.name,
+          floor_score: qualification.floor_score,
+          ceiling_score: qualification.ceiling_score,
+          year: qualification.year,
+          id_type_qual: qualification.id_type_qual,
+        };
+        await typeQualificationService.create(updateData);
+        cleaningStates();
+        onSuccess?.();
+        setOpen(false);
+      } finally {
+        setLoading(false);
+      }
     }
   };
   return (

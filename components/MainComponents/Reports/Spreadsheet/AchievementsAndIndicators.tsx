@@ -1,14 +1,6 @@
 import { useMemo } from "react";
 import { useEffect, useState } from "react";
-import {
-  useCoursesLazyQuery,
-  useGroupsQuery,
-  useAchievementsLazyQuery,
-  useDeleteAchievementMutation,
-  useUpdateAchievementMutation,
-  useCreateAchievementMutation,
-  useGenerateAchievementsAndIndicatorsLazyQuery,
-} from "../../../../generated/graphql";
+
 import { useRouter } from "next/router";
 import Table from "../../../Table";
 import edit from "../../../../public/assets/01editar.png";
@@ -20,6 +12,8 @@ import useSchoolYear from "@/hooks/useSchoolYear";
 import { ContainerComponents } from "@/components/ContainerComponents";
 import TableComponent from "../../../Table";
 import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
+import { reportService } from "@/services/api.service";
+import { useCoursesLazyQuery, useGroupsQuery } from "@/hooks/useRestApi";
 
 const columsCourses = [
   {
@@ -82,9 +76,7 @@ const AchievementsAndIndicators = () => {
     getCourses,
     { data: courses, loading: loadingCourses, error: errorCourses },
   ] = useCoursesLazyQuery();
-  const [generateAchievements] = useGenerateAchievementsAndIndicatorsLazyQuery({
-    fetchPolicy: "network-only",
-  });
+  const [isLoadingReport, setIsLoadingReport] = useState(false);
 
   const { data: groups, loading: loadingGroups } = useGroupsQuery({
     variables: { filterGroupInput: { id_year: year } },
@@ -94,8 +86,8 @@ const AchievementsAndIndicators = () => {
   };
 
   const processedGroups = useMemo(() => {
-    if (!groups?.groups) return [];
-    return groups?.groups.map((group: any) => ({
+    if (!groups) return [];
+    return groups.map((group: any) => ({
       name: `${getCourseLevel(group?.level)} - ${group?.sublevel}`,
       group_teacher: group?.representative ?? "",
       working_time: group?.working_time,
@@ -198,9 +190,7 @@ const AchievementsAndIndicators = () => {
 
   useEffect(() => {
     if (g) {
-      getCourses({
-        variables: { filterCourseInput: { id_group: Number(g) } },
-      }).then((res: any) => {
+      getCourses({id_group: Number(g)}).then((res: any) => {
         const { data } = res;
         setSelectedCourses(processedCourses(data?.courses));
       });
@@ -208,18 +198,17 @@ const AchievementsAndIndicators = () => {
   }, [router]);
 
   const handlerSelectAchievement = (id_course: number, period: number) => {
-    console.log(id_course, period);
-    generateAchievements({
-      variables: {
-        generateAchievementsAndIndicators: {
-          id_group: Number(g),
-          id_course,
-          period,
-        },
-      },
+    setIsLoadingReport(true);
+    reportService.achievementsAndIndicators({
+      id_group: Number(g),
+      id_course,
+      period,
     }).then((res) => {
-      const { data } = res;
-      handleOpenHTML(data?.generateAchievementsAndIndicators.report_content);
+      handleOpenHTML(res.report_content);
+      setIsLoadingReport(false);
+    }).catch((err) => {
+      console.error('Error generating report:', err);
+      setIsLoadingReport(false);
     });
   };
   const handleOpenHTML = (htmlString: any) => {
@@ -241,7 +230,7 @@ const AchievementsAndIndicators = () => {
               <div className="w-full h-full flex justify-center items-center">
                 <span className="loading loading-dots loading-lg bg-main-blue"></span>
               </div>
-            ) : groups?.groups ? (
+            ) : groups ? (
               <TableComponent column={columnsGroup} data={processedGroups} />
             ) : (
               <h3>¡Ocurrio un error!</h3>

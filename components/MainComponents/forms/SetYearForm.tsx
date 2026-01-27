@@ -1,9 +1,5 @@
 import { Input } from "@/components/Input";
-import {
-  useCreateSetYearMutation,
-  useGetSchoolarYearsQuery,
-  useUpdateScholarYearMutation,
-} from "@/generated/graphql";
+import { scholarYearService } from "@/services/api.service";
 import React from "react";
 
 const SetYearForm = ({
@@ -12,18 +8,16 @@ const SetYearForm = ({
   onClose,
   setSchoolYear,
   type,
+  onSuccess,
 }: {
   year: any;
   years: any;
   onClose: any;
   setSchoolYear: any;
   type: boolean;
+  onSuccess?: () => void;
 }) => {
-  const { refetch } = useGetSchoolarYearsQuery({
-    fetchPolicy: "network-only",
-  });
-  const [AddSetYear] = useCreateSetYearMutation();
-  const [UpdateSchoolarYear] = useUpdateScholarYearMutation();
+  const [loading, setLoading] = React.useState(false);
   const [errors, setErrors] = React.useState<any>({
     id_year: "",
     rector: "",
@@ -67,28 +61,44 @@ const SetYearForm = ({
   };
   const handlerCreateYear = async () => {
     if (validationEvent()) {
-      await AddSetYear({
-        variables: { createScholarYearInput: year },
-      }).then((res) => {
-        if (res.data?.createScholarYear) {
+      setLoading(true);
+      try {
+        const createData = {
+          id_year: year.id_year,
+          rector: year.rector,
+          secretary: year.secretary,
+          comment: year.comment,
+        };
+        const res = await scholarYearService.create(createData);
+        if (res) {
           cleaningStates();
+          onSuccess?.();
           onClose();
-          refetch();
         }
-      });
+      } finally {
+        setLoading(false);
+      }
     }
   };
   const handlerUpdateYear = async () => {
     if (validationEvent()) {
-      await UpdateSchoolarYear({
-        variables: { updateScholarYearInput: year },
-      }).then((res) => {
-        if (res.data?.updateScholarYear) {
+      setLoading(true);
+      try {
+        const updateData = {
+          id_year: year.id_year,
+          rector: year.rector,
+          secretary: year.secretary,
+          comment: year.comment,
+        };
+        const res = await scholarYearService.update(updateData);
+        if (res) {
           cleaningStates();
+          onSuccess?.();
           onClose();
-          refetch();
         }
-      });
+      } finally {
+        setLoading(false);
+      }
     }
   };
   return (

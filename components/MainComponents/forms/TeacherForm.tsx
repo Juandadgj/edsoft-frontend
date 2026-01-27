@@ -1,39 +1,22 @@
 import { Input } from "@/components/Input";
-import {
-  useCreateTeacherMutation,
-  useTeachersQuery,
-  useUpdateTeacherMutation,
-} from "@/generated/graphql";
-import { notification } from "antd";
-import React from "react";
+import { teacherService } from "@/services/api.service";
+import React, { useState } from "react";
 
 export const TeacherForm = ({
   teacher,
   setTeacher,
   onClose,
   setOpen,
+  onSuccess,
 }: {
   teacher?: any;
   setTeacher: any;
   onClose: any;
   setOpen: any;
+  onSuccess?: () => void;
 }) => {
-  const { refetch } = useTeachersQuery({
-    fetchPolicy: "network-only",
-  });
-  const [AddTeacher, { loading, data, error }] = useCreateTeacherMutation();
-  const [
-    UpdateTeacher,
-    { loading: loadingUpdate, data: dataUpdate, error: errorUpdate },
-  ] = useUpdateTeacherMutation();
-  const [api, contextHolder] = notification.useNotification();
+  const [loading, setLoading] = useState(false);
 
-  const openNotification = (message: string) => {
-    api.info({
-      message: message,
-      placement: "topRight",
-    });
-  };
   // Obj to manage every input error
   const [errors, setErrors] = React.useState<any>({
     name: "",
@@ -85,46 +68,57 @@ export const TeacherForm = ({
 
   const handlerCreateTeacher = async () => {
     if (validationEvent()) {
-      await AddTeacher({
-        variables: {
-          createTeacherInput: {
-            name: teacher.name,
-            last_name: teacher.last_name,
-            identification: teacher.identification,
-            direction: teacher.direction,
-            phone: teacher.phone,
-            email: teacher.email,
-            degree: teacher.degree,
-            type_id: 3,
-          },
-        },
-      }).then((res: any) => {
-        if (res.data?.createTeacher) {
+      setLoading(true);
+      try {
+        const createData = {
+          name: teacher.name,
+          last_name: teacher.last_name,
+          identification: teacher.identification,
+          direction: teacher.direction,
+          phone: teacher.phone,
+          email: teacher.email,
+          degree: teacher.degree,
+          type_id: 3,
+        };
+        const res = await teacherService.create(createData);
+        if (res) {
           cleaningStates();
-          refetch();
-          openNotification("Docente creado exitosamente");
+          onSuccess?.();
           setOpen(false);
         }
-      });
+      } finally {
+        setLoading(false);
+      }
     }
   };
   const handlerUpdateTeacher = async () => {
     if (validationEvent()) {
-      await UpdateTeacher({
-        variables: { updateTeacherInput: teacher },
-      }).then((res: any) => {
-        if (res.data?.updateTeacher) {
+      setLoading(true);
+      try {
+        const updateData = {
+          id_teacher: teacher.id_teacher,
+          name: teacher.name,
+          last_name: teacher.last_name,
+          identification: teacher.identification,
+          direction: teacher.direction,
+          phone: teacher.phone,
+          email: teacher.email,
+          degree: teacher.degree,
+          type_id: teacher.type_id || 3,
+        };
+        const res = await teacherService.update(updateData);
+        if (res) {
           cleaningStates();
-          refetch();
-          openNotification("Docente actualizado exitosamente");
+          onSuccess?.();
           setOpen(false);
         }
-      });
+      } finally {
+        setLoading(false);
+      }
     }
   };
   return (
     <div className="grid grid-cols-2 gap-4 w-full">
-      {contextHolder}
       <Input
         name="name"
         value={teacher.name}

@@ -1,5 +1,7 @@
 import Layaout from "@/components/Layaout";
-import { useStudentByIdQuery } from "@/generated/graphql";
+import { useQuery } from "@/lib/useApi";
+import type { Student as StudentType } from "@/types/api.types";
+import { studentService } from "@/services/api.service";
 import { CourseLevelEnum } from "@/shared/enums/CourseLevelEnum";
 import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
 import { UserOutlined } from "@ant-design/icons";
@@ -50,7 +52,10 @@ const Student = ({ data }: any) => {
     data: dataStudent,
     loading: loadingStudent,
     error: errorStudent,
-  } = useStudentByIdQuery({ variables: { idStudent: Number(id) } });
+  } = useQuery<StudentType>(
+    `/students/${id}`,
+    { skip: !id }
+  );
   return (
     <Layaout textpage="Estudiante">
       <div
@@ -68,7 +73,7 @@ const Student = ({ data }: any) => {
             <span className="loading loading-dots loading-lg bg-main-blue"></span>
           </div>
         )}
-        {dataStudent?.studentByID && (
+        {dataStudent && (
           <>
             <div className="bg-white border-none border-2 shadow-2xl rounded-[2rem] p-8 pb-0 text-black">
               <div className="flex justify-between gap-5 text-sm">
@@ -81,8 +86,8 @@ const Student = ({ data }: any) => {
                   <div>
                     <h1>
                       <strong>
-                        {dataStudent.studentByID.name}{" "}
-                        {dataStudent.studentByID.last_name}
+                        {dataStudent.name}{" "}
+                        {dataStudent.last_name}
                       </strong>
                     </h1>
                     <p className="text-gray3">Estudiante</p>
@@ -93,13 +98,13 @@ const Student = ({ data }: any) => {
                     <strong>Detalles del estudiante</strong>
                   </h1>
                   <div className="text-gray3">
-                    <div>Nombres: {dataStudent.studentByID.name}</div>
-                    <div>Apellidos: {dataStudent.studentByID.last_name}</div>
+                    <div>Nombres: {dataStudent.name}</div>
+                    <div>Apellidos: {dataStudent.last_name}</div>
                     <div>
-                      Indetifiacion: {dataStudent.studentByID.identification}
+                      Indetifiacion: {dataStudent.identification}
                     </div>
                     <div>
-                      Nombre del acudiente: {dataStudent.studentByID.guardian}
+                      Nombre del acudiente: {dataStudent.guardian}
                     </div>
                   </div>
                 </div>
@@ -126,7 +131,7 @@ const Student = ({ data }: any) => {
                         </g>
                       </svg>
 
-                      <p> Direccion: {dataStudent.studentByID.direction}</p>
+                      <p> Direccion: {dataStudent.direction}</p>
                     </div>
                     <div className="flex items-center">
                       <svg
@@ -140,7 +145,7 @@ const Student = ({ data }: any) => {
                           d="M4.05 21H3v-5.875L8 14.1l2.9 2.9q1-.575 1.863-1.237t1.587-1.388q.775-.75 1.45-1.625t1.225-1.85l-2.85-2.875L15.1 3H21v1.05q0 3.15-1.35 6.2T15.8 15.8q-2.5 2.5-5.562 3.85T4.05 21"
                         />
                       </svg>
-                      <p>Telefono: {dataStudent.studentByID.phone}</p>
+                      <p>Telefono: {dataStudent.phone}</p>
                     </div>
                   </div>
                 </div>
@@ -154,7 +159,7 @@ const Student = ({ data }: any) => {
               </div>
             </div>
             <div className="pt-8 w-full grid grid-cols-1 lg:grid-cols-2 gap-10 text-[12px]">
-              {dataStudent.studentByID.groups?.map((group) => (
+              {dataStudent.groups?.map((group) => (
                 <div className="" key={group?.id_group}>
                   <strong className="text-black ps-8 text-xl">
                     {getCourseLevel(group?.level)} {group?.sublevel}

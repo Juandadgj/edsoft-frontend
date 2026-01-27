@@ -1,10 +1,11 @@
-import { useMemo } from "react";
-import { useGroupsQuery } from "@/generated/graphql";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import DescriptionIcon from "@mui/icons-material/Description";
 import useSchoolYear from "@/hooks/useSchoolYear";
 import TableComponent from "@/components/Table";
 import { ContainerComponents } from "@/components/ContainerComponents";
 import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
+import { groupService } from "@/services/api.service";
+import type { Group } from "@/types/api.types";
 
 const columns = [
   {
@@ -31,13 +32,31 @@ const columns = [
 
 const GeneralAbsences = () => {
   const { year } = useSchoolYear();
-  const { data, loading } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: year } },
-  });
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchGroups = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await groupService.getAll({ id_year: year });
+      setGroups(response);
+    } catch (error) {
+      console.error("Error fetching groups:", error);
+      setGroups([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [year]);
+
+  useEffect(() => {
+    if (year) {
+      fetchGroups();
+    }
+  }, [year, fetchGroups]);
 
   const processedGroups = useMemo(() => {
-    if (!data?.groups) return [];
-    return data.groups.map((group, index) => ({
+    if (!groups) return [];
+    return groups.map((group) => ({
       name: `${getCourseLevel(group?.level)} - ${group?.sublevel}`,
       working_time: group?.working_time ?? "",
       group_teacher: group?.representative ?? "",
@@ -47,7 +66,7 @@ const GeneralAbsences = () => {
         </button>
       ),
     }));
-  }, [data]);
+  }, [groups]);
 
   return (
     <ContainerComponents>
@@ -64,7 +83,7 @@ const GeneralAbsences = () => {
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
-          ) : data?.groups ? (
+          ) : groups && groups.length > 0 ? (
             <TableComponent column={columns} data={processedGroups} />
           ) : (
             <h3>¡Ocurrio un error!</h3>

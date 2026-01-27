@@ -1,0 +1,732 @@
+
+/*
+ * -------------------------------------------------------
+ * THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+ * -------------------------------------------------------
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+
+export enum GradeDisplayMode {
+    numerica_desempeno = "numerica_desempeno",
+    numerica = "numerica",
+    desempeno = "desempeno"
+}
+
+export class CreateAbsenceInput {
+    id_absence: number;
+    id_student: number;
+    id_course: number;
+    day?: Nullable<number>;
+    month?: Nullable<number>;
+    year?: Nullable<number>;
+    hours?: Nullable<number>;
+    justification?: Nullable<string>;
+    reason?: Nullable<string>;
+    period?: Nullable<number>;
+}
+
+export class UpdateAbsenceInput {
+    id_absence: number;
+    id_student: number;
+    id_course: number;
+    day?: Nullable<number>;
+    month?: Nullable<number>;
+    year?: Nullable<number>;
+    hours?: Nullable<number>;
+    justification?: Nullable<string>;
+    reason?: Nullable<string>;
+    period?: Nullable<number>;
+}
+
+export class FilterAbsenceInput {
+    id_student?: Nullable<number>;
+    id_course?: Nullable<number>;
+    day?: Nullable<number>;
+    month?: Nullable<number>;
+    year?: Nullable<number>;
+    hours?: Nullable<number>;
+    justification?: Nullable<string>;
+    reason?: Nullable<string>;
+    period?: Nullable<number>;
+}
+
+export class QualificationInput {
+    id_achie_stu?: Nullable<number>;
+    id_achievement?: Nullable<number>;
+    id_student?: Nullable<number>;
+    score?: Nullable<number>;
+}
+
+export class CreateAchievementInput {
+    id_course: number;
+    period: number;
+    description: string;
+}
+
+export class UpdateAchievementInput {
+    id_achievement: number;
+    id_course?: Nullable<number>;
+    period?: Nullable<number>;
+    description?: Nullable<string>;
+}
+
+export class FilterAchievementInput {
+    id_course?: Nullable<number>;
+    period?: Nullable<number>;
+    description?: Nullable<string>;
+}
+
+export class UpdateQualificationsInput {
+    qualifications: Nullable<QualificationInput>[];
+}
+
+export class FilterQualificationInput {
+    id_course: number;
+    period: number;
+}
+
+export class CreateAreaInput {
+    name: string;
+    status?: Nullable<string>;
+}
+
+export class UpdateAreaInput {
+    id_area: number;
+    name?: Nullable<string>;
+    status?: Nullable<string>;
+}
+
+export class FilterAreaInput {
+    name?: Nullable<string>;
+    status?: Nullable<string>;
+}
+
+export class CreateCourseInput {
+    id_group: number;
+    id_teacher: number;
+    name: string;
+    position?: Nullable<number>;
+    dimension_code?: Nullable<number>;
+    dimension_type?: Nullable<string>;
+    id_area: number;
+    hour: number;
+    average?: Nullable<string>;
+    percentage?: Nullable<number>;
+}
+
+export class UpdateCourseInput {
+    id_course: number;
+    id_group?: Nullable<number>;
+    id_teacher?: Nullable<number>;
+    name?: Nullable<string>;
+    position?: Nullable<number>;
+    dimension_code?: Nullable<number>;
+    dimension_type?: Nullable<string>;
+    id_area?: Nullable<number>;
+    hour?: Nullable<number>;
+    average?: Nullable<string>;
+    percentage?: Nullable<number>;
+}
+
+export class FilterCourseInput {
+    id_group?: Nullable<number>;
+    id_teacher?: Nullable<number>;
+    name?: Nullable<string>;
+    position?: Nullable<number>;
+    dimension_code?: Nullable<number>;
+    dimension_type?: Nullable<string>;
+    id_area?: Nullable<number>;
+    hour?: Nullable<number>;
+    average?: Nullable<string>;
+    percentage?: Nullable<number>;
+}
+
+export class UpdateDefinitivesInput {
+    id_cour_stu: number;
+    score1?: Nullable<string>;
+    score2?: Nullable<string>;
+    score3?: Nullable<string>;
+    score4?: Nullable<string>;
+    score5?: Nullable<string>;
+}
+
+export class FilterDefinitivesInput {
+    id_student?: Nullable<number>;
+    id_course?: Nullable<number>;
+    score1?: Nullable<string>;
+    score2?: Nullable<string>;
+    score3?: Nullable<string>;
+    score4?: Nullable<string>;
+    score5?: Nullable<string>;
+}
+
+export class CreateEnrollmentInput {
+    id_student: number;
+    id_group: number;
+    year?: Nullable<number>;
+    status?: Nullable<string>;
+    reason_desertion?: Nullable<string>;
+    date_desertion?: Nullable<string>;
+}
+
+export class UpdateEnrollmentInput {
+    id_enrollment: number;
+    status?: Nullable<string>;
+    reason_desertion?: Nullable<string>;
+    date_desertion?: Nullable<string>;
+}
+
+export class FilterEnrollmentInput {
+    id_student?: Nullable<number>;
+    id_group?: Nullable<number>;
+    year?: Nullable<number>;
+    status?: Nullable<string>;
+    reason_desertion?: Nullable<string>;
+    date_desertion?: Nullable<string>;
+}
+
+export class CreateFeaturedInput {
+    id_group?: Nullable<number>;
+    id_student?: Nullable<number>;
+}
+
+export class FilterFeaturedInput {
+    id_group?: Nullable<number>;
+    id_student?: Nullable<number>;
+}
+
+export class CreateGroupInput {
+    id_year: number;
+    level: number;
+    sublevel: string;
+    working_time?: Nullable<string>;
+    representative: string;
+}
+
+export class UpdateGroupInput {
+    id_group: number;
+    working_time?: Nullable<string>;
+    representative?: Nullable<string>;
+}
+
+export class FilterGroupInput {
+    id_year?: Nullable<number>;
+    level?: Nullable<number>;
+    sublevel?: Nullable<string>;
+    working_time?: Nullable<string>;
+    representative?: Nullable<string>;
+}
+
+export class GenerateStudentsListUndeterminatedInput {
+    id_group: number;
+}
+
+export class GenerateStudentsListDeterminatedInput {
+    id_course: number;
+    id_group: number;
+}
+
+export class GenerateAchievementsAndIndicators {
+    id_group: number;
+    id_course: number;
+    period: number;
+}
+
+export class GenerateReportAreaInput {
+    id_group: number;
+    id_student?: Nullable<number>;
+    report_options: ReportDictionary;
+}
+
+export class GenerateStudentEnrollmentReportInput {
+    id_student: number;
+    id_year: number;
+}
+
+export class CertifiedStudentReportInput {
+    id_student: number;
+    report_options?: Nullable<CertifiedStudentDictonary>;
+}
+
+export class ReportDictionary {
+    signature: SignatureInput;
+    average_general?: Nullable<boolean>;
+    average_group?: Nullable<boolean>;
+    average_area?: Nullable<boolean>;
+    position?: Nullable<boolean>;
+    username?: Nullable<boolean>;
+    qualification_per1?: Nullable<boolean>;
+    qualification_per2?: Nullable<boolean>;
+    qualification_per3?: Nullable<boolean>;
+    qualification_per4?: Nullable<boolean>;
+    average_per?: Nullable<boolean>;
+    all_qualifications?: Nullable<boolean>;
+    professor_course?: Nullable<boolean>;
+    hour?: Nullable<boolean>;
+    absences?: Nullable<boolean>;
+}
+
+export class SignatureInput {
+    professor_group?: Nullable<boolean>;
+    secretary?: Nullable<boolean>;
+    rector?: Nullable<boolean>;
+}
+
+export class CertifiedStudentDictonary {
+    signature: SignatureInput;
+    average_general?: Nullable<boolean>;
+    average_group?: Nullable<boolean>;
+    average_area?: Nullable<boolean>;
+    position?: Nullable<boolean>;
+    username?: Nullable<boolean>;
+    qualification_per1?: Nullable<boolean>;
+    qualification_per2?: Nullable<boolean>;
+    qualification_per3?: Nullable<boolean>;
+    qualification_per4?: Nullable<boolean>;
+    average_per?: Nullable<boolean>;
+    all_qualifications?: Nullable<boolean>;
+    professor_course?: Nullable<boolean>;
+    hour?: Nullable<boolean>;
+    absences?: Nullable<boolean>;
+    gradeDisplayConfig: GradeDisplayMode;
+}
+
+export class CreateScholarYearInput {
+    id_year: number;
+    rector?: Nullable<string>;
+    secretary?: Nullable<string>;
+    comment?: Nullable<string>;
+}
+
+export class UpdateScholarYearInput {
+    id_year: number;
+    rector?: Nullable<string>;
+    secretary?: Nullable<string>;
+    comment?: Nullable<string>;
+}
+
+export class CreateStudentInput {
+    name: string;
+    last_name: string;
+    type_id: number;
+    identification: string;
+    sex: string;
+    direction?: Nullable<string>;
+    phone: string;
+    guardian: string;
+    status?: Nullable<string>;
+    birthday?: Nullable<string>;
+    father?: Nullable<string>;
+    mother?: Nullable<string>;
+    email?: Nullable<string>;
+}
+
+export class UpdateStudentInput {
+    id_student: number;
+    name?: Nullable<string>;
+    last_name?: Nullable<string>;
+    type_id?: Nullable<number>;
+    identification?: Nullable<string>;
+    sex?: Nullable<string>;
+    direction?: Nullable<string>;
+    phone?: Nullable<string>;
+    guardian?: Nullable<string>;
+    status?: Nullable<string>;
+    birthday?: Nullable<string>;
+    father?: Nullable<string>;
+    mother?: Nullable<string>;
+    email?: Nullable<string>;
+}
+
+export class FilterStudentInput {
+    name?: Nullable<string>;
+    identification?: Nullable<string>;
+}
+
+export class CreateTeacherInput {
+    name: string;
+    last_name: string;
+    type_id: number;
+    identification: string;
+    direction?: Nullable<string>;
+    phone: string;
+    email?: Nullable<string>;
+    degree?: Nullable<string>;
+}
+
+export class UpdateTeacherInput {
+    id_teacher: number;
+    name?: Nullable<string>;
+    last_name?: Nullable<string>;
+    type_id?: Nullable<number>;
+    identification?: Nullable<string>;
+    direction?: Nullable<string>;
+    phone?: Nullable<string>;
+    email?: Nullable<string>;
+    degree?: Nullable<string>;
+}
+
+export class FilterTeacherInput {
+    name?: Nullable<string>;
+    last_name?: Nullable<string>;
+    type_id?: Nullable<number>;
+    identification?: Nullable<string>;
+    direction?: Nullable<string>;
+    phone?: Nullable<string>;
+    email?: Nullable<string>;
+    degree?: Nullable<string>;
+}
+
+export class CreateTypeQualificationInput {
+    name: string;
+    floor_score: number;
+    ceiling_score: number;
+    year?: Nullable<number>;
+}
+
+export class SignInInput {
+    id_institution: number;
+    user: string;
+    password: string;
+}
+
+export class UpdateUserInput {
+    id_user: number;
+    user: string;
+    password: string;
+    typeu: string;
+    status: string;
+    belongs: string;
+}
+
+export class Absence {
+    id_absence: number;
+    id_student?: Nullable<number>;
+    id_course?: Nullable<number>;
+    day?: Nullable<number>;
+    month?: Nullable<number>;
+    year?: Nullable<number>;
+    hours?: Nullable<number>;
+    justification?: Nullable<string>;
+    reason?: Nullable<string>;
+    period?: Nullable<number>;
+}
+
+export abstract class IQuery {
+    abstract absences(filterAbsenceInput?: Nullable<FilterAbsenceInput>): Nullable<Absence>[] | Promise<Nullable<Absence>[]>;
+
+    abstract achievements(filterAchievementInput?: Nullable<FilterAchievementInput>): Nullable<Achievement>[] | Promise<Nullable<Achievement>[]>;
+
+    abstract studentQualifications(filterQualificationInput?: Nullable<FilterQualificationInput>): Nullable<QualificationList>[] | Promise<Nullable<QualificationList>[]>;
+
+    abstract areas(filterAreaInput?: Nullable<FilterAreaInput>): Nullable<Area>[] | Promise<Nullable<Area>[]>;
+
+    abstract courses(filterCourseInput?: Nullable<FilterCourseInput>): Nullable<Course>[] | Promise<Nullable<Course>[]>;
+
+    abstract courseByID(id_course: number): Nullable<Course> | Promise<Nullable<Course>>;
+
+    abstract studentDefinitives(filterDefinitivesInput?: Nullable<FilterDefinitivesInput>): Nullable<Definitives>[] | Promise<Nullable<Definitives>[]>;
+
+    abstract enrollments(filterEnrollmentInput?: Nullable<FilterEnrollmentInput>): Nullable<Enrollment>[] | Promise<Nullable<Enrollment>[]>;
+
+    abstract enrollmentByID(id_enrollment: number): Nullable<Enrollment> | Promise<Nullable<Enrollment>>;
+
+    abstract featured(filterFeaturedInput?: Nullable<FilterFeaturedInput>): Nullable<Featured>[] | Promise<Nullable<Featured>[]>;
+
+    abstract groups(filterGroupInput?: Nullable<FilterGroupInput>): Nullable<Group>[] | Promise<Nullable<Group>[]>;
+
+    abstract groupByID(id_group: number): Nullable<Group> | Promise<Nullable<Group>>;
+
+    abstract institutions(): Nullable<Institution>[] | Promise<Nullable<Institution>[]>;
+
+    abstract generateStudentsListUndeterminated(generateStudentsListUndeterminatedInput?: Nullable<GenerateStudentsListUndeterminatedInput>): Report | Promise<Report>;
+
+    abstract generateStudentsListDeterminated(generateStudentsListDeterminatedInput?: Nullable<GenerateStudentsListDeterminatedInput>): Report | Promise<Report>;
+
+    abstract generateAchievementsAndIndicators(generateAchievementsAndIndicators?: Nullable<GenerateAchievementsAndIndicators>): Report | Promise<Report>;
+
+    abstract generateReportArea(generateReportAreaInput?: Nullable<GenerateReportAreaInput>): Report | Promise<Report>;
+
+    abstract generateStudentEnrollmentReportI(generateStudentEnrollmentReportInput?: Nullable<GenerateStudentEnrollmentReportInput>): Report | Promise<Report>;
+
+    abstract generateStudentEnrollmentReportII(generateStudentEnrollmentReportInput?: Nullable<GenerateStudentEnrollmentReportInput>): Report | Promise<Report>;
+
+    abstract generateCertifiedStudentReport(generateCertifiedStudentReportInput?: Nullable<CertifiedStudentReportInput>): Report | Promise<Report>;
+
+    abstract scholarYears(): Nullable<ScholarYear>[] | Promise<Nullable<ScholarYear>[]>;
+
+    abstract scholearYearSelected(): ScholarYear | Promise<ScholarYear>;
+
+    abstract studentsByGroup(id_group: number): Nullable<Student>[] | Promise<Nullable<Student>[]>;
+
+    abstract students(filterStudentInput?: Nullable<FilterStudentInput>): Nullable<Nullable<Student>[]> | Promise<Nullable<Nullable<Student>[]>>;
+
+    abstract studentByID(id_student: number): Nullable<Student> | Promise<Nullable<Student>>;
+
+    abstract teachers(filterTeacherInput?: Nullable<FilterTeacherInput>): Nullable<Teacher>[] | Promise<Nullable<Teacher>[]>;
+
+    abstract teacherByID(id_teacher: number): Nullable<Teacher> | Promise<Nullable<Teacher>>;
+
+    abstract typeQualifications(): Nullable<TypeQualification>[] | Promise<Nullable<TypeQualification>[]>;
+
+    abstract signIn(signInInput?: Nullable<SignInInput>): Auth | Promise<Auth>;
+}
+
+export abstract class IMutation {
+    abstract createAbsence(createAbsenceInput: CreateAbsenceInput): Absence | Promise<Absence>;
+
+    abstract updateAbsence(updateAbsenceInput: UpdateAbsenceInput): Absence | Promise<Absence>;
+
+    abstract deleteAbsence(id_absence: number): Absence | Promise<Absence>;
+
+    abstract createAchievement(createAchievementInput: CreateAchievementInput): Achievement | Promise<Achievement>;
+
+    abstract updateAchievement(updateAchievementInput: UpdateAchievementInput): Achievement | Promise<Achievement>;
+
+    abstract deleteAchievement(id_achievement: number): Nullable<Achievement> | Promise<Nullable<Achievement>>;
+
+    abstract updateQualifications(updateQualificationsInput: UpdateQualificationsInput): Nullable<Qualification>[] | Promise<Nullable<Qualification>[]>;
+
+    abstract createArea(createAreaInput: CreateAreaInput): Area | Promise<Area>;
+
+    abstract updateArea(updateAreaInput: UpdateAreaInput): Area | Promise<Area>;
+
+    abstract deleteArea(id_area: number): Area | Promise<Area>;
+
+    abstract createCourse(createCourseInput: CreateCourseInput): Course | Promise<Course>;
+
+    abstract updateCourse(updateCourseInput: UpdateCourseInput): Course | Promise<Course>;
+
+    abstract deleteCourse(id_course: number): Nullable<Course> | Promise<Nullable<Course>>;
+
+    abstract updateDefitinives(updateDefinitivesInput?: Nullable<UpdateDefinitivesInput>): Definitives | Promise<Definitives>;
+
+    abstract createEnrollment(createEnrollmentInput: CreateEnrollmentInput): Enrollment | Promise<Enrollment>;
+
+    abstract updateEnrollment(updateEnrollmentInput: UpdateEnrollmentInput): Enrollment | Promise<Enrollment>;
+
+    abstract deleteEnrollment(id_enrollment: number): Nullable<Enrollment> | Promise<Nullable<Enrollment>>;
+
+    abstract createFeatured(createFeaturedInput: CreateFeaturedInput): Featured | Promise<Featured>;
+
+    abstract deleteFeatured(id_featured: number): Nullable<Featured> | Promise<Nullable<Featured>>;
+
+    abstract createGroup(createGroupInput: CreateGroupInput): Group | Promise<Group>;
+
+    abstract updateGroup(updateGroupInput: UpdateGroupInput): Group | Promise<Group>;
+
+    abstract deleteGroup(id_group: number): Nullable<Group> | Promise<Nullable<Group>>;
+
+    abstract createScholarYear(createScholarYearInput: CreateScholarYearInput): ScholarYear | Promise<ScholarYear>;
+
+    abstract updateScholarYear(updateScholarYearInput: UpdateScholarYearInput): ScholarYear | Promise<ScholarYear>;
+
+    abstract deleteScholarYear(id_year: number): Nullable<ScholarYear> | Promise<Nullable<ScholarYear>>;
+
+    abstract selectScholarYear(id_year: number): Nullable<ScholarYear> | Promise<Nullable<ScholarYear>>;
+
+    abstract createStudent(createStudentInput: CreateStudentInput, id_group: number): Student | Promise<Student>;
+
+    abstract updateStudent(updateStudentInput: UpdateStudentInput): Student | Promise<Student>;
+
+    abstract deleteStudent(id_student: number): Nullable<Student> | Promise<Nullable<Student>>;
+
+    abstract createTeacher(createTeacherInput: CreateTeacherInput): Teacher | Promise<Teacher>;
+
+    abstract updateTeacher(updateTeacherInput: UpdateTeacherInput): Teacher | Promise<Teacher>;
+
+    abstract deleteTeacher(id_teacher: number): Nullable<Teacher> | Promise<Nullable<Teacher>>;
+
+    abstract createTypeQualification(createTypeQualificationInput: CreateTypeQualificationInput): TypeQualification | Promise<TypeQualification>;
+
+    abstract deleteTypeQualification(id_type_qual: number): Nullable<TypeQualification> | Promise<Nullable<TypeQualification>>;
+
+    abstract updateUser(updateUserInput: UpdateUserInput): User | Promise<User>;
+}
+
+export class Achievement {
+    id_achievement: number;
+    id_course?: Nullable<number>;
+    period?: Nullable<number>;
+    description?: Nullable<string>;
+}
+
+export class Qualification {
+    id_achie_stu: number;
+    id_achievement?: Nullable<number>;
+    id_student?: Nullable<number>;
+    score?: Nullable<number>;
+}
+
+export class QualificationList {
+    student: string;
+    qualifications: Nullable<Qualification>[];
+}
+
+export class Area {
+    id_area: number;
+    name?: Nullable<string>;
+    status?: Nullable<string>;
+}
+
+export class Course {
+    id_course: number;
+    id_group: number;
+    id_area: number;
+    area?: Nullable<Area>;
+    id_teacher: number;
+    teacher?: Nullable<Teacher>;
+    name: string;
+    position?: Nullable<number>;
+    dimension_code?: Nullable<number>;
+    dimension_type?: Nullable<string>;
+    hour: number;
+    average?: Nullable<string>;
+    percentage?: Nullable<number>;
+}
+
+export class Definitives {
+    id_cour_stu: number;
+    id_student?: Nullable<number>;
+    id_course?: Nullable<number>;
+    score1?: Nullable<string>;
+    score2?: Nullable<string>;
+    score3?: Nullable<string>;
+    score4?: Nullable<string>;
+    score5?: Nullable<string>;
+}
+
+export class Enrollment {
+    id_enrollment: number;
+    id_student?: Nullable<number>;
+    id_group?: Nullable<number>;
+    year?: Nullable<number>;
+    status?: Nullable<string>;
+    reason_desertion?: Nullable<string>;
+    date_desertion?: Nullable<string>;
+}
+
+export class Featured {
+    id_featured: number;
+    id_group?: Nullable<number>;
+    id_student?: Nullable<number>;
+}
+
+export class Group {
+    id_group: number;
+    id_year?: Nullable<number>;
+    level?: Nullable<number>;
+    sublevel?: Nullable<string>;
+    working_time?: Nullable<string>;
+    representative?: Nullable<string>;
+    coursesCount?: Nullable<number>;
+}
+
+export class Institution {
+    id_institution: number;
+    name: string;
+    register: string;
+    direction: string;
+    phone: string;
+    responsible: string;
+    logo?: Nullable<string>;
+    user: string;
+    pay_inscription: number;
+    monthly_pay: number;
+    day: string;
+    month: string;
+    year: string;
+    version: number;
+    status: string;
+    title: string;
+    message: string;
+    information: string;
+}
+
+export class Report {
+    report_content: string;
+}
+
+export class ScholarYear {
+    id_year: number;
+    rector?: Nullable<string>;
+    secretary?: Nullable<string>;
+    comment?: Nullable<string>;
+}
+
+export class ResumeDefinitive {
+    score1?: Nullable<string>;
+    score2?: Nullable<string>;
+    score3?: Nullable<string>;
+    score4?: Nullable<string>;
+}
+
+export class ResumeCourse {
+    id_course?: Nullable<number>;
+    name?: Nullable<string>;
+    teacher?: Nullable<string>;
+    definitives?: Nullable<ResumeDefinitive>;
+}
+
+export class ResumeGroup {
+    id_group?: Nullable<number>;
+    level?: Nullable<number>;
+    sublevel?: Nullable<string>;
+    courses?: Nullable<Nullable<ResumeCourse>[]>;
+}
+
+export class Student {
+    id_student: number;
+    name?: Nullable<string>;
+    last_name?: Nullable<string>;
+    type_id?: Nullable<number>;
+    identification?: Nullable<string>;
+    sex?: Nullable<string>;
+    direction?: Nullable<string>;
+    phone?: Nullable<string>;
+    guardian?: Nullable<string>;
+    status?: Nullable<string>;
+    birthday?: Nullable<string>;
+    father?: Nullable<string>;
+    mother?: Nullable<string>;
+    email?: Nullable<string>;
+    groups?: Nullable<Nullable<ResumeGroup>[]>;
+}
+
+export class Teacher {
+    id_teacher: number;
+    name?: Nullable<string>;
+    last_name?: Nullable<string>;
+    type_id?: Nullable<number>;
+    identification?: Nullable<string>;
+    direction?: Nullable<string>;
+    phone?: Nullable<string>;
+    email?: Nullable<string>;
+    degree?: Nullable<string>;
+}
+
+export class TypeQualification {
+    id_type_qual: number;
+    name?: Nullable<string>;
+    floor_score?: Nullable<number>;
+    ceiling_score?: Nullable<number>;
+    year?: Nullable<number>;
+}
+
+export class User {
+    id_user: number;
+    user: string;
+    password: string;
+    typeu: string;
+    status: string;
+    belongs: string;
+}
+
+export class Auth {
+    token?: Nullable<string>;
+    role?: Nullable<string>;
+}
+
+type Nullable<T> = T | null;

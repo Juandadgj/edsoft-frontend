@@ -1,12 +1,5 @@
-import React, { useEffect, useMemo } from "react";
-import {
-  useCoursesLazyQuery,
-  useGroupsQuery,
-  useAchievementsLazyQuery,
-  useGetStudentsByGroupLazyQuery,
-  useGenerateReportAreaLazyQuery,
-  useScholearYearSelectedQuery,
-} from "../../../../../generated/graphql";
+import React, { useEffect, useMemo, useState } from "react";
+
 import { useRouter } from "next/router";
 import ReportConfigurable from "../ReportConfigurable";
 import { ContainerComponents } from "@/components/ContainerComponents";
@@ -16,6 +9,12 @@ import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
 import { CourseComponent } from "@/components/MainComponents/CourseComponent";
 import { FilePenLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { reportService } from "@/services/api.service";
+import {
+  useGetStudentsByGroupLazyQuery,
+  useGroupsQuery,
+} from "@/hooks/useRestApi";
+import { Student } from "@/types";
 
 const columnsDeliverable = [
   {
@@ -67,19 +66,11 @@ const NavigationComponent = () => {
   const { year } = useSchoolYear();
   const { query, replace, push, back, pathname, asPath } = useRouter();
   const { g, per, opcion, s } = query;
-  const { data: groups, loading: loadingGroups } = useGroupsQuery({
-    variables: { filterGroupInput: { id_year: year } },
-  });
 
-  const [
-    getStudents,
-    { data: students, loading: loadingStudents, error: errorStudents },
-  ] = useGetStudentsByGroupLazyQuery();
-
-  const [reportArea, { data: areaReport }] = useGenerateReportAreaLazyQuery({
-    fetchPolicy: "no-cache",
-  });
-
+  const [getStudents] = useGetStudentsByGroupLazyQuery();
+  const [isLoadingReport, setIsLoadingReport] = useState(false);
+  const [isLoadingStudents, setIsLoadingStudents] = useState(false);
+  const [students, setStudents] = useState<Student[]>([]);
   const handlerSelectedGroup = (id: any) => {
     const params = new URLSearchParams();
     params.append("g", id);
@@ -88,34 +79,39 @@ const NavigationComponent = () => {
 
   const handlerSpreadsheet = (id: any, id_student: any) => {
     if (opcion !== "6") {
-      reportArea({
-        variables: {
-          generateReportAreaInput: {
+      setIsLoadingReport(true);
+      reportService
+        .area(
+          {
             id_group: id,
             id_student: id_student,
-            report_options: {
-              professor_course: false,
-              average_general: false,
-              average_group: false,
-              average_area: true,
-              hour: true,
-              absences: true,
-              all_qualifications: true,
-              qualification_per1: true,
-              qualification_per2: true,
-              qualification_per3: true,
-              qualification_per4: true,
-              average_per: true,
-              signature: {
-                professor_group: true,
-              },
+          },
+          {
+            professor_course: false,
+            average_general: false,
+            average_group: false,
+            average_area: true,
+            hour: true,
+            absences: true,
+            all_qualifications: true,
+            qualification_per1: true,
+            qualification_per2: true,
+            qualification_per3: true,
+            qualification_per4: true,
+            average_per: true,
+            signature: {
+              professor_group: true,
             },
           },
-        },
-      }).then((res) => {
-        const { data } = res;
-        handleOpenHTML(data?.generateReportArea.report_content);
-      });
+        )
+        .then((res) => {
+          handleOpenHTML(res.report_content);
+          setIsLoadingReport(false);
+        })
+        .catch((err) => {
+          console.error("Error generating report:", err);
+          setIsLoadingReport(false);
+        });
     } else {
       push(`${asPath}&s=${id_student}`);
     }
@@ -125,23 +121,9 @@ const NavigationComponent = () => {
     window.open()?.document.write(htmlString);
   };
 
-  const processedGroups = useMemo(() => {
-    if (!groups?.groups) return [];
-    return groups.groups.map((group, index) => ({
-      id: group?.id_group,
-      name: `${getCourseLevel(group?.level)} - ${group?.sublevel}`,
-      group_teacher: group?.representative,
-      select: (
-        <button onClick={() => handlerSelectedGroup(group?.id_group)}>
-          Seleccionar grupo
-        </button>
-      ),
-    }));
-  }, [groups]);
-
   const processedStudents = useMemo(() => {
-    if (!students?.studentsByGroup) return [];
-    return students.studentsByGroup.map((student: any) => ({
+    if (!students) return [];
+    return students.map((student: any) => ({
       id_student: student?.id_student,
       student: `${student?.name} ${student?.last_name}`,
       periodo1: (
@@ -182,12 +164,15 @@ const NavigationComponent = () => {
 
   useEffect(() => {
     if (g) {
+      setIsLoadingStudents(true);
       getStudents({
-        variables: { idGroup: Number(g) },
+        variables: { id_group: Number(g) },
+      }).then((res) => {
+        setStudents(res);
+        setIsLoadingStudents(false);
       });
     }
-  }, [query]);
-
+  }, [g]);
   return (
     <ContainerComponents>
       <div className="w-full flex items-center justify-between my-3">
@@ -200,12 +185,12 @@ const NavigationComponent = () => {
       {!g && <CourseComponent isCreate={false} showSubjects={true} />}
       {g && opcion && !s && (
         <div className="h-full">
-          {loadingStudents && (
+          {isLoadingStudents && (
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
           )}
-          {students?.studentsByGroup && (
+          {students && (
             <TableComponent
               column={columsStudentPer}
               data={processedStudents}

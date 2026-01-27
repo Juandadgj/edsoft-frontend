@@ -1,15 +1,11 @@
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import teachers from "@/shared/teachers";
 import { Button, Space } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import {
-  useCreateTeacherMutation,
-  useDeleteTeacherMutation,
-  useTeachersQuery,
-  useUpdateTeacherMutation,
-} from "@/generated/graphql";
+import { teacherService } from "@/services/api.service";
+import type { Teacher } from "@/types/api.types";
 import TableComponent from "@/components/Table";
 import DynamicModal from "@/components/DynamicModal";
 import CustomModal from "@/components/CustomModal";
@@ -40,7 +36,8 @@ const columns = [
   },
 ];
 function Teachers() {
-  const [DeleteDocente] = useDeleteTeacherMutation();
+  const [teachersList, setTeachersList] = useState<Teacher[]>([]);
+  const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [teacher, setTeacher] = useState<any>({
     id_teacher: 0,
@@ -53,12 +50,26 @@ function Teachers() {
     email: "",
     degree: "",
   });
-  const { data, loading, refetch, error } = useTeachersQuery({
-    fetchPolicy: "network-only",
-  });
+
+  const fetchTeachers = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await teacherService.getAll();
+      setTeachersList(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchTeachers();
+  }, [fetchTeachers]);
+
   const processedTeachers = useMemo(() => {
-    if (!data) return [];
-    return data.teachers.map((teacher, index) => ({
+    if (!teachersList) return [];
+    return teachersList.map((teacher, index) => ({
       name: `${teacher?.name} ${teacher?.last_name}`,
       degree: teacher?.degree,
       update: (
@@ -99,29 +110,8 @@ function Teachers() {
               cancelButtonColor: "#d33",
               confirmButtonText: "Eliminar",
             }).then((result) => {
-              // If there is an id selected we delete that teacher
               if (result.isConfirmed && teacher?.id_teacher) {
-                DeleteDocente({
-                  variables: { idDocente: teacher.id_teacher },
-                }).then((res) => {
-                  if (res.data?.deleteTeacher) {
-                    Swal.fire({
-                      title: "Eliminado",
-                      text: "Docente Eliminado!",
-                      icon: "success",
-                      showConfirmButton: false,
-                      timer: 1500,
-                    });
-                    refetch();
-                  } else {
-                    Swal.fire({
-                      icon: "error",
-                      title: "Ha habido un error...",
-                      showConfirmButton: false,
-                      timer: 1500,
-                    });
-                  }
-                });
+                handleDeleteTeacher(teacher.id_teacher);
               }
             })
           }
@@ -140,7 +130,28 @@ function Teachers() {
         </button>
       ),
     }));
-  }, [data, DeleteDocente]);
+  }, [teachersList]);
+  const handleDeleteTeacher = async (id_teacher: number) => {
+    try {
+      await teacherService.delete(id_teacher);
+      Swal.fire({
+        title: "Eliminado",
+        text: "Docente Eliminado!",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      fetchTeachers();
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Ha habido un error...",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
+  };
+
   const handlerCreateTeacher = async () => {
     setOpen(true);
     setTeacher({
@@ -181,6 +192,7 @@ function Teachers() {
       email: "",
       degree: "",
     });
+    fetchTeachers();
   };
   return (
     <ContainerComponents>
@@ -204,10 +216,10 @@ function Teachers() {
             <span className="loading loading-dots loading-lg bg-main-blue"></span>
           </div>
         )}
-        {data?.teachers && (
+        {teachersList.length > 0 && (
           <TableComponent column={columns} data={processedTeachers} />
         )}
-        {error && <h3>¡Ocurrio un error!</h3>}
+        {!loading && teachersList.length === 0 && <h3>¡No hay docentes registrados!</h3>}
       </div>
       <CustomModal
         open={open}

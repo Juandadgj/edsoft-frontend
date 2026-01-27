@@ -1,17 +1,14 @@
 import { useMemo } from "react";
 import { useEffect, useState } from "react";
 import BookIcon from "@mui/icons-material/Book";
-import {
-  useCoursesLazyQuery,
-  useGenerateStudentsListDeterminatedLazyQuery,
-  useGroupsQuery,
-} from "@/generated/graphql";
 import { useRouter } from "next/router";
 import DescriptionIcon from "@mui/icons-material/Description";
 import useSchoolYear from "@/hooks/useSchoolYear";
 import { ContainerComponents } from "@/components/ContainerComponents";
 import TableComponent from "@/components/Table";
 import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
+import { reportService } from "@/services/api.service";
+import { useCoursesLazyQuery, useGroupsQuery } from "@/hooks/useRestApi";
 
 const columns = [
   {
@@ -64,21 +61,19 @@ const GlobalGradesDetermined = () => {
     variables: { filterGroupInput: { id_year: year } },
   });
 
-  const [reportArea] = useGenerateStudentsListDeterminatedLazyQuery({
-    fetchPolicy: "network-only",
-  });
+  const [isLoadingReport, setIsLoadingReport] = useState(false);
 
   const handlerSpreadsheet = (id_course: number) => {
-    reportArea({
-      variables: {
-        generateStudentsListDeterminatedInput: {
-          id_group: Number(g),
-          id_course: id_course,
-        },
-      },
+    setIsLoadingReport(true);
+    reportService.studentsListDeterminated({
+      id_group: Number(g),
+      id_course: id_course,
     }).then((res) => {
-      const { data } = res;
-      handleOpenHTML(data?.generateStudentsListDeterminated.report_content);
+      handleOpenHTML(res.report_content);
+      setIsLoadingReport(false);
+    }).catch((err) => {
+      console.error('Error generating report:', err);
+      setIsLoadingReport(false);
     });
   };
 
@@ -91,8 +86,8 @@ const GlobalGradesDetermined = () => {
   };
 
   const processedGroups = useMemo(() => {
-    if (!data?.groups) return [];
-    return data.groups.map((group, index) => ({
+    if (!data) return [];
+    return data.map((group, index) => ({
       name: `${getCourseLevel(group?.level)} - ${group?.sublevel}`,
       working_time: group?.working_time ?? "",
       group_teacher: group?.representative ?? "",
@@ -127,13 +122,13 @@ const GlobalGradesDetermined = () => {
   useEffect(() => {
     if (g) {
       getCourses({
-        variables: { filterCourseInput: { id_group: Number(g) } },
+        id_group: Number(g),
       });
     }
   }, [router]);
   useEffect(() => {
     if (courses) {
-      setSelectedCourses(processedCourses(courses.courses));
+      setSelectedCourses(processedCourses(courses));
     }
   }, [courses]);
   return (
@@ -154,7 +149,7 @@ const GlobalGradesDetermined = () => {
                 <span className="loading loading-dots loading-lg bg-main-blue"></span>
               </div>
             )}
-            {courses?.courses && (
+            {courses && (
                 <TableComponent column={columsCourses} data={selectedCourses} />
             )}
           </div>
@@ -167,7 +162,7 @@ const GlobalGradesDetermined = () => {
                   <span className="loading loading-dots loading-lg bg-main-blue"></span>
                 </div>
               )}
-              {data?.groups && (
+              {data && (
                   <TableComponent column={columns} data={processedGroups} />
               )}
             </div>

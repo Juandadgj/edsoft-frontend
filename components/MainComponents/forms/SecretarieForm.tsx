@@ -1,27 +1,21 @@
 import { Input } from "@/components/Input";
-import {
-  useCreateTeacherMutation,
-  useTeachersQuery,
-  useUpdateTeacherMutation,
-} from "@/generated/graphql";
+import { teacherService } from "@/services/api.service";
 import React, { useState } from "react";
 
 export const SecretarieForm = ({
   secretarie,
   setSecretarie,
   onClose,
-  setOpen
+  setOpen,
+  onSuccess,
 }: {
   secretarie?: any;
   setSecretarie: any;
   onClose: any;
   setOpen: any;
+  onSuccess?: () => void;
 }) => {
-  const { refetch } = useTeachersQuery({
-    fetchPolicy: "network-only",
-  });
-  const [AddTeacher] = useCreateTeacherMutation();
-  const [UpdateTeacher] = useUpdateTeacherMutation();
+  const [loading, setLoading] = useState(false);
   // Obj to manage every input error
   const [errors, setErrors] = useState<any>({
     name: "",
@@ -74,28 +68,53 @@ export const SecretarieForm = ({
   };
   const handlerCreateTeacher = async () => {
     if (validationEvent()) {
-      await AddTeacher({ variables: { createTeacherInput: secretarie } }).then(
-        (res) => {
-          if (res.data) {
-            cleaningStates();
-            refetch();
-            setOpen(false);
-          }
-        }
-      );
-    }
-  };
-  const handlerUpdateTeacher = async (form: any) => {
-    if (validationEvent()) {
-      await UpdateTeacher({
-        variables: { updateTeacherInput: secretarie },
-      }).then((res) => {
-        if (res.data) {
+      setLoading(true);
+      try {
+        const createData = {
+          name: secretarie.name,
+          last_name: secretarie.last_name,
+          identification: secretarie.identification,
+          direction: secretarie.direction,
+          phone: secretarie.phone,
+          email: secretarie.email,
+          degree: secretarie.degree,
+          type_id: 2,
+        };
+        const res = await teacherService.create(createData);
+        if (res) {
           cleaningStates();
-          refetch();
+          onSuccess?.();
           setOpen(false);
         }
-      });
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+  const handlerUpdateTeacher = async () => {
+    if (validationEvent()) {
+      setLoading(true);
+      try {
+        const updateData = {
+          id_teacher: secretarie.id_teacher,
+          name: secretarie.name,
+          last_name: secretarie.last_name,
+          identification: secretarie.identification,
+          direction: secretarie.direction,
+          phone: secretarie.phone,
+          email: secretarie.email,
+          degree: secretarie.degree,
+          type_id: secretarie.type_id || 2,
+        };
+        const res = await teacherService.update(updateData);
+        if (res) {
+          cleaningStates();
+          onSuccess?.();
+          setOpen(false);
+        }
+      } finally {
+        setLoading(false);
+      }
     }
   };
   return (

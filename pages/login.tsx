@@ -1,6 +1,7 @@
-import { useSignInLazyQuery } from "@/generated/graphql";
+import { authService } from "@/services/api.service";
+import type { Auth } from "@/types/api.types";
 import { useRouter } from "next/router";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Logo from "../public/assets/logo@2x.png";
@@ -14,24 +15,40 @@ function Test() {
   const { id, colegio } = router.query;
   const [username, setUsername] = useState("gilberto");
   const [password, setPassword] = useState("barco");
-  const [getUser, { data, loading, error }] = useSignInLazyQuery();
+  const [data, setData] = useState<Auth | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const getUser = async (signInInput: { user: string; password: string; id_institution: number }) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await authService.signIn(signInInput);
+      setData(result);
+      return result;
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!id || !colegio) {
       router.push("/instituciones");
       return;
     }
-  }, [data, router]);
+  }, [id, colegio, router]);
+
   useEffect(() => {
     if (data) {
-      console.log(data);
-      const token = data.signIn.token;
-      console.log(token);
+      const token = data.token;
       if (token) {
         sessionStorage.setItem("userToken", token);
+        router.push("/dashboard");
       }
-      router.push("/dashboard");
     }
-  }, [data]);
+  }, [data, router]);
   return (
     <div className="h-screen bg-[#EFEFEF]">
       <div className="flex items-center justify-start px-5 py-2">
@@ -102,16 +119,11 @@ function Test() {
           {error && <div className="text-red-500">¡Ocurrio un error! {error.message}</div>}
           <Button
             className="btn bg-main-blue pl-4 mb-5 hover:bg-[#0b5ed7] text-white border-none"
-            onClick={(e) => {
-              console.log("login");
+            onClick={() => {
               getUser({
-                variables: {
-                  signInInput: {
-                    password: password,
-                    user: username,
-                    id_institution: 1059,
-                  },
-                },
+                password: password,
+                user: username,
+                id_institution: 1059,
               });
             }}
           >

@@ -1,10 +1,6 @@
 import { useMemo } from "react";
 import { useEffect, useState } from "react";
-import {
-  useGenerateReportAreaLazyQuery,
-  useGenerateStudentsListUndeterminatedLazyQuery,
-  useGroupsQuery,
-} from "@/generated/graphql";
+
 import Table from "@/components/Table";
 import { useRouter } from "next/router";
 import DescriptionIcon from "@mui/icons-material/Description";
@@ -12,6 +8,8 @@ import useSchoolYear from "@/hooks/useSchoolYear";
 import { ContainerComponents } from "@/components/ContainerComponents";
 import TableComponent from "@/components/Table";
 import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
+import { reportService } from "@/services/api.service";
+import { useGroupsQuery } from "@/hooks/useRestApi";
 
 const columns = [
   {
@@ -43,35 +41,19 @@ const GlobalGradesUndetermined = () => {
     variables: { filterGroupInput: { id_year: year } },
   });
 
-  const [
-    getGenerateReport,
-    { data: reports },
-  ] = useGenerateReportAreaLazyQuery();
-
-  const [
-    reportArea,
-    { data: areaReport },
-  ] = useGenerateStudentsListUndeterminatedLazyQuery({
-    fetchPolicy: "no-cache",
-  });
-
-  useEffect(() => {
-    setActive(true);
-  }, []);
-
   const handlerSpreadsheet = (id: any) => {
-    reportArea({
-      variables: {
-        generateStudentsListUndeterminatedInput: {
-          id_group: id,
-        },
-      },
+    reportService.studentsListUndeterminated({
+      id_group: id,
+    }).then((res) => {
+      window.open()?.document.write(res.report_content);
+    }).catch((err) => {
+      console.error('Error generating report:', err);
     });
   };
 
   const processedGroups = useMemo(() => {
-    if (!data?.groups) return [];
-    return data.groups.map((group, index) => ({
+    if (!data) return [];
+    return data.map((group, index) => ({
       id_group: group?.id_group ?? "",
       name: `${getCourseLevel(group?.level)} - ${group?.sublevel}`,
       working_time: group?.working_time ?? "",
@@ -86,16 +68,6 @@ const GlobalGradesUndetermined = () => {
       ),
     }));
   }, [data]);
-
-  useEffect(() => {
-    if (areaReport) {
-      window
-        .open()
-        ?.document.write(
-          areaReport.generateStudentsListUndeterminated.report_content
-        );
-    }
-  }, [areaReport]);
 
   return (
     <ContainerComponents>
@@ -112,13 +84,13 @@ const GlobalGradesUndetermined = () => {
             <span className="loading loading-dots loading-lg bg-main-blue"></span>
           </div>
         )}
-        {data?.groups && (
+        {data && (
           <TableComponent column={columns} data={processedGroups} />
         )}
       </div>
       {g && pdfBase64 && (
         <iframe
-          src={`data:application/pdf;base64,${pdfBase64.generateReport.report_content}`}
+          src={`data:application/pdf;base64,${pdfBase64}`}
           width="100%"
           height="600"
           title="PDF Viewer"

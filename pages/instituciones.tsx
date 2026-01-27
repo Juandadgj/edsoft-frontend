@@ -1,13 +1,13 @@
 import Nav from "../components/Nav";
-import { useMemo } from "react";
-import { useGetInstitutionsQuery } from "../generated/graphql";
-import { useEffect } from "react";
+import { useMemo, useCallback } from "react";
+import { institutionService } from "@/services/api.service";
+import type { Institution } from "@/types/api.types";
+import { useEffect, useState } from "react";
 import TableComponent from "@/components/Table";
 import { Table } from "antd";
 const { Column, ColumnGroup } = Table;
 import Link from "next/link";
 import { EyeOutlined } from "@ant-design/icons";
-import { data } from "autoprefixer";
 const columns = [
   {
     title: "Nombre",
@@ -37,21 +37,34 @@ const columns = [
 ];
 
 function Institutions() {
-  const { data, loading, error } = useGetInstitutionsQuery();
+  const [institutions, setInstitutions] = useState<Institution[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchInstitutions = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await institutionService.getAll();
+      setInstitutions(data || []);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     sessionStorage.removeItem("userToken");
-  }, []);
+    fetchInstitutions();
+  }, [fetchInstitutions]);
 
   const processedInstitutions = useMemo(() => {
-    if (!data?.institutions) return [];
-    console.log(data.institutions);
-    return data.institutions.map((institution, index) => ({
+    if (!institutions) return [];
+    return institutions.map((institution, index) => ({
       id: institution?.id_institution ?? index,
       name: institution?.name ?? "",
       address: institution?.direction ?? "",
     }));
-  }, [data]);
+  }, [institutions]);
 
   return (
     <div className="w-full h-full pb-3">
@@ -61,16 +74,19 @@ function Institutions() {
           <div className="flex justify-center items-center font-bold text-black text-xl my-5">
             <h4>Lista de instituciones Educativas</h4>
           </div>
-          {error && <div>¡Ocurrio un error!</div>}
-          {data?.institutions && !loading && (
+          {institutions && !loading && (
             <Table
-              rowKey={"id"}
+              rowKey={"id_institution"}
               columns={columns}
               dataSource={processedInstitutions}
               pagination={false}
             />
           )}
-          {loading}
+          {loading && (
+            <div className="w-full h-full flex justify-center items-center">
+              <span className="loading loading-dots loading-lg bg-main-blue"></span>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -1,39 +1,7 @@
-import React, { useMemo } from "react";
-import { useEffect, useState } from "react";
-import Table from "@/components/Table";
-import { useRouter } from "next/router";
-import {
-  useGroupsQuery,
-  useScholearYearSelectedQuery,
-} from "@/generated/graphql";
+import React from "react";
 import useSchoolYear from "@/hooks/useSchoolYear";
 import { ContainerComponents } from "@/components/ContainerComponents";
-import TableComponent from "@/components/Table";
-import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
 import { CourseComponent } from "../CourseComponent";
-
-const columns = [
-  {
-    title: "Curso",
-    dataIndex: "name",
-    key: "name",
-  },
-  {
-    title: " Id del profesor",
-    dataIndex: "group_teacher",
-    key: "group_teacher",
-  },
-  {
-    title: "Estudiantes",
-    dataIndex: "students",
-    key: "students",
-  },
-  {
-    title: "Acciones",
-    dataIndex: "select",
-    key: "select",
-  },
-];
 
 export const StudentsLastYear = () => {
   const { year } = useSchoolYear();

@@ -1,8 +1,4 @@
-import {
-  useCreateGroupMutation,
-  useGroupsQuery,
-  useUpdateGroupMutation,
-} from "@/generated/graphql";
+import { groupService, teacherService } from "@/services/api.service";
 import React, { useState } from "react";
 
 export const CourseForm = ({
@@ -14,6 +10,7 @@ export const CourseForm = ({
   working_time,
   year,
   teachers,
+  onSuccess,
 }: {
   course?: any;
   setCourse: any;
@@ -23,15 +20,9 @@ export const CourseForm = ({
   working_time?: any[];
   year?: any;
   teachers?: any[];
+  onSuccess?: () => void;
 }) => {
-  const { refetch } = useGroupsQuery({
-    variables: {
-      filterGroupInput: { id_year: year },
-    },
-  });
-
-  const [createGroup] = useCreateGroupMutation();
-  const [updateGroup] = useUpdateGroupMutation();
+  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<any>({
     course: "",
     group: "",
@@ -70,44 +61,45 @@ export const CourseForm = ({
   };
   const handlerCreateGroup = async () => {
     if (validationEvent()) {
-      await createGroup({
-        variables: {
-          createGroupInput: {
-            id_year: year ? year : 0,
-            level: Number(course.level),
-            sublevel: course.sublevel,
-            representative: course.representative.toString(),
-            working_time: course.workingTime,
-          },
-        },
-      })
-        .then((res) => {
-          if (res.data?.createGroup) {
-            refetch();
-            onClose();
-          }
-        })
-        .catch((err) => {
-          console.log(err, "err");
-        });
+      setLoading(true);
+      try {
+        const createData = {
+          id_year: year || 0,
+          level: Number(course.level),
+          sublevel: course.sublevel,
+          representative: course.representative.toString(),
+          working_time: course.workingTime,
+        };
+        const res = await groupService.create(createData);
+        if (res) {
+          onSuccess?.();
+          onClose();
+        }
+      } finally {
+        setLoading(false);
+      }
     }
   };
   const handlerUpdateGroup = async () => {
     if (validationEvent()) {
-      await updateGroup({
-        variables: {
-          updateGroupInput: {
-            id_group: course.id_group,
-            representative: course.representative.toString(),
-            working_time: course.workingTime,
-          },
-        },
-      }).then((res) => {
-        if (res.data?.updateGroup) {
-          refetch();
+      setLoading(true);
+      try {
+        const updateData = {
+          id_group: course.id_group,
+          level: Number(course.level),
+          sublevel: course.sublevel,
+          representative: course.representative.toString(),
+          working_time: course.workingTime,
+          id_year: year || 0,
+        };
+        const res = await groupService.update(updateData);
+        if (res) {
+          onSuccess?.();
           onClose();
         }
-      });
+      } finally {
+        setLoading(false);
+      }
     }
   };
   return (

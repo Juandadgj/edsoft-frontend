@@ -1,51 +1,63 @@
 import { Input } from "@/components/Input";
-import {
-  useCreateAreaMutation,
-  useGetAreasQuery,
-  useUpdateAreaMutation,
-} from "@/generated/graphql";
+import { areaService } from "@/services/api.service";
+import type { Area, CreateAreaDto, UpdateAreaDto } from "@/types/api.types";
 import React, { useState } from "react";
 
 export const AreaForm = ({
   area,
   onClose,
   setArea,
+  onSuccess,
 }: {
   area?: any;
   onClose: any;
   setArea: any;
+  onSuccess?: () => void;
 }) => {
-    const {refetch} = useGetAreasQuery();
-  
-  const [UpdateArea] = useUpdateAreaMutation();
-  const [CreateArea] = useCreateAreaMutation();
+  const [loading, setLoading] = useState(false);
 
   const [errors, setErrors] = useState<any>({
     name: "",
   });
+
   const handlerCreateArea = async () => {
     if (validationEvent()) {
-      await CreateArea({ variables: { createAreaInput: {
-        name: area.name,
-        status: area.status,
-      } } }).then((res) => {
-        if (res.data) {
-          refetch()
+      setLoading(true);
+      try {
+        const createData: CreateAreaDto = {
+          name: area.name,
+          status: area.status,
+        };
+        const res = await areaService.create(createData);
+        if (res) {
+          onSuccess?.();
           cleaningStates();
           onClose();
         }
-      });
+      } finally {
+        setLoading(false);
+      }
     }
   };
+
   const handlerUpdateArea = async () => {
     if (validationEvent()) {
-      await UpdateArea({ variables: { updateAreaInput: area } }).then((res) => {
-        if (res.data) {
-          refetch()
+      setLoading(true);
+      try {
+        const updateData: UpdateAreaDto = {
+          id_area: area.id_area,
+          name: area.name,
+          status: area.status,
+        };
+        const res = await areaService.update(updateData);
+        if (res) {
+          onSuccess?.();
           onClose();
           cleaningStates();
         }
-      });
+      } finally {
+        setLoading(false);
+      }
     }
   };
   const validationEvent = () => {

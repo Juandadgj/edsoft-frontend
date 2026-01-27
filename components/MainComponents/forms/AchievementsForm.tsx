@@ -1,20 +1,18 @@
-import {
-  useCreateAchievementMutation,
-  useUpdateAchievementMutation,
-} from "@/generated/graphql";
+import { achievementService } from "@/services/api.service";
 import React, { useState } from "react";
 
 export const AchievementsForm = ({
   achievement,
   setAchievement,
   onClose,
+  onSuccess,
 }: {
   achievement: any;
   setAchievement: any;
   onClose: any;
+  onSuccess?: () => void;
 }) => {
-  const [createAchievement] = useCreateAchievementMutation();
-  const [updateAchievement] = useUpdateAchievementMutation();
+  const [loading, setLoading] = useState(false);
 
   const [errors, setErrors] = useState<any>({
     description: "",
@@ -52,39 +50,43 @@ export const AchievementsForm = ({
   };
   const handlerCreateAchievement = async () => {
     if (validationEvent()) {
-      await createAchievement({
-        variables: {
-          createAchievementInput: {
-            description: achievement.description,
-            id_course: Number(achievement.id_course),
-            period: Number(achievement.period),
-          },
-        },
-      }).then((res) => {
-        if (res.data) {
+      setLoading(true);
+      try {
+        const createData = {
+          description: achievement.description,
+          id_course: Number(achievement.id_course),
+          period: Number(achievement.period),
+        };
+        const res = await achievementService.create(createData);
+        if (res) {
+          onSuccess?.();
           onClose();
           cleaningStates();
         }
-      });
+      } finally {
+        setLoading(false);
+      }
     }
   };
   const handlerUpdateAchievement = async () => {
     if (validationEvent()) {
-      await updateAchievement({
-        variables: {
-          updateAchievementInput: {
-            id_achievement: achievement.id_achievement,
-            description: achievement.description,
-            id_course: Number(achievement.id_course),
-            period: Number(achievement.period),
-          },
-        },
-      }).then((res) => {
-        if (res.data) {
+      setLoading(true);
+      try {
+        const updateData = {
+          id_achievement: achievement.id_achievement,
+          description: achievement.description,
+          id_course: Number(achievement.id_course),
+          period: Number(achievement.period),
+        };
+        const res = await achievementService.update(updateData);
+        if (res) {
+          onSuccess?.();
           onClose();
           cleaningStates();
         }
-      });
+      } finally {
+        setLoading(false);
+      }
     }
   };
   return (

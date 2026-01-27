@@ -8,9 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Radio } from "@/components/ui/radio";
 import { Select } from "@/components/ui/select";
-import { GradeDisplayMode, useGenerateCertifiedStudentReportLazyQuery } from "@/generated/graphql";
+import {
+  CertifiedStudentDictionary,
+  GradeDisplayMode,
+} from "@/types/api.types";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
+import { reportService } from "@/services/api.service";
 
 const gradeDisplayOptions: FormOption[] = [
   { value: "nota_numerica", label: "Nota Numerica" },
@@ -133,28 +137,12 @@ export const certificateFormSchema: FormField[] = [
     type: "checkbox",
     defaultValue: true,
   },
-  {
-    id: "showAreas",
-    label: "Mostrar Areas",
-    type: "checkbox",
-    defaultValue: false,
-  },
-  {
-    id: "showAchievements",
-    label: "Mostrar Logros",
-    type: "checkbox",
-    defaultValue: false,
-  },
 ];
 
 export const Configuration = ({ initialData = {} }: { initialData?: any }) => {
-  const [generateReport, { data }] = useGenerateCertifiedStudentReportLazyQuery(
-    {
-      fetchPolicy: "network-only",
-    },
-  );
+  const [isLoadingReport, setIsLoadingReport] = useState(false);
   const router = useRouter();
-  const { s } = router.query;
+  const { s, g } = router.query;
   const [formData, setFormData] = useState<Record<string, FieldValue>>(() => {
     const defaultState: Record<string, FieldValue> = {};
     certificateFormSchema.forEach((field) => {
@@ -178,40 +166,44 @@ export const Configuration = ({ initialData = {} }: { initialData?: any }) => {
     }));
   }, []);
   const handleGenerateCertificate = () => {
-    console.log(s,"query")
-    generateReport({
-      variables: {
-        generateCertifiedStudentReportInput: {
+    setIsLoadingReport(true);
+    reportService
+      .certifiedStudent(
+        {
           id_student: Number(s),
-          report_options: {
-            hour: formData.showIntensidadHoraria as boolean,
-            qualification_per1: formData.showNotesPeriodOne as boolean,
-            qualification_per2: formData.showNotesPeriodTwo as boolean,
-            qualification_per3: formData.showNotesPeriodThree as boolean,
-            qualification_per4: formData.showNotesPeriodFour as boolean,
-            qualification_per5: formData.showNotesPeriodFive as boolean,
-            average_per: formData.averagePer as boolean,
-            signature: {
-              professor_group: formData.showGroupProfessorSignature as boolean,
-              rector: formData.showRectorSignature as boolean,
-              secretary: formData.showSecretarySignature as boolean,
-            },
-            gradeDisplayConfig: formData.gradeDisplayConfig as GradeDisplayMode,
-          },
+          id_group: Number(g),
         },
-      },
-    }).then((res) => {
-      const { data } = res;
-      console.log(data, "data");
-      handleOpenHTML(data?.generateCertifiedStudentReport.report_content);
-    }).catch((err) => {
-      console.log(err);
-    });
+        {
+          hour: formData.showIntensidadHoraria as boolean,
+          qualification_per1: formData.showNotesPeriodOne as boolean,
+          qualification_per2: formData.showNotesPeriodTwo as boolean,
+          qualification_per3: formData.showNotesPeriodThree as boolean,
+          qualification_per4: formData.showNotesPeriodFour as boolean,
+          average_per: formData.averagePer as boolean,
+          signature: {
+            professor_group: formData.showGroupProfessorSignature as boolean,
+            rector: formData.showRectorSignature as boolean,
+            secretary: formData.showSecretarySignature as boolean,
+          },
+          showLogo: formData.showLogo as boolean,
+          headerTitleSize: formData.headerTitleSize as number,
+          showHeaderSubtitle: formData.showSubtitleHeader as boolean,
+          gradeDisplayConfig: formData.gradeDisplayConfig as GradeDisplayMode,
+        },
+      )
+      .then((res) => {
+        console.log(res, "res");
+        handleOpenHTML(res.report_content);
+        setIsLoadingReport(false);
+      })
+      .catch((err) => {
+        console.error("Error generating report:", err);
+        setIsLoadingReport(false);
+      });
   };
   const handleOpenHTML = (htmlString: string | undefined) => {
     window.open()?.document.write(htmlString ? htmlString : "");
   };
-  console.log(data, "certi")
   return (
     <div className="w-full h-full">
       <div className="grid grid-cols-2">
@@ -225,18 +217,21 @@ export const Configuration = ({ initialData = {} }: { initialData?: any }) => {
           />
         ))}
       </div>
-      <Button
-        className="bg-main-blue hover:bg-[#0b5ed7] text-white border-none mt-2"
-        variant="default"
-        onClick={() => {
-          handleGenerateCertificate();
-        }}
-      >
-        Generar certificado
-      </Button>
-      <pre className="text-sm text-black bg-white p-3 rounded overflow-x-auto">
+      <div className="w-full  flex justify-center">
+        <Button
+          disabled={isLoadingReport}
+          className="bg-main-blue hover:bg-[#0b5ed7] text-white border-none mt-2"
+          variant="default"
+          onClick={() => {
+            handleGenerateCertificate();
+          }}
+        >
+          Generar certificado
+        </Button>
+      </div>
+      {/* <pre className="text-sm text-black bg-white p-3 rounded overflow-x-auto">
         {JSON.stringify(formData, null, 2)}
-      </pre>
+      </pre> */}
     </div>
   );
 };

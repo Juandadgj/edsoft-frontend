@@ -1,10 +1,11 @@
 import Table from "@/components/Table";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useGetStudentsLazyQuery, GetStudentsQuery } from "@/generated/graphql";
 import { ContainerComponents } from "@/components/ContainerComponents";
 import TableComponent from "@/components/Table";
 import { Input } from "@/components/Input";
+import { studentService } from "@/services/api.service";
+import type { Student } from "@/types/api.types";
 const columns = [
   {
     title: "Apellido y Nombre",
@@ -38,26 +39,14 @@ export const SearchStudent = () => {
   const [identification, setIdentification] = useState("");
   const [name, setName] = useState("");
   const [students, setStudents] = useState<any>([]);
+  const [loadingStudentsData, setLoadingStudentsData] = useState(false);
+  const [errorStudentsData, setErrorStudentsData] = useState<any>(null);
+  const [studentsData, setStudentsData] = useState<Student[] | null>(null);
 
-  const [
-    getStudents,
-    {
-      data: studentsData,
-      loading: loadingStudentsData,
-      error: errorStudentsData,
-    },
-  ] = useGetStudentsLazyQuery({ fetchPolicy: "network-only" });
-
-  useEffect(() => {
-    if (studentsData) {
-      setStudents(processedStudents(studentsData));
-    }
-  }, [studentsData]);
-
-  const processedStudents = (data: GetStudentsQuery) => {
-    if (!data.students) return [];
-    return data.students?.map((student: any, index: any) => ({
-      id_student: student?.id_course,
+  const processedStudents = useCallback((data: Student[]) => {
+    if (!data) return [];
+    return data.map((student: Student) => ({
+      id_student: student?.id_student,
       name: `${student.name} ${student.last_name}`,
       certified: "",
       info: (
@@ -104,8 +93,8 @@ export const SearchStudent = () => {
             <g
               fill="none"
               stroke="#e11d48"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
               <circle cx="5" cy="3.75" r="2.25" />
               <path d="M6.5 13.5h-6V12a4.5 4.5 0 0 1 7.39-3.45m.61 2.95h5" />
@@ -114,13 +103,22 @@ export const SearchStudent = () => {
         </button>
       ),
     }));
-  };
+  }, [router]);
 
-  const handlerSearchStudents = () => {
-    getStudents({
-      variables: { filterStudentInput: { name, identification } },
-    });
-  };
+  const handlerSearchStudents = useCallback(async () => {
+    setLoadingStudentsData(true);
+    setErrorStudentsData(null);
+    try {
+      const data = await studentService.getAll({ name, identification } as any);
+      setStudentsData(data);
+      setStudents(processedStudents(data));
+    } catch (error) {
+      setErrorStudentsData(error);
+      console.error("Error searching students:", error);
+    } finally {
+      setLoadingStudentsData(false);
+    }
+  }, [name, identification, processedStudents]);
 
   return (
     <ContainerComponents>
@@ -186,7 +184,7 @@ export const SearchStudent = () => {
             {errorStudentsData && (
               <div className="text-sm font-semibold text-red-500 w-full flex justify-center items-center mt-5">
                 <div className="w-full">
-                  <h1 className="text-center">{errorStudentsData.message} </h1>
+                  <h1 className="text-center">{(errorStudentsData as any)?.message || "Error en la búsqueda"} </h1>
                 </div>
               </div>
             )}

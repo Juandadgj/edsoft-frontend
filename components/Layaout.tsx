@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import { SchoolAvatar } from "./SchoolAvatar";
 import { Layout, Menu, Select, theme } from "antd";
@@ -6,11 +6,8 @@ import Image from "next/image";
 import Logo from "../public/assets/logo@2x.png";
 import { BreadCrumbs } from "./BreadCrumbs";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-import {
-  useGetSchoolarYearsQuery,
-  useScholearYearSelectedQuery,
-  useSelectScholarYearMutation,
-} from "@/generated/graphql";
+import { scholarYearService } from "@/services/api.service";
+import type { ScholarYear } from "@/types/api.types";
 import {
   AcademicProcessIcon,
   AnualProgramingIcon,
@@ -26,16 +23,41 @@ interface ILayaout {
 }
 
 const Layaout = ({ children, textpage }: ILayaout) => {
-  const { data: schoolYears } = useGetSchoolarYearsQuery();
-  const { data: scholarYear } = useScholearYearSelectedQuery();
-  const [selectScholarYear, { data: scholarYearData }] =
-    useSelectScholarYearMutation({ fetchPolicy: "network-only" });
-    
-  const handlerSelectYear = async (year: number) => {
-    await selectScholarYear({ variables: { idYear: year } });
-    window.location.reload();
-  };
+  const [schoolYears, setSchoolYears] = useState<ScholarYear[]>([]);
+  const [selectedYear, setSelectedYear] = useState<number | undefined>();
   const router = useRouter();
+
+  const fetchSchoolYears = useCallback(async () => {
+    try {
+      const data = await scholarYearService.getAll();
+      setSchoolYears(data || []);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  const fetchSelectedYear = useCallback(async () => {
+    try {
+      const data = await scholarYearService.getSelected();
+      setSelectedYear(data?.id_year);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchSchoolYears();
+    fetchSelectedYear();
+  }, [fetchSchoolYears, fetchSelectedYear]);
+
+  const handlerSelectYear = async (year: number) => {
+    try {
+      await scholarYearService.select(year);
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+    }
+  };
   useEffect(() => {
     const token = sessionStorage.getItem("userToken");
     if (!token) {
@@ -218,9 +240,9 @@ const Layaout = ({ children, textpage }: ILayaout) => {
                     style={{ width: "80px" }}
                     onChange={handlerSelectYear}
                     placeholder="Seleccione año"
-                    defaultValue={scholarYear?.scholearYearSelected.id_year}
-                    value={scholarYear?.scholearYearSelected.id_year}
-                    options={schoolYears?.scholarYears.map((year: any) => {
+                    defaultValue={selectedYear}
+                    value={selectedYear}
+                    options={schoolYears?.map((year: any) => {
                       return {
                         value: year.id_year,
                         label: year.id_year,

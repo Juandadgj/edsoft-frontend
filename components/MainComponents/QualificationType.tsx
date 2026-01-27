@@ -1,13 +1,8 @@
-import { useMemo } from "react";
-import {
-  useCreateQualificationTypeMutation,
-  useDeleteQualificationTypeMutation,
-  useGetQualificationQuery,
-  useUpdateQualificationsMutation,
-} from "../../generated/graphql";
+import { useMemo, useCallback } from "react";
+import { typeQualificationService } from "@/services/api.service";
+import type { TypeQualification } from "@/types/api.types";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import DynamicModal from "../DynamicModal";
 
 import Table from "../Table";
 import { Input } from "../Input";
@@ -54,13 +49,11 @@ const columns = [
 ];
 
 function QualificationType() {
-  const [DeleteQualificationType] = useDeleteQualificationTypeMutation();
   const [open, setOpen] = useState(false);
   const [typeAdd, setTypeAdd] = useState(false);
+  const [qualifications, setQualifications] = useState<TypeQualification[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const { data, loading, error, refetch } = useGetQualificationQuery();
-
-  // Form to manage inputs values
   const [qualification, setQualification] = useState<any>({
     ceiling_score: "",
     floor_score: "",
@@ -68,9 +61,25 @@ function QualificationType() {
     year: "",
   });
 
+  const fetchQualifications = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await typeQualificationService.getAll();
+      setQualifications(data || []);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchQualifications();
+  }, [fetchQualifications]);
+
   const porcessedQualificationType = useMemo(() => {
-    if (!data?.typeQualifications) return [];
-    return data.typeQualifications.map((quty, index) => ({
+    if (!qualifications) return [];
+    return qualifications.map((quty, index) => ({
       qualificationName: quty?.name ?? "",
       floor: quty?.floor_score ?? "",
       ceiling: quty?.ceiling_score ?? "",
@@ -123,30 +132,26 @@ function QualificationType() {
               confirmButtonColor: "#0055a6",
               cancelButtonColor: "#d33",
               confirmButtonText: "Eliminar",
-            }).then((result) => {
-              // If there is an id selected we delete that teacher
+            }).then(async (result) => {
               if (result.isConfirmed && quty?.id_type_qual) {
-                DeleteQualificationType({
-                  variables: { idQualificationType: quty?.id_type_qual },
-                }).then((res) => {
-                  if (res.data?.deleteTypeQualification) {
-                    Swal.fire({
-                      title: "Eliminado",
-                      text: "Tipo Calificacion Eliminada!",
-                      icon: "success",
-                      showConfirmButton: false,
-                      timer: 1500,
-                    });
-                    refetch();
-                  } else {
-                    Swal.fire({
-                      icon: "error",
-                      title: "Ha habido un error...",
-                      showConfirmButton: false,
-                      timer: 1500,
-                    });
-                  }
-                });
+                try {
+                  await typeQualificationService.delete(quty.id_type_qual);
+                  Swal.fire({
+                    title: "Eliminado",
+                    text: "Tipo Calificacion Eliminada!",
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500,
+                  });
+                  fetchQualifications();
+                } catch (error) {
+                  Swal.fire({
+                    icon: "error",
+                    title: "Ha habido un error...",
+                    showConfirmButton: false,
+                    timer: 1500,
+                  });
+                }
               }
             })
           }
@@ -165,7 +170,7 @@ function QualificationType() {
         </button>
       ),
     }));
-  }, [data, DeleteQualificationType]);
+  }, [qualifications]);
   const hanclerCloseModal = () => {
     setOpen(false);
     setQualification({
@@ -207,7 +212,7 @@ function QualificationType() {
           <div className="w-full h-full flex justify-center items-center">
             <span className="loading loading-dots loading-lg bg-main-blue"></span>
           </div>
-        ) : data?.typeQualifications ? (
+        ) : qualifications && qualifications.length > 0 ? (
           <div className="d-flex border-white py-4 h-full">
             <Table
               column={columns}
@@ -215,7 +220,7 @@ function QualificationType() {
             />
           </div>
         ) : (
-          <h3>¡Ocurrio un error!</h3>
+          <h3>¡No hay calificaciones registradas!</h3>
         )}
       </div>
       {/* Modal */}

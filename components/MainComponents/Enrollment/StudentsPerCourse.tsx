@@ -1,13 +1,6 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useEffect, useState } from "react";
 import Table from "@/components/Table";
-import {
-  useGroupsQuery,
-  useGetStudentsByGroupLazyQuery,
-  useScholearYearSelectedQuery,
-  useGenerateStudentEnrollmentReportILazyQuery,
-  useGenerateStudentEnrollmentReportIiLazyQuery,
-} from "@/generated/graphql";
 import { useRouter } from "next/router";
 import useSchoolYear from "@/hooks/useSchoolYear";
 import { ContainerComponents } from "@/components/ContainerComponents";
@@ -16,6 +9,7 @@ import { getCourseLevel } from "@/shared/helpers/getCourseLevel";
 import { CourseComponent } from "../CourseComponent";
 import { FileUser } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { studentService, reportService } from "@/services/api.service";
 
 const columnsGroup = [
   {
@@ -74,56 +68,35 @@ export const StudentsPerCourse = () => {
   const router = useRouter();
   const { g } = router.query;
   const [studentsByGroup, setStudentsByGroup] = useState<any[]>([]);
-  const [
-    getStudentsByGroup,
-    {
-      data: dataStudentsByGroup,
-      loading: loadingStudentsByGroup,
-      error: errorStudentsByGroup,
-    },
-  ] = useGetStudentsByGroupLazyQuery({
-    fetchPolicy: "network-only",
-  });
-  const [generateStudentEnrollmentReport, { data, loading, error }] =
-    useGenerateStudentEnrollmentReportILazyQuery({
-      fetchPolicy: "no-cache",
-    });
+  const [loadingStudentsByGroup, setLoadingStudentsByGroup] = useState(false);
+  const [errorStudentsByGroup, setErrorStudentsByGroup] = useState<any>(null);
+  const [dataStudentsByGroup, setDataStudentsByGroup] = useState<any>(null);
 
-  const [
-    generateStudentEnrollmentReportII,
-    { data: dataII, loading: loadingII, error: errorII },
-  ] = useGenerateStudentEnrollmentReportIiLazyQuery({
-    fetchPolicy: "no-cache",
-  });
+  const handlerSpreadsheet = useCallback(async (id_student: number) => {
+    try {
+      const res = await reportService.studentEnrollmentI({ id_student, id_year: year || new Date().getFullYear() });
+      handleOpenHTML(res.report_content);
+    } catch (error) {
+      console.error("Error generating report I:", error);
+    }
+  }, [year]);
 
-  const handlerSpreadsheet = (id_student: any) => {
-    generateStudentEnrollmentReport({
-      variables: {
-        idStudent: id_student,
-      },
-    }).then((res) => {
-      const { data } = res;
-      handleOpenHTML(data?.generateStudentEnrollmentReportI.report_content);
-    });
-  };
-
-  const handlerSpreadsheetII = (id_student: any) => {
-    generateStudentEnrollmentReportII({
-      variables: {
-        idStudent: id_student,
-      },
-    }).then((res) => {
-      const { data } = res;
-      handleOpenHTML(data?.generateStudentEnrollmentReportII.report_content);
-    });
-  };
+  const handlerSpreadsheetII = useCallback(async (id_student: number) => {
+    try {
+      const res = await reportService.studentEnrollmentII({ id_student, id_year: year || new Date().getFullYear() });
+      handleOpenHTML(res.report_content);
+    } catch (error) {
+      console.error("Error generating report II:", error);
+    }
+  }, [year]);
 
   const handleOpenHTML = (htmlString: any) => {
     window.open()?.document.write(htmlString);
   };
+
   const processedStudentsByGroup = (data: any) => {
     if (!data) return [];
-    return data.map((student: any, index: any) => ({
+    return data.map((student: any) => ({
       id_student: student?.id_course,
       name: `${student.name} ${student.last_name}`,
       "certi-1": (
@@ -189,8 +162,8 @@ export const StudentsPerCourse = () => {
             <g
               fill="none"
               stroke="#e11d48"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
               <circle cx="5" cy="3.75" r="2.25" />
               <path d="M6.5 13.5h-6V12a4.5 4.5 0 0 1 7.39-3.45m.61 2.95h5" />
@@ -200,18 +173,27 @@ export const StudentsPerCourse = () => {
       ),
     }));
   };
+
+  const fetchStudentsByGroup = useCallback(async (groupId: number) => {
+    setLoadingStudentsByGroup(true);
+    setErrorStudentsByGroup(null);
+    try {
+      const data = await studentService.getByGroup(groupId);
+      setDataStudentsByGroup(data);
+      setStudentsByGroup(processedStudentsByGroup(data));
+    } catch (error) {
+      setErrorStudentsByGroup(error);
+      console.error("Error fetching students by group:", error);
+    } finally {
+      setLoadingStudentsByGroup(false);
+    }
+  }, []);
+
   useEffect(() => {
     if (g) {
-      getStudentsByGroup({ variables: { idGroup: Number(g) } });
+      fetchStudentsByGroup(Number(g));
     }
-  }, [router]);
-  useEffect(() => {
-    if (dataStudentsByGroup) {
-      setStudentsByGroup(
-        processedStudentsByGroup(dataStudentsByGroup.studentsByGroup),
-      );
-    }
-  }, [dataStudentsByGroup]);
+  }, [g, fetchStudentsByGroup]);
   return (
     <ContainerComponents>
       <div className="w-full flex items-center justify-between my-3">
@@ -229,7 +211,7 @@ export const StudentsPerCourse = () => {
               <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
           )}
-          {dataStudentsByGroup?.studentsByGroup && (
+          {dataStudentsByGroup && (
             <TableComponent column={columnsStudent} data={studentsByGroup} />
           )}
           {errorStudentsByGroup && <h3>¡Ocurrio un error!</h3>}

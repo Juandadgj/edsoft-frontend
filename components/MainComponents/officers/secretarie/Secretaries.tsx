@@ -1,13 +1,9 @@
 import DynamicModal from "@/components/DynamicModal";
 import { Input } from "@/components/Input";
 import TableComponent from "@/components/Table";
-import {
-  useCreateTeacherMutation,
-  useDeleteTeacherMutation,
-  useTeachersQuery,
-  useUpdateTeacherMutation,
-} from "@/generated/graphql";
-import { useMemo } from "react";
+import { teacherService } from "@/services/api.service";
+import type { Teacher } from "@/types/api.types";
+import { useMemo, useCallback } from "react";
 
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -41,14 +37,10 @@ const columns = [
 ];
 
 function Secretaries() {
-  const [DeleteDocente] = useDeleteTeacherMutation();
   const [open, setOpen] = useState(false);
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const { data, loading, refetch } = useTeachersQuery({
-    fetchPolicy: "network-only",
-  });
-
-  // Form to manage inputs values
   const [secretarie, setSecretary] = useState<any>({
     id_teacher: 0,
     name: "",
@@ -61,7 +53,6 @@ function Secretaries() {
     degree: "",
   });
 
-  // Obj to manage every input error
   const [errors, setErrors] = useState<any>({
     name: "",
     last_name: "",
@@ -72,10 +63,26 @@ function Secretaries() {
     degree: "",
   });
 
-  const processedTeachers = useMemo(() => {
-    if (!data?.teachers) return [];
+  const fetchTeachers = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await teacherService.getAll();
+      setTeachers(data || []);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-    return data.teachers.map((teacher: any, index: any) => ({
+  useEffect(() => {
+    fetchTeachers();
+  }, [fetchTeachers]);
+
+  const processedTeachers = useMemo(() => {
+    if (!teachers) return [];
+
+    return teachers.map((teacher: any, index: any) => ({
       name: `${teacher?.name} ${teacher?.last_name}`,
       degree: teacher?.degree ?? "",
       update: (
@@ -115,30 +122,26 @@ function Secretaries() {
               confirmButtonColor: "#0055a6",
               cancelButtonColor: "#d33",
               confirmButtonText: "Eliminar",
-            }).then((result) => {
-              // If there is an id selected we delete that teacher
+            }).then(async (result) => {
               if (result.isConfirmed && teacher?.id_teacher) {
-                DeleteDocente({
-                  variables: { idDocente: teacher.id_teacher },
-                }).then((res) => {
-                  if (res.data?.deleteTeacher) {
-                    Swal.fire({
-                      title: "Eliminado",
-                      text: "Docente Eliminado!",
-                      icon: "success",
-                      showConfirmButton: false,
-                      timer: 1500,
-                    });
-                    refetch();
-                  } else {
-                    Swal.fire({
-                      icon: "error",
-                      title: "Ha habido un error...",
-                      showConfirmButton: false,
-                      timer: 1500,
-                    });
-                  }
-                });
+                try {
+                  await teacherService.delete(teacher.id_teacher);
+                  Swal.fire({
+                    title: "Eliminado",
+                    text: "Docente Eliminado!",
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500,
+                  });
+                  fetchTeachers();
+                } catch (error) {
+                  Swal.fire({
+                    icon: "error",
+                    title: "Ha habido un error...",
+                    showConfirmButton: false,
+                    timer: 1500,
+                  });
+                }
               }
             })
           }
@@ -157,7 +160,7 @@ function Secretaries() {
         </button>
       ),
     }));
-  }, [data, DeleteDocente]);
+  }, [teachers]);
 
   const handlerCreateTeacher = async () => {
     setOpen(true);
@@ -224,10 +227,10 @@ function Secretaries() {
           <div className="w-full h-full flex justify-center items-center">
             <span className="loading loading-dots loading-lg bg-main-blue"></span>
           </div>
-        ) : data?.teachers ? (
+        ) : teachers && teachers.length > 0 ? (
           <TableComponent column={columns} data={processedTeachers} />
         ) : (
-          <h3>¡Ocurrio un error!</h3>
+          <h3>¡No hay secretarios registrados!</h3>
         )}
       </div>
       {/* Modal */}

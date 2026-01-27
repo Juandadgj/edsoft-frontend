@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  useCoursesLazyQuery,
-  useAchievementsLazyQuery,
-  useDeleteAchievementMutation,
-} from "../../generated/graphql";
+import { achievementService, courseService } from "@/services/api.service";
 import { useRouter } from "next/router";
 import Table from "../Table";
 import Swal from "sweetalert2";
@@ -44,21 +40,17 @@ function Achievements() {
     id_course: 0,
     period: 0,
   });
-  const [DeleteAchievement] = useDeleteAchievementMutation();
   const { year } = useSchoolYear();
   const router = useRouter();
   const { g, a, per } = router.query;
   const [selectedCourses, setSelectedCourses] = useState<any>([]);
   const [selectedAchievements, setSelectedAchievements] = useState<any>([]);
   const [open, setOpen] = useState(false);
-  const [
-    getAchievements,
-    { data: achievements, loading: loadingAchievements, error, refetch },
-  ] = useAchievementsLazyQuery();
-  const [
-    getCourses,
-    { data: courses, loading: loadingCourses, error: errorCourses },
-  ] = useCoursesLazyQuery();
+  const [achievements, setAchievements] = useState<any[]>([]);
+  const [loadingAchievements, setLoadingAchievements] = useState(false);
+  const [error, setError] = useState<any>(null);
+  const [loadingCourses, setLoadingCourses] = useState(false);
+  const [errorCourses, setErrorCourses] = useState<any>(null);
 
   const handlerSelectedAchievement = (
     id: number | undefined,
@@ -69,20 +61,20 @@ function Achievements() {
     router.push(`/dashboard/${route}&g=${id_group}&a=${id}&per=${per}`);
   };
   const processedAchievements = (data: any) => {
-    if (!data?.achievements) return [];
-    return data.achievements.map((achievements: any, index: any) => ({
-      id_achievement: achievements?.id_achievement ?? "",
-      description: achievements?.description ?? "",
+    if (!data || data.length === 0) return [];
+    return data.map((achievement: any, index: any) => ({
+      id_achievement: achievement?.id_achievement ?? "",
+      description: achievement?.description ?? "",
       editar: (
         <button
           className="border-0"
           onClick={() => {
             setAchivement((t: any) => ({
               ...t,
-              description: achievements?.description,
-              id_course: achievements?.id_course,
-              period: achievements?.period,
-              id_achievement: achievements?.id_achievement,
+              description: achievement?.description,
+              id_course: achievement?.id_course,
+              period: achievement?.period,
+              id_achievement: achievement?.id_achievement,
             }));
             setOpen(true);
           }}
@@ -135,29 +127,26 @@ function Achievements() {
               confirmButtonColor: "#0055a6",
               cancelButtonColor: "#d33",
               confirmButtonText: "Eliminar",
-            }).then((result) => {
-              if (result.isConfirmed && achievements?.id_achievement) {
-                DeleteAchievement({
-                  variables: { idAchievement: achievements?.id_achievement },
-                }).then((res) => {
-                  if (res.data?.deleteAchievement) {
-                    Swal.fire({
-                      title: "Eliminado",
-                      text: "Logro Eliminado!",
-                      icon: "success",
-                      showConfirmButton: false,
-                      timer: 1500,
-                    });
-                    refetch();
-                  } else {
-                    Swal.fire({
-                      icon: "error",
-                      title: "Ha habido un error...",
-                      showConfirmButton: false,
-                      timer: 1500,
-                    });
-                  }
-                });
+            }).then(async (result) => {
+              if (result.isConfirmed && achievement?.id_achievement) {
+                try {
+                  await achievementService.delete(achievement.id_achievement);
+                  Swal.fire({
+                    title: "Eliminado",
+                    text: "Logro Eliminado!",
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500,
+                  });
+                  loadData();
+                } catch (err) {
+                  Swal.fire({
+                    icon: "error",
+                    title: "Ha habido un error...",
+                    showConfirmButton: false,
+                    timer: 1500,
+                  });
+                }
               }
             })
           }
@@ -179,12 +168,12 @@ function Achievements() {
   };
 
   const processedCourses = (data: any) => {
-    if (!data) return [];
-    return data.map((courses: any, index: any) => ({
-      id_course: courses?.id_course,
-      id_group: courses?.id_group,
-      name: courses?.name ?? "",
-      teacher: courses?.teacher.name ?? "-",
+    if (!data || data.length === 0) return [];
+    return data.map((course: any, index: any) => ({
+      id_course: course?.id_course,
+      id_group: course?.id_group,
+      name: course?.name ?? "",
+      teacher: course?.teacher?.name ?? "-",
       periodo1: "-",
       periodo2: "-",
       periodo3: "-",
@@ -281,37 +270,51 @@ function Achievements() {
     },
   ];
 
-  useEffect(() => {
+  const loadData = async () => {
     if (g) {
-      getCourses({
-        variables: { filterCourseInput: { id_group: Number(g) } },
-      }).then((res) => {
-        const { data } = res;
-        setSelectedCourses(processedCourses(data?.courses));
-      });
+      setLoadingCourses(true);
+      try {
+        const courses = await courseService.getAll({
+          id_group: Number(g),
+        });
+        setSelectedCourses(processedCourses(courses));
+      } catch (err) {
+        setErrorCourses(err);
+      } finally {
+        setLoadingCourses(false);
+      }
     }
+
     if (a && per) {
-      getAchievements({
-        variables: {
-          filterAchievementInput: { id_course: Number(a), period: Number(per) },
-        },
-      });
+      setLoadingAchievements(true);
+      try {
+        const data = await achievementService.getAll({
+          id_course: Number(a),
+          period: Number(per),
+        });
+        setAchievements(data);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoadingAchievements(false);
+      }
     }
-  }, [router]);
+  };
 
   useEffect(() => {
-    if (achievements) {
-      setSelectedAchievements(processedAchievements(achievements));
-    }
-  }, [achievements]);
+    loadData();
+  }, [g, a, per]);
 
   const handlerCloseModal = () => {
-    refetch();
     setOpen(false);
     setAchivement({
       ...achivement,
       description: "",
     });
+  };
+
+  const handleAchievementSuccess = () => {
+    loadData();
   };
   return (
     <ContainerComponents>
@@ -348,7 +351,7 @@ function Achievements() {
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
-          ) : courses?.courses ? (
+          ) : selectedCourses.length > 0 ? (
             <div className=" border-white py-4 h-full">
               <Table column={columsCourses} data={selectedCourses} />
             </div>
@@ -363,7 +366,7 @@ function Achievements() {
             <div className="w-full h-full flex justify-center items-center">
               <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
-          ) : achievements?.achievements ? (
+          ) : selectedAchievements.length > 0 ? (
             <div>
               <TableComponent
                 column={columnsAchievements}
@@ -383,6 +386,7 @@ function Achievements() {
           achievement={achivement}
           setAchievement={setAchivement}
           onClose={handlerCloseModal}
+          onSuccess={handleAchievementSuccess}
         />
       </CustomModal>
     </ContainerComponents>

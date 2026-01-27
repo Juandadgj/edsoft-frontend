@@ -1,21 +1,18 @@
 import { SchoolHome } from "@/components/MainComponents/SchoolHome";
 import { useRouter } from "next/router";
 import Layaout from "@/components/Layaout";
-import { useScholearYearSelectedQuery } from "@/generated/graphql";
+import { useQuery } from "@/lib/useApi";
+import type { ScholarYear } from "@/types/api.types";
+import { scholarYearService } from "@/services/api.service";
 import { useEffect } from "react";
 
 function Dashboard() {
   const router = useRouter();
-  const { data } = useScholearYearSelectedQuery({
-    fetchPolicy: "network-only",
-  });
+  const { data } = useQuery<ScholarYear>('/scholar-years/selected');
 
   useEffect(() => {
-    if (data?.scholearYearSelected) {
-      sessionStorage.setItem(
-        "year",
-        data.scholearYearSelected.id_year?.toString()
-      );
+    if (data?.id_year) {
+      sessionStorage.setItem("year", data.id_year?.toString());
     }
   }, [data]);
 

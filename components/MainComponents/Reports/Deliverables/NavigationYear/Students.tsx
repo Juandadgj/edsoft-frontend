@@ -1,9 +1,10 @@
 import TableComponent from "@/components/Table";
 import { Button } from "@/components/ui/button";
-import { useGetStudentsByGroupLazyQuery } from "@/generated/graphql";
 import { FileUser } from "lucide-react";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import { studentService } from "@/services/api.service";
+import type { Student } from "@/types/api.types";
 
 const columnsStudent = [
   {
@@ -22,39 +23,42 @@ const columnsStudent = [
 const Students = () => {
   const router = useRouter();
   const { g } = router.query;
-  const [
-    getStudentsByGroup,
-    {
-      data: dataStudentsByGroup,
-      loading: loadingStudentsByGroup,
-      error: errorStudentsByGroup,
-    },
-  ] = useGetStudentsByGroupLazyQuery({
-    fetchPolicy: "network-only",
-  });
   const [studentsByGroup, setStudentsByGroup] = useState<any[]>([]);
+  const [loadingStudentsByGroup, setLoadingStudentsByGroup] = useState(false);
+  const [errorStudentsByGroup, setErrorStudentsByGroup] = useState<string | null>(null);
+
+  const fetchStudentsByGroup = useCallback(async (groupId: number) => {
+    try {
+      setLoadingStudentsByGroup(true);
+      setErrorStudentsByGroup(null);
+      const response = await studentService.getByGroup(groupId);
+      setStudentsByGroup(processedStudentsByGroup(response));
+    } catch (error) {
+      console.error("Error fetching students by group:", error);
+      setErrorStudentsByGroup(error instanceof Error ? error.message : "Error al cargar estudiantes");
+      setStudentsByGroup([]);
+    } finally {
+      setLoadingStudentsByGroup(false);
+    }
+  }, []);
+
   useEffect(() => {
     if (g) {
-      getStudentsByGroup({ variables: { idGroup: Number(g) } });
+      fetchStudentsByGroup(Number(g));
     }
-  }, [router]);
-  useEffect(() => {
-    if (dataStudentsByGroup) {
-      setStudentsByGroup(
-        processedStudentsByGroup(dataStudentsByGroup.studentsByGroup),
-      );
-    }
-  }, [dataStudentsByGroup]);
+  }, [g, fetchStudentsByGroup]);
+
   const handlerSelectStudent = async (s: number | undefined) => {
     router.push({
       pathname: router.pathname,
       query: { ...router.query, s: s },
     });
   };
-  const processedStudentsByGroup = (data: any) => {
+
+  const processedStudentsByGroup = (data: Student[]) => {
     if (!data) return [];
-    return data.map((student: any, index: any) => ({
-      id_student: student?.id_course,
+    return data.map((student) => ({
+      id_student: student?.id_student,
       name: `${student.name} ${student.last_name}`,
       certi: (
         <Button variant={"outline"} onClick={() => handlerSelectStudent(student?.id_student)}>
@@ -75,7 +79,7 @@ const Students = () => {
           <span className="loading loading-dots loading-lg bg-main-blue"></span>
         </div>
       )}
-      {dataStudentsByGroup?.studentsByGroup && (
+      {studentsByGroup && studentsByGroup.length > 0 && (
         <TableComponent column={columnsStudent} data={studentsByGroup} />
       )}
       {errorStudentsByGroup && <h3>¡Ocurrio un error!</h3>}

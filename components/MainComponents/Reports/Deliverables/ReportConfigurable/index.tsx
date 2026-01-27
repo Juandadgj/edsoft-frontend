@@ -1,477 +1,303 @@
-import React, { useState } from "react";
-import {
-  useGenerateReportAreaLazyQuery,
-  ReportDictionary,
-  SignatureInput,
-} from "@/generated/graphql";
+import React, { useCallback, useState } from "react";
 import { useRouter } from "next/router";
+import { reportService } from "@/services/api.service";
+import { RenderField } from "@/components/MainComponents/forms/dinamyc-form/render-field";
+import {
+  FieldValue,
+  FormField,
+  FormOption,
+} from "@/components/MainComponents/forms/dinamyc-form/types/types";
 
-const ReportConfigurable = () => {
+// Opciones para el campo de indicadores
+const indicatorsOptions: FormOption[] = [
+  { value: "calificados", label: "Solo los Calificados o Señalados" },
+  { value: "todos", label: "Todos Los indicadores" },
+  { value: "ninguno", label: "No mostrar Indicadores" },
+];
+
+// Schema del formulario de reportes configurables
+export const reportConfigurableSchema: FormField[] = [
+  // Sección de indicadores (Radio)
+  {
+    id: "indicatorsDisplay",
+    label: "Mostrar indicadores:",
+    type: "radio",
+    options: indicatorsOptions,
+    defaultValue: "calificados",
+  },
+  // Sección de firmas (Grupo de checkboxes)
+  {
+    id: "signaturesSection",
+    label: "Mostrar Espacio para las firmas de:",
+    type: "group",
+    subFields: [
+      {
+        id: "rector",
+        label: "Rector",
+        type: "checkbox",
+        defaultValue: false,
+      },
+      {
+        id: "secretary",
+        label: "Secretario (a)",
+        type: "checkbox",
+        defaultValue: false,
+      },
+      {
+        id: "professor_group",
+        label: "Profesor de Grupo",
+        type: "checkbox",
+        defaultValue: true,
+      },
+    ],
+  },
+  // Primera columna de opciones
+  {
+    id: "averagesSection",
+    label: "",
+    type: "group",
+    subFields: [
+      {
+        id: "average_general",
+        label: "Mostrar Promedio General",
+        type: "checkbox",
+        defaultValue: false,
+      },
+      {
+        id: "average_group",
+        label: "Mostrar Promedio del Grupo",
+        type: "checkbox",
+        defaultValue: false,
+      },
+      {
+        id: "average_area",
+        label: "Mostrar Promedio de Area",
+        type: "checkbox",
+        defaultValue: true,
+      },
+      {
+        id: "username",
+        label: "Mostrar Nombre de Usuario",
+        type: "checkbox",
+        defaultValue: false,
+      },
+      {
+        id: "showLogo",
+        label: "Mostrar Logo",
+        type: "checkbox",
+        defaultValue: true,
+      },
+      {
+        id: "qualification_per1",
+        label: "Mostrar Notas de Periodos Uno",
+        type: "checkbox",
+        defaultValue: false,
+      },
+      {
+        id: "qualification_per3",
+        label: "Mostrar Notas de Periodos Tres",
+        type: "checkbox",
+        defaultValue: false,
+      },
+      {
+        id: "average_per",
+        label: "Mostrar Promedio de Periodos Anteriores",
+        type: "checkbox",
+        defaultValue: true,
+      },
+      {
+        id: "hideSubjectsWithArea",
+        label: "No mostrar las asignaturas con area",
+        type: "checkbox",
+        defaultValue: true,
+      },
+      {
+        id: "subjectNameSeparateLine",
+        label: "Nombre de la asignatura en una linea aparte",
+        type: "checkbox",
+        defaultValue: true,
+      },
+    ],
+  },
+  // Segunda columna de opciones
+  {
+    id: "additionalOptionsSection",
+    label: "",
+    type: "group",
+    subFields: [
+      {
+        id: "positionInGroup",
+        label: "Puesto Ocupado en el Grupo",
+        type: "checkbox",
+        defaultValue: false,
+      },
+      {
+        id: "position",
+        label: "Puesto Ocupado del Grupo",
+        type: "checkbox",
+        defaultValue: false,
+      },
+      {
+        id: "professor_course",
+        label: "Mostrar Docente de cada Asignatura",
+        type: "checkbox",
+        defaultValue: false,
+      },
+      {
+        id: "showSubtitleHeader",
+        label: "Mostrar Subtitulo en el Encabezado",
+        type: "checkbox",
+        defaultValue: true,
+      },
+      {
+        id: "showRecommendations",
+        label: "Mostrar Recomendaciones",
+        type: "checkbox",
+        defaultValue: true,
+      },
+      {
+        id: "qualification_per2",
+        label: "Mostrar Notas de Periodos Dos",
+        type: "checkbox",
+        defaultValue: true,
+      },
+      {
+        id: "qualification_per4",
+        label: "Mostrar Notas de Periodos Cuatro",
+        type: "checkbox",
+        defaultValue: true,
+      },
+      {
+        id: "all_qualifications",
+        label: "Mostrar Notas de todos los Periodos",
+        type: "checkbox",
+        defaultValue: false,
+      },
+      {
+        id: "hour",
+        label: "Mostrar la Intensidad Horaria",
+        type: "checkbox",
+        defaultValue: true,
+      },
+      {
+        id: "absences",
+        label: "Mostrar la inasistencia",
+        type: "checkbox",
+        defaultValue: true,
+      },
+    ],
+  },
+];
+
+const ReportConfigurable = ({ initialData = {} }: { initialData?: any }) => {
   const router = useRouter();
   const { g, s } = router.query;
-  const [generateReport, { data }] = useGenerateReportAreaLazyQuery({
-    fetchPolicy: "network-only",
+  const [isLoadingReport, setIsLoadingReport] = useState(false);
+
+  // Inicializar el estado del formulario basándose en el schema
+  const [formData, setFormData] = useState<Record<string, FieldValue>>(() => {
+    const defaultState: Record<string, FieldValue> = {};
+    reportConfigurableSchema.forEach((field) => {
+      const initializeField = (f: FormField) => {
+        if (f.type === "group" && f.subFields) {
+          f.subFields.forEach(initializeField);
+        } else if (f.type === "checkboxGroup" && f.subFields) {
+          f.subFields.forEach(initializeField);
+        } else if (f.id) {
+          defaultState[f.id] = initialData[f.id] ?? f.defaultValue ?? "";
+        }
+      };
+      initializeField(field);
+    });
+    return defaultState;
   });
+
+  const handleChange = useCallback((id: string, value: FieldValue) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  }, []);
 
   const handlerGenerateReport = () => {
-    generateReport({
-      variables: {
-        generateReportAreaInput: {
+    setIsLoadingReport(true);
+    console.log("Generating report with options:", g, s);
+    reportService
+      .area(
+        {
           id_group: Number(g),
           id_student: Number(s),
-          report_options: {
-            professor_course: variables.professor_course,
-            average_general: variables.average_general,
-            average_group: variables.average_group,
-            average_area: variables.average_area,
-            position: variables.position,
-            hour: variables.hour,
-            absences: variables.absences,
-            all_qualifications: variables.all_qualifications,
-            qualification_per1: variables.qualification_per1,
-            qualification_per2: variables.qualification_per2,
-            qualification_per3: variables.qualification_per3,
-            qualification_per4: variables.qualification_per4,
-            average_per: variables.average_per,
-            signature: signatures,
+        },
+        {
+          professor_course: formData.professor_course as boolean,
+          average_general: formData.average_general as boolean,
+          average_group: formData.average_group as boolean,
+          average_area: formData.average_area as boolean,
+          position: formData.position as boolean,
+          hour: formData.hour as boolean,
+          absences: formData.absences as boolean,
+          all_qualifications: formData.all_qualifications as boolean,
+          qualification_per1: formData.qualification_per1 as boolean,
+          qualification_per2: formData.qualification_per2 as boolean,
+          qualification_per3: formData.qualification_per3 as boolean,
+          qualification_per4: formData.qualification_per4 as boolean,
+          average_per: formData.average_per as boolean,
+          signature: {
+            rector: formData.rector as boolean,
+            secretary: formData.secretary as boolean,
+            professor_group: formData.professor_group as boolean,
           },
         },
-      },
-    }).then((res) => {
-      const { data } = res;
-      handleOpenHTML(data?.generateReportArea.report_content);
-    });
+      )
+      .then((res) => {
+        handleOpenHTML(res.report_content);
+        setIsLoadingReport(false);
+      })
+      .catch((err) => {
+        console.error("Error generating report:", err);
+        setIsLoadingReport(false);
+      });
   };
 
-  const [signatures, setSignatures] = useState<SignatureInput>({
-    professor_group: true,
-  });
-  const [variables, setVariables] = useState<ReportDictionary>({
-    professor_course: false,
-    average_general: false,
-    average_group: false,
-    average_area: true,
-    position: false,
-    hour: true,
-    absences: true,
-    all_qualifications: false,
-    qualification_per1: false,
-    qualification_per2: true,
-    qualification_per3: true,
-    qualification_per4: true,
-    average_per: true,
-    signature: signatures,
-  });
   const handleOpenHTML = (htmlString: string | undefined) => {
     window.open()?.document.write(htmlString ? htmlString : "");
   };
 
-  const handlerSetSignatures = ({
-    target,
-  }: React.ChangeEvent<HTMLInputElement>) => {
-    setSignatures({ ...signatures, [target.name]: target.checked });
-  };
-
-  const handlerSetVariables = ({
-    target,
-  }: React.ChangeEvent<HTMLInputElement>) => {
-    setVariables({ ...variables, [target.name]: target.checked });
-  };
-
   return (
     <div className="w-full h-full">
-      <div className="grid grid-cols-2 p-5">
-        <div className="text-black">
-          <div className="text-black text-sm">
-            <h1>Mostrar indicadores:</h1>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="radio"
-              name="radio-10"
-              className="radio radio-sm checked:bg-main-blue border-main-blue"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm">
-                Solo los Calificados o Señalados
-              </span>
-            </label>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="radio"
-              name="radio-10"
-              className="radio radio-sm checked:bg-main-blue border-main-blue"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm ">
-                Todos Los indicadores
-              </span>
-            </label>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="radio"
-              name="radio-10"
-              className="radio radio-sm checked:bg-main-blue border-main-blue"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm ">
-                No mostrar Indicadores
-              </span>
-            </label>
-          </div>
-        </div>
-        <div>
-          <div className="text-black text-sm">
-            <h1>Mostrar Espacio para las firmas de :</h1>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="checkbox"
-              name="rector"
-              checked={signatures.rector ? signatures.rector : false}
-              onChange={handlerSetSignatures}
-              className="checkbox checkbox-sm border-main-blue [--chkfg:white] [--chkbg:#0055a6]"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm">Rector</span>
-            </label>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="checkbox"
-              name="secretary"
-              checked={signatures.secretary ? signatures.secretary : false}
-              onChange={handlerSetSignatures}
-              className="checkbox checkbox-sm border-main-blue [--chkfg:white] [--chkbg:#0055a6]"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm ">
-                Secretario (a)
-              </span>
-            </label>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="checkbox"
-              name="professor_group"
-              checked={
-                signatures.professor_group ? signatures.professor_group : false
-              }
-              onChange={handlerSetSignatures}
-              className="checkbox checkbox-sm border-main-blue [--chkfg:white] [--chkbg:#0055a6]"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm ">
-                Profesor de Grupo
-              </span>
-            </label>
-          </div>
-        </div>
+      <div className="grid grid-cols-2 gap-4 p-5">
+        {/* Renderizar los primeros dos campos del schema (indicadores y firmas) */}
+        {reportConfigurableSchema.slice(0, 2).map((field) => (
+          <RenderField
+            key={field.id}
+            field={field}
+            formData={formData}
+            handleChange={handleChange}
+          />
+        ))}
       </div>
-      <div className="grid grid-cols-2 p-5">
-        <div>
-          <div className="flex justify-start items-center">
-            <input
-              type="checkbox"
-              name="average_general"
-              checked={
-                variables.average_general ? variables.average_general : false
-              }
-              onChange={handlerSetVariables}
-              className="checkbox checkbox-sm border-main-blue [--chkfg:white] [--chkbg:#0055a6]"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm">
-                Mostrar Promedio General
-              </span>
-            </label>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="checkbox"
-              name="average_group"
-              checked={
-                variables.average_group ? variables.average_group : false
-              }
-              onChange={handlerSetVariables}
-              className="checkbox checkbox-sm border-main-blue [--chkfg:white] [--chkbg:#0055a6]"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm">
-                Mostrar Promedio del Grupo
-              </span>
-            </label>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="checkbox"
-              name="average_area"
-              checked={variables.average_area ? variables.average_area : false}
-              onChange={handlerSetVariables}
-              className="checkbox checkbox-sm border-main-blue [--chkfg:white] [--chkbg:#0055a6]"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm">
-                Mostrar Promedio de Area
-              </span>
-            </label>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="checkbox"
-              name="username"
-              checked={variables.username ? variables.username : false}
-              className="checkbox checkbox-sm border-main-blue [--chkfg:white] [--chkbg:#0055a6]"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm">
-                Mostrar Nombre de Usuario
-              </span>
-            </label>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="checkbox"
-              defaultChecked
-              className="checkbox checkbox-sm border-main-blue [--chkfg:white] [--chkbg:#0055a6]"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm">
-                Mostrar Logo
-              </span>
-            </label>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="checkbox"
-              name="qualification_per1"
-              onChange={handlerSetVariables}
-              checked={
-                variables.qualification_per1
-                  ? variables.qualification_per1
-                  : false
-              }
-              className="checkbox checkbox-sm border-main-blue [--chkfg:white] [--chkbg:#0055a6]"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm">
-                Mostrar Notas de Periodos Uno
-              </span>
-            </label>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="checkbox"
-              name="qualification_per3"
-              onChange={handlerSetVariables}
-              checked={
-                variables.qualification_per3
-                  ? variables.qualification_per3
-                  : false
-              }
-              className="checkbox checkbox-sm border-main-blue [--chkfg:white] [--chkbg:#0055a6]"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm">
-                Mostrar Notas de Periodos Tres
-              </span>
-            </label>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="checkbox"
-              defaultChecked
-              className="checkbox checkbox-sm border-main-blue [--chkfg:white] [--chkbg:#0055a6]"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm">
-                Mostrar Promedio de Periodos Anteriores
-              </span>
-            </label>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="checkbox"
-              defaultChecked
-              className="checkbox checkbox-sm border-main-blue [--chkfg:white] [--chkbg:#0055a6]"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm">
-                No mostrar las asignaturas con area
-              </span>
-            </label>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="checkbox"
-              defaultChecked
-              className="checkbox checkbox-sm border-main-blue [--chkfg:white] [--chkbg:#0055a6]"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm">
-                Nombre de la asignatura en una linea aparte
-              </span>
-            </label>
-          </div>
-        </div>
-        <div>
-          <div className="flex justify-start items-center">
-            <input
-              type="checkbox"
-              className="checkbox checkbox-sm border-main-blue [--chkfg:white] [--chkbg:#0055a6]"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm">
-                Puesto Ocupado en el Grupo
-              </span>
-            </label>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="checkbox"
-              name="position"
-              onChange={handlerSetVariables}
-              checked={variables.position ? variables.position : false}
-              className="checkbox checkbox-sm border-main-blue [--chkfg:white] [--chkbg:#0055a6]"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm">
-                Puesto Ocupado del Grupo
-              </span>
-            </label>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="checkbox"
-              name="professor_course"
-              checked={
-                variables.professor_course ? variables.professor_course : false
-              }
-              onChange={handlerSetVariables}
-              className="checkbox checkbox-sm border-main-blue [--chkfg:white] [--chkbg:#0055a6]"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm">
-                Mostrar Docente de cada Asignatura
-              </span>
-            </label>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="checkbox"
-              defaultChecked
-              className="checkbox checkbox-sm border-main-blue [--chkfg:white] [--chkbg:#0055a6]"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm">
-                Mostrar Subtitulo en el Encabezado
-              </span>
-            </label>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="checkbox"
-              defaultChecked
-              className="checkbox checkbox-sm border-main-blue [--chkfg:white] [--chkbg:#0055a6]"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm">
-                Mostrar Recomendaciones
-              </span>
-            </label>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="checkbox"
-              name="qualification_per2"
-              checked={
-                variables.qualification_per2
-                  ? variables.qualification_per2
-                  : false
-              }
-              onChange={handlerSetVariables}
-              className="checkbox checkbox-sm border-main-blue [--chkfg:white] [--chkbg:#0055a6]"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm">
-                Mostrar Notas de Periodos Dos
-              </span>
-            </label>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="checkbox"
-              name="qualification_per4"
-              checked={
-                variables.qualification_per4
-                  ? variables.qualification_per4
-                  : false
-              }
-              onChange={handlerSetVariables}
-              className="checkbox checkbox-sm border-main-blue [--chkfg:white] [--chkbg:#0055a6]"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm">
-                Mostrar Notas de Periodos Cuatro
-              </span>
-            </label>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="checkbox"
-              name="all_qualifications"
-              checked={
-                variables.all_qualifications
-                  ? variables.all_qualifications
-                  : false
-              }
-              onChange={handlerSetVariables}
-              className="checkbox checkbox-sm border-main-blue [--chkfg:white] [--chkbg:#0055a6]"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm">
-                Mostrar Notas de todos los Periodos
-              </span>
-            </label>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="checkbox"
-              name="hour"
-              checked={variables.hour ? variables.hour : false}
-              onChange={handlerSetVariables}
-              className="checkbox checkbox-sm border-main-blue [--chkfg:white] [--chkbg:#0055a6]"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm">
-                Mostrar la Intensidad Horaria
-              </span>
-            </label>
-          </div>
-          <div className="flex justify-start items-center">
-            <input
-              type="checkbox"
-              name="absences"
-              checked={variables.absences ? variables.absences : false}
-              onChange={handlerSetVariables}
-              className="checkbox checkbox-sm border-main-blue [--chkfg:white] [--chkbg:#0055a6]"
-            />
-            <label className="label cursor-pointer">
-              <span className="label-text text-black text-sm">
-                Mostrar la inasistencia
-              </span>
-            </label>
-          </div>
-        </div>
+      <div className="grid grid-cols-2 gap-4 p-5">
+        {/* Renderizar las dos columnas de opciones (campos 2 y 3 del schema) */}
+        {reportConfigurableSchema.slice(2, 4).map((field) => (
+          <RenderField
+            key={field.id}
+            field={field}
+            formData={formData}
+            handleChange={handleChange}
+          />
+        ))}
       </div>
       <div className="w-full flex justify-center items-center">
         <button
           onClick={handlerGenerateReport}
-          className="btn btn-sm border-none text-white bg-main-blue hover:bg-[#0b5ed7] hover:scale-105 transition duration-500 text-xs"
+          disabled={isLoadingReport}
+          className="btn btn-sm border-none text-white bg-main-blue hover:bg-[#0b5ed7] hover:scale-105 transition duration-500 text-xs disabled:opacity-50"
         >
-          Generar boletin o informe
+          {isLoadingReport ? (
+            <span className="loading loading-spinner loading-sm"></span>
+          ) : (
+            "Generar boletin o informe"
+          )}
         </button>
       </div>
     </div>

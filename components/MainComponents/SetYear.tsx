@@ -1,17 +1,14 @@
-import { useRef } from "react";
-import { useState } from "react";
-import {
-  useCreateSetYearMutation,
-  useGetSchoolarYearsQuery,
-  useUpdateScholarYearMutation,
-  ScholarYear,
-} from "../../generated/graphql";
+import { useRef, useCallback } from "react";
+import { useState, useEffect } from "react";
+import { scholarYearService } from "@/services/api.service";
+import type { ScholarYear } from "@/types/api.types";
 import useSchoolYear from "@/hooks/useSchoolYear";
 import TableComponent from "../Table";
 import CustomModal from "../CustomModal";
 import SetYearForm from "./forms/SetYearForm";
 import { ContainerComponents } from "../ContainerComponents";
 import { Input } from "../Input";
+import Swal from "sweetalert2";
 
 const columns = [
   { title: "", dataIndex: "selected", key: "selected" },
@@ -33,7 +30,9 @@ function SetYear() {
   const modalLoading = useRef<any>();
   const modalClose = useRef<any>();
   const [type, setType] = useState<boolean>(false);
-  // Form to manage inputs values
+  const [scholarYears, setScholarYears] = useState<ScholarYear[]>([]);
+  const [loading, setLoading] = useState(true);
+  
   const [schoolYear, setSchoolYear] = useState<any>({ 
     id_year: "",
     rector: "",
@@ -41,13 +40,25 @@ function SetYear() {
     comment: "",
   });
 
-  const { data, loading, error } = useGetSchoolarYearsQuery({
-    fetchPolicy: "network-only",
-  });
+  const fetchScholarYears = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await scholarYearService.getAll();
+      setScholarYears(data || []);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchScholarYears();
+  }, [fetchScholarYears]);
 
   const processedScholarYears = () => {
-    if (!data?.scholarYears) return [];
-    return data.scholarYears.map((schoYear) => ({
+    if (!scholarYears) return [];
+    return scholarYears.map((schoYear) => ({
       selected: year == schoYear?.id_year,
       year: (
         <button
@@ -139,9 +150,12 @@ function SetYear() {
   const handlerSelectScholarYear = async (year: number | undefined) => {
     if (year) {
       modalLoading?.current.click();
-      selectScholarYear({ variables: { idYear: year } }).then(() => {
+      try {
+        await scholarYearService.select(year);
         modalClose?.current.click();
-      });
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
   const hanclerCloseModal = () => {
@@ -187,8 +201,7 @@ function SetYear() {
               <span className="loading loading-dots loading-lg bg-main-blue"></span>
             </div>
           )}
-          {error && <div>¡Ocurrio un error! {error.message}</div>}
-          {data?.scholarYears && (
+          {scholarYears && (
             <div className="border-white py-4 h-full">
               <TableComponent column={columns} data={processedScholarYears()} />
             </div>
@@ -226,7 +239,7 @@ function SetYear() {
       <CustomModal open={open} title="Crear año escolar">
         <SetYearForm
           year={schoolYear}
-          years={data?.scholarYears}
+          years={scholarYears}
           onClose={hanclerCloseModal}
           setSchoolYear={setSchoolYear}
           type={type}
