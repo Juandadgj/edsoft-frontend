@@ -1,5 +1,0 @@
-query GetQualification {
-  typeQualifications {
-    ...RegularQualificationType
-  }
-}

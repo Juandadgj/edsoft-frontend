@@ -1,6 +1,0 @@
-
-mutation createQualificationType($createTypeQualificationInput: CreateTypeQualificationInput!) {
-  createTypeQualification(createTypeQualificationInput: $createTypeQualificationInput) {
-    id_type_qual
-  }
-}

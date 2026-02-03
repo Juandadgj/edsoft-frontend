@@ -1,5 +1,0 @@
-query GetSubjects {
-  courses {
-    ...RegularSubject
-  }
-}

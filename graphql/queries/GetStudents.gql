@@ -1,7 +1,0 @@
-query GetStudents($filterStudentInput: FilterStudentInput) {
-  students(filterStudentInput: $filterStudentInput) {
-    name
-    last_name
-    id_student
-  }
-}

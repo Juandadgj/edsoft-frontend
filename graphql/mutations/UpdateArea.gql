@@ -1,7 +1,0 @@
-mutation UpdateArea($updateAreaInput: UpdateAreaInput!) {
-  updateArea(updateAreaInput: $updateAreaInput) {
-    id_area
-    name
-    status
-  }
-}

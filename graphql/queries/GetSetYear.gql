@@ -1,5 +1,0 @@
-query GetSchoolarYears {
-  scholarYears {
-    ...RegularSetYear
-  }
-}

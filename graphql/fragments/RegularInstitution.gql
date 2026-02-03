@@ -1,5 +1,0 @@
-fragment RegularInstitution on Institution {
-  id_institution
-  name
-  direction
-}

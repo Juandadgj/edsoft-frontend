@@ -1,5 +1,0 @@
-query GenerateStudentsListDeterminated($generateStudentsListDeterminatedInput: GenerateStudentsListDeterminatedInput) {
-  generateStudentsListDeterminated(generateStudentsListDeterminatedInput: $generateStudentsListDeterminatedInput) {
-    report_content
-  }
-}

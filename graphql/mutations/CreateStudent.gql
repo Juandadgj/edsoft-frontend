@@ -1,8 +1,0 @@
-mutation CreateStudent($createStudentInput: CreateStudentInput!, $idGroup: Int!) {
-  createStudent(createStudentInput: $createStudentInput, id_group: $idGroup) {
-    id_student
-    email
-    last_name
-    name
-  }
-}

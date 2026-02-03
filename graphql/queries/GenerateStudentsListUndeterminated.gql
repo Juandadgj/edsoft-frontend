@@ -1,5 +1,0 @@
-query GenerateStudentsListUndeterminated($generateStudentsListUndeterminatedInput: GenerateStudentsListUndeterminatedInput) {
-  generateStudentsListUndeterminated(generateStudentsListUndeterminatedInput: $generateStudentsListUndeterminatedInput) {
-    report_content
-  }
-}

@@ -1,5 +1,0 @@
-mutation UpdateTeacher($updateTeacherInput: UpdateTeacherInput!) {
-  updateTeacher(updateTeacherInput: $updateTeacherInput) {
-    id_teacher
-  }
-}

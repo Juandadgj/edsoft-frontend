@@ -1,5 +1,0 @@
-query GetAreas {
-  areas {
-    ...RegularArea
-  }
-}

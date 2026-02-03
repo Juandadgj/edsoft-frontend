@@ -1,6 +1,0 @@
-
-mutation CreateTeacher($createTeacherInput: CreateTeacherInput!) {
-  createTeacher(createTeacherInput: $createTeacherInput) {
-    degree
-  }
-}

@@ -1,5 +1,0 @@
-query GenerateReportArea($generateReportAreaInput: GenerateReportAreaInput) {
-  generateReportArea(generateReportAreaInput: $generateReportAreaInput) {
-    report_content
-  }
-}

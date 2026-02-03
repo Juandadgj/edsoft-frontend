@@ -1,6 +1,0 @@
-query SignIn($signInInput: SignInInput) {
-  signIn(signInInput: $signInInput) {
-    token
-    role
-  }
-}

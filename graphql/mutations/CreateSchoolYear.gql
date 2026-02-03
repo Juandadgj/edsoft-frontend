@@ -1,9 +1,0 @@
-
-mutation CreateSetYear($createScholarYearInput: CreateScholarYearInput!) {
-  createScholarYear(createScholarYearInput: $createScholarYearInput) {
-    id_year
-    rector
-    secretary
-    comment
-  }
-}

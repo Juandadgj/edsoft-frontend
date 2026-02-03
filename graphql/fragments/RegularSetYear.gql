@@ -1,6 +1,0 @@
-fragment RegularSetYear on ScholarYear {
-  id_year
-  rector
-  secretary
-  comment
-}

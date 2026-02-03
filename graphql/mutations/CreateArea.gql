@@ -1,7 +1,0 @@
-mutation createArea($createAreaInput: CreateAreaInput!) {
-  createArea(createAreaInput: $createAreaInput) {
-    id_area
-    name
-    status
-  }
-}

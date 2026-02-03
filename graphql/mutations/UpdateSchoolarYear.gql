@@ -1,8 +1,0 @@
-mutation UpdateScholarYear($updateScholarYearInput: UpdateScholarYearInput!) {
-  updateScholarYear(updateScholarYearInput: $updateScholarYearInput) {
-    id_year
-    rector
-    secretary
-    comment
-  }
-}

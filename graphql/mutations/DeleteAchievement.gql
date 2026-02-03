@@ -1,5 +1,0 @@
-mutation DeleteAchievement($idAchievement: Int!) {
-  deleteAchievement(id_achievement: $idAchievement) {
-    id_achievement
-  }
-}
