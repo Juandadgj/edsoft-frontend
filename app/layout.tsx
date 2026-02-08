@@ -41,6 +41,11 @@ export default function RootLayout({
                   "color-mix(in oklch, var(--color-base-content) 5%, #0000)",
                 headerSplitColor:
                   "color-mix(in oklch, var(--color-base-content) 5%, #0000)",
+                // cellPaddingInline: 1,
+                // cellPaddingInlineSM: 0,
+                // cellPaddingBlock: 1,
+                // cellPaddingBlockSM: 0,
+                margin: 0,
               },
             },
           }}

@@ -23,12 +23,13 @@ async function getGroups(yearId: number): Promise<Group[]> {
   }
 }
 
-async function getStudents({
+export async function getStudents({
   groupId,
 }: {
   groupId: number;
 }): Promise<Student[]> {
   try {
+    console.log(groupId, "id")
     return await serverApi.get<Student[]>(`/students/group/${groupId}`);
   } catch (error) {
     console.error("No fue posible obtener los estudiantes", error);

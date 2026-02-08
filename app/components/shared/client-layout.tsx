@@ -1,7 +1,7 @@
 "use client";
 import { ScholarYear } from "@/app/types";
-import { MenuUnfoldOutlined } from "@ant-design/icons";
-import React, { useTransition } from "react";
+import { MenuUnfoldOutlined, MoonFilled, SunFilled } from "@ant-design/icons";
+import React, { useEffect, useState, useTransition } from "react";
 import { Select } from "../ui/select";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -17,6 +17,7 @@ import Link from "antd/es/typography/Link";
 import { logout } from "@/app/lib/auth/session";
 import { selectScholarYearAction } from "../features/dashboard/programacion-anual/set-year";
 import { SchoolAvatar } from "./school-avatar";
+import { themeChange } from "theme-change";
 
 export default function ClientLayout({
   children,
@@ -37,14 +38,12 @@ export default function ClientLayout({
         {
           key: "1-1",
           label: "Docentes",
-          onClick: () =>
-            router.push("/dashboard/funcionarios/profesores"),
+          onClick: () => router.push("/dashboard/funcionarios/profesores"),
         },
         {
           key: "1-2",
           label: "Secretarios",
-          onClick: () =>
-            router.push("/dashboard/funcionarios/secretarios"),
+          onClick: () => router.push("/dashboard/funcionarios/secretarios"),
         },
       ],
     },
@@ -57,17 +56,13 @@ export default function ClientLayout({
           key: "2-1",
           label: "Tipo de Calificación",
           onClick: () =>
-            router.push(
-              "/dashboard/programacion-anual/calificacion",
-            ),
+            router.push("/dashboard/programacion-anual/calificacion"),
         },
         {
           key: "2-2",
           label: "Establecer año",
           onClick: () =>
-            router.push(
-              "/dashboard/programacion-anual/establecer-ano",
-            ),
+            router.push("/dashboard/programacion-anual/establecer-ano"),
         },
         {
           key: "2-3",
@@ -78,14 +73,12 @@ export default function ClientLayout({
         {
           key: "2-4",
           label: "Crear Cursos",
-          onClick: () =>
-            router.push("/dashboard/programacion-anual/curso"),
+          onClick: () => router.push("/dashboard/programacion-anual/curso"),
         },
         {
           key: "2-5",
           label: "Áreas",
-          onClick: () =>
-            router.push("/dashboard/programacion-anual/areas"),
+          onClick: () => router.push("/dashboard/programacion-anual/areas"),
         },
         {
           key: "2-6",
@@ -96,8 +89,7 @@ export default function ClientLayout({
         {
           key: "2-7",
           label: "Logros",
-          onClick: () =>
-            router.push("/dashboard/programacion-anual/logros"),
+          onClick: () => router.push("/dashboard/programacion-anual/logros"),
         },
         {
           key: "2-8",
@@ -115,8 +107,7 @@ export default function ClientLayout({
         {
           key: "3-1",
           label: "Calificación",
-          onClick: () =>
-            router.push("/dashboard/proceso-anual/calificacion"),
+          onClick: () => router.push("/dashboard/proceso-anual/calificacion"),
         },
       ],
     },
@@ -128,14 +119,12 @@ export default function ClientLayout({
         {
           key: "4-1",
           label: "Indicadores",
-          onClick: () =>
-            router.push("/dashboard/reportes/indicadores"),
+          onClick: () => router.push("/dashboard/reportes/indicadores"),
         },
         {
           key: "4-2",
           label: "Planillas",
-          onClick: () =>
-            router.push("/dashboard/reportes/planillas"),
+          onClick: () => router.push("/dashboard/reportes/planillas"),
         },
         {
           key: "4-3",
@@ -145,8 +134,7 @@ export default function ClientLayout({
         {
           key: "4-4",
           label: "Entregables",
-          onClick: () =>
-            router.push("/dashboard/reportes/entregables"),
+          onClick: () => router.push("/dashboard/reportes/entregables"),
         },
       ],
     },
@@ -164,6 +152,7 @@ export default function ClientLayout({
       ],
     },
   ];
+  const [theme, setTheme] = useState("dark");
   const [isPending, transition] = useTransition();
   const [isPendingLogout, transitionLogout] = useTransition();
   const handlerSelectYear = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -178,10 +167,20 @@ export default function ClientLayout({
       logout();
     });
   };
+  useEffect(() => {
+    // The 'false' parameter is required for React projects
+    themeChange(false);
+    if (document) {
+      const theme = document.documentElement.getAttribute("data-theme");
+      if (theme) {
+        setTheme(theme);
+      }
+    }
+  }, []);
   return (
     <div className="flex flex-auto w-full h-full">
       <div
-        className="bg-base-200 w-full h-full"
+        className="bg-base-100 w-full h-full"
         style={{
           scrollbarWidth: "thin",
           scrollbarColor: "#25429e #F3F4F6",
@@ -220,9 +219,26 @@ export default function ClientLayout({
                       : null}
                   </Select>
                   <SchoolAvatar />
+                  {theme === "dark" ? (
+                    <button
+                      data-act-class="shadow-outline"
+                      data-set-theme="light"
+                      onClick={() => setTheme("light")}
+                    >
+                      <SunFilled />
+                    </button>
+                  ) : (
+                    <button
+                      data-act-class="shadow-outline"
+                      data-set-theme="dark"
+                      onClick={() => setTheme("dark")}
+                    >
+                      <MoonFilled />
+                    </button>
+                  )}
                 </div>
               </header>
-              <div className="p-5 w-full h-full">{children}</div>
+              <div className="p-5 w-full h-full bg-base-200">{children}</div>
             </div>
             <div className="drawer-side">
               <label
@@ -234,14 +250,14 @@ export default function ClientLayout({
                 <li>
                   <div className="flex items-center justify-center gap-2 mb-1">
                     <Image src={Logo} alt="Inicio" className={`h-10 w-10`} />
-                    <h1 className="font-bold text-2xl text-foreground">EdSoft</h1>
+                    <h1 className="font-bold text-2xl text-foreground">
+                      EdSoft
+                    </h1>
                   </div>
                 </li>
                 {menu.map((item) => (
                   <li key={item.key} className="">
-                    <span
-                      className="hover:bg-main-blue hover:text-white"
-                    >
+                    <span className="hover:bg-main-blue hover:text-white">
                       {item.icon} <span>{item.label}</span>
                     </span>
                     {item.children && (

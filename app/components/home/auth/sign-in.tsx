@@ -27,7 +27,7 @@ export const SignIn = () => {
     });
   };
   return (
-    <div className="h-screen">
+    <div className="h-screen bg-base-200">
       <div className="mx-auto flex flex-col justify-center items-center shadow-sm rounded-[25px] w-[33%] h-[75%] p-4 bg-base-100">
         <Image
           src={LogoInst}

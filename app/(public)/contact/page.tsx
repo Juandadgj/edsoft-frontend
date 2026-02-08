@@ -87,11 +87,11 @@ const socialLinks = [
 ];
 
 const fieldClassName =
-  "mt-2 w-full rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-base text-white placeholder:text-white/60 focus:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/30";
+  "mt-2 w-full rounded-2xl border border-foreground/15 bg-background/10 px-4 py-3 text-base text-foreground placeholder:text-foreground/60 focus:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/30";
 
 function ContactPage() {
   return (
-    <main className="min-h-screen bg-[#030712] text-white">
+    <main className="min-h-screen bg-base-200 text-white">
       <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <section className="relative isolate overflow-hidden rounded-3xl border border-white/10 bg-[#020617] px-6 py-16 text-center shadow-[0_25px_120px_rgba(2,6,23,0.6)] sm:px-12">
           <div
@@ -141,7 +141,7 @@ function ContactPage() {
           {partnerOffices.map((office) => (
             <article
               key={office.title}
-              className="relative overflow-hidden rounded-3xl bg-white p-8 text-slate-900 shadow-lg ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-2xl"
+              className="relative overflow-hidden rounded-3xl bg-background p-8 text-slate-900 shadow-lg ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-2xl"
             >
               <div className="absolute inset-x-6 top-6 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-[#5f27ff]">
                 <Building2 className="h-4 w-4" />
@@ -151,18 +151,25 @@ function ContactPage() {
                 <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
                   {office.highlight}
                 </p>
-                <h2 className="mt-4 text-2xl font-semibold text-slate-900">
+                <h2 className="mt-4 text-2xl font-semibold text-primary">
                   {office.title}
                 </h2>
-                <p className="mt-2 text-base text-slate-600">{office.contact}</p>
+                <p className="mt-2 text-base text-foreground">
+                  {office.contact}
+                </p>
                 {office.location && (
-                  <p className="mt-1 text-sm text-slate-500">{office.location}</p>
+                  <p className="mt-1 text-sm text-secondary-foreground">
+                    {office.location}
+                  </p>
                 )}
                 <div className="mt-6 space-y-3 text-sm text-slate-600">
                   {office.phones.map((phoneNumber) => (
                     <div key={phoneNumber} className="flex items-center gap-3">
                       <Phone className="h-4 w-4 text-[#5f27ff]" />
-                      <a href={`tel:+57${phoneNumber.replace(/\s/g, "")}`} className="hover:text-[#5f27ff]">
+                      <a
+                        href={`tel:+57${phoneNumber.replace(/\s/g, "")}`}
+                        className="hover:text-[#5f27ff] text-foreground"
+                      >
                         {phoneNumber}
                       </a>
                     </div>
@@ -170,14 +177,20 @@ function ContactPage() {
                   {office.landline && (
                     <div className="flex items-center gap-3">
                       <Phone className="h-4 w-4 text-[#5f27ff]" />
-                      <a href="tel:+5752954410" className="hover:text-[#5f27ff]">
+                      <a
+                        href="tel:+5752954410"
+                        className="hover:text-[#5f27ff] text-foreground"
+                      >
                         {office.landline}
                       </a>
                     </div>
                   )}
                   <div className="flex items-center gap-3">
                     <Mail className="h-4 w-4 text-[#5f27ff]" />
-                    <a href={`mailto:${office.email}`} className="hover:text-[#5f27ff]">
+                    <a
+                      href={`mailto:${office.email}`}
+                      className="hover:text-[#5f27ff] text-foreground"
+                    >
                       {office.email}
                     </a>
                   </div>
@@ -188,21 +201,22 @@ function ContactPage() {
         </section>
 
         <section className="mt-16 grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-          <article className="rounded-3xl border border-white/10 bg-gradient-to-br from-white/10 to-white/5 p-8 shadow-[0_15px_60px_rgba(5,12,30,0.45)] backdrop-blur">
-            <div className="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.3em] text-white/70">
+          <article className="rounded-3xl border border-white/10  bg-background p-8 shadow-[0_15px_60px_rgba(5,12,30,0.45)]">
+            <div className="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.3em] text-foreground">
               <Send className="h-5 w-5" />
               Escríbenos directamente
             </div>
-            <h3 className="mt-4 text-3xl font-semibold">Cuéntanos sobre tu proyecto</h3>
-            <p className="mt-2 text-sm text-white/70">
-              Diligencia el formulario y uno de nuestros expertos te responderá en menos de 24 horas hábiles.
+            <h3 className="mt-4 text-3xl font-semibold text-primary">
+              Cuéntanos sobre tu proyecto
+            </h3>
+            <p className="mt-2 text-sm text-foreground">
+              Diligencia el formulario y uno de nuestros expertos te responderá
+              en menos de 24 horas hábiles.
             </p>
 
-            <form
-              className="mt-8 space-y-5"
-            >
+            <form className="mt-8 space-y-5">
               <div className="grid gap-4 sm:grid-cols-2">
-                <label className="text-sm font-medium text-white/80">
+                <label className="text-sm font-medium text-foreground/80">
                   Nombre completo
                   <input
                     type="text"
@@ -212,7 +226,7 @@ function ContactPage() {
                     className={fieldClassName}
                   />
                 </label>
-                <label className="text-sm font-medium text-white/80">
+                <label className="text-sm font-medium text-foreground/80">
                   Correo electrónico
                   <input
                     type="email"
@@ -224,7 +238,7 @@ function ContactPage() {
                 </label>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
-                <label className="text-sm font-medium text-white/80">
+                <label className="text-sm font-medium text-foreground/80">
                   Teléfono o WhatsApp
                   <input
                     type="tel"
@@ -233,7 +247,7 @@ function ContactPage() {
                     className={fieldClassName}
                   />
                 </label>
-                <label className="text-sm font-medium text-white/80">
+                <label className="text-sm font-medium text-foreground/80">
                   Tema de interés
                   <input
                     type="text"
@@ -243,7 +257,7 @@ function ContactPage() {
                   />
                 </label>
               </div>
-              <label className="text-sm font-medium text-white/80">
+              <label className="text-sm font-medium text-foreground/80">
                 Mensaje
                 <textarea
                   name="message"
@@ -252,13 +266,14 @@ function ContactPage() {
                   className={`${fieldClassName} resize-none`}
                 />
               </label>
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-xs text-white/60">
-                  Al enviar tus datos aceptas ser contactado para fines comerciales y de soporte.
+              <div className="flex flex-col gap-4 sm:items-center sm:justify-between">
+                <p className="text-xs text-foreground/60">
+                  Al enviar tus datos aceptas ser contactado para fines
+                  comerciales y de soporte.
                 </p>
                 <button
                   type="submit"
-                  className="inline-flex items-center justify-center rounded-full bg-white px-8 py-3 text-base font-semibold text-[#05152f] transition hover:-translate-y-0.5 hover:bg-white/90"
+                  className="inline-flex items-center justify-center rounded-full bg-background text-foreground border px-8 py-3 text-base font-semibold hover:text-white transition hover:-translate-y-0.5 hover:bg-main-blue/90 cursor-pointer"
                 >
                   Enviar mensaje
                   <Send className="ml-2 h-5 w-5" />
@@ -272,30 +287,39 @@ function ContactPage() {
               <MessageCircle className="h-5 w-5" />
               Canales directos
             </div>
-            <h3 className="mt-4 text-3xl font-semibold">Soporte y acompañamiento</h3>
+            <h3 className="mt-4 text-3xl font-semibold">
+              Soporte y acompañamiento
+            </h3>
             <p className="mt-2 text-sm text-white/60">
-              Elige el canal que prefieras. Respondemos muy rápido, sin importar la ciudad en la que te encuentres.
+              Elige el canal que prefieras. Respondemos muy rápido, sin importar
+              la ciudad en la que te encuentres.
             </p>
 
             <ul className="mt-6 space-y-4">
-              {serviceChannels.map(({ label, value, href, icon: Icon, helper }) => (
-                <li key={label}>
-                  <a
-                    href={href}
-                    className="group flex items-start gap-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 transition hover:border-white/40"
-                  >
-                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10">
-                      <Icon className="h-5 w-5" />
-                    </span>
-                    <span>
-                      <p className="text-sm font-semibold text-white">{label}</p>
-                      <p className="text-base text-white/80">{value}</p>
-                      {helper && <p className="text-xs text-white/60">{helper}</p>}
-                    </span>
-                    <ArrowUpRight className="ml-auto mt-1 h-5 w-5 text-white/60 transition group-hover:text-white" />
-                  </a>
-                </li>
-              ))}
+              {serviceChannels.map(
+                ({ label, value, href, icon: Icon, helper }) => (
+                  <li key={label}>
+                    <a
+                      href={href}
+                      className="group flex items-start gap-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 transition hover:border-white/40"
+                    >
+                      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10">
+                        <Icon className="h-5 w-5" />
+                      </span>
+                      <span>
+                        <p className="text-sm font-semibold text-white">
+                          {label}
+                        </p>
+                        <p className="text-base text-white/80">{value}</p>
+                        {helper && (
+                          <p className="text-xs text-white/60">{helper}</p>
+                        )}
+                      </span>
+                      <ArrowUpRight className="ml-auto mt-1 h-5 w-5 text-white/60 transition group-hover:text-white" />
+                    </a>
+                  </li>
+                ),
+              )}
             </ul>
 
             <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-4">

@@ -6,4 +6,11 @@ export type ActionState = {
   data?: Group;
 };
 
+export const workingTimeLabels: Record<string, string> = {
+  M: 'Mañana',
+  T: 'Tarde',
+  N: 'Noche',
+  S: 'Sabatina',
+};
+
 export const DEFAULT_REVALIDATE_PATH = '/dashboard/programacion-anual/curso';

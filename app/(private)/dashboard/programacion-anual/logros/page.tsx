@@ -36,9 +36,10 @@ async function getCourses(params?: { group: number }): Promise<Course[]> {
   }
 }
 
-async function getAchievements(params?: { subject: number; period: number }): Promise<Achievement[]> {
+export async function getAchievements(params?: { subject: number; period: number }): Promise<Achievement[]> {
   try {
     if (params) {
+      console.log(params)
       const { subject, period } = params;
       return await serverApi.get<Achievement[]>(`/achievements?id_course=${subject}&period=${period}`);
     }

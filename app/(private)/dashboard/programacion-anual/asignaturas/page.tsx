@@ -19,9 +19,11 @@ async function getGroups(yearId: number): Promise<Group[]> {
   }
 }
 
-async function getCourses(): Promise<Course[]> {
+export async function getCourses({group}: { group?: number } = {}): Promise<Course[]> {
   try {
-    return await serverApi.get<Course[]>('/courses');
+    return await serverApi.get<Course[]>('/courses', {
+      id_group: group,
+    });
   } catch (error) {
     console.error('No fue posible obtener las asignaturas', error);
     return [];

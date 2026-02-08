@@ -30,24 +30,30 @@ export const Navbar = () => {
     { name: "Lista de Inst. Educativas", path: "/institutions" },
     { name: "Contacto", path: "/contact" },
   ];
-  // useEffect(() => {
-  //   // The 'false' parameter is required for React projects
-  //   themeChange(false);
-  //   if (document) {
-  //     const theme = document.documentElement.getAttribute("data-theme");
-  //     if (theme) {
-  //       setTheme(theme);
-  //     }
-  //   }
-  // }, []);
+  useEffect(() => {
+    // The 'false' parameter is required for React projects
+    themeChange(false);
+    if (document) {
+      const theme = document.documentElement.getAttribute("data-theme");
+      console.log(theme);
+      if (theme) {
+        setTheme(theme);
+      }
+    }
+  }, []);
   const pathname = usePathname();
+  const handleThemeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const theme = e.currentTarget.getAttribute("data-set-theme");
+    console.log(theme);
+    if (theme) {
+      localStorage.setItem(
+        "theme",
+        localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      );
+    }
+  };
   return (
-    <nav
-      className={cn("flex px-5 pt-0 w-full h-auto pb-5", {
-        "bg-[#030712]": pathname === "/contact",
-        "bg-base-200": pathname !== "/contact",
-      })}
-    >
+    <nav className={cn("flex px-5 pt-0 w-full h-auto pb-5 bg-base-200")}>
       <div className="h-full w-full flex justify-between items-center">
         <Link href="/" className="flex items-center">
           <Image src={BigLogo} className="w-16 h-16 mr-3" alt="Edsoft Logo" />
@@ -131,9 +137,8 @@ export const Navbar = () => {
               <li
                 key={index}
                 className={cn("mx-6 px-2 py-2 h-20", {
-                  "bg-main-blue text-white rounded-b-[30px] h-20":
+                  "bg-main-blue text-white rounded-b-[30px] h-20 cursor-pointer":
                     path.path === pathName,
-                  "text-white": pathName === NavbarState.CONTACTO,
                 })}
               >
                 <Link
@@ -146,15 +151,6 @@ export const Navbar = () => {
               </li>
             ))}
           </ul>
-          {/* {theme === "dark" ? (
-            <button data-act-class="shadow-outline" data-set-theme="light" onClick={()=> setTheme("light")}>
-              <SunFilled />
-            </button>
-          ) : (
-            <button data-act-class="shadow-outline" data-set-theme="dark" onClick={()=> setTheme("dark")}>
-              <MoonFilled />
-            </button>
-          )} */}
         </div>
       </div>
     </nav>

@@ -12,6 +12,7 @@ import { GroupForm } from './group-form';
 import { GroupDeleteModal } from './group-delete-modal';
 import { getCourseLevel } from '@/app/shared/course-level';
 import { DEFAULT_REVALIDATE_PATH } from './constants';
+import { buildTeacherLookup, formatGroupName, formatWorkingTime } from '@/app/shared/formats';
 
 interface GroupsListProps {
   groups: Group[];
@@ -19,40 +20,6 @@ interface GroupsListProps {
   selectedYearId: number | null;
   revalidatePath?: string;
 }
-
-const workingTimeLabels: Record<string, string> = {
-  M: 'Mañana',
-  T: 'Tarde',
-  N: 'Noche',
-  S: 'Sabatina',
-};
-
-const formatWorkingTime = (value?: string | null) => {
-  if (!value) {
-    return '-';
-  }
-
-  return workingTimeLabels[value] || value;
-};
-
-const formatGroupName = (group: Group) => {
-  const name = getCourseLevel(group.level ?? null);
-  const suffix = group.sublevel ? ` ${group.sublevel}` : '';
-  return `${name}${suffix}`.trim();
-};
-
-const buildTeacherLookup = (teachers: Teacher[]) => {
-  const map = new Map<number, string>();
-
-  teachers.forEach((teacher) => {
-    const label = [teacher.name, teacher.last_name].filter(Boolean).join(' ').trim();
-    if (teacher.id_teacher) {
-      map.set(teacher.id_teacher, label || 'Sin nombre');
-    }
-  });
-
-  return map;
-};
 
 export function GroupsList({ groups, teachers, selectedYearId, revalidatePath = DEFAULT_REVALIDATE_PATH }: GroupsListProps) {
   const [searchTerm, setSearchTerm] = useState('');
