@@ -1,5 +1,12 @@
 import type { Enrollment, Student } from '@/app/types';
 
+
+export enum EnrollmentCertificateType {
+  Certificate1 = "student-enrollment-i",
+  Certificate2 = "student-enrollment-ii",
+}
+
+
 export type ActionState = {
   success: boolean;
   message: string;

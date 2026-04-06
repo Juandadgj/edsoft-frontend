@@ -1,13 +1,17 @@
 "use client";
 
-import { useMemo } from "react";
+import { startTransition, useActionState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Group, Student } from "@/app/types";
 import { getCourseLevel } from "@/app/shared/course-level";
-import { DEFAULT_REVALIDATE_PATH } from "./constants";
+import {
+  DEFAULT_REVALIDATE_PATH,
+  EnrollmentCertificateType,
+} from "./constants";
 import Table from "@/app/components/ui/table";
 import { Button } from "@/app/components/ui/button";
 import { Edit, FilePenLine, Info, Trash } from "lucide-react";
+import { generateCertificateAction } from "./actions";
 
 interface StudentsPerCourseProps {
   groups: Group[];
@@ -28,12 +32,11 @@ export function StudentsPerCourse({
   onSelectGroup,
   onBack,
 }: StudentsPerCourseProps) {
-  console.log(students, "students")
   const router = useRouter();
   const selectedGroup = groups.find((g) => g.id_group === selectedGroupId);
   const groupStudents = useMemo(() => {
     if (!selectedGroupId) return [];
-    return students
+    return students;
   }, [students, selectedGroupId]);
   const WORKING_TIMES = [
     { value: "M", label: "Mañana" },
@@ -41,8 +44,20 @@ export function StudentsPerCourse({
     { value: "N", label: "Noche" },
     { value: "S", label: "Sabatina" },
   ];
+  const [state, action, loading] = useActionState(generateCertificateAction, {
+    success: false,
+    message: "",
+  });
+  useEffect(() => {
+    if (state.success) {
+      console.log(state.data);
+      window.open()?.document.write(state.data?.report_content || "");
+    }
+  }, [state]);
   const getGroupHours = (group?: Group) => {
-    const workingTime = WORKING_TIMES.find((wt) => wt.value === group?.working_time);
+    const workingTime = WORKING_TIMES.find(
+      (wt) => wt.value === group?.working_time,
+    );
     return workingTime ? workingTime.label : "N/A";
   };
   // Columnas para la tabla de grupos
@@ -104,10 +119,15 @@ export function StudentsPerCourse({
             type="button"
             variant="outline"
             size="sm"
-            onClick={() => handleGenerateCertificate1(record.id_student)}
+            onClick={() =>
+              handleGenerateCertificate(
+                record.id_student,
+                EnrollmentCertificateType.Certificate1,
+              )
+            }
             title="Generar Certificado de Matrícula I"
           >
-            <FilePenLine size={16} color="#0055a6" />
+            <FilePenLine size={16} />
           </Button>
         ),
       },
@@ -119,10 +139,15 @@ export function StudentsPerCourse({
             type="button"
             variant="outline"
             size="sm"
-            onClick={() => handleGenerateCertificate2(record.id_student)}
+            onClick={() =>
+              handleGenerateCertificate(
+                record.id_student,
+                EnrollmentCertificateType.Certificate2,
+              )
+            }
             title="Generar Certificado de Matrícula II"
           >
-            <FilePenLine size={16} color="#0055a6" />
+            <FilePenLine size={16} />
           </Button>
         ),
       },
@@ -174,17 +199,20 @@ export function StudentsPerCourse({
         ),
       },
     ],
-    [router, revalidatePath],
+    [router, revalidatePath, selectedYear],
   );
 
-  const handleGenerateCertificate1 = (idStudent: number) => {
-    // TODO: Implementar generación de certificado I
-    console.log("Generar certificado I para estudiante:", idStudent);
-  };
-
-  const handleGenerateCertificate2 = (idStudent: number) => {
-    // TODO: Implementar generación de certificado II
-    console.log("Generar certificado II para estudiante:", idStudent);
+  const handleGenerateCertificate = (
+    idStudent: number,
+    reportType: EnrollmentCertificateType,
+  ) => {
+    startTransition(() => {
+      action({
+        studentId: idStudent,
+        reportType,
+        year: selectedYear ?? new Date().getFullYear(),
+      });
+    });
   };
 
   const handleRemoveFromGroup = (idStudent: number) => {
@@ -246,7 +274,11 @@ export function StudentsPerCourse({
       </div>
 
       {groupStudents.length > 0 ? (
-        <Table columns={studentsColumns} data={groupStudents} rowKey="id_student" />
+        <Table
+          columns={studentsColumns}
+          data={groupStudents}
+          rowKey="id_student"
+        />
       ) : (
         <div className="text-center py-10 text-sm text-foreground/70">
           No hay estudiantes matriculados en este grupo.

@@ -85,7 +85,7 @@ export async function generateDeriverableByOptionsAction(
     // Debug profundo de signatur
 
     const report = await serverApi.post<{ report_content: string }>(
-      `/reports/deliverables/${reportType}`,
+      `/exports/deliverables/${reportType}`,
       report_options,
       {
         id_group: groupId,
@@ -93,7 +93,7 @@ export async function generateDeriverableByOptionsAction(
         id_period: periodId,
       },
     );
-    return {
+    return { 
       success: true,
       message:
         "Funcionalidad de entregables pendiente de implementación en el backend",

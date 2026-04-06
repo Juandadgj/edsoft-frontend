@@ -183,7 +183,7 @@ export default function ClientLayout({
         className="bg-base-100 w-full h-full"
         style={{
           scrollbarWidth: "thin",
-          scrollbarColor: "#25429e #F3F4F6",
+          scrollbarColor: "#25429e var(--base-200)",
           scrollbarGutter: "100px",
         }}
       >
@@ -246,7 +246,7 @@ export default function ClientLayout({
                 aria-label="close sidebar"
                 className="drawer-overlay"
               ></label>
-              <ul className="menu bg-base-100 rounded-box w-64 text-foreground h-full">
+              <ul className="menu block flex-none bg-base-100 rounded-box w-64 text-foreground h-full overflow-y-auto">
                 <li>
                   <div className="flex items-center justify-center gap-2 mb-1">
                     <Image src={Logo} alt="Inicio" className={`h-10 w-10`} />

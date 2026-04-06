@@ -21,6 +21,7 @@ import Table from "@/app/components/ui/table";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { getCourseLevel } from "@/app/shared/course-level";
 import { generateSpreadsheetReportAction } from "./actions";
+import { File } from "lucide-react";
 
 interface SpreadsheetReportProps {
   optionId: number;
@@ -195,28 +196,84 @@ export function SpreadsheetReport({
             title: "Per 1.",
             key: "spreadsheet",
             render: (_: unknown, record: Course) => {
-              return "-";
+              return (
+                <Button
+                  type="button"
+                  onClick={() => {
+                    handlerGenerate({
+                      reportType: option?.type,
+                      groupId: Number(record.id_group),
+                      subjectId: Number(record.id_course),
+                      periodId: 1,
+                    });
+                  }}
+                >
+                  <File size={16} />
+                </Button>
+              );
             },
           },
           {
             title: "Per 2.",
             key: "spreadsheet",
             render: (_: unknown, record: Course) => {
-              return "-";
+              return (
+                <Button
+                  type="button"
+                  onClick={() => {
+                    handlerGenerate({
+                      reportType: option?.type,
+                      groupId: Number(record.id_group),
+                      subjectId: Number(record.id_course),
+                      periodId: 2,
+                    });
+                  }}
+                >
+                  <File size={16} />
+                </Button>
+              );
             },
           },
           {
             title: "Per 3.",
             key: "sheet",
             render: (_: unknown, record: Course) => {
-              return "-";
+              return (
+                <Button
+                  type="button"
+                  onClick={() => {
+                    handlerGenerate({
+                      reportType: option?.type,
+                      groupId: Number(record.id_group),
+                      subjectId: Number(record.id_course),
+                      periodId: 3,
+                    });
+                  }}
+                >
+                  <File size={16} />
+                </Button>
+              );
             },
           },
           {
             title: "Per 4.",
             key: "spreadsheet",
             render: (_: unknown, record: Course) => {
-              return "-";
+              return (
+                <Button
+                  type="button"
+                  onClick={() => {
+                    handlerGenerate({
+                      reportType: option?.type,
+                      groupId: Number(record.id_group),
+                      subjectId: Number(record.id_course),
+                      periodId: 4,
+                    });
+                  }}
+                >
+                  <File size={16} />
+                </Button>
+              );
             },
           },
         ],
@@ -226,11 +283,11 @@ export function SpreadsheetReport({
   }, [option?.type]);
   useEffect(() => {
     if (state.success) {
-      console.log(state.data)
-      window.open()?.document.write(state.data?.report_content || '');
+      console.log(state.data);
+      window.open()?.document.write(state.data?.report_content || "");
     }
   }, [state]);
-  
+
   if (!option) {
     return (
       <ContainerComponents>

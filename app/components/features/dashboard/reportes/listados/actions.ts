@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import serverApi from "@/app/lib/api/server-api";
 import type { ActionState, ListingReportType } from "./constants";
 import { DEFAULT_REVALIDATE_PATH } from "./constants";
+import { AxiosError } from "axios";
 
 const parseText = (value: FormDataEntryValue | null): string | null => {
   if (!value) return null;
@@ -40,13 +41,12 @@ export async function generateListingReportAction(
       throw new Error("Debe seleccionar un tipo de listado.");
     }
 
-    const report = await serverApi.post<{html: string}>(
-      `/reports/lists/${reportType}`,
-      {},
+    const report = await serverApi.post<{ html: string }>(
+      `/exports/lists/${reportType}`,
       {
-        groupId,
-        yearId,
+        group_id: groupId,
       },
+      {}
     );
     return {
       success: true,
@@ -54,8 +54,9 @@ export async function generateListingReportAction(
         "Funcionalidad de listados pendiente de implementación en el backend",
       data: { report_content: report.html },
     };
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    console.log(error, "Error en la generación del listado");
+
     return {
       success: false,
       message:

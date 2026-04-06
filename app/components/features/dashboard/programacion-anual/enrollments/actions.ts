@@ -467,3 +467,50 @@ export async function createStudentWithEnrollmentAction(
     };
   }
 }
+
+export async function generateCertificateAction(
+  prevState: {
+    success: boolean;
+    message: string;
+    data?: { report_content: string };
+  },
+  formData: {
+    reportType: string;
+    studentId: number;
+    year?: number;
+  },
+): Promise<{
+  success: boolean;
+  message: string;
+  data?: { report_content: string };
+}> {
+  try {
+    console.log(formData)
+    const { studentId, year, reportType } = formData;
+    if (!studentId) {
+      throw new Error("No se pudo identificar el estudiante.");
+    }
+    const params = {
+      id_student: String(studentId),
+      id_year: year ? String(year) : undefined,
+    };
+    const certificate = await serverApi.get<{ report_content: string }>(
+      `/enrollments/${reportType}`,
+      params,
+    );
+    return {
+      success: true,
+      message: "Certificado generado correctamente",
+      data: { report_content: certificate.report_content },
+    };
+  } catch (error) {
+    console.log(error)
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Error al generar el certificado",
+    };
+  }
+}

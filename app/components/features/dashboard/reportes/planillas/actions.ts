@@ -1,9 +1,10 @@
-'use server';
+"use server";
 
-import { revalidatePath } from 'next/cache';
-import serverApi from '@/app/lib/api/server-api';
-import type { ActionState, SpreadsheetReportType } from './constants';
-import { DEFAULT_REVALIDATE_PATH } from './constants';
+import { revalidatePath } from "next/cache";
+import serverApi from "@/app/lib/api/server-api";
+import type { ActionState, SpreadsheetReportType } from "./constants";
+import { DEFAULT_REVALIDATE_PATH } from "./constants";
+import { AxiosError } from "axios";
 
 const parseText = (value: FormDataEntryValue | null): string | null => {
   if (!value) return null;
@@ -18,7 +19,7 @@ const parseNumber = (value?: FormDataEntryValue | null): number | null => {
 };
 
 const resolveRevalidatePath = (formData: FormData) =>
-  parseText(formData.get('revalidatePath')) || DEFAULT_REVALIDATE_PATH;
+  parseText(formData.get("revalidatePath")) || DEFAULT_REVALIDATE_PATH;
 
 /**
  * Genera un reporte de planilla según el tipo especificado
@@ -32,37 +33,41 @@ export async function generateSpreadsheetReportAction(
     subjectId?: number;
     periodId?: number;
     yearId?: number;
-  }
+  },
 ): Promise<ActionState> {
   try {
-    const reportType =  formData.reportType as SpreadsheetReportType;
+    const reportType = formData.reportType as SpreadsheetReportType;
     const groupId = Number(formData.groupId);
     const subjectId = Number(formData.subjectId);
     const periodId = Number(formData.periodId);
     const yearId = Number(formData.yearId);
-    console.log(formData)
+    console.log(formData);
     if (!reportType) {
-      throw new Error('Debe seleccionar un tipo de reporte.');
+      throw new Error("Debe seleccionar un tipo de reporte.");
     }
 
     // TODO: Implementar llamada al backend cuando esté disponible
-    const report = await serverApi.get<{report_content: string}>(`/reports/${reportType}`, {
-      id_group: groupId,
-      id_course: subjectId,
-    });
-   
+    const report = await serverApi.get<string>(
+      `/exports/spreadsheets/${reportType}`,
+      {
+        id_group: groupId,
+        id_course: subjectId,
+        period: periodId,
+      },
+    );
 
     // Por ahora retornamos un mensaje de placeholder
     return {
       success: true,
-      message: 'Planilla generada',
-      data: { report_content: report.report_content },
+      message: "Planilla generada",
+      data: { report_content: report },
     };
   } catch (error) {
-    console.log(error)
+    console.log(error, "ERROR");
     return {
       success: false,
-      message: error instanceof Error ? error.message : 'Error al generar el reporte',
+      message:
+        error instanceof Error ? error.message : "Error al generar el reporte",
     };
   }
 }
@@ -73,14 +78,19 @@ export async function generateSpreadsheetReportAction(
  */
 export async function exportSpreadsheetAction(
   prevState: ActionState,
-  formData: FormData
+  formData: FormData,
 ): Promise<ActionState> {
   try {
-    const reportType = parseText(formData.get('reportType'));
-    const exportFormat = parseText(formData.get('format')) as 'pdf' | 'excel' | null;
+    const reportType = parseText(formData.get("reportType"));
+    const exportFormat = parseText(formData.get("format")) as
+      | "pdf"
+      | "excel"
+      | null;
 
     if (!reportType || !exportFormat) {
-      throw new Error('Debe especificar el tipo de reporte y formato de exportación.');
+      throw new Error(
+        "Debe especificar el tipo de reporte y formato de exportación.",
+      );
     }
 
     // TODO: Implementar llamada al backend cuando esté disponible
@@ -91,12 +101,14 @@ export async function exportSpreadsheetAction(
 
     return {
       success: true,
-      message: 'Funcionalidad de exportación pendiente de implementación en el backend',
+      message:
+        "Funcionalidad de exportación pendiente de implementación en el backend",
     };
   } catch (error) {
     return {
       success: false,
-      message: error instanceof Error ? error.message : 'Error al exportar el reporte',
+      message:
+        error instanceof Error ? error.message : "Error al exportar el reporte",
     };
   }
 }
